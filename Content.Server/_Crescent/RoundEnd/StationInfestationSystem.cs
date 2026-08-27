@@ -48,15 +48,15 @@ public sealed class StationInfestationSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<FactionStationFellEvent>(OnStationFell);
-        SubscribeLocalEvent<ShipShieldEmitterComponent, ComponentStartup>(OnShieldEmitterStartup);
+      //  SubscribeLocalEvent<ShipShieldEmitterComponent, ComponentStartup>(OnShieldEmitterStartup);
     }
 
-    private void OnShieldEmitterStartup(Entity<ShipShieldEmitterComponent> ent, ref ComponentStartup args)
-    {
-        var grid = Transform(ent).GridUid;
-        if (grid != null && HasComp<StationInfestationComponent>(grid.Value))
-            _shipShields.SetForcedDisabled(ent, true, ent.Comp);
-    }
+   // private void OnShieldEmitterStartup(Entity<ShipShieldEmitterComponent> ent, ref ComponentStartup args)
+   // {
+   //     var grid = Transform(ent).GridUid;
+   //     if (grid != null && HasComp<StationInfestationComponent>(grid.Value))
+   //         _shipShields.SetForcedDisabled(ent, true, ent.Comp);
+   // }
 
     private void OnStationFell(ref FactionStationFellEvent ev)
     {
