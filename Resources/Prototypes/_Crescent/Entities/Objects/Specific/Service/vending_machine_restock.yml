@@ -16,3 +16,20 @@
     - state: refill_onion
   - type: StaticPrice
     price: 10000
+
+- type: entity
+  parent: BaseVendingMachineRestock
+  id: VendingMachineRestockTaypaniSurplus
+  name: taypani surplus restock box
+  description: A poorly packed box of goods sold at surplus vendor.
+  components:
+  - type: VendingMachineRestock
+    canRestock:
+    - TaypaniSurplusVendorPack
+  - type: Sprite
+    sprite: _Crescent/Objects/Specific/Service/vending_machine_restock.rsi
+    layers:
+    - state: base
+    - state: green_bit
+      shader: unshaded
+    - state: refill_onion

@@ -9,6 +9,7 @@
       - SpeedLoaderPistol
   - type: SpeedLoader
   - type: BallisticAmmoProvider
+    fillDelay: 0 #eclipsion
     whitelist:
       tags:
         - CartridgePistol

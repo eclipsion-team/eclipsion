@@ -124,12 +124,13 @@
   - type: Item
     size: Ginormous
   - type: StaticPrice
-    price: 2000
+    price: 2500
   - type: Sprite
     sprite: _Crescent/Objects/Weapons/Guns/nimrod.rsi
   - type: Clothing
     sprite: _Crescent/Objects/Weapons/Guns/nimrod.rsi
   - type: Gun
+    damageModifier: 1.5
     fireRate: 3
     projectileSpeed: 45
     selectedMode: SemiAuto
@@ -1451,4 +1452,4 @@
     zeroVisible: true
   - type: Appearance
   - type: StaticPrice
-    price: 2000
+    price: 5000

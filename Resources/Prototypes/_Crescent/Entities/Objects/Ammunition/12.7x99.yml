@@ -125,6 +125,7 @@
       - CartridgeHeavyRifleSpeedloader
   - type: SpeedLoader
   - type: BallisticAmmoProvider
+    fillDelay: 0
     whitelist:
       tags:
         - CartridgeHeavyRifle

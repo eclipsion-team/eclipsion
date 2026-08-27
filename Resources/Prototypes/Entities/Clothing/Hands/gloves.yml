@@ -284,7 +284,8 @@
   - type: ReverseEngineering # Sector Crescent
     recipes:
       - ClothingHandsGlovesCombat
-
+  - type: StaticPrice #eclipsion
+    price: 500
 # can't parent combat gloves since they are butcherable
 - type: entity
   parent: ClothingHandsGlovesSyntheticBase
@@ -331,6 +332,8 @@
         Blunt: 0.95
         Slash: 0.95
         Piercing: 0.95
+  - type: StaticPrice #eclipsion
+    price: 500
 
 - type: entity
   parent: ClothingHandsButcherable

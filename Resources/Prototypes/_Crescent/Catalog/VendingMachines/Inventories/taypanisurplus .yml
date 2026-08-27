@@ -1,0 +1,17 @@
+- type: vendingMachineInventory
+  id: TaypaniSurplusVendorPack
+  startingInventory:
+    WeaponSniperNCWLNovomosin: 6
+    WeaponRifleSHINimrod: 6
+    WeaponRifleCarter: 6
+    WeaponShotgunKammerer: 6
+    SpeedLoaderRifle: 18
+    MagazineBoxRifle: 18
+    MagazineLightRifle: 18
+    MagazineBoxLightRifle: 18
+    BoxLethalshot: 18
+    BoxShotgunSlug: 18
+    ClothingMaskINDGasmask: 6
+    ClothingHandsGlovesCombat: 6
+    ClothingShoesBootsMagCombatFilled: 6
+    AmmoTechFabCircuitboard: 4

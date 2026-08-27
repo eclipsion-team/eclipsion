@@ -1,0 +1,10 @@
+- type: entity
+  id: CrateServiceTaypaniSurplusRestock
+  parent: CrateGenericSteel
+  name: taypani surplus restock crate
+  description: Crate containing restock for a taypani surplus vendor.
+  components:
+  - type: StorageFill
+    contents:
+      - id: VendingMachineRestockTaypaniSurplus
+      - id: VendingMachineRestockTaypaniSurplus

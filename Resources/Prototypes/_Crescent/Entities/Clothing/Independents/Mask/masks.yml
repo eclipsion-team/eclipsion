@@ -1,0 +1,12 @@
+- type: entity
+  parent: ClothingMaskGasSyndicate
+  id: ClothingMaskINDGasmask
+  name: reinforced welding gas mask
+  description: A reinforced gas mask, a quickly retrofitted piece of gear with crudely attached metal plates and visor welding panels.
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: Clothing/Mask/welding-gas.rsi
+  - type: Clothing
+    sprite: Clothing/Mask/welding-gas.rsi

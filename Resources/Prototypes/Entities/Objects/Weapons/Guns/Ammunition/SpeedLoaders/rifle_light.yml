@@ -9,6 +9,7 @@
   - type: SpeedLoader
   - type: BallisticAmmoProvider
     mayTransfer: true
+    fillDelay: 0 #eclipsion
     whitelist:
       tags:
         - CartridgeLightRifle

@@ -124,6 +124,8 @@
       requirements:
         MatterBin: 1
         Manipulator: 1
+    - type: StaticPrice # eclipsion
+      price: 7500
 
 - type: entity
   id: AmmoTechFabTAPCircuitboard

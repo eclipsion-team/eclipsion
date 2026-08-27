@@ -280,6 +280,8 @@
         fontSize: 12
         color: "#ff4f00"
         requireDetailRange: false
+  - type: StaticPrice # eclipsion
+    price: 2500
 
 - type: entity
   name: sawn-off shotgun

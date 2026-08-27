@@ -9,10 +9,11 @@
   - type: SpeedLoader
   - type: BallisticAmmoProvider
     mayTransfer: true
+    fillDelay: 0 #eclipsion
     whitelist:
       tags:
         - CartridgeRifle
-    capacity: 5
+    capacity: 6 # eclipsion - to match ammo capacity of nimrod
     proto: CartridgeRifle
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/SpeedLoaders/LightRifle/light_rifle_speed_loader.rsi
@@ -30,3 +31,5 @@
     containers:
       ballistic-ammo: !type:Container
         ents: []
+  - type: StaticPrice # eclipsion
+    price: 50

@@ -1,6 +1,4 @@
 using Content.Shared._Crescent.RoundEnd;
-using Content.Server._Crescent.ShipShields;
-using Content.Shared._Crescent.ShipShields;
 using Content.Shared.Maps;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -42,21 +40,11 @@ public sealed class StationInfestationSystem : EntitySystem
     [Dependency] private readonly ITileDefinitionManager _tileDefinitions = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly TurfSystem _turf = default!;
-    [Dependency] private readonly ShipShieldsSystem _shipShields = default!;
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<FactionStationFellEvent>(OnStationFell);
-      //  SubscribeLocalEvent<ShipShieldEmitterComponent, ComponentStartup>(OnShieldEmitterStartup);
-    }
-
-   // private void OnShieldEmitterStartup(Entity<ShipShieldEmitterComponent> ent, ref ComponentStartup args)
-   // {
-   //     var grid = Transform(ent).GridUid;
-   //     if (grid != null && HasComp<StationInfestationComponent>(grid.Value))
-   //         _shipShields.SetForcedDisabled(ent, true, ent.Comp);
-   // }
 
     private void OnStationFell(ref FactionStationFellEvent ev)
     {

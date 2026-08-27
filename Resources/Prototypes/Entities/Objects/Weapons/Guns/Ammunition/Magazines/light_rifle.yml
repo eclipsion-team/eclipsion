@@ -110,6 +110,8 @@
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeLightRifle
+  - type: StaticPrice # eclipsion
+    price: 50
 
 - type: entity
   id: MagazineLightRifleEmpty
