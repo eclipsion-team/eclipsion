@@ -102,6 +102,8 @@
     state: icon
   - type: Item
     sprite: _Crescent/Objects/Weapons/Melee/machete.rsi
+  - type: StaticPrice
+    price: 250
 
 - type: entity
   name: noble's rapier
