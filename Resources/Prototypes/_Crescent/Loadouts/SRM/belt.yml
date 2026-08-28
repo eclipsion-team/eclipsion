@@ -10,7 +10,6 @@
       group: LoadoutBelt
     - !type:CharacterJobRequirement
       jobs:
-        - GovernorDSM
         - OverseerSRM
 
 - type: loadout

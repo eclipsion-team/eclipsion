@@ -250,6 +250,8 @@
     idleState: fab-idle
     runningState: fab-active
     staticRecipes:
+      - IndependentMachete
+      - ClothingBeltSheathMacheteIndependent
       - BaseCartridgeRailgun15mm
       - MagazineClip18gBuck
       - MagazinePulse470Fmj

@@ -50,6 +50,15 @@
     Plastic: 100
 
 - type: latheRecipe
+  id: ClothingBeltSheathMacheteIndependent
+  category: Clothing
+  result: ClothingBeltSheathMacheteIndependent
+  completetime: 1.5
+  materials:
+    Cloth: 500
+    Plastic: 100
+
+- type: latheRecipe
   id: ClothingHeadHatSyndicateInterdyne
   category: Clothing
   result: ClothingHeadHatSyndicateInterdyne
@@ -1024,6 +1033,15 @@
     Steel: 2500
     Silver: 1000
     Tungsten: 2000
+
+- type: latheRecipe
+  id: IndependentMachete
+  category: Weapons
+  result: IndependentMachete
+  completetime: 1.5
+  materials:
+    Steel: 1000
+    Plastic: 500
 
 # MARK: Cybernetics
 
