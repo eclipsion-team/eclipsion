@@ -108,7 +108,7 @@ The attribution notice shipped with the game resources is available at
 
 The project code is licensed under **GNU AGPLv3** (code contributed before the cutoff commit noted in
 [LEGAL.md](./LEGAL.md) is MIT).
-Assets use various licenses, primarily CC-BY-SA 3.0. Some assets are **non-commercial** — see
+Assets use various licenses, primarily CC-BY-SA 3.0. Some assets are **non-commercial** - see
 [LEGAL.md](./LEGAL.md) before using this project commercially.
 
 Because this project is AGPLv3, anyone who plays on a server running it is entitled to its source code.
