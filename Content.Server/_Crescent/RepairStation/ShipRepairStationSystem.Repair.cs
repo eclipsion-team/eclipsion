@@ -5,6 +5,7 @@ using Content.Shared._Mono.ShipRepair;
 using Content.Shared._Mono.ShipRepair.Components;
 using Content.Shared.Bank.Components;
 using Content.Shared.Damage;
+using Content.Shared.Database;
 using Content.Shared.Decals;
 using Content.Shared.FixedPoint;
 using Content.Shared.Fluids.Components;
@@ -25,20 +26,29 @@ public sealed partial class ShipRepairStationSystem
     {
         var comp = station.Comp;
 
+        if (!CanUse(station, args.Actor))
+        {
+            Deny(station, args.Actor, "ship-repair-station-popup-admin-only");
+            return;
+        }
+
         if (comp.Target != null)
         {
             Deny(station, args.Actor, "ship-repair-station-popup-already-working");
             return;
         }
 
-        var docked = GetDockedShips(station);
-        if (GetSelection(station, docked) is not { } ship)
+        var serviceable = GetServiceableGrids(station);
+        if (GetSelection(station, serviceable) is not { } ship)
         {
             Deny(station, args.Actor, "ship-repair-station-popup-no-ship");
             return;
         }
 
-        if (!TryComp<ShipRepairDataComponent>(ship, out var data))
+        // No blueprint stops a crew slip dead. The override console goes ahead with the half of the
+        // survey that needs no file - the damage, the spills, the wreckage, the empty magazines.
+        var data = CompOrNull<ShipRepairDataComponent>(ship);
+        if (data == null && !comp.RepairUnregistered)
         {
             Deny(station, args.Actor, "ship-repair-station-popup-no-blueprint");
             return;
@@ -50,14 +60,14 @@ public sealed partial class ShipRepairStationSystem
             return;
         }
 
-        var survey = Survey(station, (ship, data));
+        var survey = Survey(station, ship, data);
         if (survey.Jobs.Count == 0)
         {
             Deny(station, args.Actor, "ship-repair-station-popup-intact");
             return;
         }
 
-        if (!TryCharge(args.Actor, survey.Quote))
+        if (!TryCharge(station, args.Actor, survey.Quote))
         {
             Deny(station, args.Actor, "ship-repair-station-popup-insufficient-funds");
             return;
@@ -67,10 +77,18 @@ public sealed partial class ShipRepairStationSystem
         comp.Jobs = survey.Jobs;
         comp.JobsTotal = survey.Jobs.Count;
         comp.JobsDone = 0;
-        comp.AmountPaid = survey.Quote;
+
+        // Nothing was taken for a free job, so there is nothing to hand back if it is cut short.
+        comp.AmountPaid = comp.Free ? 0 : survey.Quote;
         comp.Payer = args.Actor;
 
         ScheduleWork(station);
+
+        if (comp.AdminOnly)
+        {
+            _adminLogger.Add(LogType.Action, LogImpact.High,
+                $"{ToPrettyString(args.Actor):actor} authorised a repair of {ToPrettyString(ship):grid} ({survey.Jobs.Count} jobs) from {ToPrettyString(station.Owner):console}");
+        }
 
         _audio.PlayPvs(comp.ConfirmSound, station.Owner);
         _popup.PopupEntity(Loc.GetString("ship-repair-station-popup-started", ("ship", Name(ship))), station.Owner, args.Actor);
@@ -106,7 +124,7 @@ public sealed partial class ShipRepairStationSystem
 
     private void OnCancel(Entity<ShipRepairStationComponent> station, ref ShipRepairCancelMessage args)
     {
-        if (station.Comp.Target == null)
+        if (station.Comp.Target == null || !CanUse(station, args.Actor))
             return;
 
         AbortRepair(station, refund: true);
@@ -114,9 +132,11 @@ public sealed partial class ShipRepairStationSystem
         PushUi(station);
     }
 
-    private bool TryCharge(EntityUid actor, int amount)
+    private bool TryCharge(Entity<ShipRepairStationComponent> station, EntityUid actor, int amount)
     {
-        if (amount <= 0)
+        // The override slip does the work for nothing, which it has to: an admin watching from a ghost
+        // has no account for the bill to come out of in the first place.
+        if (station.Comp.Free || amount <= 0)
             return true;
 
         if (!TryComp<BankAccountComponent>(actor, out var bank) || bank.Balance < amount)
@@ -150,14 +170,18 @@ public sealed partial class ShipRepairStationSystem
 
         if (comp.Target is not { } ship
             || TerminatingOrDeleted(ship)
-            || !TryComp<ShipRepairDataComponent>(ship, out var data)
             || !TryComp<MapGridComponent>(ship, out var gridComp)
-            || !IsDocked(station, ship))
+            || !IsServiceable(station, ship))
         {
             // The ship left the clamps or came apart mid-job; the customer keeps the unspent half.
             AbortRepair(station, refund: true);
             return;
         }
+
+        // Null on a hull the override slip is working without a blueprint, and on one whose file was
+        // rewritten out from under the job. Neither is a reason to stop: the work that reads off the
+        // file is simply not there to do.
+        var data = CompOrNull<ShipRepairDataComponent>(ship);
 
         var worked = 0;
         var lastIndices = Vector2i.Zero;
@@ -169,7 +193,7 @@ public sealed partial class ShipRepairStationSystem
             worked++;
             lastIndices = job.Indices;
 
-            PerformJob(station, (ship, data), gridComp, job);
+            PerformJob(station, ship, data, gridComp, job);
         }
 
         // One welding note per tick rather than one per part, or a big batch turns into a wall of noise.
@@ -182,28 +206,35 @@ public sealed partial class ShipRepairStationSystem
         CompleteRepair(station, ship);
     }
 
-    private void PerformJob(Entity<ShipRepairStationComponent> station, Entity<ShipRepairDataComponent> ship, MapGridComponent gridComp, ShipRepairJob job)
+    private void PerformJob(
+        Entity<ShipRepairStationComponent> station,
+        EntityUid ship,
+        ShipRepairDataComponent? data,
+        MapGridComponent gridComp,
+        ShipRepairJob job)
     {
         switch (job.Kind)
         {
-            case ShipRepairJobKind.Tile:
-                LayTile(station, ship, gridComp, job);
+            // The two kinds of work read back out of the hand device's file. A hull being worked
+            // without one never queues them in the first place.
+            case ShipRepairJobKind.Tile when data != null:
+                LayTile(station, (ship, data), gridComp, job);
                 break;
 
-            case ShipRepairJobKind.ToolPart:
-                SeedRefill(station, job.Indices, ReinstatePart(ship, gridComp, job));
+            case ShipRepairJobKind.ToolPart when data != null:
+                SeedRefill(station, job.Indices, ReinstatePart((ship, data), gridComp, job));
                 break;
 
             case ShipRepairJobKind.DrydockPart when job.Part is { } part:
-                SeedRefill(station, part.Tile, ReinstateDrydockPart(ship.Owner, gridComp, part));
+                SeedRefill(station, part.Tile, ReinstateDrydockPart(ship, gridComp, part));
                 break;
 
             case ShipRepairJobKind.Heal:
-                HealStructure(ship.Owner, job.Target);
+                HealStructure(ship, job.Target);
                 break;
 
             case ShipRepairJobKind.Decal when job.Decal is { } decal:
-                RepaintDecal(ship.Owner, decal);
+                RepaintDecal(ship, decal);
                 break;
 
             case ShipRepairJobKind.Clean:
@@ -212,15 +243,15 @@ public sealed partial class ShipRepairStationSystem
                 break;
 
             case ShipRepairJobKind.Sweep:
-                SweepDebris(ship.Owner, job.Target);
+                SweepDebris(ship, job.Target);
                 break;
 
             case ShipRepairJobKind.Restock:
-                Restock(ship.Owner, job.Target);
+                Restock(ship, job.Target);
                 break;
         }
 
-        Spawn(station.Comp.ConstructEffect, new EntityCoordinates(ship.Owner, _map.TileCenterToVector(ship.Owner, gridComp, job.Indices)));
+        Spawn(station.Comp.ConstructEffect, new EntityCoordinates(ship, _map.TileCenterToVector(ship, gridComp, job.Indices)));
     }
 
     /// <summary>

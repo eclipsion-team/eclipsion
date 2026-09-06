@@ -48,7 +48,7 @@
         enum.Trigger.TriggerVisuals.VisualState:
           base:
             Primed: { state: activated }
-            Unprimed: { state: complete }
+            Unprimed: { state: icon }
 
 - type: entity
   id: HotPotatoEffect

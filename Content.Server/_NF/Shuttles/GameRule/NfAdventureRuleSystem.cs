@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Content.Server.Procedural;
 using Content.Shared.Bank.Components;
+using Content.Server.GameTicking.Configuration;
 using Content.Server.GameTicking.Events;
 using Content.Server.GameTicking.Rules.Components;
 using Content.Shared.Procedural;
@@ -49,6 +50,11 @@ public sealed class NfAdventureRuleSystem : GameRuleSystem<AdventureRuleComponen
     [Dependency] private readonly IConsoleHost _console = default!;
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly ShuttleSystem _shuttle = default!;
+
+    /// <summary>
+    /// How many times a ring element is re-rolled while looking for a spot that clears everything else.
+    /// </summary>
+    private const int RingPlacementAttempts = 64;
 
     private readonly HttpClient _httpClient = new();
     private ISawmill _sawmill = default!;
@@ -121,21 +127,26 @@ public sealed class NfAdventureRuleSystem : GameRuleSystem<AdventureRuleComponen
     /// </summary>
     /// <param name="mapid"> the ID of the map. this is always GameTicker.DefaultMap; for hullrot </param>
     /// <param name="gameMapID">the ID of the gameMap prototype to spawn</param>
-    /// <param name="posX">the X coordinate to spawn it at</param>
-    /// <param name="posY">the Y coordinate to spawn it at</param>
-    /// <param name="randomOffsetX">the maximum POSITIVE value the X coordinate can be offset by randomly. 0 works</param>
-    /// <param name="randomOffsetY">the maximum POSITIVE value the Y coordinate can be offset by randomly. 0 works</param>
+    /// <param name="position">the world position to spawn it at, already rolled by the caller</param>
     /// <param name="color">the IFF color to set this object to</param>
     /// <param name="IFFFaction">the IFF faction to set this to. i don't think this does anything</param>
     /// <param name="hideIFF">a boolean to set wether this is visible on the map screen or not</param>
-    private void SpawnMapElementByID(MapId mapid, string gameMapID, float posX, float posY, float randomOffsetX, float randomOffsetY, Color color, string? iffFaction, bool hideIFF)
+    /// <param name="pinned">whether to nail the grid down so nothing can push it around</param>
+    /// <param name="iffLabel">replaces the name the grid shows on radar, or null to keep the gameMap's own</param>
+    private void SpawnMapElementByID(MapId mapid, string gameMapID, Vector2 position, Color color, string? iffFaction, bool hideIFF, bool pinned, string? iffLabel)
     {
-        _sawmill.Info($"Attempting to spawn map element: {gameMapID} at ({posX}, {posY})");
+        _sawmill.Info($"Attempting to spawn map element: {gameMapID} at ({position.X}, {position.Y})");
         if (_prototypeManager.TryIndex<GameMapPrototype>(gameMapID, out var stationProto))
         {
-            if (_map.TryLoadGrid(mapid, new ResPath(stationProto.MapPath.ToString()), out var stationGridUid, null, new Vector2(posX, posY) + _random.NextVector2(randomOffsetX, randomOffsetY)))
+            if (_map.TryLoadGrid(mapid, new ResPath(stationProto.MapPath.ToString()), out var stationGridUid, null, position))
             {
                 _station.InitializeNewStation(stationProto.Stations[gameMapID], [stationGridUid.Value.Owner]);
+
+                // InitializeNewStation is what stamps the StationNameSetup name onto the grid, so the override
+                // has to come after it. Only the grid is touched: the station entity keeps its real name for the
+                // boarding announcement and for anyone reading the round from the admin side.
+                if (iffLabel != null)
+                    _meta.SetEntityName(stationGridUid.Value.Owner, iffLabel);
 
                 // setting color if applicable. if not, White is default
                 _shuttle.SetIFFColor(stationGridUid.Value.Owner, color);
@@ -147,6 +158,11 @@ public sealed class NfAdventureRuleSystem : GameRuleSystem<AdventureRuleComponen
                 // hide IFF if needed, like for derelicts or secrets
                 if (hideIFF)
                     _shuttle.AddIFFFlag(stationGridUid.Value.Owner, IFFFlags.HideLabel);
+
+                // Grids come out of the loader as enabled shuttles, so scenery drifts off the moment anything
+                // touches it. Disable() is what the game already uses to park a shuttle: static, no rotation.
+                if (pinned)
+                    _shuttle.Disable(stationGridUid.Value.Owner);
             }
             else
             {
@@ -177,24 +193,90 @@ public sealed class NfAdventureRuleSystem : GameRuleSystem<AdventureRuleComponen
         base.Started(uid, component, gameRule, args);
 
         _sawmill.Info($"AdventureRule Started for {uid}. GameMapsID count: {component.GameMapsID.Count}");
-        foreach (var gamemap in component.GameMapsID)
+
+        // Every position is rolled before anything spawns, because a ring element only knows where it may land
+        // once the fixed ones are down. Stations and box-offset elements therefore go first; the ring elements
+        // then keep their MinClearance from everything already on the board, including each other.
+        var placed = new List<Vector2>();
+        var plan = new List<(HullrotMapElementGameMapID Element, Vector2 Position)>();
+
+        foreach (var element in component.GameMapsID.Values)
+        {
+            if (element.RandomRingMax > 0f)
+                continue;
+
+            // These are independent positive axis offsets, not minimum/maximum vector magnitudes.
+            var boxed = new Vector2(element.PositionX + _random.NextFloat(element.RandomOffsetX),
+                                    element.PositionY + _random.NextFloat(element.RandomOffsetY));
+            placed.Add(boxed);
+            plan.Add((element, boxed));
+        }
+
+        foreach (var element in component.GameMapsID.Values)
+        {
+            if (element.RandomRingMax <= 0f)
+                continue;
+
+            var rolled = RollRingPosition(element, placed);
+            placed.Add(rolled);
+            plan.Add((element, rolled));
+        }
+
+        foreach (var (element, position) in plan)
         {
             SpawnMapElementByID(mapId,
-                                gamemap.Value.GameMapID,
-                                gamemap.Value.PositionX,
-                                gamemap.Value.PositionY,
-                                gamemap.Value.RandomOffsetX,
-                                gamemap.Value.RandomOffsetY,
-                                gamemap.Value.IFFColor,
-                                gamemap.Value.IFFFaction,
-                                gamemap.Value.HideIFF);
-
-
-            // _sawmill.Debug("------------");
-            // _sawmill.Debug("GAMEMAPID: " + gamemap.Value.GameMapID);
-            // _sawmill.Debug("posX: " + gamemap.Value.PositionX);
-            // _sawmill.Debug("posY: " + gamemap.Value.PositionY);
-            // _sawmill.Debug("------------");
+                                element.GameMapID,
+                                position,
+                                element.IFFColor,
+                                element.IFFFaction,
+                                element.HideIFF,
+                                element.Pinned,
+                                element.IFFLabel);
         }
+    }
+
+    /// <summary>
+    /// Rolls a point on the element's ring around posX/posY, then re-rolls until it clears everything already
+    /// placed this round. The radius is interpolated on r^2 so rolls spread evenly over the ring's area instead
+    /// of bunching against its inner edge.
+    /// </summary>
+    /// <remarks>
+    /// A ring that cannot be satisfied keeps its last roll rather than failing to spawn: a wreck sitting a bit
+    /// too close to something is a far smaller problem than a wreck missing from the round entirely.
+    /// </remarks>
+    private Vector2 RollRingPosition(HullrotMapElementGameMapID element, List<Vector2> placed)
+    {
+        var center = new Vector2(element.PositionX, element.PositionY);
+        var max = element.RandomRingMax;
+        var min = MathF.Min(MathF.Max(element.RandomRingMin, 0f), max);
+        var clearanceSquared = element.MinClearance * element.MinClearance;
+        var position = center;
+
+        for (var attempt = 0; attempt < RingPlacementAttempts; attempt++)
+        {
+            var angle = _random.NextFloat(MathF.Tau);
+            var radius = MathF.Sqrt(min * min + _random.NextFloat() * (max * max - min * min));
+            position = center + new Vector2(MathF.Cos(angle) * radius, MathF.Sin(angle) * radius);
+
+            if (element.MinClearance <= 0f)
+                return position;
+
+            var clear = true;
+            foreach (var other in placed)
+            {
+                if ((other - position).LengthSquared() >= clearanceSquared)
+                    continue;
+
+                clear = false;
+                break;
+            }
+
+            if (clear)
+                return position;
+        }
+
+        _sawmill.Warning(
+            $"No clear ring spot for {element.GameMapID} after {RingPlacementAttempts} rolls; keeping the last one.");
+        return position;
     }
 }

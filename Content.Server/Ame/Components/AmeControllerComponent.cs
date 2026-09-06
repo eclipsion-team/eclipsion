@@ -138,4 +138,12 @@ public sealed partial class AmeControllerComponent : SharedAmeControllerComponen
     /// </summary>
     [ViewVariables]
     public TimeSpan? ExplosionTime;
+
+    /// <summary>
+    /// How much core integrity is recovered per update while the reactor is not being overloaded.
+    /// Full recovery from a barely-survived overload takes a few minutes of safe running.
+    /// </summary>
+    [DataField]
+    [ViewVariables(VVAccess.ReadWrite)]
+    public int CoreRepairAmount = 5;
 }

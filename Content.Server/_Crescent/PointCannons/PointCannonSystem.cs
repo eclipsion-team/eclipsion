@@ -735,7 +735,7 @@ public sealed class PointCannonSystem : EntitySystem
                 }
             }
 
-            if (TryFireCannon(cannonUid, coordinates))
+            if (TryFireCannon(cannonUid, coordinates, console: uid))
             {
                 if (cooldown != null)
                     cooldown.NextFire = now + TimeSpan.FromSeconds(cooldown.FireCooldown);
@@ -780,7 +780,8 @@ public sealed class PointCannonSystem : EntitySystem
         Vector2 pos,
         TransformComponent? form = null,
         GunComponent? gun = null,
-        PointCannonComponent? cannon = null)
+        PointCannonComponent? cannon = null,
+        EntityUid? console = null)
     {
         if (form == null && !_xformQuery.TryGetComponent(uid, out form))
             return false;
@@ -826,6 +827,7 @@ public sealed class PointCannonSystem : EntitySystem
             entPos = new EntityCoordinates(form.MapUid.Value, pos);
         }
 
+        EntityManager.System<ShipWeaponTargetingSystem>().SetConsole(uid, console);
         _gunSys.AttemptShoot(uid, uid, gun, entPos);
         return true;
     }

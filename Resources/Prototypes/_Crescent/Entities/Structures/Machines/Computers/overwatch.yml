@@ -62,8 +62,8 @@
     castShadows: false
   - type: SpamEmitSoundRequirePower
   - type: SpamEmitSound
-    minInterval: 20
-    maxInterval: 60
+    minInterval: 60
+    maxInterval: 180
     sound:
       collection: ComputerSFX
       params:

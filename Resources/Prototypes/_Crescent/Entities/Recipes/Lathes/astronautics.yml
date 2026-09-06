@@ -260,6 +260,20 @@
     Gold: 500
 
 - type: latheRecipe
+  id: ShipRepairDeviceFieldAstronautics
+  category: Tools
+  result: ShipRepairDeviceField
+  completetime: 4
+  materials:
+    AdvancedMechatronics: 1000
+    AdvancedElectronics: 3000
+    Plastic: 2500
+    Steel: 5000
+    Plasma: 1500
+    Gold: 1000
+    Silver: 1000
+
+- type: latheRecipe
   id: ClothingModsuitStandardAstronautics
   category: Clothing
   result: ClothingModsuitStandard

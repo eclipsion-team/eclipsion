@@ -4,10 +4,8 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
 using Content.Shared.Stacks;
 using Robust.Server.GameObjects;
-using Robust.Server.Player;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
-using Robust.Shared.Player;
 using Robust.Shared.Timing;
 
 namespace Content.Server._Crescent.Poker;
@@ -15,7 +13,6 @@ namespace Content.Server._Crescent.Poker;
 public sealed class PokerTableSystem : EntitySystem
 {
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly SharedStackSystem _stack = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
@@ -34,6 +31,7 @@ public sealed class PokerTableSystem : EntitySystem
         SubscribeLocalEvent<PokerTableComponent, PokerBetMessage>(OnBet);
         SubscribeLocalEvent<PokerTableComponent, PokerRaiseMessage>(OnRaise);
         SubscribeLocalEvent<PokerTableComponent, PokerStartGameMessage>(OnStartGame);
+        SubscribeLocalEvent<PokerTableComponent, ComponentShutdown>(OnShutdown);
     }
 
     private void OnUiOpened(EntityUid uid, PokerTableComponent comp, BoundUIOpenedEvent args)
@@ -58,10 +56,12 @@ public sealed class PokerTableSystem : EntitySystem
             return;
 
         var balance = ScanPlayerCash(msg.Actor);
-        if (balance <= 0)
+        if (balance <= 0 || comp.StartingBuyIn <= 0)
             return;
 
         var buyIn = Math.Min(balance, comp.StartingBuyIn);
+        if (comp.Players.Sum(p => (long) p.Stack + p.TotalBet) + buyIn > int.MaxValue)
+            return;
         TakeCash(msg.Actor, buyIn);
 
         var name = Name(msg.Actor);
@@ -85,25 +85,57 @@ public sealed class PokerTableSystem : EntitySystem
 
     private void RemovePlayer(EntityUid uid, PokerTableComponent comp, PokerPlayer player)
     {
+        if (player.HasLeft)
+            return;
+
+        // An all-in player has no decisions left to make, so losing the window must not cost them the pot they
+        // already funded - only Active players are folded out, since they are the ones who still owe an action.
+        // Payouts still reach them: FinishRound cashes out anyone who left with a stack.
+        var midHand = comp.Phase is not (PokerRoundPhase.Waiting or PokerRoundPhase.Showdown);
+        var stillContending = midHand && player.Status == PokerPlayerStatus.AllIn;
+
         if (player.Stack > 0)
-            GiveCash(player.Entity, player.Stack);
+            GiveCash(player.Entity, player.Stack, uid);
+        player.Stack = 0;
+        player.HasLeft = true;
+        if (!stillContending)
+            player.Status = PokerPlayerStatus.Folded;
 
-        comp.Players.Remove(player);
+        if (!midHand)
+        {
+            comp.Players.Remove(player);
+            Reseat(comp);
+        }
+        else
+        {
+            // Keep the contribution in the hand, even after its owner leaves.
+            AdvanceTurn(uid, comp, advancePlayer: comp.Players.IndexOf(player) == comp.CurrentPlayerIndex);
+        }
+        SendState(uid, comp);
+    }
 
+    private void OnShutdown(EntityUid uid, PokerTableComponent comp, ref ComponentShutdown args)
+    {
+        foreach (var player in comp.Players)
+        {
+            GiveCash(player.Entity, player.Stack + player.TotalBet, uid);
+        }
+        comp.Players.Clear();
+        comp.Pot = 0;
+    }
+
+    private static void Reseat(PokerTableComponent comp)
+    {
         for (var i = 0; i < comp.Players.Count; i++)
             comp.Players[i].SeatIndex = i;
-
-        if (comp.Players.Count < comp.MinPlayers && comp.Phase != PokerRoundPhase.Waiting)
-            EndRound(uid, comp);
-
-        SendState(uid, comp);
+        comp.DealerIndex %= Math.Max(1, comp.Players.Count);
     }
 
     private void OnStartGame(EntityUid uid, PokerTableComponent comp, PokerStartGameMessage msg)
     {
         if (comp.Phase != PokerRoundPhase.Waiting)
             return;
-        if (comp.Players.Count < comp.MinPlayers)
+        if (!comp.Players.Any(p => p.Entity == msg.Actor) || comp.Players.Count(p => p.Stack > 0) < comp.MinPlayers)
             return;
 
         StartNewRound(uid, comp);
@@ -111,6 +143,8 @@ public sealed class PokerTableSystem : EntitySystem
 
     private void StartNewRound(EntityUid uid, PokerTableComponent comp)
     {
+        comp.Players.RemoveAll(p => p.HasLeft || p.Stack <= 0);
+        Reseat(comp);
         comp.Deck = BuildAndShuffleDeck();
         comp.CommunityCards.Clear();
         comp.Pot = 0;
@@ -123,35 +157,38 @@ public sealed class PokerTableSystem : EntitySystem
         {
             p.HoleCards.Clear();
             p.CurrentBet = 0;
+            p.TotalBet = 0;
             p.HasActed = false;
             p.Status = p.Stack > 0 ? PokerPlayerStatus.Active : PokerPlayerStatus.Folded;
         }
 
-        var activePlayers = comp.Players.Where(p => p.Stack > 0).ToList();
-        if (activePlayers.Count < 2)
+        // Everyone left in comp.Players is funded - the RemoveAll at the top of this method saw to that - so the
+        // seats are indexed directly. Deriving the blinds from a filtered copy and then applying the result
+        // modulo comp.Players.Count only lined up because the two lists happened to be identical.
+        if (comp.Players.Count < 2)
         {
             EndRound(uid, comp);
             return;
         }
 
-        comp.DealerIndex = comp.DealerIndex % activePlayers.Count;
+        comp.DealerIndex %= comp.Players.Count;
 
-        var sbIndex = (comp.DealerIndex + 1) % activePlayers.Count;
-        var bbIndex = (comp.DealerIndex + 2) % activePlayers.Count;
+        var sbIndex = comp.Players.Count == 2 ? comp.DealerIndex : (comp.DealerIndex + 1) % comp.Players.Count;
+        var bbIndex = (sbIndex + 1) % comp.Players.Count;
 
-        PostBlind(comp, activePlayers[sbIndex], comp.SmallBlind);
-        PostBlind(comp, activePlayers[bbIndex], comp.BigBlind);
+        PostBlind(comp, comp.Players[sbIndex], comp.SmallBlind);
+        PostBlind(comp, comp.Players[bbIndex], comp.BigBlind);
 
-        comp.CurrentBet = comp.BigBlind;
-        comp.CurrentPlayerIndex = (bbIndex + 1) % activePlayers.Count;
+        comp.CurrentBet = comp.Players.Max(p => p.CurrentBet);
+        comp.CurrentPlayerIndex = (bbIndex + 1) % comp.Players.Count;
 
-        foreach (var p in activePlayers)
+        foreach (var p in comp.Players)
         {
             p.HoleCards.Add(DealCard(comp));
             p.HoleCards.Add(DealCard(comp));
         }
 
-        SendState(uid, comp);
+        AdvanceTurn(uid, comp, advancePlayer: false);
     }
 
     private void PostBlind(PokerTableComponent comp, PokerPlayer player, int amount)
@@ -159,6 +196,7 @@ public sealed class PokerTableSystem : EntitySystem
         var actual = Math.Min(player.Stack, amount);
         player.Stack -= actual;
         player.CurrentBet += actual;
+        player.TotalBet += actual;
         comp.Pot += actual;
         if (player.Stack == 0)
             player.Status = PokerPlayerStatus.AllIn;
@@ -192,10 +230,13 @@ public sealed class PokerTableSystem : EntitySystem
             return;
 
         var callAmount = comp.CurrentBet - player.CurrentBet;
+        if (callAmount <= 0)
+            return;
         var actual = Math.Min(player.Stack, callAmount);
 
         player.Stack -= actual;
         player.CurrentBet += actual;
+        player.TotalBet += actual;
         comp.Pot += actual;
 
         if (player.Stack == 0)
@@ -211,19 +252,20 @@ public sealed class PokerTableSystem : EntitySystem
             return;
         if (comp.CurrentBet > 0)
             return;
-        if (msg.Amount < comp.BigBlind || msg.Amount > player.Stack)
+        if (msg.Amount <= 0 || msg.Amount > player.Stack ||
+            msg.Amount < comp.BigBlind && msg.Amount != player.Stack)
             return;
 
-        var cashCheck = ScanPlayerCash(msg.Actor);
         var needed = msg.Amount - player.CurrentBet;
         if (needed > player.Stack)
             return;
 
         player.Stack -= needed;
         player.CurrentBet += needed;
+        player.TotalBet += needed;
         comp.Pot += needed;
         comp.CurrentBet = player.CurrentBet;
-        comp.LastRaiseAmount = msg.Amount;
+        comp.LastRaiseAmount = Math.Max(comp.BigBlind, msg.Amount);
 
         if (player.Stack == 0)
             player.Status = PokerPlayerStatus.AllIn;
@@ -241,29 +283,34 @@ public sealed class PokerTableSystem : EntitySystem
         if (!ValidateTurn(comp, msg.Actor, out var player))
             return;
 
-        var minRaise = comp.CurrentBet + comp.LastRaiseAmount;
-        if (msg.Amount < minRaise && msg.Amount < player.Stack)
+        var maximum = (long) player.Stack + player.CurrentBet;
+        if (player.HasActed || msg.Amount <= comp.CurrentBet || msg.Amount > maximum)
             return;
 
-        var totalBet = Math.Min(msg.Amount, player.Stack + player.CurrentBet);
-        var needed = totalBet - player.CurrentBet;
-
-        if (needed > player.Stack)
+        var raise = msg.Amount - comp.CurrentBet;
+        var fullRaise = raise >= comp.LastRaiseAmount;
+        if (!fullRaise && msg.Amount != maximum)
             return;
 
-        comp.LastRaiseAmount = totalBet - comp.CurrentBet;
-        comp.CurrentBet = totalBet;
+        var needed = msg.Amount - player.CurrentBet;
+        if (needed <= 0 || needed > player.Stack)
+            return;
 
+        if (fullRaise)
+            comp.LastRaiseAmount = raise;
+        comp.CurrentBet = msg.Amount;
         player.Stack -= needed;
-        player.CurrentBet = totalBet;
+        player.CurrentBet = msg.Amount;
+        player.TotalBet += needed;
         comp.Pot += needed;
-
         if (player.Stack == 0)
             player.Status = PokerPlayerStatus.AllIn;
 
-        foreach (var p in comp.Players)
-            if (p != player && p.Status == PokerPlayerStatus.Active)
-                p.HasActed = false;
+        if (fullRaise)
+        {
+            foreach (var other in comp.Players.Where(p => p != player && p.Status == PokerPlayerStatus.Active))
+                other.HasActed = false;
+        }
 
         player.HasActed = true;
         AdvanceTurn(uid, comp);
@@ -275,11 +322,14 @@ public sealed class PokerTableSystem : EntitySystem
         if (comp.Phase == PokerRoundPhase.Waiting || comp.Phase == PokerRoundPhase.Showdown)
             return false;
 
-        var active = comp.Players.Where(p => p.Status == PokerPlayerStatus.Active).ToList();
-        if (active.Count == 0)
+        if (comp.CurrentPlayerIndex < 0 || comp.CurrentPlayerIndex >= comp.Players.Count)
             return false;
 
-        var current = active[comp.CurrentPlayerIndex % active.Count];
+        // Whether anyone at all is Active is not worth a filtered copy on every fold, check, call, bet and
+        // raise: the seat on turn being Active already implies it.
+        var current = comp.Players[comp.CurrentPlayerIndex];
+        if (current.Status != PokerPlayerStatus.Active)
+            return false;
         if (current.Entity != actor)
             return false;
 
@@ -287,31 +337,38 @@ public sealed class PokerTableSystem : EntitySystem
         return true;
     }
 
-    private void AdvanceTurn(EntityUid uid, PokerTableComponent comp)
+    private void AdvanceTurn(EntityUid uid, PokerTableComponent comp, bool advancePlayer = true)
     {
-        var active = comp.Players.Where(p => p.Status == PokerPlayerStatus.Active).ToList();
-
-        if (active.Count <= 1)
+        var contenders = comp.Players.Count(p => p.Status is PokerPlayerStatus.Active or PokerPlayerStatus.AllIn);
+        if (contenders <= 1)
         {
             EndRound(uid, comp);
             return;
         }
 
-        var allActed = active.All(p => p.HasActed && p.CurrentBet == comp.CurrentBet);
-        if (!allActed)
+        var active = comp.Players.Where(p => p.Status == PokerPlayerStatus.Active).ToList();
+        if (active.Count == 0 || active.Count == 1 && active[0].CurrentBet >= comp.CurrentBet)
         {
-            comp.CurrentPlayerIndex = (comp.CurrentPlayerIndex + 1) % active.Count;
-            var next = active[comp.CurrentPlayerIndex % active.Count];
-            while (next.Status != PokerPlayerStatus.Active)
-            {
-                comp.CurrentPlayerIndex = (comp.CurrentPlayerIndex + 1) % active.Count;
-                next = active[comp.CurrentPlayerIndex % active.Count];
-            }
-            SendState(uid, comp);
+            while (comp.CommunityCards.Count < 5)
+                comp.CommunityCards.Add(DealCard(comp));
+            DoShowdown(uid, comp);
+            return;
+        }
+        if (active.All(p => p.HasActed && p.CurrentBet == comp.CurrentBet))
+        {
+            AdvancePhase(uid, comp);
             return;
         }
 
-        AdvancePhase(uid, comp);
+        for (var offset = advancePlayer ? 1 : 0; offset <= comp.Players.Count; offset++)
+        {
+            var index = (comp.CurrentPlayerIndex + offset) % comp.Players.Count;
+            if (comp.Players[index].Status != PokerPlayerStatus.Active)
+                continue;
+            comp.CurrentPlayerIndex = index;
+            break;
+        }
+        SendState(uid, comp);
     }
 
     private void AdvancePhase(EntityUid uid, PokerTableComponent comp)
@@ -353,95 +410,106 @@ public sealed class PokerTableSystem : EntitySystem
             EndRound(uid, comp);
             return;
         }
-        comp.CurrentPlayerIndex = 0;
-
-        SendState(uid, comp);
+        comp.CurrentPlayerIndex = comp.DealerIndex;
+        AdvanceTurn(uid, comp);
     }
 
     private void DoShowdown(EntityUid uid, PokerTableComponent comp)
     {
-        var contenders = comp.Players.Where(p =>
-            p.Status == PokerPlayerStatus.Active || p.Status == PokerPlayerStatus.AllIn).ToList();
+        comp.Phase = PokerRoundPhase.Showdown;
+        AwardPot(comp);
+        HoldResult(uid, comp);
+    }
 
-        if (contenders.Count == 0)
+    /// <summary>
+    /// Ends a hand that never reached a showdown, because everyone but one contender folded or left. The pot is
+    /// still awarded and the winner still announced - otherwise the table just silently resets to zero chips.
+    /// </summary>
+    private void EndRound(EntityUid uid, PokerTableComponent comp)
+    {
+        // StartNewRound bails through here when it cannot seat two funded players. Nothing was ever staked in
+        // that case, so there is no result to show and holding the table on it would stall the next deal.
+        var staked = comp.Pot > 0 || comp.Players.Any(p => p.TotalBet > 0);
+
+        AwardPot(comp);
+
+        if (!staked)
         {
-            EndRound(uid, comp);
+            FinishRound(uid, comp);
             return;
         }
 
-        PokerPlayer? winner = null;
-        HandRank bestRank = HandRank.HighCard;
-        List<PokerCard>? bestHand = null;
+        comp.Phase = PokerRoundPhase.Showdown;
+        HoldResult(uid, comp);
+    }
 
-        foreach (var player in contenders)
+    /// <summary>
+    /// Pays every side pot out into the winners' stacks and marks who took them, so <see cref="SendState"/> has
+    /// someone to name. Leaves the phase alone; the caller decides whether the result gets shown.
+    /// </summary>
+    private void AwardPot(PokerTableComponent comp)
+    {
+        foreach (var (player, payout) in PokerRules.Payouts(comp))
         {
-            var all = player.HoleCards.Concat(comp.CommunityCards).ToList();
-            var (rank, hand) = EvaluateBestHand(all);
-            if (winner == null || rank > bestRank ||
-                (rank == bestRank && CompareHands(hand, bestHand!) > 0))
-            {
-                winner = player;
-                bestRank = rank;
-                bestHand = hand;
-            }
+            player.Stack += payout;
+            if (payout > 0 && player.Status != PokerPlayerStatus.Folded)
+                player.Status = PokerPlayerStatus.Winner;
         }
-
-        if (winner != null)
-        {
-            winner.Stack += comp.Pot;
-            winner.Status = PokerPlayerStatus.Winner;
-        }
-
+        foreach (var player in comp.Players)
+            player.TotalBet = 0;
         comp.Pot = 0;
-        SendState(uid, comp, winner?.Name, bestRank.ToString());
+    }
 
-        var uid2 = uid;
+    /// <summary>
+    /// Parks the table on its result for a few seconds so everyone can read who won, then cleans up and deals
+    /// the next hand if enough players are still funded.
+    /// </summary>
+    private void HoldResult(EntityUid uid, PokerTableComponent comp)
+    {
+        SendState(uid, comp);
+
+        var round = comp.RoundNumber;
         Timer.Spawn(5000, () =>
         {
-            if (!EntityManager.EntityExists(uid2))
+            if (!TryComp<PokerTableComponent>(uid, out var current) ||
+                current != comp || current.RoundNumber != round || current.Phase != PokerRoundPhase.Showdown)
                 return;
-            if (!TryComp<PokerTableComponent>(uid2, out var c))
-                return;
-
-            comp.DealerIndex = (comp.DealerIndex + 1) % Math.Max(1, comp.Players.Count);
-            var stillIn = comp.Players.Where(p => p.Stack > 0).ToList();
-            if (stillIn.Count >= comp.MinPlayers)
-                StartNewRound(uid2, c);
-            else
-            {
-                c.Phase = PokerRoundPhase.Waiting;
-                SendState(uid2, c);
-            }
+            FinishRound(uid, current);
+            if (current.Players.Count(p => p.Stack > 0) >= current.MinPlayers)
+                StartNewRound(uid, current);
         });
     }
 
-    private void EndRound(EntityUid uid, PokerTableComponent comp)
+    private void FinishRound(EntityUid uid, PokerTableComponent comp)
     {
-        var remaining = comp.Players.Where(p =>
-            p.Status == PokerPlayerStatus.Active || p.Status == PokerPlayerStatus.AllIn).ToList();
-
-        if (remaining.Count == 1)
+        foreach (var player in comp.Players.Where(p => p.HasLeft && p.Stack > 0))
         {
-            remaining[0].Stack += comp.Pot;
-            remaining[0].Status = PokerPlayerStatus.Winner;
+            GiveCash(player.Entity, player.Stack, uid);
         }
-
-        comp.Pot = 0;
+        comp.Players.RemoveAll(p => p.HasLeft || p.Stack <= 0);
+        comp.DealerIndex++;
+        Reseat(comp);
         comp.Phase = PokerRoundPhase.Waiting;
-
-        var toKick = comp.Players.Where(p => p.Stack == 0).ToList();
-        foreach (var p in toKick)
-            comp.Players.Remove(p);
-
-        for (var i = 0; i < comp.Players.Count; i++)
-            comp.Players[i].SeatIndex = i;
-
+        foreach (var player in comp.Players)
+        {
+            player.CurrentBet = 0;
+            player.HoleCards.Clear();
+            player.Status = PokerPlayerStatus.Waiting;
+        }
+        comp.CurrentBet = 0;
         SendState(uid, comp);
     }
 
-    private void SendState(EntityUid uid, PokerTableComponent comp,
-        string? winnerName = null, string? winningHand = null)
+    private void SendState(EntityUid uid, PokerTableComponent comp)
     {
+        var winners = comp.Phase == PokerRoundPhase.Showdown
+            ? comp.Players.Where(p => p.Status == PokerPlayerStatus.Winner).ToList()
+            : new List<PokerPlayer>();
+
+        // Cards only go face up when the pot was actually contested. A hand everyone else folded out of is won
+        // without a showdown, so the winner mucks - revealing there would leak whether they were bluffing.
+        var contested = comp.Players.Count(p => p.Status != PokerPlayerStatus.Folded) > 1;
+
         // Determine whose turn it is
         NetEntity? currentTurnEntity = null;
         var active = comp.Players.Where(p => p.Status == PokerPlayerStatus.Active).ToList();
@@ -449,18 +517,20 @@ public sealed class PokerTableSystem : EntitySystem
             && comp.Phase != PokerRoundPhase.Waiting
             && comp.Phase != PokerRoundPhase.Showdown)
         {
-            currentTurnEntity = GetNetEntity(active[comp.CurrentPlayerIndex % active.Count].Entity);
+            currentTurnEntity = GetNetEntity(comp.Players[comp.CurrentPlayerIndex % comp.Players.Count].Entity);
         }
 
-        // All players' hole cards are included; client shows only its own during game phase
+        // Public state must never contain a hidden hand, including folded hands at showdown.
         var playerStatesWithCards = comp.Players.Select(p => new PokerPlayerState
         {
             PlayerName = p.Name,
             Stack = p.Stack,
             CurrentBet = p.CurrentBet,
             Status = p.Status,
-            HoleCards = p.HoleCards.Count > 0 ? new List<PokerCard>(p.HoleCards) : new List<PokerCard>(),
+            HoleCards = comp.Phase == PokerRoundPhase.Showdown && contested && p.Status != PokerPlayerStatus.Folded
+                ? new List<PokerCard>(p.HoleCards) : new List<PokerCard>(),
             IsCurrentTurn = currentTurnEntity.HasValue && GetNetEntity(p.Entity) == currentTurnEntity,
+            CanRaise = p.Status == PokerPlayerStatus.Active && !p.HasActed,
             SeatIndex = p.SeatIndex,
             PlayerEntity = GetNetEntity(p.Entity)
         }).ToList();
@@ -468,33 +538,31 @@ public sealed class PokerTableSystem : EntitySystem
         var state = new PokerTableBoundUserInterfaceState
         {
             Players = playerStatesWithCards,
-            CommunityCards = comp.CommunityCards,
+            CommunityCards = new List<PokerCard>(comp.CommunityCards),
             Pot = comp.Pot,
             Phase = comp.Phase,
+            RoundNumber = comp.RoundNumber,
             CurrentBet = comp.CurrentBet,
-            MinRaise = comp.CurrentBet + comp.LastRaiseAmount,
+            MinRaise = (int) Math.Min((long) comp.CurrentBet + comp.LastRaiseAmount, int.MaxValue),
             // These are placeholders — client overwrites with local entity data
             MyStack = 0,
             MyBet = 0,
             IsMyTurn = false,
             MySeatIndex = -1,
             BigBlind = comp.BigBlind,
-            WinnerName = winnerName,
-            WinningHand = winningHand,
+            WinnerName = winners.Count > 0 ? string.Join(", ", winners.Select(p => p.Name)) : null,
+            WinningHand = winners.Count == 1 && contested
+                ? PokerRules.Evaluate(winners[0].HoleCards.Concat(comp.CommunityCards).ToList()).Rank.ToString()
+                : null,
             CurrentTurnEntity = currentTurnEntity
         };
 
         _ui.SetUiState(uid, PokerUiKey.Key, state);
-    }
-
-    private bool IsCurrentTurn(PokerTableComponent comp, EntityUid actor)
-    {
-        if (comp.Phase == PokerRoundPhase.Waiting || comp.Phase == PokerRoundPhase.Showdown)
-            return false;
-        var active = comp.Players.Where(p => p.Status == PokerPlayerStatus.Active).ToList();
-        if (active.Count == 0)
-            return false;
-        return active[comp.CurrentPlayerIndex % active.Count].Entity == actor;
+        foreach (var player in comp.Players.Where(p => !p.HasLeft))
+        {
+            _ui.ServerSendUiMessage(uid, PokerUiKey.Key,
+                new PokerPrivateHandMessage(comp.RoundNumber, new List<PokerCard>(player.HoleCards)), player.Entity);
+        }
     }
 
     private PokerCard DealCard(PokerTableComponent comp)
@@ -522,19 +590,23 @@ public sealed class PokerTableSystem : EntitySystem
 
     private int ScanPlayerCash(EntityUid player)
     {
-        var total = 0;
-        if (!_inventory.TryGetContainerSlotEnumerator(player, out var enumerator))
-            return 0;
-        while (enumerator.NextItem(out var item, out _))
-        {
-            total += CountCashInEntity(item);
-        }
-        return total;
+        return (int) Math.Min(CashRoots(player).Sum(CountCashInEntity), int.MaxValue);
     }
 
-    private int CountCashInEntity(EntityUid entity)
+    private HashSet<EntityUid> CashRoots(EntityUid player)
     {
-        var total = 0;
+        var items = _hands.EnumerateHeld(player).ToHashSet();
+        if (_inventory.TryGetContainerSlotEnumerator(player, out var enumerator))
+        {
+            while (enumerator.NextItem(out var item, out _))
+                items.Add(item);
+        }
+        return items;
+    }
+
+    private long CountCashInEntity(EntityUid entity)
+    {
+        long total = 0;
 
         if (TryComp<StackComponent>(entity, out var stack) &&
             stack.StackTypeId == "Credit")
@@ -560,11 +632,11 @@ public sealed class PokerTableSystem : EntitySystem
         if (amount <= 0) return;
 
         var remaining = amount;
-        if (!_inventory.TryGetContainerSlotEnumerator(player, out var enumerator))
-            return;
-        while (enumerator.NextItem(out var item, out _) && remaining > 0)
+        foreach (var item in CashRoots(player))
         {
             remaining = TakeCashFromEntity(item, remaining);
+            if (remaining <= 0)
+                break;
         }
     }
 
@@ -595,84 +667,22 @@ public sealed class PokerTableSystem : EntitySystem
         return remaining;
     }
 
-    private void GiveCash(EntityUid player, int amount)
+    private void GiveCash(EntityUid player, int amount, EntityUid? fallback = null)
     {
-        if (amount <= 0) return;
-        var cash = EntityManager.SpawnEntity("SpaceCash", Transform(player).Coordinates);
-        if (TryComp<StackComponent>(cash, out var stack))
-            _stack.SetCount(cash, amount, stack);
-        // Try to put into hand; if hands full it stays at player's feet
-        _hands.TryPickup(player, cash);
-    }
+        var destination = !TerminatingOrDeleted(player) ? player : fallback;
+        if (amount <= 0 || destination == null)
+            return;
 
-    private (HandRank rank, List<PokerCard> bestFive) EvaluateBestHand(List<PokerCard> cards)
-    {
-        var best = (HandRank.HighCard, new List<PokerCard>());
-        var combos = GetCombinations(cards, 5);
-
-        foreach (var combo in combos)
+        var coordinates = Transform(destination.Value).Coordinates;
+        while (amount > 0)
         {
-            var (rank, five) = EvaluateFiveCardHand(combo);
-            if (rank > best.Item1 || (rank == best.Item1 && CompareHands(five, best.Item2) > 0))
-                best = (rank, five);
+            var cash = Spawn("SpaceCash", coordinates);
+            var stack = Comp<StackComponent>(cash);
+            var count = Math.Min(amount, _stack.GetMaxCount(stack));
+            _stack.SetCount(cash, count, stack);
+            amount -= count;
+            if (!TerminatingOrDeleted(player))
+                _hands.TryPickup(player, cash);
         }
-        return best;
-    }
-
-    private (HandRank, List<PokerCard>) EvaluateFiveCardHand(List<PokerCard> five)
-    {
-        var sorted = five.OrderByDescending(c => (int)c.Rank).ToList();
-        var isFlush = sorted.All(c => c.Suit == sorted[0].Suit);
-        var ranks = sorted.Select(c => (int)c.Rank).ToList();
-
-        var isStraight = false;
-        var straightHigh = 0;
-        for (var i = 0; i < ranks.Count - 1; i++)
-            if (ranks[i] - ranks[i + 1] != 1) { isStraight = false; break; }
-            else isStraight = true;
-
-        if (isStraight) straightHigh = ranks[0];
-
-        if (!isStraight && ranks.SequenceEqual(new[] { 14, 5, 4, 3, 2 }))
-        {
-            isStraight = true;
-            straightHigh = 5;
-        }
-
-        var groups = sorted.GroupBy(c => c.Rank).OrderByDescending(g => g.Count()).ThenByDescending(g => (int)g.Key).ToList();
-        var counts = groups.Select(g => g.Count()).ToList();
-
-        if (isFlush && isStraight)
-            return straightHigh == 14 ? (HandRank.RoyalFlush, sorted) : (HandRank.StraightFlush, sorted);
-        if (counts[0] == 4) return (HandRank.FourOfAKind, sorted);
-        if (counts[0] == 3 && counts[1] == 2) return (HandRank.FullHouse, sorted);
-        if (isFlush) return (HandRank.Flush, sorted);
-        if (isStraight) return (HandRank.Straight, sorted);
-        if (counts[0] == 3) return (HandRank.ThreeOfAKind, sorted);
-        if (counts[0] == 2 && counts[1] == 2) return (HandRank.TwoPair, sorted);
-        if (counts[0] == 2) return (HandRank.OnePair, sorted);
-        return (HandRank.HighCard, sorted);
-    }
-
-    private int CompareHands(List<PokerCard> a, List<PokerCard> b)
-    {
-        for (var i = 0; i < Math.Min(a.Count, b.Count); i++)
-        {
-            var cmp = ((int)a[i].Rank).CompareTo((int)b[i].Rank);
-            if (cmp != 0) return cmp;
-        }
-        return 0;
-    }
-
-    private IEnumerable<List<PokerCard>> GetCombinations(List<PokerCard> list, int k)
-    {
-        if (k == 0) { yield return new List<PokerCard>(); yield break; }
-        for (var i = 0; i <= list.Count - k; i++)
-            foreach (var rest in GetCombinations(list.Skip(i + 1).ToList(), k - 1))
-            {
-                var combo = new List<PokerCard> { list[i] };
-                combo.AddRange(rest);
-                yield return combo;
-            }
     }
 }

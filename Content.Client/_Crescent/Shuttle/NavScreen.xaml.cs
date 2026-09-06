@@ -1,5 +1,6 @@
 using Content.Shared._NF.Shuttles.Events;
 using Content.Shared.Fax;
+using Content.Shared.PointCannons;
 using Content.Shared.NamedModules.Components;
 using Content.Shared.Shuttles.BUIStates;
 using Robust.Client.UserInterface.Controls;
@@ -11,6 +12,7 @@ namespace Content.Client.Shuttles.UI
         private EntityUid? console;
 
         public Action<int>? modulePressed;
+        public Action<ShipWeaponTargetingMode>? OnTargetingModeChange;
         public Action<List<string>>? OnRename;
 
         private Dictionary<int, Button> _buttons = new();
@@ -20,6 +22,9 @@ namespace Content.Client.Shuttles.UI
 
         private void HullrotInitialize()
         {
+            WeaponTargetingMode.AddItem(Loc.GetString("ship-weapon-targeting-walls"), (int) ShipWeaponTargetingMode.Walls);
+            WeaponTargetingMode.AddItem(Loc.GetString("ship-weapon-targeting-tiles-and-walls"), (int) ShipWeaponTargetingMode.TilesAndWalls);
+            WeaponTargetingMode.OnItemSelected += args => OnTargetingModeChange?.Invoke((ShipWeaponTargetingMode) args.Id);
 
             _buttons[1] = Group1;
             _buttons[2] = Group2;
@@ -83,6 +88,7 @@ namespace Content.Client.Shuttles.UI
 
         private void HullrotUpdateState(NavInterfaceState scc)
         {
+            WeaponTargetingMode.SelectId((int) scc.WeaponTargetingMode);
             console = _entManager.GetEntity(scc.console);
             UpdateButtonNames();
         }

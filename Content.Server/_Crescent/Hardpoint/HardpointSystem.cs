@@ -47,6 +47,9 @@ public sealed class HardpointSystem : SharedHardpointSystem
                 return;
         }
 
+        if (args.Port == component.Trigger || args.Port == component.Toggle)
+            EntityManager.System<ShipWeaponTargetingSystem>().SetConsole(hard.anchoring.Value, args.Trigger);
+
         if (args.Port == component.Trigger)
             _gun.AttemptShoot(hard.anchoring.Value, gun);
 

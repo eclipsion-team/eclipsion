@@ -2061,7 +2061,7 @@ entities:
     - type: VesselIcon
       iffIcon:
         sprite: _Crescent/ShipIcons/ifficons.rsi
-        state: frigate
+        state: cruiser
     - type: VesselDesignation
       designation: vessel-designation-assault-frigate
     - type: ShuttleDeed

@@ -18,6 +18,11 @@ namespace Content.Server.Ame;
 [NodeGroup(NodeGroupID.AMEngine)]
 public sealed class AmeNodeGroup : BaseNodeGroup
 {
+    /// <summary>
+    /// The integrity an undamaged core sits at, and the ceiling repairs anneal back up to.
+    /// </summary>
+    public const int MaxCoreIntegrity = 100;
+
     [Dependency] private readonly IChatManager _chat = default!;
     [Dependency] private readonly IEntityManager _entMan = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
@@ -140,7 +145,9 @@ public sealed class AmeNodeGroup : BaseNodeGroup
                 continue;
 
             var oldIntegrity = core.CoreIntegrity;
-            core.CoreIntegrity -= instability;
+            // Floor the integrity at zero. Letting it run deeply negative meant a reactor that was
+            // pulled back from the brink could never climb out of the critical readout again.
+            core.CoreIntegrity = Math.Max(0, core.CoreIntegrity - instability);
 
             if (oldIntegrity > 95
                 && core.CoreIntegrity <= 95
@@ -153,6 +160,29 @@ public sealed class AmeNodeGroup : BaseNodeGroup
             _chat.SendAdminAlert($"AME overloading: {_entMan.ToPrettyString(_masterController.Value)}");
 
         return powerOutput;
+    }
+
+    /// <summary>
+    /// Anneals the cores back toward full integrity. Called while the reactor is not being overloaded so
+    /// an engine that survived an overload can be nursed back into the green instead of reading critical
+    /// for the rest of the round.
+    /// </summary>
+    public void RepairCores(int amount)
+    {
+        if (amount <= 0 || _cores.Count < 1)
+            return;
+
+        var shieldQuery = _entMan.GetEntityQuery<AmeShieldComponent>();
+        foreach (var coreUid in _cores)
+        {
+            if (!shieldQuery.TryGetComponent(coreUid, out var core))
+                continue;
+
+            if (core.CoreIntegrity >= MaxCoreIntegrity)
+                continue;
+
+            core.CoreIntegrity = Math.Min(MaxCoreIntegrity, core.CoreIntegrity + amount);
+        }
     }
 
     /// <summary>

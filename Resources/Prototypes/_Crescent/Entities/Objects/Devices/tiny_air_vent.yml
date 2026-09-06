@@ -1,0 +1,119 @@
+# A portable vent that runs off a slotted gas tank instead of a pipe net, so a boarding party or a
+# repair crew can repressurise a compartment that has no atmos loop left to speak of.
+- type: entity
+  parent: BaseItem
+  id: TinyAirVent
+  name: tiny air vent
+  description: A palm-sized vent with a bottle cradle welded to one side. Wrench it to the floor, drop an air vent cartridge in, and it bleeds the bottle into the room until the air is worth breathing again. It takes an ordinary gas tank too, though a hand tank holds barely a tenth of what one tile of floor needs.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: Structures/Piping/Atmospherics/vent.rsi
+    drawdepth: FloorObjects
+    noRot: true
+    scale: 0.75, 0.75
+    layers:
+    - state: vent_off
+      map: [ "enabled" ]
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.TinyAirVentVisuals.State:
+        enabled:
+          Off: { state: vent_off }
+          Venting: { state: vent_out }
+  - type: Anchorable
+    delay: 1
+  - type: AtmosDevice
+  - type: TinyAirVent
+    tankSlot:
+      name: tiny-air-vent-slot-name
+      ejectOnInteract: true
+      whitelist:
+        components:
+        - GasTank
+  - type: ItemSlots
+  - type: ContainerContainer
+    containers:
+      tank_slot: !type:ContainerSlot {}
+  - type: AmbientSound
+    enabled: false
+    volume: -14
+    range: 4
+    sound:
+      path: /Audio/Ambience/Objects/gas_vent.ogg
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 80
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 1
+            max: 2
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: PhysicalComposition
+    materialComposition:
+      Steel: 200
+  - type: StaticPrice
+    price: 60
+
+# The vent is only as good as what feeds it, and a hand tank holds 8 moles against the 104 a single
+# tile of floor wants at one atmosphere. This is the bottle the vent is actually built around: a
+# canister's regulator tops out at ten atmospheres, so the cartridge is rated to exactly that and a
+# full one is worth roughly nine tiles of vacuum.
+- type: entity
+  parent: BaseItem
+  id: TinyAirVentCartridge
+  name: air vent cartridge
+  description: A squat pressure bottle sized for a tiny air vent's cradle. Prints dry - park it in a gas canister and open the regulator to charge it.
+  components:
+  - type: Item
+    size: Huge
+    sprite: Objects/Tanks/generic.rsi
+  - type: Sprite
+    sprite: Objects/Tanks/generic.rsi
+    state: icon
+  - type: GasTank
+    outputPressure: 101.3
+    isInternals: false # feedstock for the vent, not something to breathe off
+    air:
+      volume: 2500
+      temperature: 293.15
+  - type: Explosive
+    explosionType: Default
+    maxIntensity: 20
+  - type: PhysicalComposition
+    materialComposition:
+      Steel: 800
+  - type: StaticPrice
+    price: 120
+
+- type: entity
+  parent: TinyAirVentCartridge
+  id: TinyAirVentCartridgeFilled
+  suffix: Filled
+  components:
+  - type: GasTank
+    outputPressure: 101.3
+    isInternals: false
+    air:
+      # 10 atmospheres, the ceiling a gas canister regulator can refill it back to
+      volume: 2500
+      moles:
+        - 218.248783791 # 21% oxygen
+        - 821.031139024 # 79% nitrogen
+        # 1039.279922815      total
+      temperature: 293.15

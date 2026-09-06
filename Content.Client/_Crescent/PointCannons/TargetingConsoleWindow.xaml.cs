@@ -56,6 +56,7 @@ public sealed partial class TargetingConsoleWindow : KsBaseWindow, IComputerWind
     public ShuttleNavControl Radar => NavRadar;
     public Action<string>? OnCannonGroupChange;
     public Action? OnServerRefresh;
+    public Action<ShipWeaponTargetingMode>? OnTargetingModeChange;
 
     public TargetingConsoleWindow()
     {
@@ -63,6 +64,9 @@ public sealed partial class TargetingConsoleWindow : KsBaseWindow, IComputerWind
         IoCManager.InjectDependencies(this);
 
         RefreshButton.OnPressed += _ => OnServerRefresh?.Invoke();
+        TargetingMode.AddItem(Loc.GetString("ship-weapon-targeting-walls"), (int) ShipWeaponTargetingMode.Walls);
+        TargetingMode.AddItem(Loc.GetString("ship-weapon-targeting-tiles-and-walls"), (int) ShipWeaponTargetingMode.TilesAndWalls);
+        TargetingMode.OnItemSelected += args => OnTargetingModeChange?.Invoke((ShipWeaponTargetingMode) args.Id);
 
         KsSetupChrome(); // KS14
         _bootStartedAt = _timing.CurTime; // KS14: power-on blink
@@ -71,6 +75,7 @@ public sealed partial class TargetingConsoleWindow : KsBaseWindow, IComputerWind
     public void UpdateState(TargetingConsoleBoundUserInterfaceState state)
     {
         NavRadar.UpdateState(state.NavState);
+        TargetingMode.SelectId((int) state.NavState.WeaponTargetingMode);
         NavRadar.UpdateState(state.IFFState);
 
         // KS14: the console's own coordinates already ride the nav state, so the strip can find

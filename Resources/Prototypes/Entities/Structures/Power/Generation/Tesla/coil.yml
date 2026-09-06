@@ -34,10 +34,6 @@
   - type: Appearance
   - type: GenericVisualizer
     visuals:
-      enum.TeslaCoilVisuals.Enabled:
-        enabled:
-          True: { state: coil_open }
-          False: { state: coil }
       enum.TeslaCoilVisuals.Lightning:
         hit:
           True: { visible: true }
@@ -147,10 +143,6 @@
         hit:
           True: { visible: true }
           False: { visible: false }
-      enum.TeslaCoilVisuals.Enabled:
-        power:
-          True: { state: grounding_rod }
-          False: { state: grounding_rod_open }
   - type: LightningSparking
   - type: LightningTarget
     priority: 3

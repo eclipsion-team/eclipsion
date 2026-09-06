@@ -40,6 +40,8 @@ public sealed class PokerPlayer
     public int Stack { get; set; }
     public int CurrentBet { get; set; }
     public PokerPlayerStatus Status { get; set; } = PokerPlayerStatus.Waiting;
+    public int TotalBet { get; set; }
+    public bool HasLeft { get; set; }
     public List<PokerCard> HoleCards { get; set; } = new();
     public int SeatIndex { get; set; }
     public bool HasActed { get; set; }

@@ -21,6 +21,8 @@ namespace Content.Shared._Crescent;
 [RegisterComponent]
 public sealed partial class ProjectilePhasePreventComponent : Component
 {
+    public bool TargetTiles;
+
     public Vector2 start = Vector2.Zero;
     public MapId mapId = MapId.Nullspace;
     [ViewVariables(VVAccess.ReadWrite), DataField("mask", customTypeSerializer: typeof(FlagSerializer<CollisionMask>))]

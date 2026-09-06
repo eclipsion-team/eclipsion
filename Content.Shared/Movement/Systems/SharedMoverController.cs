@@ -3,7 +3,6 @@ using System.Numerics;
 using Content.Shared.Alert;
 using Content.Shared.Bed.Sleep;
 using Content.Shared.CCVar;
-using Content.Shared.Clothing;
 using Content.Shared.Friction;
 using Content.Shared.Gravity;
 using Content.Shared.Inventory;
@@ -63,7 +62,6 @@ namespace Content.Shared.Movement.Systems
         protected EntityQuery<TransformComponent> XformQuery;
         protected EntityQuery<CanMoveInAirComponent> CanMoveInAirQuery;
         protected EntityQuery<NoRotateOnMoveComponent> NoRotateQuery;
-        protected EntityQuery<MagbootsUserComponent> MagbootsUserQuery;
 
         /// <summary>
         /// <see cref="CCVars.StopSpeed"/>
@@ -91,7 +89,6 @@ namespace Content.Shared.Movement.Systems
             XformQuery = GetEntityQuery<TransformComponent>();
             NoRotateQuery = GetEntityQuery<NoRotateOnMoveComponent>();
             CanMoveInAirQuery = GetEntityQuery<CanMoveInAirComponent>();
-            MagbootsUserQuery = GetEntityQuery<MagbootsUserComponent>();
 
             InitializeInput();
             InitializeRelay();
@@ -184,8 +181,7 @@ namespace Content.Shared.Movement.Systems
             var touching = false;
 
             // Fall back to walk speed when there is no traction.
-            if (sprintDir != Vector2.Zero &&
-                (!_gravity.HasTraction((uid, xform)) || MagbootsUserQuery.HasComponent(physicsUid)))
+            if (sprintDir != Vector2.Zero && !_gravity.HasTraction((uid, xform)))
             {
                 walkDir += sprintDir;
                 sprintDir = Vector2.Zero;

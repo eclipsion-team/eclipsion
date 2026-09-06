@@ -10,6 +10,7 @@
     BoxInflatable: 8
     RCD: 4
     RCDAmmo: 6
+    ShipRepairDeviceField: 2 # Eclipsion - nerfed SRD for field hull patching
     AccessConfigurator: 4
     ClothingOuterJacketInsulated: 3
 

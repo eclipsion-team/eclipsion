@@ -1,4 +1,4 @@
-﻿- type: worldgenConfig
+- type: worldgenConfig
   id: RatWorld
   components:
   - type: WorldController
@@ -8,26 +8,16 @@
     - RatAsteroidsStandardTaypanOne
     - RatAsteroidsStandardTaypanTwo
     - RatGraveyardWrecks
+    - RatAbandonedStationWrecks
     #- RatBalreskaWrecks
     #- RatAncientBattlefieldWrecks
     #- RatHeartlandsWrecks
-    - RatCraster
     #- RatMarchbelt
     #- RatDeepbelt
 
-# Hyperwar variant: keeps the central belt (RatCraster) and the wreck field, but drops the
-# Taypan belts that flank them, for a cleaner central battlefield.
-# Uses the same fixed-region biomes as RatWorld; the old noise-driven RatGraveyardMin/Max
-# pair it used before was retired along with the RatDensity*/RatCarver noise channels.
-- type: worldgenConfig
-  id: RatWorldHyperwar
-  components:
-  - type: WorldController
-  - type: BiomeSelection
-    biomes:
-    - Failsafe
-    - RatCraster
-    - RatGraveyardWrecks
+# Hyperwar has no config of its own any more: it shares the Freeplay sector geography and only
+# swaps in its own faction station maps, so it points straight at RatWorld. Keeping a second,
+# identical list is what let the two drift apart until Hyperwar referenced deleted noise channels.
 
 # Mapping preset: chunk loading only, no biomes at all, so nothing spawns around whatever the mapper is building.
 - type: worldgenConfig

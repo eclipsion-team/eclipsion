@@ -797,7 +797,7 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
         return turrets;
     }
 
-    private void UpdateState(EntityUid consoleUid, ShuttleConsoleComponent console)
+    public void UpdateState(EntityUid consoleUid, ShuttleConsoleComponent console)
     {
         EntityUid? entity = consoleUid;
 
@@ -832,6 +832,8 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
                 new List<ShuttleBeaconObject>(),
                 new List<ShuttleExclusionObject>());
         }
+
+        navState.WeaponTargetingMode = EntityManager.System<ShipWeaponTargetingSystem>().GetMode(consoleUid);
 
         if (_ui.HasUi(consoleUid, ShuttleConsoleUiKey.Key))
         {
@@ -1015,6 +1017,7 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
         var state = new NavInterfaceState(entity.Comp1.MaxRange, GetNetCoordinates(coordinates), angle, docks, _shuttle.NfGetInertiaDampeningMode(entity), GetNetEntity(entity.Owner))
         {
             AlignToWorld = entity.Comp1.KeepWorldAligned,
+            WeaponTargetingMode = EntityManager.System<ShipWeaponTargetingSystem>().GetMode(entity.Owner),
         }; // Frontier: inertia dampening
         state.Target = entity.Comp1.Target;
         state.TargetEntity = GetNetEntity(entity.Comp1.TargetEntity);

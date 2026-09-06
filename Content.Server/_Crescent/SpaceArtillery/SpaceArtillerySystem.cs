@@ -166,6 +166,7 @@ public sealed partial class SpaceArtillerySystem : EntitySystem
             {
                 if (HasPowerToFire(uid, component))
                 {
+                    EntityManager.System<Content.Server.PointCannons.ShipWeaponTargetingSystem>().SetConsole(uid, args.Trigger);
                     if (component.IsCoolantRequiredToFire && component.CoolantStored >= component.CoolantConsumed || !component.IsCoolantRequiredToFire)
                         TryFireArtillery(uid, component);
                     else

@@ -29,6 +29,12 @@ public sealed partial class ShipRepairStationSystem
     private readonly Dictionary<string, float> _protoSurcharges = new();
 
     /// <summary>
+    /// Structures this survey has already written a heal line for. Two snapshots and a walk of the deck
+    /// can all arrive at the same wall, and the customer is billed for beating it out once.
+    /// </summary>
+    private readonly HashSet<EntityUid> _healed = new();
+
+    /// <summary>
     /// What one pass over a hull turned up: the work to do, and what it costs the customer.
     /// </summary>
     private struct ShipRepairSurvey
@@ -57,7 +63,7 @@ public sealed partial class ShipRepairStationSystem
     /// different one, or a wall a crewman took down on purpose, is left alone rather than billed for,
     /// and so is anything he has already put back himself.
     /// </summary>
-    private ShipRepairSurvey Survey(Entity<ShipRepairStationComponent> station, Entity<ShipRepairDataComponent> ship)
+    private ShipRepairSurvey Survey(Entity<ShipRepairStationComponent> station, EntityUid ship, ShipRepairDataComponent? data)
     {
         var survey = new ShipRepairSurvey { Jobs = new List<ShipRepairJob>() };
 
@@ -68,11 +74,85 @@ public sealed partial class ShipRepairStationSystem
         _tilePrices.Clear();
         _protoPrices.Clear();
         _protoSurcharges.Clear();
+        _healed.Clear();
 
-        var standing = BuildOccupancy(ship.Owner);
-        var data = ship.Comp;
-        var size = data.ChunkSize;
+        var standing = BuildOccupancy(ship);
         var raw = 0L;
+
+        // Everything a hull is missing is read back out of its blueprint, and a hull nobody ever filed
+        // one for - a station, a fleet ship that was mapped in rather than bought - simply has none of
+        // that half of the survey. What is gone from it is gone without trace.
+        if (data != null)
+            SurveyBlueprint(station, ship, gridComp, data, standing, ref survey, ref raw);
+
+        var drydock = CompOrNull<ShipDrydockSnapshotComponent>(ship);
+        if (drydock != null)
+        {
+            foreach (var part in drydock.Parts)
+            {
+                if (StillStanding(part, ship))
+                {
+                    TryClaim(standing, part.Tile, part.Proto, out _);
+                    AddHealJob(station, ref survey, ref raw, part.Original!.Value, part.Tile);
+                    continue;
+                }
+
+                if (TryClaim(standing, part.Tile, part.Proto, out var present))
+                {
+                    AddHealJob(station, ref survey, ref raw, present, part.Tile);
+                    continue;
+                }
+
+                var drydockPrice = GetStructurePrice(part.Proto);
+                survey.Jobs.Add(new ShipRepairJob
+                {
+                    Kind = ShipRepairJobKind.DrydockPart,
+                    Indices = part.Tile,
+                    Part = part,
+                    Cost = drydockPrice,
+                });
+
+                survey.MissingParts++;
+                raw += drydockPrice;
+            }
+
+            SurveyDecals(station, ship, gridComp, drydock, ref survey, ref raw);
+        }
+
+        // Without a blueprint there is nothing to compare the hull against, so the damage still standing on it
+        // is found by walking the deck instead. Only a blueprint retires that pass: it is the one record that
+        // covers the whole hull, and the loop above already claimed and beat out every structure on it. A
+        // drydock snapshot is not the same thing - it is the list of parts the slip captured, so anything
+        // outside it (fitted since, or never captured) would go unquoted on a hull nobody filed a blueprint
+        // for. AddHealJob dedupes on _healed, so the overlap between the two passes costs the customer nothing.
+        SurveyAboard(station, ship, gridComp, data == null, ref survey, ref raw);
+
+        // Descending, because the job list is popped from the back. That makes the yard work its way
+        // up the hull instead of jumping about, and settles the order within a tile: the plating, then
+        // any weapon hardpoint, then everything else. A gun only looks for its mount on the tick it
+        // spawns, so putting the gun back first would leave it sitting on nothing.
+        survey.Jobs.Sort(static (a, b) => JobOrder(b).CompareTo(JobOrder(a)));
+
+        survey.Quote = (int) Math.Min(int.MaxValue, MathF.Ceiling(raw * station.Comp.PriceMarkup));
+        return survey;
+    }
+
+    /// <summary>
+    /// The half of the survey read back out of the hull's own blueprint: the plating it has lost, and
+    /// the structures the hand-held device would weld back. Structures that are still standing are
+    /// claimed off the occupancy map as they are found, so the drydock pass after this one does not
+    /// quote for them a second time.
+    /// </summary>
+    private void SurveyBlueprint(
+        Entity<ShipRepairStationComponent> station,
+        EntityUid ship,
+        MapGridComponent gridComp,
+        ShipRepairDataComponent data,
+        Dictionary<(Vector2i Tile, string Proto), List<EntityUid>> standing,
+        ref ShipRepairSurvey survey,
+        ref long raw)
+    {
+        var size = data.ChunkSize;
 
         foreach (var (chunkIndices, chunk) in data.Chunks)
         {
@@ -85,7 +165,7 @@ public sealed partial class ShipRepairStationSystem
                         continue;
 
                     var indices = new Vector2i(chunkIndices.X * size + x, chunkIndices.Y * size + y);
-                    var current = _map.GetTileRef(ship.Owner, gridComp, indices).Tile.TypeId;
+                    var current = _map.GetTileRef(ship, gridComp, indices).Tile.TypeId;
                     if (current == stored)
                         continue;
 
@@ -118,7 +198,7 @@ public sealed partial class ShipRepairStationSystem
                 if (spec.ProtoIndex < 0 || spec.ProtoIndex >= data.EntityPalette.Count)
                     continue;
 
-                var indices = _map.LocalToTile(ship.Owner, gridComp, new EntityCoordinates(ship.Owner, spec.LocalPosition));
+                var indices = _map.LocalToTile(ship, gridComp, new EntityCoordinates(ship, spec.LocalPosition));
 
                 // Something of this kind already stands there, whether the original or a crewman's
                 // replacement. Claiming it stops the slip stacking a second one on the tile, and it
@@ -145,50 +225,6 @@ public sealed partial class ShipRepairStationSystem
                 raw += partPrice;
             }
         }
-
-        if (TryComp<ShipDrydockSnapshotComponent>(ship, out var drydock))
-        {
-            foreach (var part in drydock.Parts)
-            {
-                if (StillStanding(part, ship.Owner))
-                {
-                    TryClaim(standing, part.Tile, part.Proto, out _);
-                    AddHealJob(station, ref survey, ref raw, part.Original!.Value, part.Tile);
-                    continue;
-                }
-
-                if (TryClaim(standing, part.Tile, part.Proto, out var present))
-                {
-                    AddHealJob(station, ref survey, ref raw, present, part.Tile);
-                    continue;
-                }
-
-                var drydockPrice = GetStructurePrice(part.Proto);
-                survey.Jobs.Add(new ShipRepairJob
-                {
-                    Kind = ShipRepairJobKind.DrydockPart,
-                    Indices = part.Tile,
-                    Part = part,
-                    Cost = drydockPrice,
-                });
-
-                survey.MissingParts++;
-                raw += drydockPrice;
-            }
-
-            SurveyDecals(station, ship.Owner, gridComp, drydock, ref survey, ref raw);
-        }
-
-        SurveyAboard(station, ship.Owner, gridComp, ref survey, ref raw);
-
-        // Descending, because the job list is popped from the back. That makes the yard work its way
-        // up the hull instead of jumping about, and settles the order within a tile: the plating, then
-        // any weapon hardpoint, then everything else. A gun only looks for its mount on the tick it
-        // spawns, so putting the gun back first would leave it sitting on nothing.
-        survey.Jobs.Sort(static (a, b) => JobOrder(b).CompareTo(JobOrder(a)));
-
-        survey.Quote = (int) Math.Min(int.MaxValue, MathF.Ceiling(raw * station.Comp.PriceMarkup));
-        return survey;
     }
 
     /// <summary>
@@ -316,6 +352,7 @@ public sealed partial class ShipRepairStationSystem
         Entity<ShipRepairStationComponent> station,
         EntityUid ship,
         MapGridComponent gridComp,
+        bool healUnfiled,
         ref ShipRepairSurvey survey,
         ref long raw)
     {
@@ -367,6 +404,12 @@ public sealed partial class ShipRepairStationSystem
                 continue;
             }
 
+            // Nothing on file to compare this hull against, so anything the yard would have had on
+            // file - the structures the device welds, plus everything the slip's own scope takes - is
+            // beaten back into shape where it stands. Mobs are not in either, and stay out of it.
+            if (healUnfiled && (HasComp<ShipRepairableComponent>(child) || _drydock.InScope(child)))
+                AddHealJob(station, ref survey, ref raw, child, tile);
+
             if (!NeedsResupply(station, child, out var resupply))
                 continue;
 
@@ -395,6 +438,9 @@ public sealed partial class ShipRepairStationSystem
         Vector2i tile)
     {
         if (!TryComp<DamageableComponent>(target, out var damage) || damage.TotalDamage <= FixedPoint2.Zero)
+            return;
+
+        if (!_healed.Add(target))
             return;
 
         var healPrice = (int) MathF.Ceiling(damage.TotalDamage.Float()

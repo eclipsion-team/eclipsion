@@ -106,6 +106,7 @@ public sealed class TargetingConsoleBoundUserInterface : BoundUserInterface
         _window.OnClose += OnWindowClosed;
 
         _window.OnServerRefresh += OnRefreshServer;
+        _window.OnTargetingModeChange += mode => SendMessage(new ShipWeaponTargetingModeMessage(mode));
 
         _window.Radar.OnRadarClick += (coords) =>
         {

@@ -101,8 +101,8 @@
       minAngle: 25 # Not guaranteed to hit their shots anymore.
       maxAngle: 45 # Continuous fire makes their accuracy unreliable.
     - type: SpamEmitSound
-      minInterval: 20
-      maxInterval: 40
+      minInterval: 60
+      maxInterval: 150
       sound:
         collection: TurretSFX
         params:

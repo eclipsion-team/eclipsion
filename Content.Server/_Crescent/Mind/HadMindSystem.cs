@@ -7,9 +7,7 @@ using Content.Shared.Mind.Components;
 namespace Content.Server._Crescent.Mind;
 
 /// <summary>
-///     Tracks when an entity has had a mind (was player-controlled) by adding <see cref="HadMindComponent"/>.
-///     This component persists even after the mind is removed, allowing systems to check if an entity
-///     was once controlled by a player.
+/// Marks bodies and detached limbs that belonged to a player, even after their mind leaves.
 /// </summary>
 public sealed class HadMindSystem : EntitySystem
 {
@@ -23,7 +21,6 @@ public sealed class HadMindSystem : EntitySystem
 
     private void OnMindAdded(Entity<MindContainerComponent> ent, ref MindAddedMessage args)
     {
-        // When a mind is added to an entity, mark it as having had a mind.
         EnsureComp<HadMindComponent>(ent);
     }
 
@@ -33,9 +30,8 @@ public sealed class HadMindSystem : EntitySystem
     /// </summary>
     private void OnBodyPartDropped(EntityUid uid, BodyComponent comp, ref BodyPartDroppedEvent args)
     {
-        // uid is the body entity
-        // args.Part is the detached body part
-        if (HasComp<HadMindComponent>(uid))
+        // Deleting a body also drops its parts; they cannot receive components during teardown.
+        if (!TerminatingOrDeleted(args.Part) && HasComp<HadMindComponent>(uid))
         {
             EnsureComp<HadMindComponent>(args.Part);
         }

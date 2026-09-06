@@ -40,7 +40,7 @@ public sealed class FactionTreasurySystem : EntitySystem
     /// per-person cap. Kept here rather than on a station component so the cap follows the faction:
     /// on the component a player could withdraw their full share once per station the faction owns.
     /// </summary>
-    private readonly Dictionary<string, Dictionary<NetUserId, int>> _withdrawnThisRound = new();
+    private readonly Dictionary<string, Dictionary<NetUserId, long>> _withdrawnThisRound = new();
 
     private bool _dirty;
     private float _sinceSave;
@@ -82,13 +82,29 @@ public sealed class FactionTreasurySystem : EntitySystem
         return value;
     }
 
-    /// <summary>Adds to a faction's balance. Returns the new balance.</summary>
+    /// <summary>
+    /// Drops a faction from the ledger entirely, balance and withdrawal record alike. Unlike
+    /// <see cref="Set"/> with a zero, this purges the key from <see cref="SavePath"/> on the next flush
+    /// rather than persisting a zero balance for a faction that no longer exists.
+    /// </summary>
+    public void Forget(string faction)
+    {
+        if (string.IsNullOrEmpty(faction))
+            return;
+
+        _withdrawnThisRound.Remove(faction);
+
+        if (_balances.Remove(faction))
+            _dirty = true;
+    }
+
+    /// <summary>Adds to a faction's balance, up to the account limit. Returns the new balance.</summary>
     public int Add(string faction, int amount)
     {
         if (string.IsNullOrEmpty(faction) || amount <= 0)
             return Get(faction);
 
-        return Set(faction, Get(faction) + amount);
+        return Set(faction, (int) Math.Min((long) Get(faction) + amount, int.MaxValue));
     }
 
     /// <summary>
@@ -116,7 +132,7 @@ public sealed class FactionTreasurySystem : EntitySystem
     /// </summary>
     public int GetRemainingWithdrawal(string faction, NetUserId user, float maxFraction)
     {
-        if (string.IsNullOrEmpty(faction))
+        if (string.IsNullOrEmpty(faction) || !float.IsFinite(maxFraction))
             return 0;
 
         var balance = Get(faction);
@@ -124,13 +140,13 @@ public sealed class FactionTreasurySystem : EntitySystem
             return 0;
 
         var already = GetWithdrawnThisRound(faction, user);
-        var cap = (int) ((balance + already) * Math.Clamp(maxFraction, 0f, 1f));
+        var cap = Math.Floor(((double) balance + already) * Math.Clamp(maxFraction, 0f, 1f));
 
-        return Math.Clamp(cap - already, 0, balance);
+        return (int) Math.Clamp(cap - already, 0, balance);
     }
 
     /// <summary>Credits this player has already drawn by hand from this faction's vault this round.</summary>
-    public int GetWithdrawnThisRound(string faction, NetUserId user)
+    public long GetWithdrawnThisRound(string faction, NetUserId user)
     {
         return _withdrawnThisRound.TryGetValue(faction, out var ledger) && ledger.TryGetValue(user, out var already)
             ? already

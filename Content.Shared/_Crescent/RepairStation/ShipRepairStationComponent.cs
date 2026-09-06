@@ -13,6 +13,57 @@ namespace Content.Shared._Crescent.RepairStation;
 [RegisterComponent]
 public sealed partial class ShipRepairStationComponent : Component
 {
+    // ---------------------------------------------------------------------------------------------
+    // Override slip. Every one of these is off on a slip the crew can walk up to, and the set of them
+    // is what turns the machine into an administrative tool rather than a service the round pays for.
+    // ---------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Restricts the whole console - opening it, picking a hull, authorising work, filing a blueprint -
+    /// to a player holding the admin flag. Anyone else is refused at the door.
+    /// </summary>
+    /// <remarks>
+    /// Checked again on every message rather than only on the window opening, since a bound interface
+    /// message is a packet a client sends and not a button the server watched being pressed.
+    /// </remarks>
+    [DataField]
+    public bool AdminOnly;
+
+    /// <summary>
+    /// Does the work for nothing. Whoever authorises the job is not billed, nothing is refunded when
+    /// one is cut short, and the console does not care whether he has an account at all - which an
+    /// admin looking out of a ghost does not.
+    /// </summary>
+    [DataField]
+    public bool Free;
+
+    /// <summary>
+    /// Lets the console file a fresh structural blueprint of the hull in front of it, which is the only
+    /// way a hull that was never bought from a shipyard - a station, a mapped-in fleet ship - ever gets
+    /// one. What is on the deck at that moment becomes what the slip restores it to.
+    /// </summary>
+    /// <remarks>
+    /// Deliberately not something a crew slip can do: a customer who could re-file the blueprint of a
+    /// hull he had just stripped would be writing off his own repair bill.
+    /// </remarks>
+    [DataField]
+    public bool AllowSnapshot;
+
+    /// <summary>
+    /// Lists the grid the console is standing on alongside whatever is in the clamps, so an override
+    /// slip dropped straight onto a station repairs that station without anything having to dock.
+    /// </summary>
+    [DataField]
+    public bool ServiceOwnGrid;
+
+    /// <summary>
+    /// Works on a hull with no blueprint on file at all. Nothing missing can be put back - there is no
+    /// record of what was there - but the damage is still beaten out of what is standing, the spills
+    /// are still mopped, the wreckage is still binned and the magazines are still filled.
+    /// </summary>
+    [DataField]
+    public bool RepairUnregistered;
+
     /// <summary>
     /// What the yard charges over the raw material value of the parts it reinstates.
     /// 1.15 = the customer pays 15% above what the missing hull is worth.

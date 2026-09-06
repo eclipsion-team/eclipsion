@@ -11,6 +11,7 @@ public sealed class PokerPlayerState
     public PokerPlayerStatus Status { get; set; }
     public List<PokerCard>? HoleCards { get; set; }
     public bool IsCurrentTurn { get; set; }
+    public bool CanRaise { get; set; }
     public int SeatIndex { get; set; }
     public NetEntity PlayerEntity { get; set; }
 }
@@ -22,6 +23,7 @@ public sealed class PokerTableBoundUserInterfaceState : BoundUserInterfaceState
     public List<PokerCard> CommunityCards { get; set; } = new();
     public int Pot { get; set; }
     public PokerRoundPhase Phase { get; set; }
+    public int RoundNumber { get; set; }
     public int CurrentBet { get; set; }
     public int MinRaise { get; set; }
     public int MyStack { get; set; }
@@ -32,6 +34,19 @@ public sealed class PokerTableBoundUserInterfaceState : BoundUserInterfaceState
     public string? WinnerName { get; set; }
     public string? WinningHand { get; set; }
     public NetEntity? CurrentTurnEntity { get; set; }
+}
+
+[Serializable, NetSerializable]
+public sealed class PokerPrivateHandMessage : BoundUserInterfaceMessage
+{
+    public readonly int RoundNumber;
+    public readonly List<PokerCard> Cards;
+
+    public PokerPrivateHandMessage(int roundNumber, List<PokerCard> cards)
+    {
+        RoundNumber = roundNumber;
+        Cards = cards;
+    }
 }
 
 [Serializable, NetSerializable]

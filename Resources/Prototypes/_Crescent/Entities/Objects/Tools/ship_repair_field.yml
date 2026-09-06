@@ -1,0 +1,26 @@
+# Cut-down SRD meant for patching a hull in the field, printable and vendable
+# where the RCD is. Shipyard units keep the 300 charge pool and full speed.
+- type: entity
+  name: field SRD
+  parent: ShipRepairDeviceBase
+  id: ShipRepairDeviceField
+  description: A stripped-down Ship Repair Device. Its matter store is a fraction of a shipyard unit's and trickles back at a crawl, and every weld takes far longer, but it will close a breach without a drydock.
+  components:
+  - type: ShipRepairTool
+    repairTimeMultiplier: 3
+    ghostRenderRadius: 4
+  - type: Sprite
+    state: prefracture
+  - type: LimitedCharges
+    maxCharges: 30
+    charges: 30
+  - type: AutoRecharge
+    rechargeDuration: 40
+  - type: PhysicalComposition
+    materialComposition:
+      Steel: 400
+      Plastic: 200
+      Plasma: 100
+      Gold: 100
+  - type: StaticPrice
+    price: 3500

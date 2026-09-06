@@ -118,7 +118,7 @@
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
   - type: ProjectileBatteryAmmoProvider
-    proto: BulletRocketSmart
+    proto: ExosuitBulletRocketSmart
     fireCost: 2500 #costs a ton as its a guided shipgun class missile.
   - type: Appearance
   - type: AmmoCounter
@@ -151,9 +151,9 @@
     attackRate: 1
     damage:
       types:
-        Structural: 15
-        Slash: 100
-        Blunt: 40
+        Structural: 13.5
+        Slash: 90
+        Blunt: 36
   - type: Tag
     tags:
     - ScoutMechEquipment
@@ -182,9 +182,9 @@
     attackRate: 1.2
     damage:
       types:
-        Structural: 25
-        Slash: 160
-        Heat: 25
+        Structural: 21.25
+        Slash: 136
+        Heat: 21.25
   - type: Tag
     tags:
     - ScoutMechEquipment
@@ -215,8 +215,8 @@
     attackRate: 2.5
     damage:
       types:
-        Structural: 250
-        Blunt: 90
+        Structural: 212.5
+        Blunt: 76.5
   - type: Tag
     tags:
     - ScoutMechEquipment
@@ -241,7 +241,7 @@
   - type: Gun
     minAngle: 15
     fireRate: 8
-    damageModifier: 0.5 #lots of dakka for visuals
+    damageModifier: 0.475 #lots of dakka for visuals
     selectedMode: FullAuto
     availableModes:
       - FullAuto
@@ -273,6 +273,7 @@
     state: chaingun
   - type: Gun
     fireRate: 15
+    damageModifier: 0.85
     minAngle: 6
     maxAngle: 20
     selectedMode: FullAuto
@@ -305,8 +306,8 @@
     range: 3
     damage:
       types:
-        Blunt: 25
-        Structural: 600
+        Blunt: 21.25
+        Structural: 510
     heavyDamageBaseModifier: 1
     heavyStaminaCost: 1
     heavyRateModifier: 1.25
@@ -347,6 +348,7 @@
   - type: Gun
     minAngle: 20
     fireRate: 16
+    damageModifier: 0.95
     selectedMode: FullAuto
     availableModes:
       - FullAuto
@@ -383,7 +385,7 @@
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/shotgun.ogg
   - type: ProjectileBatteryAmmoProvider
-    proto: Projectile27mmHE
+    proto: ExosuitProjectile27mmHE
     fireCost: 175 #100 shots use wisely
   - type: Appearance
   - type: AmmoCounter
@@ -448,6 +450,7 @@
     state: autoshotgun
   - type: Gun
     fireRate: 0.75
+    damageModifier: 0.95
     selectedMode: FullAuto
     availableModes:
       - FullAuto
@@ -523,7 +526,7 @@
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/ship_friendship.ogg
   - type: ProjectileBatteryAmmoProvider
-    proto: Projectile40mmFrag
+    proto: ExosuitProjectile40mmFrag
     fireCost: 400 #25 shots from a light mech
   - type: Appearance
   - type: AmmoCounter
@@ -579,6 +582,7 @@
     state: imperialsmg
   - type: Gun
     fireRate: 10
+    damageModifier: 0.85
     minAngle: 6
     maxAngle: 16
     selectedMode: FullAuto
@@ -632,8 +636,8 @@
   id: LumenLaser
   damage:
     types:
-      Heat: 7
-      Structural: 10
+      Heat: 6.3
+      Structural: 9
   muzzleFlash:
     sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
     state: muzzle_laser
@@ -699,7 +703,7 @@
     maxCharge: 1250
     startingCharge: 1250
   - type: ProjectileBatteryAmmoProvider
-    proto: Projectile84mmRecoillessHEAT
+    proto: ExosuitProjectile84mmRecoillessHEAT
     fireCost: 1250 #6 shots from a light mech
   - type: Appearance
   - type: AmmoCounter

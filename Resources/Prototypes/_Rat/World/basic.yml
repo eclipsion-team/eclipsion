@@ -1,3 +1,5 @@
+# Bounds are inclusive chunk coordinates (128 world units per chunk).
+# Keep these regions aligned with hullrotGamemodes.yml.
 - type: spaceBiome
   id: RatGliessSantoExclusionZone
   priority: 10000
@@ -15,14 +17,16 @@
 - type: spaceBiome
   id: RatGraveyardWrecks
   priority: 9000
-  minX: -28
-  maxX: -2
-  minY: 28
-  maxY: 48
+  minX: -23
+  maxX: -9
+  minY: -23
+  maxY: -9
   noiseRanges: {}
   chunkComponents:
   - type: DebrisFeaturePlacerController
     densityNoiseChannel: Density
+    randomCancelChance: 0.55 # Half as many accepted candidates as the default 0.1 cancellation.
+    safetyZoneRadius: 100
   - type: NoiseDrivenDebrisSelector
     noiseChannel: WreckGraveyard
     debrisTable:
@@ -321,7 +325,9 @@
 - type: spaceBiome
   id: RatAsteroidsStandardTaypanOne
   priority: 9000
-  minX: -18
+  # 6x6 chunks around the Taypan-1 marker at (-2000, 2000). One chunk is 128 units and bounds are
+  # inclusive, so a chunk is the smallest step there is: this is the smallest possible enlargement.
+  minX: -19
   maxX: -14
   minY: 13
   maxY: 18
@@ -330,123 +336,103 @@
   - type: DebrisFeaturePlacerController
     densityNoiseChannel: Density
   - type: SimpleDebrisSelector
+    # These probs are RELATIVE WEIGHTS, not independent rolls. EntitySpawnCollectionCache drops every
+    # entry without an orGroup into one group, sums the table and picks exactly ONE per debris point,
+    # so only the ratios matter. Family totals: chromite 1.31 | plain 0.9 | ice 0.9 |
+    # bare rock 0.6 | basalt 0.56 | gag 0.01, summing to 4.28.
+    # That puts chromite at ~31% of all asteroids, about 1.5x an even split over the five families.
+    # Andesite (#95c280, green) and Sand (#cad17b, yellow) are deliberately absent: their radar
+    # colours were unwanted. Removing them is why chromite drifted up from the 24% it was tuned to.
     debrisTable:
-    - id: AsteroidDebrisNFIceMedium
-      prob: 0.1
-    - id: AsteroidDebrisNFLarge
-      prob: 0.2
+    # Chromite - the purple ore the deleted Craster belts used to hold a monopoly on.
+    - id: AsteroidDebrisNFChromiteMedium
+      prob: 0.21
     - id: AsteroidDebrisNFChromiteLarge
-      prob: 0.1
-    - id: AsteroidRockDebrisNFLarger
-      prob: 0.1
-    - id: AsteroidRockDebrisNFHuge
-      prob: 0.2
-    - id: AsteroidDebrisNFLarger
-      prob: 0.3
-    - id: AsteroidDebrisNFIceLarger
-      prob: 0.3
-    - id: AsteroidDebrisNFHuge
-      prob: 0.15
-    - id: AsteroidDebrisNFIceHuge
-      prob: 0.15
-    - id: AsteroidSalvageNFSmall
-      prob: 0.1
-    - id: AsteroidSalvageNFIceSmall
-      prob: 0.1
-    - id: AsteroidSalvageNFMedium
-      prob: 0.08
+      prob: 0.26
+    - id: AsteroidDebrisNFChromiteLarger
+      prob: 0.29
+    - id: AsteroidDebrisNFChromiteHuge
+      prob: 0.18
+    - id: AsteroidSalvageNFChromiteSmall
+      prob: 0.13
     - id: AsteroidSalvageNFChromiteMedium
+      prob: 0.12
+    - id: AsteroidSalvageNFChromiteLarge
+      prob: 0.08
+    - id: AsteroidSalvageNFChromiteHuge
+      prob: 0.04
+    # Plain rock.
+    - id: AsteroidDebrisNFMedium
+      prob: 0.14
+    - id: AsteroidDebrisNFLarge
+      prob: 0.18
+    - id: AsteroidDebrisNFLarger
+      prob: 0.2
+    - id: AsteroidDebrisNFHuge
+      prob: 0.13
+    - id: AsteroidSalvageNFSmall
+      prob: 0.09
+    - id: AsteroidSalvageNFMedium
       prob: 0.08
     - id: AsteroidSalvageNFLarge
       prob: 0.05
-    - id: AsteroidSalvageNFIceLarge
-      prob: 0.05
     - id: AsteroidSalvageNFHuge
       prob: 0.03
+    # Ice.
+    - id: AsteroidDebrisNFIceMedium
+      prob: 0.14
+    - id: AsteroidDebrisNFIceLarge
+      prob: 0.18
+    - id: AsteroidDebrisNFIceLarger
+      prob: 0.2
+    - id: AsteroidDebrisNFIceHuge
+      prob: 0.13
+    - id: AsteroidSalvageNFIceSmall
+      prob: 0.09
+    - id: AsteroidSalvageNFIceMedium
+      prob: 0.08
+    - id: AsteroidSalvageNFIceLarge
+      prob: 0.05
     - id: AsteroidSalvageNFIceHuge
       prob: 0.03
+    # Basalt.
+    - id: AsteroidDebrisNFBasaltMedium
+      prob: 0.09
+    - id: AsteroidDebrisNFBasaltLarge
+      prob: 0.11
+    - id: AsteroidDebrisNFBasaltLarger
+      prob: 0.12
+    - id: AsteroidDebrisNFBasaltHuge
+      prob: 0.08
+    - id: AsteroidSalvageNFBasaltSmall
+      prob: 0.06
+    - id: AsteroidSalvageNFBasaltMedium
+      prob: 0.05
+    - id: AsteroidSalvageNFBasaltLarge
+      prob: 0.03
+    - id: AsteroidSalvageNFBasaltHuge
+      prob: 0.02
+    # Bare rock, no salvage variants exist for this family.
+    - id: AsteroidRockDebrisNFMedium
+      prob: 0.13
+    - id: AsteroidRockDebrisNFLarge
+      prob: 0.17
+    - id: AsteroidRockDebrisNFLarger
+      prob: 0.18
+    - id: AsteroidRockDebrisNFHuge
+      prob: 0.12
     - id: ExhumerGag
       prob: 0.01
 
+# Mirrors Taypan-1 across the origin and inherits its entire debris table, so the two belts can
+# never drift apart. Only the bounds differ.
 - type: spaceBiome
   id: RatAsteroidsStandardTaypanTwo
-  priority: 9000
-  minX: 14
+  parent: RatAsteroidsStandardTaypanOne
+  minX: 13
   maxX: 18
-  minY: 13
-  maxY: 18
-  noiseRanges: {}
-  chunkComponents:
-  - type: DebrisFeaturePlacerController
-    densityNoiseChannel: Density
-  - type: SimpleDebrisSelector
-    debrisTable:
-    - id: AsteroidDebrisNFIceMedium
-      prob: 0.1
-    - id: AsteroidDebrisNFLarge
-      prob: 0.2
-    - id: AsteroidDebrisNFChromiteLarge
-      prob: 0.1
-    - id: AsteroidRockDebrisNFLarger
-      prob: 0.1
-    - id: AsteroidRockDebrisNFHuge
-      prob: 0.2
-    - id: AsteroidDebrisNFLarger
-      prob: 0.3
-    - id: AsteroidDebrisNFIceLarger
-      prob: 0.3
-    - id: AsteroidDebrisNFHuge
-      prob: 0.15
-    - id: AsteroidDebrisNFIceHuge
-      prob: 0.15
-    - id: AsteroidSalvageNFSmall
-      prob: 0.1
-    - id: AsteroidSalvageNFIceSmall
-      prob: 0.1
-    - id: AsteroidSalvageNFMedium
-      prob: 0.08
-    - id: AsteroidSalvageNFChromiteMedium
-      prob: 0.08
-    - id: AsteroidSalvageNFLarge
-      prob: 0.05
-    - id: AsteroidSalvageNFIceLarge
-      prob: 0.05
-    - id: AsteroidSalvageNFHuge
-      prob: 0.03
-    - id: AsteroidSalvageNFIceHuge
-      prob: 0.03
-    - id: ExhumerGag
-      prob: 0.01
-
-- type: spaceBiome
-  id: RatCraster
-  priority: 9000
-  minX: 14
-  maxX: 18
-  minY: -18
-  maxY: -13
-  noiseRanges: {}
-  chunkComponents:
-  - type: DebrisFeaturePlacerController
-    densityNoiseChannel: Density
-  - type: SimpleDebrisSelector
-    debrisTable:
-    - id: AsteroidDebrisNFChromiteLarge
-      prob: 0.6
-    - id: AsteroidDebrisNFChromiteLarger
-      prob: 0.3
-    - id: AsteroidDebrisNFChromiteHuge
-      prob: 0.15
-    - id: AsteroidSalvageNFChromiteSmall
-      prob: 0.1
-    - id: AsteroidSalvageNFChromiteMedium
-      prob: 0.08
-    - id: AsteroidSalvageNFChromiteLarge
-      prob: 0.05
-    - id: AsteroidSalvageNFChromiteHuge
-      prob: 0.03
-    - id: ExhumerGag
-      prob: 0.01
+  minY: -19
+  maxY: -14
 
 - type: spaceBiome
   id: RatMarchbelt
@@ -525,3 +511,12 @@
       prob: 0.03
     - id: ExhumerGag
       prob: 0.01
+
+# Reuse the reduced wreck population around the abandoned station at (2000, 2000).
+- type: spaceBiome
+  id: RatAbandonedStationWrecks
+  parent: RatGraveyardWrecks
+  minX: 9
+  maxX: 23
+  minY: 9
+  maxY: 23

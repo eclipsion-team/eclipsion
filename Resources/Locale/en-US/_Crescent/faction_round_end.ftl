@@ -127,6 +127,8 @@ faction-conquest-summary-station-fallen = [color=red]{ $station }[/color] ({ $fa
 
 faction-victory-cmm = CMM VICTORY — LOCAL ARTICLES PREVAIL. Public patrols and station law hold against every outside claimant.
 
+faction-victory-gs = GLIESS VICTORY. The Sheriff's forces have secured Gliess Santo and its independence from the sector's rival powers.
+
 faction-victory-dsm = DSM VICTORY — THE CHARTER HOLDS. Count Olywier's seal governs the frontier, and notice of the victory travels to Crown institutions in Domain.
 
 faction-victory-ncwl = NCWL VICTORY — THE FRONT ADVANCES. The winning party's program goes to Chengridz and Kane for ratification while the Workers' Union secures the gains.

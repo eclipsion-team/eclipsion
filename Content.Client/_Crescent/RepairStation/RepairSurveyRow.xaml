@@ -1,0 +1,9 @@
+<BoxContainer xmlns="https://spacestation14.io"
+              Orientation="Horizontal"
+              HorizontalExpand="True"
+              SeparationOverride="8">
+    <Label Name="TitleLabel" StyleClasses="ConsoleText" MinWidth="150" VerticalAlignment="Center"/>
+    <ProgressBar Name="Meter" HorizontalExpand="True" SetHeight="6" VerticalAlignment="Center"
+                 MinValue="0" MaxValue="1" Value="0"/>
+    <Label Name="ValueLabel" StyleClasses="ConsoleText" MinWidth="46" Align="Right" VerticalAlignment="Center"/>
+</BoxContainer>

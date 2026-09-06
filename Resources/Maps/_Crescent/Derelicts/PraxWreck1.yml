@@ -1016,7 +1016,7 @@ entities:
     - type: VesselIcon
       iffIcon:
         sprite: _Crescent/ShipIcons/ifficons.rsi
-        state: frigate
+        state: destroyer
     - type: RadiationGridResistance
     - type: BecomesStation
       id: Praxis
@@ -1931,11 +1931,6 @@ entities:
     - type: Transform
       pos: 3.5,0.5
       parent: 1
-  - uid: 200
-    components:
-    - type: Transform
-      pos: 3.5,1.5
-      parent: 1
   - uid: 201
     components:
     - type: Transform
@@ -1955,11 +1950,6 @@ entities:
     components:
     - type: Transform
       pos: -2.5,0.5
-      parent: 1
-  - uid: 205
-    components:
-    - type: Transform
-      pos: -2.5,1.5
       parent: 1
   - uid: 206
     components:
@@ -1992,11 +1982,6 @@ entities:
       pos: -4.5,-5.5
       parent: 1
   - uid: 212
-    components:
-    - type: Transform
-      pos: -3.5,-5.5
-      parent: 1
-  - uid: 213
     components:
     - type: Transform
       pos: -3.5,-5.5

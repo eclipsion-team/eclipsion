@@ -16,8 +16,8 @@
         path: /Audio/_Crescent/Ambience/smes_loop.ogg
     - type: SpamEmitSoundRequirePower
     - type: SpamEmitSound
-      minInterval: 20
-      maxInterval: 90
+      minInterval: 90
+      maxInterval: 240
       sound:
         collection: SmesSFX
         params:

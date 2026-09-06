@@ -127,6 +127,7 @@
                     </controls:BoxContainer>
                     <!--end Inertia dampener controls-->
                     <!-- hullrot modules -->
+                    <controls:OptionButton Name="WeaponTargetingMode" Margin="5 2"/>
                     <controls:BoxContainer Name ="ButtonHolder" VerticalExpand="True" HorizontalExpand="False" Orientation="Vertical">
                         <controls:Button Name="Group1"
                                          Text="{controls:Loc 'Module A'}"

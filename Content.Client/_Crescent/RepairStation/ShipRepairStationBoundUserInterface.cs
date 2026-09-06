@@ -19,6 +19,7 @@ public sealed class ShipRepairStationBoundUserInterface : BoundUserInterface
         _window.OnShipSelected += grid => SendMessage(new ShipRepairSelectMessage(grid));
         _window.OnStartPressed += () => SendMessage(new ShipRepairStartMessage());
         _window.OnCancelPressed += () => SendMessage(new ShipRepairCancelMessage());
+        _window.OnSnapshotPressed += () => SendMessage(new ShipRepairSnapshotMessage());
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

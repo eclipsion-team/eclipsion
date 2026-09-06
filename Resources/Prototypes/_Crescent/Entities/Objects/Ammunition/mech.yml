@@ -77,8 +77,8 @@
   - type: Projectile
     damage:
       types:
-        blunt: 20 #its just crushes targets
-        Structural: 30
+        blunt: 17 #its just crushes targets
+        Structural: 25.5
     harmorPenetration: 40
     stoppingPower: 7
 
@@ -105,17 +105,17 @@
   - type: Projectile
     damage:
       types:
-        Heat: 20
-        Radiation: 5
-        Structural: 60
+        Heat: 18
+        Radiation: 4.5
+        Structural: 54
     harmorPenetration: 60
     stoppingPower: 6
   - type: ExplodeOnTrigger
   - type: Explosive
     explosionType: Electric
-    maxIntensity: 100
+    maxIntensity: 90
     intensitySlope: 3
-    totalIntensity: 50
+    totalIntensity: 45
     canCreateVacuum: false
   - type: PointLight
     radius: 3.5
@@ -139,17 +139,17 @@
   - type: Projectile
     damage:
       types:
-        Heat: 70
-        Radiation: 30
-        Structural: 300
+        Heat: 59.5
+        Radiation: 25.5
+        Structural: 255
     harmorPenetration: 80
     stoppingPower: 8
   - type: ExplodeOnTrigger
   - type: Explosive
     explosionType: Shipgun
-    maxIntensity: 100
+    maxIntensity: 85
     intensitySlope: 50
-    totalIntensity: 600 #Consistently 3-shots Bogatyrs
+    totalIntensity: 510
     maxTileBreak: 4
   - type: PointLight
     radius: 3.5
@@ -169,13 +169,60 @@
     - type: Projectile
       damage:
         types:
-          Piercing: 300 # crits anybody in T1 armor and leaves anybody wearing T2 armor 1 sneze away from crit
-          Structural: 1000
+          Piercing: 255 # crits anybody in T1 armor and leaves anybody wearing T2 armor 1 sneze away from crit
+          Structural: 850
     - type: ExplodeOnTrigger
     - type: Explosive
       explosionType: DemolitionCharge
-      totalIntensity: 10
+      totalIntensity: 8.5
       intensitySlope: 5
-      maxIntensity: 10
+      maxIntensity: 8.5
       canCreateVacuum: false
 
+# Exosuit-mounted variants of the shared launcher shells. Mech hardpoints hit
+# softer than the man-portable launchers they borrow ammunition from, so these
+# carry the exosuit numbers and leave the infantry shells untouched.
+
+- type: entity
+  id: ExosuitProjectile27mmHE
+  name: shell
+  parent: Projectile27mmHE
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Explosive
+    maxIntensity: 3.6
+    totalIntensity: 22.5
+
+- type: entity
+  id: ExosuitProjectile40mmFrag
+  name: rocket
+  parent: Projectile40mmFrag
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Explosive
+    maxIntensity: 110.5
+    totalIntensity: 110.5
+
+- type: entity
+  id: ExosuitProjectile84mmRecoillessHEAT
+  name: rocket
+  parent: Projectile84mmRecoillessHEAT
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 297.5
+  - type: Explosive
+    maxIntensity: 85
+    totalIntensity: 191.25
+
+- type: entity
+  id: ExosuitBulletRocketSmart
+  name: smart missile
+  parent: BulletRocketSmart
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Explosive
+    maxIntensity: 116.875
+    totalIntensity: 255

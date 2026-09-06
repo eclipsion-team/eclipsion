@@ -6,10 +6,8 @@
   components:
     - type: MapGrid
     - type: IgnoreHeatSeekingTarget
-    # Keep the core belt stationary while the outer belt orbits.
-    - type: OrbitingDebris
-      period: 4h
-      minRadius: 3000
+    # Asteroids hold station. OrbitingDebrisComponent and its system are still in the codebase, so
+    # putting "- type: OrbitingDebris" back here with a period and minRadius starts the drift again.
     # Ratgore Start - clean up rocks the miners have hollowed out and left behind.
     - type: MinedAsteroidDecay
       claimWhitelist:

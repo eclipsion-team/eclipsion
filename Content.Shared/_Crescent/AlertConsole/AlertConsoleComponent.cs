@@ -33,8 +33,20 @@ public sealed partial class AlertConsoleComponent : Component
     [DataField, AutoNetworkedField]
     public string ShuttleAlertMessage = "{name}, you have entered a secured zone. State your faction affiliation and purpose of visit.";
 
+    /// <summary>
+    /// Floor on how often the same shuttle can be warned about. Only reachable once the shuttle has left
+    /// and come back - a shuttle that simply stays in range is warned about once, not once per cooldown.
+    /// </summary>
     [DataField, AutoNetworkedField]
     public float AlertCooldownSeconds = 60f;
+
+    /// <summary>
+    /// Multiple of <see cref="DetectionRadius"/> a shuttle has to get past before its approach is considered
+    /// over. Pure hysteresis: without it a shuttle holding position on the edge of the radius would count as
+    /// leaving and re-entering every time it drifted across the line.
+    /// </summary>
+    [DataField]
+    public float ReArmDistanceFactor = 1.25f;
 
     [DataField]
     public float ScanInterval = 5f;
@@ -42,8 +54,29 @@ public sealed partial class AlertConsoleComponent : Component
     [ViewVariables]
     public float ScanAccumulator = 0f;
 
+    /// <summary>
+    /// What this console remembers about each shuttle it has seen, keyed by grid. Runtime scan bookkeeping,
+    /// so it is neither saved nor networked.
+    /// </summary>
     [ViewVariables]
-    public Dictionary<EntityUid, TimeSpan> AlertCooldowns = new();
+    public Dictionary<EntityUid, AlertTrackedShuttle> TrackedShuttles = new();
+}
+
+/// <summary>
+/// One shuttle's alert state on an <see cref="AlertConsoleComponent"/>, carried between scans.
+/// </summary>
+public struct AlertTrackedShuttle
+{
+    /// <summary>
+    /// When this shuttle was last warned about.
+    /// </summary>
+    public TimeSpan LastAlert;
+
+    /// <summary>
+    /// Set once the current approach has been warned about, cleared when the shuttle leaves the re-arm
+    /// radius. This is what keeps one approach to one alert however long the shuttle loiters in range.
+    /// </summary>
+    public bool Alerted;
 }
 
 [Serializable, NetSerializable]

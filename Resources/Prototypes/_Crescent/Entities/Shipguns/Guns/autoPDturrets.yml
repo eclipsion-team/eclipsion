@@ -40,15 +40,11 @@
       showHealth: true
     - type: Destructible
       thresholds:
+        # One threshold only: DestructibleSystem stops after the first one that queues the entity for
+        # deletion, so a second trigger at the same damage never gets to drop the scrap or play the sound.
         - trigger:
             !type:DamageTrigger
-            damage: 800
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-        - trigger:
-            !type:DamageTrigger
-            damage: 500
+            damage: 450
           # TODO: Construction graph
           behaviors:
             - !type:DoActsBehavior

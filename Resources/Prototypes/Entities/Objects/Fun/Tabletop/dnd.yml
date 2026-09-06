@@ -7,7 +7,7 @@
   description: A battlemap for your epic dungeon exploring to begin, pieces not included!
   components:
     - type: Sprite
-      sprite: Objects/Fun/Tabletop/grassbm.rsi
+      sprite: Objects/Fun/Tabletop/Battlemaps/grassbm.rsi
       state: icon
     - type: TabletopGame
       boardName: tabletop-battlemap-board-name

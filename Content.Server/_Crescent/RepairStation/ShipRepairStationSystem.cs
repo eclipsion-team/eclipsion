@@ -1,3 +1,4 @@
+using Content.Server.Administration.Managers;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Bank;
 using Content.Server.Chemistry.Containers.EntitySystems;
@@ -10,6 +11,7 @@ using Content.Server.Popups;
 using Content.Server.Shuttles.Systems;
 using Content.Shared._Crescent.Hardpoints;
 using Content.Shared._Crescent.RepairStation;
+using Content.Shared.Administration.Logs;
 using Content.Shared._Mono.ShipRepair;
 using Content.Shared._Mono.ShipRepair.Components;
 using Robust.Server.GameObjects;
@@ -31,6 +33,8 @@ public sealed partial class ShipRepairStationSystem : EntitySystem
 {
     [Dependency] private readonly AtmosphereSystem _atmos = default!;
     [Dependency] private readonly BankSystem _bank = default!;
+    [Dependency] private readonly IAdminManager _admin = default!;
+    [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private readonly DecalSystem _decals = default!;
     [Dependency] private readonly DynamicCodeSystem _dynamicCodes = default!;
     [Dependency] private readonly DockingSystem _docking = default!;
@@ -80,6 +84,8 @@ public sealed partial class ShipRepairStationSystem : EntitySystem
         SubscribeLocalEvent<ShipRepairStationComponent, ShipRepairStartMessage>(OnStart);
         SubscribeLocalEvent<ShipRepairStationComponent, ShipRepairCancelMessage>(OnCancel);
         SubscribeLocalEvent<ShipRepairStationComponent, ComponentShutdown>(OnShutdown);
+
+        InitializeAdmin();
     }
 
     public override void Update(float frameTime)
@@ -151,8 +157,11 @@ public sealed partial class ShipRepairStationSystem : EntitySystem
 
     private void OnSelect(Entity<ShipRepairStationComponent> station, ref ShipRepairSelectMessage args)
     {
+        if (!CanUse(station, args.Actor))
+            return;
+
         var grid = GetEntity(args.Grid);
-        if (IsDocked(station, grid))
+        if (IsServiceable(station, grid))
             _selected[station.Owner] = grid;
 
         PushUi(station);
@@ -161,7 +170,7 @@ public sealed partial class ShipRepairStationSystem : EntitySystem
     private void UpdateUi(Entity<ShipRepairStationComponent> station)
     {
         var comp = station.Comp;
-        var docked = GetDockedShips(station);
+        var docked = GetServiceableGrids(station);
 
         var entries = new List<ShipRepairDockEntry>(docked.Count);
         foreach (var ship in docked)
@@ -180,6 +189,8 @@ public sealed partial class ShipRepairStationSystem : EntitySystem
         {
             Docked = entries,
             Selected = selected == null ? null : GetNetEntity(selected.Value),
+            Free = comp.Free,
+            CanSnapshot = comp.AllowSnapshot,
         };
 
         if (comp.Target is { } target && !TerminatingOrDeleted(target))
@@ -195,27 +206,36 @@ public sealed partial class ShipRepairStationSystem : EntitySystem
         {
             state.Status = ShipRepairStatus.NoShip;
         }
-        else if (!TryComp<ShipRepairDataComponent>(selected.Value, out var data))
-        {
-            state.Status = ShipRepairStatus.NoBlueprint;
-        }
         else if (IsShipBusyElsewhere(station, selected.Value))
         {
             state.Status = ShipRepairStatus.Busy;
         }
         else
         {
-            var survey = Survey(station, (selected.Value, data));
-            state.MissingTiles = survey.MissingTiles;
-            state.StrippedTiles = survey.StrippedTiles;
-            state.MissingParts = survey.MissingParts;
-            state.DamagedParts = survey.DamagedParts;
-            state.Decals = survey.Decals;
-            state.Spills = survey.Spills;
-            state.Debris = survey.Debris;
-            state.Restocks = survey.Restocks;
-            state.Quote = survey.Quote;
-            state.Status = survey.Jobs.Count == 0 ? ShipRepairStatus.Intact : ShipRepairStatus.Quoted;
+            // A hull nobody ever filed a blueprint for - a station, a fleet ship that was mapped in
+            // rather than bought - is refused outright by a crew slip. The override console works it
+            // anyway, on the part of the survey that is judged by looking at the hull itself.
+            var data = CompOrNull<ShipRepairDataComponent>(selected.Value);
+            state.BlueprintMissing = data == null;
+
+            if (data == null && !comp.RepairUnregistered)
+            {
+                state.Status = ShipRepairStatus.NoBlueprint;
+            }
+            else
+            {
+                var survey = Survey(station, selected.Value, data);
+                state.MissingTiles = survey.MissingTiles;
+                state.StrippedTiles = survey.StrippedTiles;
+                state.MissingParts = survey.MissingParts;
+                state.DamagedParts = survey.DamagedParts;
+                state.Decals = survey.Decals;
+                state.Spills = survey.Spills;
+                state.Debris = survey.Debris;
+                state.Restocks = survey.Restocks;
+                state.Quote = survey.Quote;
+                state.Status = survey.Jobs.Count == 0 ? ShipRepairStatus.Intact : ShipRepairStatus.Quoted;
+            }
         }
 
         _ui.SetUiState(station.Owner, ShipRepairStationUiKey.Key, state);
@@ -236,15 +256,21 @@ public sealed partial class ShipRepairStationSystem : EntitySystem
     // ---------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Ships clamped directly to the console's own grid. A ship docked to another ship that is in
+    /// Hulls this console may work on: whatever is clamped directly to the console's own grid, and on
+    /// an override slip the grid it is standing on as well. A ship docked to another ship that is in
     /// turn docked here is deliberately out of reach - the slip only works on what it is holding.
     /// </summary>
-    private List<EntityUid> GetDockedShips(Entity<ShipRepairStationComponent> station)
+    private List<EntityUid> GetServiceableGrids(Entity<ShipRepairStationComponent> station)
     {
         var result = new List<EntityUid>();
 
         if (Transform(station.Owner).GridUid is not { } ourGrid)
             return result;
+
+        // The override slip works the deck it is standing on too, so a station is repaired by putting a
+        // console down on it rather than by finding something big enough to dock to it.
+        if (station.Comp.ServiceOwnGrid)
+            result.Add(ourGrid);
 
         foreach (var dock in _docking.GetDocks(ourGrid))
         {
@@ -261,13 +287,13 @@ public sealed partial class ShipRepairStationSystem : EntitySystem
         return result;
     }
 
-    private bool IsDocked(Entity<ShipRepairStationComponent> station, EntityUid grid)
+    private bool IsServiceable(Entity<ShipRepairStationComponent> station, EntityUid grid)
     {
-        return GetDockedShips(station).Contains(grid);
+        return GetServiceableGrids(station).Contains(grid);
     }
 
     /// <summary>
-    /// The ship the console is pointed at, falling back to whatever is in the clamps.
+    /// The ship the console is pointed at, falling back to the first hull within its reach.
     /// </summary>
     private EntityUid? GetSelection(Entity<ShipRepairStationComponent> station, List<EntityUid> docked)
     {

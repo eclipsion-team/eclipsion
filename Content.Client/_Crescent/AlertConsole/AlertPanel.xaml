@@ -29,6 +29,7 @@
                 <Label Name="CooldownValueLabel" StyleClasses="ConsoleText" Text="60 sec" Margin="6 0 0 0"
                        MinSize="70 0" VerticalAlignment="Center"/>
             </BoxContainer>
+            <Label Text="{Loc 'alert-console-cooldown-hint'}" StyleClasses="LabelSecondaryColor"/>
         </BoxContainer>
     </PanelContainer>
 

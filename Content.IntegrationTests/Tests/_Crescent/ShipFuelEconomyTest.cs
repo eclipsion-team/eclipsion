@@ -241,7 +241,7 @@ public sealed class ShipFuelEconomyTest
         Assert.Multiple(() =>
         {
             Assert.That(tier2.RecipeUnlocks.Select(r => r.Id),
-                Is.EquivalentTo(new[] { "FuelCanisterBoriaticT2Craft", "AmeJarT2Craft" }));
+                Is.EquivalentTo(new[] { "FuelCanisterBoriaticT2Craft", "AmeJarT2Craft", "BoriaticFuelTankCraft", "AmeFuelTankCraft" }));
             Assert.That(tier3.RecipeUnlocks.Select(r => r.Id),
                 Is.EquivalentTo(new[] { "FuelCanisterBoriaticT3Craft", "AmeJarT3Craft" }));
             Assert.That(tier3.TechnologyPrerequisites.Select(t => t.Id), Contains.Item("AstronauticsFuelStorage"));

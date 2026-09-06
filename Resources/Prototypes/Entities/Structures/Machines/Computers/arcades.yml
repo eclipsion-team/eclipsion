@@ -42,8 +42,8 @@
     price: 300
   - type: SpamEmitSoundRequirePower
   - type: SpamEmitSound
-    minInterval: 30
-    maxInterval: 90
+    minInterval: 90
+    maxInterval: 240
     sound:
       collection: ArcadeNoise
       params:

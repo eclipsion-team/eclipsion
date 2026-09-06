@@ -38,7 +38,10 @@ public sealed class CloningBankStateTest
             server.CfgMan.SetCVar(CCVars.CloningAllowLivingPeople, true);
             var preferences = prefs.GetPreferences(userId);
             var profile = ((HumanoidCharacterProfile) preferences.SelectedCharacter).WithBank(profileBalance);
-            prefs.SetProfile(userId, preferences.SelectedCharacterIndex, profile).Wait();
+            // Client profile edits cannot change money; seed the account through the server API.
+            prefs.SetProfileNoChecks(userId, preferences.SelectedCharacterIndex, profile).Wait();
+            Assert.That(((HumanoidCharacterProfile) prefs.GetPreferences(userId).SelectedCharacter).BankBalance,
+                Is.EqualTo(profileBalance));
 
             var cloning = entMan.System<CloningSystem>();
             var minds = entMan.System<SharedMindSystem>();

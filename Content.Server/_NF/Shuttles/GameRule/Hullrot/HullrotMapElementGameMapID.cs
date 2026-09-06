@@ -43,9 +43,51 @@ public sealed partial class HullrotMapElementGameMapID
     public float RandomOffsetY = 0f;
 
     /// <summary>
+    /// Pins the element where it spawns: static body, fixed rotation, nothing can shove it off station.
+    /// Every grid is handed a ShuttleComponent on init (ShuttleSystem.OnGridInit), which leaves belts, wrecks
+    /// and derelicts floating free by default, so set this on anything nobody is ever meant to fly.
+    /// </summary>
+    [DataField("pinned", required: false)]
+    public bool Pinned = false;
+
+    /// <summary>
+    /// Inner radius of the ring this element spawns on, measured from posX/posY. Only read when randomRingMax is set.
+    /// Leave at 0 for a full disc, so the element can land anywhere inside randomRingMax rather than only in an
+    /// outer band - a band is its own predictable loot route, just a bigger one.
+    /// </summary>
+    [DataField("randomRingMin", required: false)]
+    public float RandomRingMin = 0f;
+
+    /// <summary>
+    /// Outer radius of the ring this element spawns on. Leave at 0 to use posX/posY plus the randomOffset box instead.
+    /// A ring rolls a fresh angle every round, so the element does not come back in the same corner of the sector.
+    /// </summary>
+    [DataField("randomRingMax", required: false)]
+    public float RandomRingMax = 0f;
+
+    /// <summary>
+    /// How far a ring roll has to stay from everything already placed this round. 0 accepts the first roll.
+    /// </summary>
+    [DataField("minClearance", required: false)]
+    public float MinClearance = 0f;
+
+    /// <summary>
     /// This string sets the IFF for this particular object. Leave "null" to not modify IFF.
     /// </summary>
     [DataField("IFFFaction", required: false)]
     public string? IFFFaction = null;
+
+    /// <summary>
+    /// Overrides the name the grid carries on radar, replacing the one the gameMap's StationNameSetup gave it.
+    /// Leave null to keep that name.
+    /// </summary>
+    /// <remarks>
+    /// Only the grid is renamed; the station entity keeps its real name, so the boarding announcement, admin
+    /// tools and round end still say which wreck it is. Give several elements the same label and they are
+    /// indistinguishable at range - a contact that reads "Derelict" tells a pilot something is out there
+    /// without telling them which hull it is or whether anyone has already stripped it.
+    /// </remarks>
+    [DataField("IFFLabel", required: false)]
+    public string? IFFLabel = null;
 
 }

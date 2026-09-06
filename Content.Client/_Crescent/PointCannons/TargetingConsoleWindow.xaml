@@ -42,6 +42,7 @@
                 <!-- Cannons status -->
                 <ksui:KsInstrumentPanel Name="FireControlPanel" Margin="0 0 0 4">
                     <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                        <OptionButton Name="TargetingMode" Margin="2"/>
                         <Button Name="RefreshButton" Access="Public" Text="{Loc admin-logs-refresh}"
                                 StyleClasses="KsInstrumentAction" Margin="2 2 2 2"/>
                     </BoxContainer>

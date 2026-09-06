@@ -327,6 +327,8 @@
       - TRayScanner
       - AirTank
       - GasAnalyzer
+      - TinyAirVent
+      - TinyAirVentCartridge
       - UtilityBelt
       - Pickaxe
       - ModularReceiver
@@ -407,6 +409,7 @@
       - JetpackMiniFilledAstronautics
       - RCDAstronautics
       - RCDAmmoAstronautics
+      - ShipRepairDeviceFieldAstronautics
       - AmeJarT2Craft
       - AmeJarT3Craft
       - MiningDrill
@@ -2291,6 +2294,8 @@
       - TRayScanner
       - AirTank
       - GasAnalyzer
+      - TinyAirVent
+      - TinyAirVentCartridge
       - UtilityBelt
       - Pickaxe
       - ModularReceiver
@@ -2542,6 +2547,8 @@
       - TRayScanner
       - AirTank
       - GasAnalyzer
+      - TinyAirVent
+      - TinyAirVentCartridge
       - UtilityBelt
       - Pickaxe
       - ModularReceiver

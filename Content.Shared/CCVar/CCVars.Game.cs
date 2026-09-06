@@ -43,9 +43,11 @@ public sealed partial class CCVars
 
     /// <summary>
     ///     The preset for the game to fall back to if the selected preset could not be used, and fallback is enabled.
+    ///     Was upstream's Extended, which no longer exists: the classic SS14 presets were removed and only
+    ///     Crescent's own gamemodes remain, so this falls back to the all-faction Freeplay.
     /// </summary>
     public static readonly CVarDef<string>
-        GameLobbyFallbackPreset = CVarDef.Create("game.fallbackpreset", "Extended", CVar.ARCHIVE);
+        GameLobbyFallbackPreset = CVarDef.Create("game.fallbackpreset", "Adventure", CVar.ARCHIVE);
 
     /// <summary>
     ///     Controls if people can win the game in Suspicion or Deathmatch.
@@ -371,12 +373,6 @@ public sealed partial class CCVars
     /// </summary>
     public static readonly CVarDef<float> RoundRestartTime =
         CVarDef.Create("game.round_restart_time", 120f, CVar.SERVERONLY);
-
-    /// <summary>
-    /// The prototype to use for secret weights.
-    /// </summary>
-    public static readonly CVarDef<string> SecretWeightPrototype =
-        CVarDef.Create("game.secret_weight_prototype", "Secret", CVar.SERVERONLY);
 
     /// <summary>
     /// The id of the sound collection to randomly choose a sound from and play when the round ends.

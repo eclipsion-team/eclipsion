@@ -1,0 +1,15 @@
+- type: latheRecipe
+  id: TinyAirVent
+  result: TinyAirVent
+  category: Tools
+  completetime: 4
+  materials:
+    Steel: 400
+
+- type: latheRecipe
+  id: TinyAirVentCartridge
+  result: TinyAirVentCartridge
+  category: Tools
+  completetime: 6
+  materials:
+    Steel: 800

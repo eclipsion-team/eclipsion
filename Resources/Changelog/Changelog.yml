@@ -1248,3 +1248,98 @@ Entries:
   id: 6096
   time: '2026-09-05T00:00:00.0000000+00:00'
   url: null
+
+- author: Taleryn
+  changes:
+    - message: Active magboots no longer hold their wearer to walking speed. You can sprint in magnetized boots again, at the usual stamina cost, minus whatever slowdown that particular pair carries. Sprinting still falls back to walking when there is no traction at all.
+      type: Tweak
+  id: 6097
+  time: '2026-09-05T00:00:00.0000000+00:00'
+  url: null
+
+- author: Taleryn
+  changes:
+    - message: A field SRD now sits in every EngiVend next to the RCDs, and prints from the pristine microforge under the same shipyard construction node the RCD unlocks. It holds 30 charges instead of 300, welds three times slower, regains one charge every 40 seconds and only projects its ghost blueprint 4 tiles out. Enough to close a breach or stand a few walls back up mid-flight, not enough to rebuild a hull without a drydock.
+      type: Add
+  id: 6098
+  time: '2026-09-05T00:00:00.0000000+00:00'
+  url: null
+
+- author: Taleryn
+  changes:
+    - message: Mech hardpoints have caught up with the small arms pass. Most exosuit weapons lose 15% of their damage, the weakest ones (Lumen autolaser, Verdict plasma repeater, Pyeheo 27mm autocannon and the LvR-200 blade) lose 10%, and the three that already took the ammunition nerf second-hand (Rapture machinegun, Monsoon minigun, Ogawa autoshotgun) lose a further 5% instead. Mech-mounted grenade, rocket and HEAT launchers now fire their own weaker exosuit shells, so the man-portable launchers keep the numbers they had.
+      type: Tweak
+  id: 6099
+  time: '2026-09-05T00:00:00.0000000+00:00'
+  url: null
+
+- author: Taleryn
+  changes:
+    - message: Admins have a drydock override console to spawn. It surveys any hull within reach - the deck it is standing on, or anything docked to that deck - and puts it back together free of charge. It can also file a structural blueprint for a hull that never had one, which is every station and every ship that was mapped in rather than bought, and until one is filed it still beats out damage, mops up, clears wreckage and refills magazines and fuel tanks. Nothing in the round builds or buys one, and only an admin can open it.
+      type: Add
+  id: 6100
+  time: '2026-09-05T00:00:00.0000000+00:00'
+  url: null
+- author: Taleryn
+  changes:
+    - message: Derelict wrecks have been cleared of the leftovers of their own construction. A third of every entity in the ship graveyard was an invisible atmos-fix marker doing nothing, and another few hundred were duplicate cables, pipes and rocks stacked on the same tile. 11400 of them are gone, so the wreck fields cost a fraction of what they used to load and run.
+      type: Tweak
+  id: 6101
+  time: '2026-09-06T00:00:00.0000000+00:00'
+  url: null
+
+- author: Taleryn
+  changes:
+    - message: Four wrecks were pointing at radar icons that no longer exist, which drew a red error box on the shuttle console and wrote a client log line for every one of them. They carry battleship, destroyer and industrial marks again, and a console that meets an icon it cannot find now falls back to a plain contact dot instead.
+      type: Fix
+  id: 6102
+  time: '2026-09-06T00:00:00.0000000+00:00'
+  url: null
+
+- author: Taleryn
+  changes:
+    - message: Suit storage units no longer throw a sprite error every time one is drawn. The unit's own frame was never registered as a layer, so the visualiser had nothing to write the open and shut states to.
+      type: Fix
+  id: 6103
+  time: '2026-09-06T00:00:00.0000000+00:00'
+  url: null
+
+- author: Taleryn
+  changes:
+    - message: Every ship weapon now has a quarter less structural health before it breaks, from the smallest point defence mount up to the largest artillery turret. Guns sat behind so much health that they almost never came off a hull in a fight; knocking out an enemy's armament is meant to be a real outcome of shooting at it. Relative toughness between mounts is unchanged, so a heavy turret is still far harder to strip than a light one.
+      type: Tweak
+  id: 6104
+  time: '2026-09-06T00:00:00.0000000+00:00'
+  url: null
+
+- author: Taleryn
+  changes:
+    - message: Added the tiny air vent, a portable vent printed at the microforge that runs off a bottle instead of a pipe net. Wrench it to the floor, drop a bottle into the cradle, and it fills the room until the air is back to one atmosphere. Unwrench it and it goes back in your bag. It comes with its own air vent cartridge, a pressure bottle charged from any gas canister and worth roughly nine tiles of vacuum; an ordinary hand tank fits the cradle too but carries barely a tenth of what one tile of floor needs, so it is for topping off rather than filling anything.
+      type: Add
+  id: 6105
+  time: '2026-09-06T00:00:00.0000000+00:00'
+  url: null
+
+- author: Taleryn
+  changes:
+    - message: The automated repair slip console has been redrawn. The survey now reads as a machine readout rather than a list of figures - the lines are grouped into structure, finish and stores, each one carries a bar drawn against the worst line on the slip, and anything the survey found nothing of goes grey. The status now colours the panel it sits in and shows a word in the masthead, the quote and your balance sit in their own panel that turns red when the account will not cover it, and the blueprint button has moved up beside the ship it applies to.
+      type: Tweak
+  id: 6106
+  time: '2026-09-06T00:00:00.0000000+00:00'
+  url: null
+
+- author: Taleryn
+  changes:
+    - message: The five hidden derelicts no longer sit at the same coordinates every round. Each one is now dropped at a fresh random point anywhere inside the sector disc, out to 8500 in every direction, and each roll has to keep 2000 clear of the faction stations, Gliess Santo, the belts, the two fixed points of interest and the other derelicts. There is no memorised loot route left to rush at round start; finding a wreck means actually sweeping for it.
+      type: Tweak
+  id: 6107
+  time: '2026-09-06T00:00:00.0000000+00:00'
+  url: null
+
+- author: Taleryn
+  changes:
+    - message: The five derelicts now show up on radar as a contact named Derelict instead of being hidden outright. Every one of them carries the same anonymous label, so a contact tells you something is out there without telling you which hull it is or whether it has already been stripped - the real name only appears once you board it. Hidden wrecks drew nothing at all until a ship was almost touching them, which made their new random positions worth very little, since nobody sweeps the whole sector on the off chance.
+      type: Tweak
+  id: 6108
+  time: '2026-09-06T00:00:00.0000000+00:00'
+  url: null

@@ -215,7 +215,11 @@ public sealed class ShipDrydockSnapshotSystem : EntitySystem
     /// <summary>
     /// A structure is on file if any one scope both accepts and does not refuse it.
     /// </summary>
-    private bool InScope(EntityUid uid)
+    /// <remarks>
+    /// Public because the override slip asks the same question of a hull it has no file for: what it
+    /// would have recorded is what it is willing to beat the damage out of.
+    /// </remarks>
+    public bool InScope(EntityUid uid)
     {
         foreach (var scope in _scopes)
         {

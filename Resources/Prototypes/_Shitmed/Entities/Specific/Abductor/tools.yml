@@ -144,7 +144,7 @@
   components:
   - type: Sprite
     sprite: _Shitmed/Objects/Specific/Abductor/welder.rsi
-    state: abductor
+    state: icon
   - type: SolutionContainerManager
     solutions:
       Welder:

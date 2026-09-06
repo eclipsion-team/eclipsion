@@ -16,7 +16,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 1500
+            damage: 1125
           # TODO: Construction graph
           behaviors:
             - !type:ChangeConstructionNodeBehavior
@@ -86,7 +86,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 3500
+            damage: 2625
           # TODO: Construction graph
           behaviors:
             - !type:ChangeConstructionNodeBehavior
@@ -156,7 +156,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 7000
+            damage: 5250
           # TODO: Construction graph
           behaviors:
             - !type:ChangeConstructionNodeBehavior

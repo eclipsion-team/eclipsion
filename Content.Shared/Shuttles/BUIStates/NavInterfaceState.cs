@@ -8,6 +8,8 @@ namespace Content.Shared.Shuttles.BUIStates;
 [Serializable, NetSerializable]
 public sealed class NavInterfaceState
 {
+    public Content.Shared.PointCannons.ShipWeaponTargetingMode WeaponTargetingMode;
+
     public float MaxRange;
 
     /// <summary>

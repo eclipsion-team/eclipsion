@@ -109,14 +109,11 @@ public sealed class AmeControllerSystem : EntitySystem
         // update the UI regardless of other factors to update the power readings
         UpdateUi(uid, controller);
 
-        if (!controller.Injecting)
-            return;
-
         if (!TryGetAMENodeGroup(uid, out var group, nodes))
             return;
 
         var overloading = false;
-        if (TryComp<AmeFuelContainerComponent>(controller.FuelSlot.Item, out var fuelContainer))
+        if (controller.Injecting && TryComp<AmeFuelContainerComponent>(controller.FuelSlot.Item, out var fuelContainer))
         {
             // if the jar is empty shut down the AME
             if (fuelContainer.FuelAmount <= 0)
@@ -138,6 +135,17 @@ public sealed class AmeControllerSystem : EntitySystem
                 UpdateUi(uid, controller);
             }
         }
+
+        // Whenever the reactor is not actively being overloaded - shut down, or pulled back under the
+        // safe limit - the cores anneal. Without this, surviving an overload left the controller stuck
+        // on its critical readout permanently, since core integrity only ever went down.
+        //
+        // The anneal belongs to the node group, not the controller: several controllers can be wired into one
+        // AME, and running this per controller both doubled the repair rate and let a switched-off controller
+        // heal the very cores another one was overloading. Only the master runs it, and only when no controller
+        // on the group is pushing an unsafe injection - this controller's own `overloading` is not enough.
+        if (group.MasterController == uid && !IsGroupOverloading(group))
+            group.RepairCores(controller.CoreRepairAmount);
 
         controller.Stability = group.GetTotalStability();
 
@@ -163,6 +171,21 @@ public sealed class AmeControllerSystem : EntitySystem
 
         var availableInject = Math.Min(controller.InjectionAmount, fuelContainer.FuelAmount);
         return group.IsOverloading(availableInject);
+    }
+
+    /// <summary>
+    /// Whether <em>any</em> controller wired into this group is currently pushing an unsafe injection, so that a
+    /// second controller left switched off cannot anneal away the damage the first one is doing.
+    /// </summary>
+    private bool IsGroupOverloading(AmeNodeGroup group)
+    {
+        foreach (var node in group.Nodes)
+        {
+            if (TryComp<AmeControllerComponent>(node.Owner, out var other) && IsActivelyOverloading(other, group))
+                return true;
+        }
+
+        return false;
     }
 
     /// <summary>

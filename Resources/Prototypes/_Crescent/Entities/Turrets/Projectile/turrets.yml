@@ -16,7 +16,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 1200
+            damage: 900
           # TODO: Construction graph
           behaviors:
             - !type:ChangeConstructionNodeBehavior
@@ -89,7 +89,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 2000
+            damage: 1500
           # TODO: Construction graph
           behaviors:
             - !type:ChangeConstructionNodeBehavior
@@ -161,7 +161,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 3000
+            damage: 2250
           # TODO: Construction graph
           behaviors:
             - !type:ChangeConstructionNodeBehavior
@@ -238,7 +238,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 1400
+            damage: 1050
           behaviors:
             - !type:ChangeConstructionNodeBehavior
               node: machineFrame
@@ -312,7 +312,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 2000
+            damage: 1500
           behaviors:
             - !type:ChangeConstructionNodeBehavior
               node: machineFrame
@@ -390,7 +390,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 2500
+            damage: 1875
           behaviors:
             - !type:ChangeConstructionNodeBehavior
               node: machineFrame
@@ -465,7 +465,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 3500
+            damage: 2625
           behaviors:
             - !type:ChangeConstructionNodeBehavior
               node: machineFrame
@@ -539,7 +539,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 2500
+            damage: 1875
           behaviors:
             - !type:ChangeConstructionNodeBehavior
               node: machineFrame
@@ -605,7 +605,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 4500
+            damage: 3375
           behaviors:
             - !type:ChangeConstructionNodeBehavior
               node: machineFrame
@@ -674,7 +674,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 6000
+            damage: 4500
           behaviors:
             - !type:ChangeConstructionNodeBehavior
               node: machineFrame
@@ -728,7 +728,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 8000
+            damage: 6000
           behaviors:
             - !type:ChangeConstructionNodeBehavior
               node: machineFrame
@@ -820,7 +820,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 10000
+            damage: 7500
           behaviors:
             - !type:ChangeConstructionNodeBehavior
               node: machineFrame
@@ -847,7 +847,7 @@
       thresholds:
         - trigger:
             !type:DamageTrigger
-            damage: 6000
+            damage: 4500
           # TODO: Construction graph
           behaviors:
             - !type:ChangeConstructionNodeBehavior

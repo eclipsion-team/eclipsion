@@ -39,6 +39,7 @@ public sealed partial class PokerTableWindow : DefaultWindow
     // Drag state for hole cards
     private int _dragIndex = -1;
     private readonly List<PokerCard> _myCardOrder = new();
+    private int _handRound = -1;
 
     public PokerTableWindow()
     {
@@ -62,7 +63,7 @@ public sealed partial class PokerTableWindow : DefaultWindow
 
         BetSlider.OnValueChanged += args =>
         {
-            var rounded = (int)Math.Round(args.Value);
+            var rounded = (int)Math.Clamp(Math.Round(args.Value), 0, int.MaxValue);
             if (BetAmountSpinBox.Value != rounded)
                 BetAmountSpinBox.OverrideValue(rounded);
         };
@@ -123,13 +124,14 @@ public sealed partial class PokerTableWindow : DefaultWindow
             ? loc.GetString("poker-btn-call", ("amount", callAmount))
             : loc.GetString("poker-btn-check");
 
-        var sliderMin = state.MinRaise;
-        var sliderMax = Math.Max(state.MyStack, state.MinRaise);
-        BetSlider.MinValue = sliderMin;
+        var me = state.Players.FirstOrDefault(p => p.SeatIndex == state.MySeatIndex);
+        var sliderMax = (int) Math.Min((long) state.MyStack + state.MyBet, int.MaxValue);
+        var sliderMin = Math.Min(state.MinRaise, sliderMax);
+        BetSlider.MinValue = 0;
         BetSlider.MaxValue = sliderMax;
+        BetSlider.MinValue = sliderMin;
         BetAmountSpinBox.IsValid = v => v >= sliderMin && v <= sliderMax;
-        if (BetAmountSpinBox.Value < state.MinRaise)
-            BetAmountSpinBox.Value = state.MinRaise;
+        BetAmountSpinBox.Value = Math.Clamp(BetAmountSpinBox.Value, sliderMin, sliderMax);
 
         BetRaiseButton.Text = state.CurrentBet == 0
             ? loc.GetString("poker-btn-bet")
@@ -146,6 +148,7 @@ public sealed partial class PokerTableWindow : DefaultWindow
         CheckButton.Visible = isMyTurn && callAmount == 0;
         CallButton.Visible = isMyTurn && callAmount > 0;
         BetRaiseButton.Visible = isMyTurn;
+        BetRaiseButton.Disabled = me?.CanRaise != true || sliderMax <= state.CurrentBet;
         BetSlider.Visible = isMyTurn;
         BetAmountSpinBox.Visible = isMyTurn;
 
@@ -161,14 +164,20 @@ public sealed partial class PokerTableWindow : DefaultWindow
 
         // My hole cards — large, draggable
         MyCardsContainer.RemoveAllChildren();
+        if (_handRound != state.RoundNumber || !seated)
+        {
+            _myCardOrder.Clear();
+            _handRound = state.RoundNumber;
+            _dragIndex = -1;
+        }
         if (seated)
         {
-            var me = state.Players.FirstOrDefault(p => p.SeatIndex == state.MySeatIndex);
             var holeCards = me?.HoleCards;
             if (holeCards != null && holeCards.Count > 0)
             {
                 // Sync drag order
-                if (_myCardOrder.Count != holeCards.Count)
+                if (_myCardOrder.Count != holeCards.Count ||
+                    holeCards.Any(card => !_myCardOrder.Any(c => c.Suit == card.Suit && c.Rank == card.Rank)))
                 {
                     _myCardOrder.Clear();
                     _myCardOrder.AddRange(holeCards);
@@ -183,6 +192,7 @@ public sealed partial class PokerTableWindow : DefaultWindow
             }
             else
             {
+                _myCardOrder.Clear();
                 MyCardsContainer.AddChild(MakeCardBackRect(BigCard));
                 MyCardsContainer.AddChild(MakeCardBackRect(BigCard));
             }
@@ -299,7 +309,7 @@ public sealed partial class PokerTableWindow : DefaultWindow
             foreach (var card in player.HoleCards)
                 cardsRow.AddChild(MakeCardRect(card.GetSpriteName(), SmallCard));
         }
-        else if (phase != PokerRoundPhase.Waiting && player.Status == PokerPlayerStatus.Active)
+        else if (phase != PokerRoundPhase.Waiting && player.Status is PokerPlayerStatus.Active or PokerPlayerStatus.AllIn)
         {
             cardsRow.AddChild(MakeCardBackRect(SmallCard));
             cardsRow.AddChild(MakeCardBackRect(SmallCard));

@@ -127,10 +127,10 @@
           False: { visible: false }
       enum.PaperLabelVisuals.LabelType:
         enum.PaperLabelVisuals.Layer:
-          Paper: { state: paper }
-          Bounty: { state: bounty }
-          CaptainsPaper: { state: captains_paper }
-          Invoice: { state: invoice }
+          Paper: { sprite: Structures/Storage/Crates/labels.rsi, state: paper }
+          Bounty: { sprite: Structures/Storage/Crates/labels.rsi, state: bounty }
+          CaptainsPaper: { sprite: Structures/Storage/Crates/labels.rsi, state: captains_paper }
+          Invoice: { sprite: Structures/Storage/Crates/labels.rsi, state: invoice }
   - type: PaperLabel
     labelSlot:
       insertVerbText: Attach Label

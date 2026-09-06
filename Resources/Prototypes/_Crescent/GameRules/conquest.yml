@@ -15,7 +15,7 @@
 #
 # If the round instead hits the 4h cap, the surviving great power is credited; if none survives, nobody won.
 #
-# CMM is deliberately absent: it fields no station on the current map, so it cannot take part yet.
+# Victory announcements also cover the minor factions used by adventure presets.
 
 - type: entity
   id: HullrotConquest
@@ -38,4 +38,5 @@
       SHI: faction-victory-shi
       TFSC: faction-victory-tfsc
       CMM: faction-victory-cmm
+      GS: faction-victory-gs
       TAP: faction-victory-tap

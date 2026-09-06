@@ -29,7 +29,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 400
+        damage: 300
       behaviors:
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
@@ -103,7 +103,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 300
+        damage: 225
       behaviors:
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
@@ -179,7 +179,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 300
+        damage: 225
       behaviors:
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
@@ -270,7 +270,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 400
+        damage: 300
       behaviors:
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
@@ -360,7 +360,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 600
+        damage: 450
       behaviors:
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
@@ -458,7 +458,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 400
+        damage: 300
       behaviors:
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
@@ -558,7 +558,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 500
+        damage: 375
       behaviors:
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
@@ -661,7 +661,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 800
+        damage: 600
       behaviors:
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
@@ -742,7 +742,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 2500
+        damage: 1875
       behaviors:
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
@@ -838,7 +838,7 @@
     thresholds:
       - trigger:
           !type:DamageTrigger
-          damage: 500
+          damage: 375
         behaviors:
           - !type:PlaySoundBehavior
             sound:
@@ -944,7 +944,7 @@
     thresholds:
       - trigger:
           !type:DamageTrigger
-          damage: 250 # retrofits make it a bit flimsy
+          damage: 190 # retrofits make it a bit flimsy
         behaviors:
           - !type:ChangeConstructionNodeBehavior
             node: machineFrame
@@ -1052,7 +1052,7 @@
     thresholds:
       - trigger:
           !type:DamageTrigger
-          damage: 500 #
+          damage: 375 #
         behaviors:
           - !type:ChangeConstructionNodeBehavior
             node: machineFrame

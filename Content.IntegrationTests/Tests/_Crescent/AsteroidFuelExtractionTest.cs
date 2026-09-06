@@ -96,8 +96,8 @@ public sealed class AsteroidFuelExtractionTest
             Assert.That(config.Components.TryGetComponent("BiomeSelection", out var registration), Is.True);
             var biomes = ((BiomeSelectionComponent) registration!).Biomes;
 
-            // The default belts must include their seep-bearing asteroid types.
-            Assert.That(biomes, Contains.Item("RatCraster"));
+            // The default belts must include their seep-bearing asteroid types. RatCraster is not among them
+            // any more: the Craster belts were removed and their chromite folded into the two Taypan belts.
             Assert.That(biomes, Contains.Item("RatAsteroidsStandardTaypanOne"));
             Assert.That(biomes, Contains.Item("RatAsteroidsStandardTaypanTwo"));
         });

@@ -10,9 +10,13 @@ public sealed partial class CCVars
 
     /// <summary>
     ///     Should we pre-load all of the procgen atlasses.
+    ///     Eclipsion: disabled. Nothing generates dungeons here - the gateway generator is off
+    ///     and planetfall's StationBiome carries an empty dungeon list - so every round start was
+    ///     rebuilding ~1.3 MB of room atlases into template maps that nothing ever read from.
+    ///     Generation still works if it is wired up again; DungeonSystem loads atlases on demand.
     /// </summary>
     public static readonly CVarDef<bool> ProcgenPreload =
-        CVarDef.Create("procgen.preload", true, CVar.SERVERONLY);
+        CVarDef.Create("procgen.preload", false, CVar.SERVERONLY);
 
     /// <summary>
     ///     Enabled: Cloning has 70% cost and reclaimer will refuse to reclaim corpses with souls. (For LRP).

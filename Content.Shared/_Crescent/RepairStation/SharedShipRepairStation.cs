@@ -94,6 +94,22 @@ public sealed class ShipRepairStationUiState : BoundUserInterfaceState
     /// </summary>
     public string? RepairingName;
 
+    /// <summary>
+    /// The slip is doing the work for nothing, so the window drops the money out of the quote and
+    /// stops asking whether the viewer can cover it.
+    /// </summary>
+    public bool Free;
+
+    /// <summary>
+    /// The slip may file a blueprint of the hull it is pointed at, so the window offers the button.
+    /// </summary>
+    public bool CanSnapshot;
+
+    /// <summary>
+    /// The hull in front of the slip has no blueprint on file, and the slip is working anyway - so the
+    /// window says what that leaves out rather than the survey silently reading as a sound hull.
+    /// </summary>
+    public bool BlueprintMissing;
 }
 
 [Serializable, NetSerializable]
@@ -112,3 +128,10 @@ public sealed class ShipRepairStartMessage : BoundUserInterfaceMessage;
 
 [Serializable, NetSerializable]
 public sealed class ShipRepairCancelMessage : BoundUserInterfaceMessage;
+
+/// <summary>
+/// Files the hull in front of the slip as it stands right now, so a hull that never came off a
+/// shipyard - a station, a mapped-in fleet ship - has something to be restored to later.
+/// </summary>
+[Serializable, NetSerializable]
+public sealed class ShipRepairSnapshotMessage : BoundUserInterfaceMessage;

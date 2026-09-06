@@ -7,7 +7,9 @@
   components:
   - type: Sprite
     sprite: Objects/Weapons/Bombs/spidercharge.rsi
-    state: icon
+    layers:
+    - state: icon
+      map: ["base"]
   - type: Item
     sprite: Objects/Weapons/Bombs/spidercharge.rsi
     size: Small
@@ -44,4 +46,4 @@
       enum.Trigger.TriggerVisuals.VisualState:
         base:
           Primed: { state: primed }
-          Unprimed: { state: complete }
+          Unprimed: { state: icon }

@@ -20,7 +20,8 @@ public sealed class EntityStorageVisualizerSystem : VisualizerSystem<EntityStora
             return;
 
         comp.StateBaseOpen ??= comp.StateBaseClosed;
-        if (!TryComp<SpriteComponent>(uid, out var sprite))
+        if (!TryComp<SpriteComponent>(uid, out var sprite)
+            || !sprite.LayerMapTryGet(StorageVisualLayers.Base, out _))
             return;
 
         sprite.LayerSetState(StorageVisualLayers.Base, comp.StateBaseClosed);
@@ -50,7 +51,7 @@ public sealed class EntityStorageVisualizerSystem : VisualizerSystem<EntityStora
                     args.Sprite.LayerSetVisible(StorageVisualLayers.Door, false);
                 }
 
-                if (comp.StateBaseOpen != null)
+                if (comp.StateBaseOpen != null && args.Sprite.LayerMapTryGet(StorageVisualLayers.Base, out _))
                     args.Sprite.LayerSetState(StorageVisualLayers.Base, comp.StateBaseOpen);
             }
             else
@@ -66,7 +67,7 @@ public sealed class EntityStorageVisualizerSystem : VisualizerSystem<EntityStora
                 else
                     args.Sprite.LayerSetVisible(StorageVisualLayers.Door, false);
 
-                if (comp.StateBaseClosed != null)
+                if (comp.StateBaseClosed != null && args.Sprite.LayerMapTryGet(StorageVisualLayers.Base, out _))
                     args.Sprite.LayerSetState(StorageVisualLayers.Base, comp.StateBaseClosed);
             }
         }

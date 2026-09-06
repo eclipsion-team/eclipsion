@@ -42,7 +42,7 @@ public sealed class ManagementConsoleTest
     /// <summary>
     /// Factions that deliberately run on overwatch alone, with no money consoles of their own.
     /// </summary>
-    private static readonly string[] OverwatchOnlyFactions = { "TAP", "SRM" };
+    private static readonly string[] OverwatchOnlyFactions = { "SRM" };
 
     private static readonly string[] MoneyComponents =
     {
@@ -112,7 +112,27 @@ public sealed class ManagementConsoleTest
             }
 
             Assert.That(offenders, Is.Empty,
-                $"TAP and SRM run on overwatch alone and must have no payroll, taxation or treasury console: {string.Join(", ", offenders)}");
+                $"SRM has no payroll, taxation or treasury consoles: {string.Join(", ", offenders)}");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [TestCase("ComputerPaymentTAP")]
+    [TestCase("ComputerFactionTreasuryTAP")]
+    public async Task PactMoneyConsolesRequireAllThreeFamilyCredentials(string prototypeId)
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var protoMan = server.ResolveDependency<IPrototypeManager>();
+
+        await server.WaitAssertion(() =>
+        {
+            var prototype = protoMan.Index<EntityPrototype>(prototypeId);
+            var reader = (AccessReaderComponent) prototype.Components["AccessReader"].Component;
+            Assert.That(reader.AccessLists, Has.Count.EqualTo(1));
+            Assert.That(reader.AccessLists.Single().Select(id => id.ToString()),
+                Is.EquivalentTo(new[] { "Arabet", "Alseik", "Thukker" }));
         });
 
         await pair.CleanReturnAsync();
@@ -139,7 +159,7 @@ public sealed class ManagementConsoleTest
 
         await server.WaitAssertion(() =>
         {
-            treasury.Set(faction, 0);
+            treasury.Forget(faction);
 
             Assert.Multiple(() =>
             {
@@ -158,7 +178,39 @@ public sealed class ManagementConsoleTest
                 Assert.That(treasury.Get(faction), Is.EqualTo(0));
             });
 
-            treasury.Set(faction, 0);
+            treasury.Forget(faction);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task LargeTreasuryBalancesAndWithdrawalLedgersDoNotOverflow()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Dirty = true });
+        var server = pair.Server;
+        var treasury = server.System<FactionTreasurySystem>();
+        const string faction = "TestLargeTreasury";
+        var user = new NetUserId(System.Guid.NewGuid());
+
+        await server.WaitAssertion(() =>
+        {
+            treasury.Set(faction, int.MaxValue - 1);
+            Assert.That(treasury.Add(faction, 10), Is.EqualTo(int.MaxValue));
+            Assert.That(treasury.GetRemainingWithdrawal(faction, user, float.NaN), Is.Zero);
+            Assert.That(treasury.GetRemainingWithdrawal(faction, user, 1f), Is.EqualTo(int.MaxValue));
+            Assert.That(treasury.TryWithdrawCapped(faction, user, int.MaxValue, 1f), Is.EqualTo(int.MaxValue));
+
+            treasury.Add(faction, int.MaxValue);
+            Assert.That(treasury.GetRemainingWithdrawal(faction, user, 0.5f), Is.Zero);
+            Assert.That(treasury.TryWithdrawCapped(faction, user, int.MaxValue, 1f), Is.EqualTo(int.MaxValue));
+            Assert.That(treasury.GetWithdrawnThisRound(faction, user), Is.EqualTo(2L * int.MaxValue));
+
+            treasury.RefundCapped(faction, user, int.MaxValue);
+            Assert.That(treasury.Get(faction), Is.EqualTo(int.MaxValue));
+            Assert.That(treasury.GetWithdrawnThisRound(faction, user), Is.EqualTo((long) int.MaxValue));
+            Assert.That(treasury.GetRemainingWithdrawal(faction, user, 0.5f), Is.Zero);
+            treasury.Forget(faction);
         });
 
         await pair.CleanReturnAsync();
@@ -207,7 +259,7 @@ public sealed class ManagementConsoleTest
                     "Refund should restore the operator's spent allowance.");
             });
 
-            treasury.Set(faction, 0);
+            treasury.Forget(faction);
         });
 
         await pair.CleanReturnAsync();

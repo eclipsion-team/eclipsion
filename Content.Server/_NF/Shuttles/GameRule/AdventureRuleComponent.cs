@@ -12,7 +12,7 @@ public sealed partial class AdventureRuleComponent : Component
 
     /// <summary>
     /// The worldgen config prototype applied when this gamemode starts. Defaults to the standard
-    /// RatWorld layout. Point this at a different worldgenConfig (e.g. RatWorldHyperwar) to change
+    /// RatWorld layout. Point this at a different worldgenConfig (e.g. RatWorldEmpty) to change
     /// the overworld asteroid layout for this mode only. Applied via the worldgen.worldgen_config
     /// CVar when the rule is added, before RoundStartingEvent runs the worldgen setup.
     /// </summary>

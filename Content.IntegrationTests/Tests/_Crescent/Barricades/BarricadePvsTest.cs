@@ -4,6 +4,7 @@ using Content.Server.Atmos.Components;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server._Crescent.Barricades;
 using Content.Shared._Crescent.Barricades;
+using Content.Shared.Atmos;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.FixedPoint;
@@ -11,6 +12,7 @@ using Content.Shared.Interaction;
 using Robust.Shared.Exceptions;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Crescent.Barricades;
@@ -49,6 +51,12 @@ public sealed class BarricadePvsTest
         var spawned = new List<EntityUid>();
         await server.WaitAssertion(() =>
         {
+            var moles = new float[Atmospherics.AdjustedNumberOfGases];
+            moles[(int) Gas.Oxygen] = 21.824779f;
+            moles[(int) Gas.Nitrogen] = 82.10312f;
+            server.EntMan.System<AtmosphereSystem>().SetMapAtmosphere(map.MapUid, false,
+                new GasMixture(moles, Atmospherics.T20C));
+
             for (var i = 0; i < BarricadePrototypes.Length; i++)
             {
                 var coordinates = new MapCoordinates(new Vector2(i * 2, 0), map.MapId);
@@ -66,10 +74,14 @@ public sealed class BarricadePvsTest
 
         await server.WaitAssertion(() =>
         {
-            var coordinates = new MapCoordinates(new Vector2(0, 4), map.MapId);
+            var coordinates = new MapCoordinates(new Vector2(0.5f, 4.5f), map.MapId);
+            // Give the projectile a connected floor with air, away from the barricades.
+            for (var y = 1; y <= 4; y++)
+                server.EntMan.System<SharedMapSystem>().SetTile(map.Grid.Owner, map.Grid.Comp,
+                    new Vector2i(0, y), map.Tile.Tile);
             server.EntMan.Spawn("BulletFlamethrower", coordinates);
         });
-        await pair.RunTicksSync(15);
+        await pair.RunSeconds(0.3f);
 
         var floorFires = 0;
         await server.WaitAssertion(() =>

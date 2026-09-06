@@ -16,7 +16,7 @@
         maxDistance: 5
   - type: Sprite
     sprite: _NF/Objects/Misc/stamps.rsi
-    state: stamp-mime
+    state: stamp-sheriff
   - type: Item
     size: Tiny
   - type: StealTarget

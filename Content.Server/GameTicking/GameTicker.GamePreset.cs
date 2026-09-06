@@ -102,7 +102,10 @@ namespace Content.Server.GameTicking
 
         private void InitializeGamePreset()
         {
-            SetGamePreset(LobbyEnabled ? _cfg.GetCVar(CCVars.GameLobbyDefaultPreset) : "sandbox");
+            // Upstream sent lobbyless servers to a hardcoded "sandbox" preset. That preset was removed
+            // along with the rest of the classic SS14 ones, and SetGamePreset silently no-ops on an
+            // unknown name, which would have left Preset null. Both paths use the configured default now.
+            SetGamePreset(_cfg.GetCVar(CCVars.GameLobbyDefaultPreset));
         }
 
         public void SetGamePreset(GamePresetPrototype? preset, bool force = false)
