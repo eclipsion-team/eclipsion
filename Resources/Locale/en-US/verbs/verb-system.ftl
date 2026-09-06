@@ -32,7 +32,6 @@ verb-categories-rename = Rename
 verb-categories-fax = Set Destination
 verb-categories-power-level = Power Level
 verb-categories-interaction = Interact
-verb-categories-blood-cult = Blood Cult
 
 verb-common-toggle-light = Toggle light
 verb-common-close = Close

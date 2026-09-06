@@ -1,0 +1,205 @@
+# Tabletop parents keep each full-size console's faction, access, power and protection
+# components. In particular, repair slips retain their SealedComputer graph.
+# Both casings share the same monitor footprint and four-direction screen RSI.
+# Powered-screen colors are inherited from the full-size faction console's visualizer.
+- type: entity
+  id: BaseCrescentComputerTabletop
+  abstract: true
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.35,0.25,0.35"
+        density: 190
+        mask:
+        - TabletopMachineMask
+        layer:
+        - TabletopMachineLayer
+  - type: Sprite
+    drawdepth: SmallObjects
+
+- type: entity
+  parent: BaseCrescentComputerTabletop
+  id: BaseComputerTabletopShipRepairStation
+  abstract: true
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      sprite: _NF/Structures/Machines/computer_tabletop.rsi
+      state: computer_tabletop
+    - map: ["computerLayerKeyboard"]
+      sprite: _NF/Structures/Machines/computer_tabletop.rsi
+      state: generic_keyboard_tabletop
+    - map: ["computerLayerScreen"]
+      sprite: _Crescent/Structures/Machines/computers.rsi
+      state: repair
+    - map: ["computerLayerKeys"]
+      state: tech_key
+    - map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      state: generic_panel_open
+
+- type: entity
+  parent: [BaseComputerTabletopShipRepairStation, ComputerShipRepairStation]
+  id: ComputerTabletopShipRepairStation
+  suffix: Tabletop
+
+- type: entity
+  parent: [BaseComputerTabletopShipRepairStation, ComputerShipRepairStationAdmin]
+  id: ComputerTabletopShipRepairStationAdmin
+  suffix: Tabletop, Admin
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      sprite: _NF/Structures/Machines/computer_tabletop.rsi
+      state: computer_tabletop
+    - map: ["computerLayerKeyboard"]
+      sprite: _NF/Structures/Machines/computer_tabletop.rsi
+      state: generic_keyboard_tabletop
+    - map: ["computerLayerScreen"]
+      sprite: _Crescent/Structures/Machines/computers.rsi
+      state: repair
+    - map: ["computerLayerKeys"]
+      state: syndie_key
+    - map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      state: generic_panel_open
+
+- type: entity
+  parent: [BaseComputerTabletopShipRepairStation, ComputerShipRepairStationDSM]
+  id: ComputerTabletopShipRepairStationDSM
+  suffix: Tabletop, DSM
+
+- type: entity
+  parent: [BaseComputerTabletopShipRepairStation, ComputerShipRepairStationNCWL]
+  id: ComputerTabletopShipRepairStationNCWL
+  suffix: Tabletop, NCWL
+
+- type: entity
+  parent: [BaseComputerTabletopShipRepairStation, ComputerShipRepairStationSHI]
+  id: ComputerTabletopShipRepairStationSHI
+  suffix: Tabletop, SHI
+
+- type: entity
+  parent: [BaseComputerTabletopShipRepairStation, ComputerShipRepairStationTFSC]
+  id: ComputerTabletopShipRepairStationTFSC
+  suffix: Tabletop, TFSC
+
+- type: entity
+  parent: [BaseComputerTabletopShipRepairStation, ComputerShipRepairStationCMM]
+  id: ComputerTabletopShipRepairStationCMM
+  suffix: Tabletop, CMM
+
+- type: entity
+  parent: BaseCrescentComputerTabletop
+  id: BaseComputerTabletopOverwatch
+  abstract: true
+  components:
+  - type: Construction
+    graph: ComputerTabletop
+    node: computer
+  - type: Sprite
+    sprite: Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      sprite: _NF/Structures/Machines/computer_tabletop.rsi
+      state: computer_tabletop
+    - map: ["computerLayerKeyboard"]
+      sprite: _NF/Structures/Machines/computer_tabletop.rsi
+      state: generic_keyboard_tabletop
+    - map: ["computerLayerScreen"]
+      sprite: _Crescent/Structures/Machines/computers.rsi
+      state: overwatch
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+    - map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      state: generic_panel_open
+
+- type: entity
+  parent: [BaseComputerTabletopOverwatch, DSMOverwatchComputer]
+  id: ComputerTabletopOverwatchDSM
+  suffix: Tabletop, DSM
+
+- type: entity
+  parent: [BaseComputerTabletopOverwatch, NCWLOverwatchComputer]
+  id: ComputerTabletopOverwatchNCWL
+  suffix: Tabletop, NCWL
+
+- type: entity
+  parent: [BaseComputerTabletopOverwatch, SHIOverwatchComputer]
+  id: ComputerTabletopOverwatchSHI
+  suffix: Tabletop, SHI
+
+- type: entity
+  parent: [BaseComputerTabletopOverwatch, TAPOverwatchComputer]
+  id: ComputerTabletopOverwatchTAP
+  suffix: Tabletop, TAP
+
+- type: entity
+  parent: [BaseComputerTabletopOverwatch, GSOverwatchComputer]
+  id: ComputerTabletopOverwatchGS
+  suffix: Tabletop, GS
+
+- type: entity
+  parent: [BaseComputerTabletopOverwatch, TFSCOverwatchComputer]
+  id: ComputerTabletopOverwatchTFSC
+  suffix: Tabletop, TFSC
+
+- type: entity
+  parent: [BaseComputerTabletopOverwatch, SRMOverwatchComputer]
+  id: ComputerTabletopOverwatchSRM
+  suffix: Tabletop, SRM
+
+- type: entity
+  parent: BaseCrescentComputerTabletop
+  id: BaseComputerTabletopFactionTreasury
+  abstract: true
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      sprite: _NF/Structures/Machines/computer_tabletop.rsi
+      state: computer_tabletop
+    - map: ["computerLayerKeyboard"]
+      sprite: _NF/Structures/Machines/computer_tabletop.rsi
+      state: generic_keyboard_tabletop
+    - map: ["computerLayerScreen"]
+      sprite: _Crescent/Structures/Machines/computers.rsi
+      state: treasury
+    - map: ["computerLayerKeys"]
+      state: tech_key
+
+- type: entity
+  parent: [BaseComputerTabletopFactionTreasury, ComputerFactionTreasuryShinohara]
+  id: ComputerTabletopFactionTreasuryShinohara
+  suffix: Tabletop, Shinohara
+
+- type: entity
+  parent: [BaseComputerTabletopFactionTreasury, ComputerFactionTreasuryNCWL]
+  id: ComputerTabletopFactionTreasuryNCWL
+  suffix: Tabletop, NCWL
+
+- type: entity
+  parent: [BaseComputerTabletopFactionTreasury, ComputerFactionTreasuryEmpire]
+  id: ComputerTabletopFactionTreasuryEmpire
+  suffix: Tabletop, Empire
+
+- type: entity
+  parent: [BaseComputerTabletopFactionTreasury, ComputerFactionTreasuryTFSC]
+  id: ComputerTabletopFactionTreasuryTFSC
+  suffix: Tabletop, TFSC
+
+- type: entity
+  parent: [BaseComputerTabletopFactionTreasury, ComputerFactionTreasuryGS]
+  id: ComputerTabletopFactionTreasuryGS
+  suffix: Tabletop, GS
+
+- type: entity
+  parent: [BaseComputerTabletopFactionTreasury, ComputerFactionTreasuryTAP]
+  id: ComputerTabletopFactionTreasuryTAP
+  suffix: Tabletop, TAP
+

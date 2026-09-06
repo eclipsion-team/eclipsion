@@ -1,7 +1,6 @@
 using Content.Server.Administration.Commands;
 using Content.Server.Antag;
 using Content.Server.GameTicking.Rules.Components;
-using Content.Server.WhiteDream.BloodCult.Gamerule;
 using Content.Server.Zombies;
 using Content.Shared.Administration;
 using Content.Shared.Database;
@@ -34,9 +33,6 @@ public sealed partial class AdminVerbSystem
 
     [ValidatePrototypeId<EntityPrototype>]
     private const string DefaultChangelingRule = "Changeling";
-
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string DefaultBloodCultRule = "BloodCult";
 
     [ValidatePrototypeId<StartingGearPrototype>]
     private const string PirateGearId = "PirateGear";
@@ -159,20 +155,6 @@ public sealed partial class AdminVerbSystem
         };
         if (!HasComp<SiliconComponent>(args.Target))
             args.Verbs.Add(ling);
-
-        Verb cultist = new()
-        {
-            Text = Loc.GetString("admin-verb-text-make-blood-cultist"),
-            Category = VerbCategory.Antag,
-            Icon = new SpriteSpecifier.Rsi(new("/Textures/Objects/Weapons/Melee/cult_dagger.rsi"), "icon"),
-            Act = () =>
-            {
-                _antag.ForceMakeAntag<BloodCultRuleComponent>(targetPlayer, DefaultBloodCultRule);
-            },
-            Impact = LogImpact.High,
-            Message = Loc.GetString("admin-verb-make-blood-cultist"),
-        };
-        args.Verbs.Add(cultist);
 
         // Goobstation - Blob
         Verb blobAntag = new()

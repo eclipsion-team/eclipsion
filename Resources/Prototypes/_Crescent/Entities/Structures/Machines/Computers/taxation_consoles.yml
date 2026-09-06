@@ -142,10 +142,21 @@
     - map: ["computerLayerKeyboard"]
       state: generic_keyboard
     - map: ["computerLayerScreen"]
-      state: generic
+      sprite: _Crescent/Structures/Machines/computers.rsi
+      state: treasury
     - map: ["computerLayerKeys"]
       state: tech_key
   - type: FactionTreasuryConsole
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.PowerDeviceVisuals.Powered:
+        computerLayerScreen:
+          True: { visible: true, shader: unshaded }
+          False: { visible: false }
+        computerLayerKeys:
+          True: { visible: true, shader: unshaded }
+          False: { visible: true, shader: shaded }
   - type: ActivatableUI
     key: enum.TreasuryConsoleUiKey.Key
   - type: UserInterface

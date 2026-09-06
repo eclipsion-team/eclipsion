@@ -226,3 +226,5 @@ anomaly-rock-feedback = A vast old oak dwells high over a plane of stone, it tur
 anomaly-flora-feedback = Musical notes drift around you, playfully beckoning, they wish to feast
 anomaly-liquid-feedback = A realm of twisting currents. Its placidity is a lie. The eyes within stare hungrilly
 anomaly-shadow-feedback = At the end of time, when all suns have set forever, there amidst the void stands a monument to past sins.
+
+summon-equipment-no-empty-hand = You have no free hand to take it.

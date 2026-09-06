@@ -1,8 +1,8 @@
-﻿- type: npcFaction
-  id: GeometerOfBlood
-  hostile:
-  - NanoTrasen
-  - SimpleHostile
-  - Xeno
-  - PetsNT
-  - Zombie
+﻿# - type: npcFaction
+#   id: GeometerOfBlood
+#   hostile:
+#   - NanoTrasen
+#   - SimpleHostile
+#   - Xeno
+#   - PetsNT
+#   - Zombie

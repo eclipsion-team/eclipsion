@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Repair, overwatch, treasury and payroll screen glyphs by Taleryn for Hullrot:Eclipsion, drawn to the existing computer screen layout. Repair and overwatch use a neutral palette tinted by the powered-screen visualizer; treasury and payroll use a shared blue background. Overwatch blink and treasury highlight animation frames packed as six-frame loops.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "repair",
+      "directions": 4
+    },
+    {
+      "name": "overwatch",
+      "directions": 4,
+      "delays": [
+        [
+          1.92,
+          0.08,
+          0.08,
+          0.08,
+          0.08,
+          0.16
+        ],
+        [
+          1.92,
+          0.08,
+          0.08,
+          0.08,
+          0.08,
+          0.16
+        ],
+        [
+          1.92,
+          0.08,
+          0.08,
+          0.08,
+          0.08,
+          0.16
+        ],
+        [
+          1.92,
+          0.08,
+          0.08,
+          0.08,
+          0.08,
+          0.16
+        ]
+      ]
+    },
+    {
+      "name": "treasury",
+      "directions": 4,
+      "delays": [
+        [
+          1.32,
+          0.28,
+          0.16,
+          0.16,
+          0.16,
+          0.32
+        ],
+        [
+          1.32,
+          0.28,
+          0.16,
+          0.16,
+          0.16,
+          0.32
+        ],
+        [
+          1.32,
+          0.28,
+          0.16,
+          0.16,
+          0.16,
+          0.32
+        ],
+        [
+          1.32,
+          0.28,
+          0.16,
+          0.16,
+          0.16,
+          0.32
+        ]
+      ]
+    },
+    {
+      "name": "payroll",
+      "directions": 4
+    }
+  ]
+}

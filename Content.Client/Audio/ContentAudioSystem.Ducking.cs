@@ -1,5 +1,4 @@
 using Content.Client.Gameplay;
-using Content.Shared._Crescent.Audio.CustomBoombox;
 using Content.Shared.Audio.Jukebox;
 using Content.Shared.CCVar;
 using Robust.Shared.Audio.Components;
@@ -87,12 +86,6 @@ public sealed partial class ContentAudioSystem
         while (jukeQuery.MoveNext(out var uid, out var juke))
         {
             best = MathF.Min(best, DuckFor(uid, juke.AudioStream, playerCoords));
-        }
-
-        var boomboxQuery = AllEntityQuery<CustomBoomboxComponent>();
-        while (boomboxQuery.MoveNext(out var uid, out var boombox))
-        {
-            best = MathF.Min(best, DuckFor(uid, boombox.AudioStream, playerCoords));
         }
 
         return best;

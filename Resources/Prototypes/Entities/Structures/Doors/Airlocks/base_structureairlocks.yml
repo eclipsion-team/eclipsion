@@ -162,9 +162,6 @@
   - type: InteractionVerbs
     allowedVerbs:
     - KnockOn
-  - type: TwistedConstructionTarget
-    replacementProto: CultDoor
-    doAfterDelay: 10
   - type: IconSmooth
     key: walls
     mode: NoSprite

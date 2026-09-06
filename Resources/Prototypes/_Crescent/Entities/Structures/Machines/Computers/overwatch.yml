@@ -32,7 +32,8 @@
     - map: ["computerLayerKeyboard"]
       state: generic_keyboard
     - map: ["computerLayerScreen"]
-      state: generic
+      sprite: _Crescent/Structures/Machines/computers.rsi
+      state: overwatch
     - map: ["computerLayerKeys"]
       state: generic_keys
     - map: ["enum.WiresVisualLayers.MaintenancePanel"]
@@ -42,7 +43,7 @@
     visuals:
       enum.ComputerVisuals.Powered:
         computerLayerScreen:
-          True: { visible: true, shader: unshaded }
+          True: { visible: true, shader: unshaded, color: "#78b7ff" }
           False: { visible: false }
         computerLayerKeys:
           True: { visible: true, shader: unshaded }
@@ -148,10 +149,19 @@
     faction: DSM
   - type: AccessReader
     access: [["Empire"]]
-  # - type: Sprite
-  #   layers:
-  #   - map: ["computerLayerScreen"]
-  #     state: dsm
+  - type: GenericVisualizer
+    visuals:
+      enum.ComputerVisuals.Powered:
+        computerLayerScreen:
+          True: { visible: true, shader: unshaded, color: "#bd7aff" }
+          False: { visible: false }
+        computerLayerKeys:
+          True: { visible: true, shader: unshaded }
+          False: { visible: true, shader: shaded }
+      enum.WiresVisuals.MaintenancePanelState:
+        enum.WiresVisualLayers.MaintenancePanel:
+          True: { visible: false }
+          False: { visible: true }
 
 - type: entity
   parent: BaseComputerOverwatch
@@ -162,10 +172,19 @@
     faction: NCWL
   - type: AccessReader
     access: [["NCWLGeneral"]]
-  # - type: Sprite
-  #   layers:
-  #   - map: ["computerLayerScreen"]
-  #     state: ncwl
+  - type: GenericVisualizer
+    visuals:
+      enum.ComputerVisuals.Powered:
+        computerLayerScreen:
+          True: { visible: true, shader: unshaded, color: "#ff9944" }
+          False: { visible: false }
+        computerLayerKeys:
+          True: { visible: true, shader: unshaded }
+          False: { visible: true, shader: shaded }
+      enum.WiresVisuals.MaintenancePanelState:
+        enum.WiresVisualLayers.MaintenancePanel:
+          True: { visible: false }
+          False: { visible: true }
 
 - type: entity
   parent: BaseComputerOverwatch
@@ -176,10 +195,19 @@
     faction: SHI
   - type: AccessReader
     access: [["Shinohara"]]
-  # - type: Sprite
-  #   layers:
-  #   - map: ["computerLayerScreen"]
-  #     state: shi
+  - type: GenericVisualizer
+    visuals:
+      enum.ComputerVisuals.Powered:
+        computerLayerScreen:
+          True: { visible: true, shader: unshaded, color: "#d4d4d4" }
+          False: { visible: false }
+        computerLayerKeys:
+          True: { visible: true, shader: unshaded }
+          False: { visible: true, shader: shaded }
+      enum.WiresVisuals.MaintenancePanelState:
+        enum.WiresVisualLayers.MaintenancePanel:
+          True: { visible: false }
+          False: { visible: true }
 
 - type: entity
   parent: BaseComputerOverwatch
@@ -217,10 +245,19 @@
     faction: TFSC
   - type: AccessReader
     access: [["SyndicateBasic"]]
-  # - type: Sprite
-  #   layers:
-  #   - map: ["computerLayerScreen"]
-  #     state: tsp
+  - type: GenericVisualizer
+    visuals:
+      enum.ComputerVisuals.Powered:
+        computerLayerScreen:
+          True: { visible: true, shader: unshaded, color: "#ff5555" }
+          False: { visible: false }
+        computerLayerKeys:
+          True: { visible: true, shader: unshaded }
+          False: { visible: true, shader: shaded }
+      enum.WiresVisuals.MaintenancePanelState:
+        enum.WiresVisualLayers.MaintenancePanel:
+          True: { visible: false }
+          False: { visible: true }
 
 - type: entity
   parent: BaseComputerOverwatch

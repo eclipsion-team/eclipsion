@@ -1,7 +1,6 @@
 ﻿using Content.Shared.Interaction;
 using Content.Shared.Item;
 using Content.Shared.Weapons.Melee;
-using Content.Shared.WhiteDream.BloodCult;
 using Content.Shared.Whitelist;
 using Robust.Server.Audio;
 using Robust.Server.GameObjects;
@@ -11,7 +10,6 @@ namespace Content.Server.Whetstone;
 
 public sealed class WhetstoneSystem : EntitySystem
 {
-    [Dependency] private readonly AppearanceSystem _appearance = default!;
     [Dependency] private readonly AudioSystem _audio = default!;
     [Dependency] private readonly EntityWhitelistSystem _entityWhitelist = default!;
 
@@ -46,7 +44,5 @@ public sealed class WhetstoneSystem : EntitySystem
 
         _audio.PlayEntity(stone.Comp.SharpenAudio, Filter.Pvs(target), target, true);
         stone.Comp.Uses--;
-        if (stone.Comp.Uses <= 0)
-            _appearance.SetData(stone, GenericCultVisuals.State, false);
     }
 }

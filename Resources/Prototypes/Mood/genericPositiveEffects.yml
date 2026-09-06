@@ -39,10 +39,6 @@
   moodChange: 7
 
 - type: moodEffect
-  id: CultFocused
-  moodChange: 10
-
-- type: moodEffect
   id: TraitSanguine
   moodChange: 15
 

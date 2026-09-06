@@ -385,7 +385,6 @@ reagent-effect-guidebook-remove-moodlet =
 reagent-effect-guidebook-purge-moodlets =
     Removes all active non-permanent moodlets.
 
-reagent-effect-guidebook-purify-evil = Purifies evil powers
 reagent-effect-guidebook-plant-diethylamine =
     { $chance ->
         [1] Increases

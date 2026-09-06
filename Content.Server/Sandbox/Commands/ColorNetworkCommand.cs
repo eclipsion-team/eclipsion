@@ -24,6 +24,7 @@ namespace Content.Server.Sandbox.Commands
             if (shell.IsClient && (!sandboxManager.IsSandboxEnabled && !adminManager.HasAdminFlag(shell.Player!, AdminFlags.Mapping)))
             {
                 shell.WriteError("You are not currently able to use mapping commands.");
+                return;
             }
 
             if (args.Length != 3)

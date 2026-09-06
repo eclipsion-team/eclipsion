@@ -223,6 +223,3 @@
   - type: GuideHelp
     guides:
     - Cyborgs
-  - type: TwistedConstructionTarget
-    replacementProto: ConstructShell
-    doAfterDelay: 5

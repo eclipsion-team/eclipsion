@@ -1,11 +1,11 @@
-﻿- type: psionicPowerPool
-  id: BloodCultPowers
-  powers:
-  - ActionBloodCultStun
-  - ActionBloodCultTeleport
-  - ActionBloodCultEmp
-  - ActionBloodCultShadowShackles
-  - ActionBloodCultTwistedConstruction
-  - ActionBloodCultSummonCombatEquipment
-  - ActionBloodCultSummonRitualDagger
-  - ActionBloodCultBloodRites
+﻿# - type: psionicPowerPool
+#   id: BloodCultPowers
+#   powers:
+#   - ActionBloodCultStun
+#   - ActionBloodCultTeleport
+#   - ActionBloodCultEmp
+#   - ActionBloodCultShadowShackles
+#   - ActionBloodCultTwistedConstruction
+#   - ActionBloodCultSummonCombatEquipment
+#   - ActionBloodCultSummonRitualDagger
+#   - ActionBloodCultBloodRites

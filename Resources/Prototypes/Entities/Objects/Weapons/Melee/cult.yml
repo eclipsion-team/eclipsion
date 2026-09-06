@@ -47,3 +47,31 @@
     - back
   - type: UseDelay
     delay: 1
+
+- type: entity
+  name: ritual dagger
+  parent: BaseKnife
+  id: RitualDagger
+  description: A strange dagger used by sinister groups for rituals and sacrifices.
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Melee/cult_dagger.rsi
+    state: icon
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    maxTargets: 2
+    heavyStaminaCost: 8
+    damage:
+      types:
+        Piercing: 32
+  - type: DamageOtherOnHit
+    staminaCost: 5
+  - type: EmbeddableProjectile
+  - type: EmbedPassiveDamage
+  - type: ThrowingAngle
+    angle: 225
+  - type: Clothing
+    sprite: Objects/Weapons/Melee/cult_dagger.rsi
+    slots:
+    - back
+  - type: DisarmMalus

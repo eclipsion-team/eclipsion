@@ -50,7 +50,8 @@
     - map: ["computerLayerKeyboard"]
       state: generic_keyboard
     - map: ["computerLayerScreen"]
-      state: shuttle
+      sprite: _Crescent/Structures/Machines/computers.rsi
+      state: repair
     - map: ["computerLayerKeys"]
       state: tech_key
     - map: ["enum.WiresVisualLayers.MaintenancePanel"]
@@ -59,7 +60,7 @@
     visuals:
       enum.ComputerVisuals.Powered:
         computerLayerScreen:
-          True: { visible: true, shader: unshaded }
+          True: { visible: true, shader: unshaded, color: "#64dbe5" }
           False: { visible: false }
         computerLayerKeys:
           True: { visible: true, shader: unshaded }
@@ -136,7 +137,8 @@
     - map: ["computerLayerKeyboard"]
       state: generic_keyboard
     - map: ["computerLayerScreen"]
-      state: syndishuttle
+      sprite: _Crescent/Structures/Machines/computers.rsi
+      state: repair
     - map: ["computerLayerKeys"]
       state: syndie_key
     - map: ["enum.WiresVisualLayers.MaintenancePanel"]
@@ -158,7 +160,7 @@
 #     welded back together at a pace no yard could keep. A ship in a fleet slip is a ship out of the war.
 #
 # BaseFactionComputerShipRepairStation carries both, plus restrictAccess so only the owning faction may
-# authorise a job on it. Each variant then does nothing but name its faction: the sealing on the commercial
+# authorise a job on it. Variants also tint their powered screens by faction: the sealing on the commercial
 # slip above is inherited, so none of these can be unbolted, pried apart or looted for their board either.
 - type: entity
   parent: ComputerShipRepairStation
@@ -183,6 +185,19 @@
   components:
   - type: FactionMachine
     faction: DSM
+  - type: GenericVisualizer
+    visuals:
+      enum.ComputerVisuals.Powered:
+        computerLayerScreen:
+          True: { visible: true, shader: unshaded, color: "#bd7aff" }
+          False: { visible: false }
+        computerLayerKeys:
+          True: { visible: true, shader: unshaded }
+          False: { visible: true, shader: shaded }
+      enum.WiresVisuals.MaintenancePanelState:
+        enum.WiresVisualLayers.MaintenancePanel:
+          True: { visible: false }
+          False: { visible: true }
 
 - type: entity
   parent: BaseFactionComputerShipRepairStation
@@ -192,6 +207,19 @@
   components:
   - type: FactionMachine
     faction: NCWL
+  - type: GenericVisualizer
+    visuals:
+      enum.ComputerVisuals.Powered:
+        computerLayerScreen:
+          True: { visible: true, shader: unshaded, color: "#ff9944" }
+          False: { visible: false }
+        computerLayerKeys:
+          True: { visible: true, shader: unshaded }
+          False: { visible: true, shader: shaded }
+      enum.WiresVisuals.MaintenancePanelState:
+        enum.WiresVisualLayers.MaintenancePanel:
+          True: { visible: false }
+          False: { visible: true }
 
 - type: entity
   parent: BaseFactionComputerShipRepairStation
@@ -201,6 +229,19 @@
   components:
   - type: FactionMachine
     faction: SHI
+  - type: GenericVisualizer
+    visuals:
+      enum.ComputerVisuals.Powered:
+        computerLayerScreen:
+          True: { visible: true, shader: unshaded, color: "#d4d4d4" }
+          False: { visible: false }
+        computerLayerKeys:
+          True: { visible: true, shader: unshaded }
+          False: { visible: true, shader: shaded }
+      enum.WiresVisuals.MaintenancePanelState:
+        enum.WiresVisualLayers.MaintenancePanel:
+          True: { visible: false }
+          False: { visible: true }
 
 # Every TFCF member organization resolves to TFSC in FactionMachineSystem, so this one slip serves the whole
 # umbrella: Families, Interdyne, Saws, Gorlex and Cyberdawn crews can all book a hull into it.
@@ -212,6 +253,19 @@
   components:
   - type: FactionMachine
     faction: TFSC
+  - type: GenericVisualizer
+    visuals:
+      enum.ComputerVisuals.Powered:
+        computerLayerScreen:
+          True: { visible: true, shader: unshaded, color: "#ff5555" }
+          False: { visible: false }
+        computerLayerKeys:
+          True: { visible: true, shader: unshaded }
+          False: { visible: true, shader: shaded }
+      enum.WiresVisuals.MaintenancePanelState:
+        enum.WiresVisualLayers.MaintenancePanel:
+          True: { visible: false }
+          False: { visible: true }
 
 - type: entity
   parent: BaseFactionComputerShipRepairStation
