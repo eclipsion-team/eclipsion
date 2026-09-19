@@ -381,11 +381,9 @@
     - name: Primary Weapon
       choices: { CMWeapon: 1 }
       entries:
-      - id: WeaponRifleLecter
-        name: TPSh Lecter
-        recommended: true
       - id: WeaponRifleHoundMarksman
         name: TPSh M215 "Hound" 5.56x45
+        recommended: true
       - id: WeaponSubMachineGunMP49
         name: TPSh MP49 "Warden" 9x19mm
     - name: Secondary Weapon

@@ -42,8 +42,8 @@ public sealed partial class BankSystem : EntitySystem
         if (mind.UserId == null)
             return;
 
-        var prefs = _prefsManager.GetPreferences(mind.UserId.Value);
-        if (prefs.SelectedCharacter is not HumanoidCharacterProfile profile)
+        if (!_prefsManager.TryGetCachedPreferences(mind.UserId.Value, out var prefs)
+            || prefs.SelectedCharacter is not HumanoidCharacterProfile profile)
             return;
 
         if (bank.Balance != profile.BankBalance)
@@ -74,11 +74,14 @@ public sealed partial class BankSystem : EntitySystem
         // This runs inside component state serialization, on every state send. Anything that throws here (a
         // prefs row whose selected slot has no profile behind it makes SelectedCharacter throw) would take out
         // the player's state send rather than surfacing as a normal error, so resolve it defensively and log.
-        PlayerPreferences prefs;
+        // On reconnect the session is re-attached to its mob (and state starts flowing) before the prefs DB load
+        // finishes. That's a normal transient window, not a broken profile: skip quietly, the next dirty saves it.
+        if (!_prefsManager.TryGetCachedPreferences((NetUserId) user, out var prefs))
+            return;
+
         ICharacterProfile character;
         try
         {
-            prefs = _prefsManager.GetPreferences((NetUserId) user);
             character = prefs.SelectedCharacter;
         }
         catch (Exception e)

@@ -41,8 +41,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 18 # fighter killer for security ships
-    acceleration: 120
-    topSpeed: 75
+    acceleration: 156
+    topSpeed: 98
     fieldOfView: 30
     defaultSeekingRange: 800
     guidanceAlgorithm: PredictiveGuidance
@@ -118,8 +118,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 10 # slow rotation so it isnt aimbot, still fairly accurate though
-    acceleration: 90
-    topSpeed: 110
+    acceleration: 117
+    topSpeed: 143
     fieldOfView: 15
     defaultSeekingRange: 400
     guidanceAlgorithm: PurePursuit
@@ -221,8 +221,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 7
-    acceleration: 90
-    topSpeed: 85
+    acceleration: 117
+    topSpeed: 110
     fieldOfView: 30
     defaultSeekingRange: 1200
     guidanceAlgorithm: PurePursuit
@@ -262,8 +262,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 3
-    acceleration: 90
-    topSpeed: 90
+    acceleration: 117
+    topSpeed: 117
     fieldOfView: 30
     defaultSeekingRange: 1200
     guidanceAlgorithm: PurePursuit
@@ -303,8 +303,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 5
-    acceleration: 90
-    topSpeed: 95
+    acceleration: 117
+    topSpeed: 124
     fieldOfView: 30
     defaultSeekingRange: 1200
     guidanceAlgorithm: PurePursuit
@@ -344,8 +344,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 30
-    acceleration: 60
-    topSpeed: 90
+    acceleration: 78
+    topSpeed: 117
     fieldOfView: 10
     defaultSeekingRange: 850
     guidanceAlgorithm: PurePursuit
@@ -394,8 +394,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 10
-    acceleration: 45
-    topSpeed: 110
+    acceleration: 58
+    topSpeed: 143
     fieldOfView: 30
     defaultSeekingRange: 2000
     guidanceAlgorithm: PredictiveGuidance
@@ -470,8 +470,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 4
-    acceleration: 45
-    topSpeed: 100
+    acceleration: 58
+    topSpeed: 130
     fieldOfView: 30
     defaultSeekingRange: 2000
     guidanceAlgorithm: PredictiveGuidance
@@ -546,8 +546,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 2
-    acceleration: 75
-    topSpeed: 130
+    acceleration: 98
+    topSpeed: 169
     fieldOfView: 30
     defaultSeekingRange: 1000
     guidanceAlgorithm: PredictiveGuidance
@@ -623,8 +623,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 5 #very slow we'll see how it works..
-    acceleration: 25
-    topSpeed: 50
+    acceleration: 32
+    topSpeed: 65
     fieldOfView: 25
     defaultSeekingRange: 2000
     guidanceAlgorithm: PurePursuit
@@ -699,8 +699,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 10
-    acceleration: 35
-    topSpeed: 110
+    acceleration: 46
+    topSpeed: 143
     fieldOfView: 25
     defaultSeekingRange: 2300
     guidanceAlgorithm: PurePursuit
@@ -778,8 +778,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 8
-    acceleration: 10
-    topSpeed: 80
+    acceleration: 13
+    topSpeed: 104
     fieldOfView: 10
     defaultSeekingRange: 5000
     guidanceAlgorithm: PredictiveGuidance
@@ -856,8 +856,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 25 # slow rotation so it isnt aimbot, still fairly accurate though
-    acceleration: 30
-    topSpeed: 80
+    acceleration: 39
+    topSpeed: 104
     fieldOfView: 30
     defaultSeekingRange: 400
     guidanceAlgorithm: PredictiveGuidance

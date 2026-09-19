@@ -1368,10 +1368,7 @@ entities:
       pos: -0.5,1.5
       parent: 1
     - type: DeviceLinkSource
-      linkedPorts:
-        invalid:
-        - - Pressed
-          - Toggle
+      linkedPorts: {}
 - proto: SpawnDungeonRandomHumanCorpse
   entities:
   - uid: 146

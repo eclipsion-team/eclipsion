@@ -1,3 +1,4 @@
+using Content.Shared.Crescent.Psionics;
 using System.Linq;
 using System.Numerics;
 using Content.Server._Crescent.HeatSeeking;
@@ -496,6 +497,10 @@ public sealed class RecurrenceFieldSystem : SharedRecurrenceFieldSystem
     /// </summary>
     private bool CanCapture(EntityUid uid)
     {
+        // Out of phase with the noosphere, so the field has nothing to take hold of.
+        if (HasComp<PsionicNullifierComponent>(uid))
+            return false;
+
         if (Transform(uid).ParentUid is var parent && parent.IsValid() && HasComp<MobStateComponent>(parent))
             return false;
 

@@ -1,10 +1,15 @@
+using System.Numerics;
 using Content.Shared.Audio.Jukebox;
 using Content.Shared.CCVar;
 using Robust.Client.Animations;
 using Robust.Client.GameObjects;
+using Robust.Client.Graphics;
+using Robust.Client.Player;
+using Robust.Shared.Audio;
 using Robust.Shared.Audio.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
+using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
 
 namespace Content.Client.Audio.Jukebox;
@@ -17,6 +22,10 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
     [Dependency] private readonly SharedAppearanceSystem _appearanceSystem = default!;
     [Dependency] private readonly SharedUserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private readonly IPlayerManager _player = default!;
+    [Dependency] private readonly IEyeManager _eye = default!;
+    [Dependency] private readonly SharedPhysicsSystem _physics = default!;
+    [Dependency] private readonly SharedTransformSystem _xform = default!;
 
     /// <summary>
     /// The listener's boombox volume slider, converted from gain to dB so it can be added on top
@@ -24,20 +33,14 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
     /// </summary>
     private float _volumeSlider;
 
-    // Audio streams are network entities owned by the server. Track only the streams belonging to
-    // jukeboxes so a local slider can be re-applied when either side receives a relevant state update,
-    // without scanning every jukebox every frame.
-    private readonly Dictionary<EntityUid, (EntityUid Jukebox, float BaseVolume)> _jukeboxStreams = new();
-    private readonly Dictionary<EntityUid, EntityUid> _ownerStreams = new();
-    private readonly List<EntityUid> _staleStreams = new();
-
     public override void Initialize()
     {
         base.Initialize();
+        // Runs after the engine has positioned each stream, so the overrides below win.
+        UpdatesAfter.Add(typeof(Robust.Client.Audio.AudioSystem));
         SubscribeLocalEvent<JukeboxComponent, AppearanceChangeEvent>(OnAppearanceChange);
         SubscribeLocalEvent<JukeboxComponent, AnimationCompletedEvent>(OnAnimationCompleted);
         SubscribeLocalEvent<JukeboxComponent, AfterAutoHandleStateEvent>(OnJukeboxAfterState);
-        SubscribeLocalEvent<JukeboxComponent, ComponentShutdown>(OnJukeboxShutdown);
 
         Subs.CVar(_cfg, CCVars.BoomboxVolume, OnVolumeCVarChanged, true);
 
@@ -47,14 +50,6 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
     private void OnVolumeCVarChanged(float gain)
     {
         _volumeSlider = SharedAudioSystem.GainToVolume(gain);
-
-        foreach (var (stream, data) in _jukeboxStreams)
-        {
-            if (!TryComp(stream, out AudioComponent? audio))
-                continue;
-
-            ApplyListenerVolume(stream, data.BaseVolume, audio);
-        }
     }
 
     public override void Shutdown()
@@ -81,73 +76,73 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
 
     private void OnJukeboxAfterState(Entity<JukeboxComponent> ent, ref AfterAutoHandleStateEvent args)
     {
-        TrackStream(ent);
-
         if (!_uiSystem.TryGetOpenUi<JukeboxBoundUserInterface>(ent.Owner, JukeboxUiKey.Key, out var bui))
             return;
 
         bui.Reload();
     }
 
-    private void TrackStream(Entity<JukeboxComponent> ent)
-    {
-        if (_ownerStreams.Remove(ent.Owner, out var previous))
-            _jukeboxStreams.Remove(previous);
-
-        if (ent.Comp.AudioStream is not { } stream)
-            return;
-
-        _ownerStreams[ent.Owner] = stream;
-        _jukeboxStreams[stream] = (ent.Owner, ent.Comp.Volume);
-
-        if (TryComp(stream, out AudioComponent? audio))
-            ApplyListenerVolume(stream, ent.Comp.Volume, audio);
-    }
-
     /// <summary>
-    /// Re-asserts the listener's local volume on tracked jukebox streams. The engine owns
-    /// AudioComponent's state and shutdown subscriptions, and re-applies the server's audio params
-    /// whenever a stream's state arrives, which wipes the local slider. Only tracked streams are
-    /// visited (at most one per jukebox) and <see cref="ApplyListenerVolume"/> no-ops when the volume
-    /// already matches, so this stays free while nothing is playing.
+    /// Plays every jukebox stream as flat music instead of a positional sound. OpenAL treats a
+    /// mono track as a point source 5 units off the listener plane (the engine's z-offset), with
+    /// HRTF, panning, Doppler and its own distance model all on top; the further you walk the
+    /// harder that bends a full music track, until it is plainly garbled. Pinning the source to the
+    /// listener with the listener's velocity switches all of that off (the server zeroes OpenAL's
+    /// rolloff), and the distance falloff is applied here as a plain volume change instead.
+    ///
+    /// Every jukebox is visited each frame rather than caching its stream: the stream entity can
+    /// arrive a few ticks after the jukebox's state, and the server re-sends the stream's params
+    /// (wiping the local volume) whenever it changes them.
     /// </summary>
     public override void FrameUpdate(float frameTime)
     {
         base.FrameUpdate(frameTime);
 
-        if (_jukeboxStreams.Count == 0)
-            return;
+        var listener = _eye.CurrentEye.Position;
+        var listenerVelocity = _player.LocalEntity is { } local
+            ? _physics.GetMapLinearVelocity(local)
+            : Vector2.Zero;
 
-        foreach (var (stream, data) in _jukeboxStreams)
+        var query = EntityQueryEnumerator<JukeboxComponent>();
+        while (query.MoveNext(out var comp))
         {
-            if (TryComp(stream, out AudioComponent? audio))
-                ApplyListenerVolume(stream, data.BaseVolume, audio);
-            else
-                _staleStreams.Add(stream);
-        }
-
-        foreach (var stream in _staleStreams)
-        {
-            if (!_jukeboxStreams.Remove(stream, out var data))
+            if (comp.AudioStream is not { } stream || !TryComp(stream, out AudioComponent? audio))
                 continue;
 
-            if (_ownerStreams.TryGetValue(data.Jukebox, out var owned) && owned == stream)
-                _ownerStreams.Remove(data.Jukebox);
+            var source = _xform.GetMapCoordinates(stream);
+            if (source.MapId != listener.MapId)
+                continue;
+
+            var distance = (source.Position - listener.Position).Length();
+            var falloff = SharedAudioSystem.GainToVolume(GetFalloff(distance, audio.Params));
+
+            ApplyVolume(stream, comp.Volume + _volumeSlider + falloff, audio);
+            audio.Position = listener.Position;
+            audio.Velocity = listenerVelocity;
         }
-
-        _staleStreams.Clear();
     }
 
-    private void OnJukeboxShutdown(Entity<JukeboxComponent> ent, ref ComponentShutdown args)
+    /// <summary>
+    /// The engine's default linear-clamped distance model, measured the way OpenAL would have
+    /// measured it (including the z-offset), so a jukebox fades out exactly as loudly as before.
+    /// </summary>
+    private float GetFalloff(float distance, AudioParams audioParams)
     {
-        if (_ownerStreams.Remove(ent.Owner, out var stream))
-            _jukeboxStreams.Remove(stream);
+        if (distance >= audioParams.MaxDistance)
+            return 0f;
+
+        var reference = Audio.GetAudioDistance(audioParams.ReferenceDistance);
+        var max = Audio.GetAudioDistance(audioParams.MaxDistance);
+
+        if (max <= reference)
+            return 1f;
+
+        var clamped = Math.Clamp(Audio.GetAudioDistance(distance), reference, max);
+        return 1f - (clamped - reference) / (max - reference);
     }
 
-    private void ApplyListenerVolume(EntityUid stream, float baseVolume, AudioComponent audio)
+    private void ApplyVolume(EntityUid stream, float target, AudioComponent audio)
     {
-        var target = baseVolume + _volumeSlider;
-
         if (audio.Params.Volume == target)
             return;
 

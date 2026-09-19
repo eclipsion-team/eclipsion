@@ -45,7 +45,8 @@ public sealed class WeldingHealableSystem : SharedWeldingHealableSystem
 
         _damageableSystem.TryChangeDamage(uid, component.Damage, true, false, origin: args.User);
 
-        Entity<SolutionComponent>? sol = new();
+        // Must be null, not new(): a non-null value is taken as an already-resolved cache with a null Comp.
+        Entity<SolutionComponent>? sol = null;
         if (!_solutionContainer.ResolveSolution(((EntityUid) args.Used, solutionContainer), welder.FuelSolutionName, ref sol, out _))
             return;
         _solutionContainer.RemoveReagent(sol.Value, welder.FuelReagent, component.FuelCost);

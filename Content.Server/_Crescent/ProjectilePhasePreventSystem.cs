@@ -49,6 +49,11 @@ public sealed class ProjectilePhasePreventerSystem : EntitySystem
     // Standard plating (0.35 multiplier) takes about 86 structural damage; lattice takes 30.
     private const float DirectTileBreakDamage = 30f;
 
+    // How far in front of a solid surface a round is placed on impact. Ray hits land exactly on the AABB edge,
+    // which can round into the wall's own tile; an explosion starting inside an airtight tile is blocked by it
+    // and dumps its whole intensity into that single wall instead of spreading.
+    private const float ImpactStandoff = 0.1f;
+
     public override void Initialize()
     {
         base.Initialize();
@@ -207,7 +212,7 @@ public sealed class ProjectilePhasePreventerSystem : EntitySystem
                 if (phase.TargetTiles && TryComp<MapGridComponent>(hitEntity, out var grid))
                 {
                     if (HitTile(owner, projectile, bulletPhysics, hitEntity, grid,
-                            hit.HitPos, currentMap))
+                            hit.HitPos, GetImpactPosition(previousPos, direction, hit.Distance), currentMap))
                         break;
 
                     continue;
@@ -252,12 +257,15 @@ public sealed class ProjectilePhasePreventerSystem : EntitySystem
 
                 try
                 {
-                    if (phase.TargetTiles)
-                        _trans.SetWorldPosition(owner, hit.HitPos);
+                    // A fast round is detected after it has already passed the target. Detonate in front of the
+                    // surface it hit, not where the tick left it, which can be deep inside or behind the wall.
+                    _trans.SetWorldPosition(owner, GetImpactPosition(previousPos, direction, hit.Distance));
 
                     RaiseLocalEvent(owner, ref bulletEvent, true);
 
-                    if (phase.TargetTiles && projectile.DamagedEntity && HasComp<TriggerOnCollideComponent>(owner))
+                    // The hit deletes the round before physics can ever report a collision for it, so a swept
+                    // round has to be detonated here in every targeting mode or it never explodes at all.
+                    if (projectile.DamagedEntity && HasComp<TriggerOnCollideComponent>(owner))
                         _triggers.Trigger(owner, projectile.Shooter);
                 }
                 catch (Exception e)
@@ -268,7 +276,9 @@ public sealed class ProjectilePhasePreventerSystem : EntitySystem
                 break;
             }
 
-            phase.start = currentPos;
+            // A hit may have moved the round back to its impact point. Sweep from there next tick, or a round
+            // that survived the hit (e.g. reflected) would start its next sweep from behind the wall.
+            phase.start = _trans.GetWorldPosition(owner);
             phase.mapId = currentMap;
         }
     }
@@ -278,7 +288,7 @@ public sealed class ProjectilePhasePreventerSystem : EntitySystem
     /// stop on the remaining floor layers instead of travelling through them to the next wall.
     /// </summary>
     private bool HitTile(EntityUid uid, ProjectileComponent projectile, PhysicsComponent physics,
-        EntityUid gridUid, MapGridComponent grid, Vector2 position, MapId mapId)
+        EntityUid gridUid, MapGridComponent grid, Vector2 position, Vector2 surfacePosition, MapId mapId)
     {
         var tile = _map.GetTileRef(gridUid, grid, new MapCoordinates(position, mapId));
         if (tile.Tile.IsEmpty || HasComp<ProtectedGridComponent>(gridUid))
@@ -307,7 +317,8 @@ public sealed class ProjectilePhasePreventerSystem : EntitySystem
         }
 
         // Put effects and explosions at the intercepted tile, not at the end of a fast round's tick.
-        _trans.SetWorldPosition(uid, position);
+        // Walls are hit from just outside their tile so the blast is not trapped inside them.
+        _trans.SetWorldPosition(uid, target == gridUid ? position : surfacePosition);
 
         if (target == gridUid)
             DamageTargetedTile(uid, projectile, gridUid, grid, tile);
@@ -317,6 +328,11 @@ public sealed class ProjectilePhasePreventerSystem : EntitySystem
             _triggers.Trigger(uid, projectile.Shooter);
 
         return true;
+    }
+
+    private static Vector2 GetImpactPosition(Vector2 start, Vector2 direction, float distance)
+    {
+        return start + direction * MathF.Max(distance - ImpactStandoff, 0f);
     }
 
     private void DamageTargetedTile(EntityUid uid, ProjectileComponent projectile,

@@ -71,6 +71,12 @@
                                        Access="Public"
                                        Text="{Loc 'pda-bound-user-interface-music-button'}"
                                        Description="{Loc 'pda-bound-user-interface-music-button-description'}"/>
+                <pda:PdaSettingsButton Name="BackgroundButton"
+                                       Text="{Loc 'comp-pda-ui-background-button'}"
+                                       Description="{Loc 'comp-pda-ui-background-button-description'}"/>
+                <pda:PdaSettingsButton Name="ResetBackgroundButton"
+                                       Text="{Loc 'comp-pda-ui-background-reset-button'}"
+                                       Description="{Loc 'comp-pda-ui-background-reset-button-description'}"/>
                 <pda:PdaSettingsButton Name="ShowUplinkButton"
                                        Access="Public"
                                        Text="{Loc 'pda-bound-user-interface-show-uplink-title'}"

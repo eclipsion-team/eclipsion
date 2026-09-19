@@ -1,0 +1,131 @@
+# Chassis tiers are not research tiers: scouts start at research tier 2,
+# medium/siege chassis at tier 3. Siege projects require a medium chassis first.
+# TFCF's legacy Cyberdawn and combined Coalition servers unlock the same recipes.
+
+- type: technology
+  id: ShinoharaSuzume
+  name: research-technology-mech-suzume
+  icon:
+    sprite: _Crescent/Objects/Specific/Mechs/suzume.rsi
+    state: suzume
+  discipline: Corporate
+  tier: 2
+  cost: 15000
+  technologyPrerequisites:
+  - ShinoharaBasicMechGuns
+  recipeUnlocks:
+  - SuzumeFlatpack
+
+- type: technology
+  id: ShinoharaJaipei
+  name: research-technology-mech-jaipei
+  icon:
+    sprite: _Crescent/Objects/Specific/Mechs/jaipei.rsi
+    state: jaipei
+  discipline: Corporate
+  tier: 3
+  cost: 20000
+  technologyPrerequisites:
+  - ShinoharaSuzume
+  - ShinoharaAdvancedMaterials
+  recipeUnlocks:
+  - JaipeiFlatpack
+
+- type: technology
+  id: CyberdawnOni
+  name: research-technology-mech-oni
+  icon:
+    sprite: _Crescent/Objects/Specific/Mechs/oni.rsi
+    state: oni
+  discipline: Cyberdawn
+  tier: 3
+  cost: 20000
+  technologyPrerequisites:
+  - CyberdawnLancer
+  - CDTAdvancedComponents
+  recipeUnlocks:
+  - OniFlatpack
+  - WeaponMechMaul
+  - WeaponMechCombatHeavyRifle
+
+- type: technology
+  id: CyberdawnRavager
+  name: research-technology-mech-ravager
+  icon:
+    sprite: _Crescent/Objects/Specific/Mechs/ravager.rsi
+    state: ravager
+  discipline: Cyberdawn
+  tier: 3
+  cost: 25000
+  technologyPrerequisites:
+  - CyberdawnOni
+  recipeUnlocks:
+  - RavagerFlatpack
+  - WeaponMechCombatAutocannon
+
+- type: technology
+  id: CoalitionCyberdawnOni
+  name: research-technology-mech-oni
+  icon:
+    sprite: _Crescent/Objects/Specific/Mechs/oni.rsi
+    state: oni
+  discipline: Coalition
+  tier: 3
+  cost: 20000
+  technologyPrerequisites:
+  - CoalitionCyberdawnLancer
+  - CoalitionCDTAdvancedComponents
+  recipeUnlocks:
+  - OniFlatpack
+  - WeaponMechMaul
+  - WeaponMechCombatHeavyRifle
+
+- type: technology
+  id: CoalitionCyberdawnRavager
+  name: research-technology-mech-ravager
+  icon:
+    sprite: _Crescent/Objects/Specific/Mechs/ravager.rsi
+    state: ravager
+  discipline: Coalition
+  tier: 3
+  cost: 25000
+  technologyPrerequisites:
+  - CoalitionCyberdawnOni
+  recipeUnlocks:
+  - RavagerFlatpack
+  - WeaponMechCombatAutocannon
+
+- type: technology
+  id: ImperialBastion
+  name: research-technology-mech-bastion
+  icon:
+    sprite: _Crescent/Objects/Specific/Mechs/bastion.rsi
+    state: bastion
+  discipline: Imperial
+  tier: 3
+  cost: 25000
+  technologyPrerequisites:
+  - ImperialWandererMech
+  - ImperialPaladinMech
+  - DSMCraftComps
+  - ImperialPlasmaMechGuns
+  recipeUnlocks:
+  - BastionFlatpack
+  - WeaponMechCombatAutocannon
+
+- type: technology
+  id: CommunardSvarog
+  name: research-technology-mech-svarog
+  icon:
+    sprite: _Crescent/Objects/Specific/Mechs/svarog.rsi
+    state: svarog
+  discipline: Communard
+  tier: 3
+  cost: 25000
+  technologyPrerequisites:
+  - CommunardLancer
+  - CommunardBogatyr
+  - NCWLCraftingComponents
+  recipeUnlocks:
+  - SvarogFlatpack
+  - WeaponMechCombatAutocannon

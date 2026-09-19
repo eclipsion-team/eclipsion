@@ -54,6 +54,9 @@ public sealed partial class ContentAudioSystem
     private static float _volumeSliderAmbient;
     private static float _volumeSliderCombat;
     private static bool _combatMusicToggle;
+    // Faction-flavoured music: the per-faction combat tracks and station/ship themes. Off falls back
+    // to the generic combat tracks and the biome's music.
+    private bool _factionMusicToggle = true;
     //options menu ---
 
     // This stores the music stream. It's used to start/stop the music on the fly.
@@ -131,6 +134,7 @@ public sealed partial class ContentAudioSystem
         Subs.CVar(_configManager, CCVars.CombatMusicVolume, CombatCVarChanged, true);
         Subs.CVar(_configManager, CCVars.CombatMusicEnabled, CombatToggleChanged, true);
         _sawmill = IoCManager.Resolve<ILogManager>().GetSawmill("audio.ambience");
+        Subs.CVar(_configManager, CCVars.FactionMusicEnabled, FactionMusicToggleChanged, true);
 
         // Setup tracks to pull from. Runs once.
         _musicTracks = GetTracks();
@@ -181,7 +185,7 @@ public sealed partial class ContentAudioSystem
             return;
 
         // if we're on the countsman or something moving, we don't want to switch the music
-        if (_validStationMusic)
+        if (UseStationMusic)
             return;
 
         FadeOut(_ambientMusicStream);
@@ -237,6 +241,10 @@ public sealed partial class ContentAudioSystem
             _lastStationMusic = ev.AmbientMusicPrototype;
             _sawmill.Debug("MUSIC FOUND FOR SHIP! " + ev.AmbientMusicPrototype);
         }
+
+        // Still remembered above, so turning faction music back on can pick the station theme up.
+        if (!_factionMusicToggle)
+            return;
 
         if (_combatModeSystem.IsInCombatMode()) //we don't want to change music if we are in combat mode right now
             return;
@@ -334,7 +342,7 @@ public sealed partial class ContentAudioSystem
             combatFactionSuffix = factionComponentString;
 
             //if we find a ambient music prototype for our faction, then pick that one!
-            if (_protMan.TryIndex<AmbientMusicPrototype>("combatmode" + combatFactionSuffix, out var factionCombatMusicPrototype))
+            if (_factionMusicToggle && _protMan.TryIndex<AmbientMusicPrototype>("combatmode" + combatFactionSuffix, out var factionCombatMusicPrototype))
             {
                 _musicProto = factionCombatMusicPrototype;
                 SoundCollectionPrototype soundcol = _protMan.Index<SoundCollectionPrototype>(_musicProto.ID);
@@ -373,7 +381,7 @@ public sealed partial class ContentAudioSystem
 
 
             // when combat mode turns off, do we have valid station music to play? if yes, play it. if not, play the biome's music.
-            if (_validStationMusic == true)
+            if (UseStationMusic)
             {
                 _musicProto = _protMan.Index<AmbientMusicPrototype>(_lastStationMusic);
             }
@@ -550,6 +558,37 @@ public sealed partial class ContentAudioSystem
 
         ScheduleAmbientReplay(path);
 
+    }
+
+    private bool UseStationMusic => _validStationMusic && _factionMusicToggle;
+
+    private void FactionMusicToggleChanged(bool obj)
+    {
+        _factionMusicToggle = obj;
+
+        if (_state.CurrentState is not GameplayState)
+            return;
+
+        // Combat tracks pick the setting up with the next track. Only a station theme needs swapping
+        // right away, otherwise the replay timer would keep looping it.
+        if (_isCombatMusicPlaying || !_validStationMusic)
+            return;
+
+        FadeOut(_ambientMusicStream);
+
+        if (!UseStationMusic || !_protMan.TryIndex<AmbientMusicPrototype>(_lastStationMusic, out _musicProto))
+        {
+            if (_lastBiome == null || !_protMan.TryIndex<AmbientMusicPrototype>(_lastBiome.ID, out _musicProto))
+                _musicProto = _protMan.Index<AmbientMusicPrototype>("default");
+        }
+
+        SoundCollectionPrototype soundcol = _protMan.Index<SoundCollectionPrototype>(_musicProto.ID);
+
+        string path = PickNext(soundcol);
+
+        PlayMusicTrack(path, _musicProto.Sound.Params.Volume, _ambientMusicFadeInTime, false);
+
+        ScheduleAmbientReplay(path);
     }
 
     private void ShutdownAmbientMusic()

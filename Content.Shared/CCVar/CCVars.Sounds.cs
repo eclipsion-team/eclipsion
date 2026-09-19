@@ -6,6 +6,13 @@ public sealed partial class CCVars
 {
     public static readonly CVarDef<bool> CombatMusicEnabled =
         CVarDef.Create("ambience.combat_music_enabled", true, CVar.ARCHIVE | CVar.CLIENTONLY);
+
+    /// <summary>
+    ///     Faction-specific music: per-faction combat tracks and station/ship themes. When off, the
+    ///     generic combat tracks and the biome's music play instead.
+    /// </summary>
+    public static readonly CVarDef<bool> FactionMusicEnabled =
+        CVarDef.Create("ambience.faction_music_enabled", true, CVar.ARCHIVE | CVar.CLIENTONLY);
     public static readonly CVarDef<bool> LobbyMusicEnabled =
         CVarDef.Create("ambience.lobby_music_enabled", true, CVar.ARCHIVE | CVar.CLIENTONLY);
 

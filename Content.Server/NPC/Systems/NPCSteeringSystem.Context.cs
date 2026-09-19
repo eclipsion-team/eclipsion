@@ -156,6 +156,14 @@ public sealed partial class NPCSteeringSystem
                 needsPath = true;
                 ResetStuck(steering, ourCoordinates);
             }
+
+            // Still nothing to head to: the target entity or the path's graph is gone. ToMap on an invalid
+            // coordinate logs a full stack trace every tick, from inside the parallel steering loop.
+            if (!targetCoordinates.IsValid(EntityManager))
+            {
+                steering.Status = SteeringStatus.NoPath;
+                return false;
+            }
         }
 
         // Check if mapids match.

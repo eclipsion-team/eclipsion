@@ -130,7 +130,7 @@ public sealed partial class AmeControllerComponent : SharedAmeControllerComponen
     /// critically unstable the explosion is delayed by this amount so responders get a heads-up.
     /// </summary>
     [DataField]
-    public TimeSpan FinalWarningTime = TimeSpan.FromSeconds(10f);
+    public TimeSpan FinalWarningTime = TimeSpan.FromMinutes(1);
 
     /// <summary>
     /// When set, the reactor will explode at this time if the active overload is not stopped.

@@ -1352,3 +1352,25 @@ Entries:
     id: 6117
     time: '2026-09-12T00:00:00.0000000+00:00'
     url: null
+  - author: Taleryn
+    changes:
+      - message: Waveform Misalignment now projects a null field five tiles wide. Psions inside it cannot use any power, their invisibility, shadow form, energy shield and reinforced armour stop working, mind swaps snap back, and familiars, aegis domes and stasis fields fall apart.
+        type: Tweak
+      - message: Nothing psionic affects someone with Waveform Misalignment anymore. Psionic fireballs and telekinetically hurled objects fall apart or drop before reaching them, flame breath and shadow kudzu will not form around them, and stasis fields and telekinetic pulses cannot slow or push them.
+        type: Tweak
+      - message: Added the chi-phase nullifier helmet, which gives its wearer the full Waveform Misalignment field. It is unlocked by the Noospheric Dampeners node, tier 2 of the Electronics tree.
+        type: Add
+    id: 6118
+    time: '2026-09-13T00:00:00.0000000+00:00'
+    url: null
+  - author: Taleryn
+    changes:
+      - message: Boombox and jukebox music no longer goes out of tune when you walk past a speaker or someone carries one past you.
+        type: Fix
+      - message: Boombox music now only carries about six tiles instead of fourteen.
+        type: Tweak
+      - message: Added a Faction & Station Music checkbox to the audio options. Turn it off to hear the generic combat music and the area's own music instead of faction combat tracks and station themes.
+        type: Add
+    id: 6119
+    time: '2026-09-14T00:00:00.0000000+00:00'
+    url: null

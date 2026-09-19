@@ -521,6 +521,7 @@
       - WeaponEnergyGunMini
       - ClothingEyesNightVisionGoggles
       - ClothingBeltShieldElectronics
+      - ClothingHeadHelmetWaveformNullifierElectronics
       - Terminus
       - ClothingOuterHardsuitShanlinUnpainted
       - BorgModuleGPS
@@ -581,6 +582,9 @@
       - EnergySword
       - EnergySwordDouble
       - MarauderFlatpack
+      - YamoriFlatpack
+      - OniFlatpack
+      - RavagerFlatpack
       - TubeLoader1Craft
       - LaserLocus1Craft
       - HardlightGenerator1Craft
@@ -800,6 +804,7 @@
       - LaelapsLPC
       - PaladinFlatpack
       - WandererFlatpack
+      - BastionFlatpack
       - WeaponMechCombatImperialSMG
       - WeaponMechCombatImperialAutolaser
       - WeaponMechCombatPlasmaRifle
@@ -891,6 +896,7 @@
       - LancerFlatpack
       - WeaponLauncherGM94
       - BogatyrFlatpack
+      - SvarogFlatpack
       - ClothingOuterHardsuitNCWLJuggernaut
       - NCWLKukri
       - ClothingBeltSheathNCWLKukri
@@ -985,6 +991,8 @@
       - ShieldEmitterSmallFlatpack
       - ShieldEmitterMediumFlatpack
       - GilgameshFlatpack
+      - SuzumeFlatpack
+      - JaipeiFlatpack
       - BallisticFablatheFlatpack
       - CyberneticsDermalArmor
       - ClothingBeltSheathSHIKatana

@@ -443,8 +443,6 @@
         name: Goro rifle
       - id: WeaponRifleHoundMarksman
         name: Hound marksman rifle
-      - id: WeaponRifleLecter
-        name: Lecter rifle
       - id: WeaponRifleBarghest
         name: Barghest rifle
       - id: WeaponRifleM90GrenadeLauncher

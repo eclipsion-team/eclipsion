@@ -59,7 +59,7 @@
                   max: 5
     - type: TurretIFF
     - type: Gun
-      projectileSpeed: 20
+      projectileSpeed: 25
       fireRate: 10
       selectedMode: FullAuto
       availableModes:

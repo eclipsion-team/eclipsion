@@ -61,6 +61,30 @@ public sealed class DegradeableArmorSystem : EntitySystem
     [Dependency] private readonly SharedAudioSystem _audio = default!;
 
     private const string conversionPrototype = "PiercingInducedBlunt";
+
+    // Ceramic: breaks up armor-piercing rounds, but cracks fast and loses protection quadratically.
+    private const float CeramicPenFactor = 0.5f;
+    private const float CeramicWearFactor = 1.25f;
+    // Metallic: armor-piercing goes straight through, but wears slowly and keeps a residual floor of protection.
+    private const float MetallicPenFactor = 1f;
+    private const float MetallicWearFactor = 0.85f;
+    private const float MetallicProtectionFloor = 0.25f;
+
+    /// <summary>
+    /// Fraction of the flat reduction the armor still provides at its current health.
+    /// </summary>
+    private static float GetProtectionFactor(DegradeableArmorComponent component)
+    {
+        if (component.armorHealth <= 0 || component.armorMaxHealth <= 0)
+            return 0f;
+
+        var ratio = Math.Clamp(component.armorHealth / component.armorMaxHealth, 0f, 1f);
+        return component.armorType switch
+        {
+            ArmorDegradation.Ceramic => ratio * ratio,
+            _ => MetallicProtectionFloor + (1f - MetallicProtectionFloor) * ratio,
+        };
+    }
     /// <inheritdoc/>
     public override void Initialize()
     {
@@ -138,7 +162,7 @@ public sealed class DegradeableArmorSystem : EntitySystem
             var armorType = Loc.GetString("armor-damage-type-" + flatArmor.Key.ToLowerInvariant());
             msg.AddMarkup(Loc.GetString("armor-reduction-value",
                 ("type", armorType),
-                ("value", (int)(flatArmor.Value * (component.armorHealth+000.1f)/component.armorMaxHealth))
+                ("value", (int)(flatArmor.Value * GetProtectionFactor(component)))
             ));
         }
 
@@ -158,7 +182,13 @@ public sealed class DegradeableArmorSystem : EntitySystem
         if (component.armorHealth <= 0)
             return;
         var armorDamage = 0f;
-
+        var blockedAny = false;
+        var protection = GetProtectionFactor(component);
+        var (penFactor, wearFactor) = component.armorType switch
+        {
+            ArmorDegradation.Ceramic => (CeramicPenFactor, CeramicWearFactor),
+            _ => (MetallicPenFactor, MetallicWearFactor),
+        };
 
         var damageDictionary = args.Args.Damage.DamageDict;
         damageDictionary.TryAdd(conversionPrototype, 0);
@@ -171,38 +201,31 @@ public sealed class DegradeableArmorSystem : EntitySystem
             var trueReduction = component.initialModifiers.FlatReduction[type];
             if (trueReduction == 0)
                 continue;
-            switch (component.armorType)
-            {
-                // Ceramic armor has internal energy and it mitigates the impact of the bullet force-wise
-                case ArmorDegradation.Ceramic:
-                {
-                    trueReduction *= component.armorHealth / component.armorMaxHealth;
-                    trueReduction *= component.armorHealth / component.armorMaxHealth;
-                    if (component.wearer != EntityUid.Invalid)
-                        _stamina.TakeStaminaDamage(component.wearer, args.Args.stoppingPower);
-                    break;
-                }
-                // Spreads damage internally
-                case ArmorDegradation.Metallic:
-                {
-                    trueReduction *= component.armorHealth / component.armorMaxHealth;
-                    damageDictionary[conversionPrototype] += args.Args.stoppingPower;
-                    break;
-                }
-                case ArmorDegradation.Plastic:
-                {
-                    trueReduction *= (component.armorHealth + (float) value * 2) / component.armorMaxHealth;
-                    if (component.wearer != EntityUid.Invalid)
-                        _stamina.TakeStaminaDamage(component.wearer, args.Args.stoppingPower);
-                    break;
-                }
-            }
 
-            trueReduction = Math.Clamp(trueReduction - args.Args.HullrotArmorPen, 0f, (float) value);
+            trueReduction = Math.Clamp(trueReduction * protection - args.Args.HullrotArmorPen * penFactor, 0f, (float) value);
+            if (trueReduction > 0)
+                blockedAny = true;
             // Safe access: if a damage type isn't in the coefficients dict, default to 1.0 (full armor damage).
             var coeff = component.armorDamageCoefficients.TryGetValue(type, out var c) ? c : 1f;
-            armorDamage += (float) value * coeff;
+            armorDamage += (float) value * coeff * wearFactor;
             damageDictionary[type] = Math.Max(0f, (float) value - trueReduction);
+        }
+
+        // The impact of a stopped round is transferred to the wearer once per hit, not once per damage type.
+        if (blockedAny && args.Args.stoppingPower > 0)
+        {
+            switch (component.armorType)
+            {
+                // Ceramic shatters to absorb the impact, the shock is felt as stamina damage.
+                case ArmorDegradation.Ceramic:
+                    if (component.wearer != EntityUid.Invalid)
+                        _stamina.TakeStaminaDamage(component.wearer, args.Args.stoppingPower);
+                    break;
+                // Metal deforms inward, the impact comes through as blunt trauma.
+                case ArmorDegradation.Metallic:
+                    damageDictionary[conversionPrototype] += args.Args.stoppingPower;
+                    break;
+            }
         }
         var healthBefore = component.armorHealth;
         component.armorHealth = Math.Max(0, component.armorHealth - armorDamage);

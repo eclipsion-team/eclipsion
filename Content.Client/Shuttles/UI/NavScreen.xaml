@@ -19,6 +19,13 @@
                       MaxWidth="256"
                       Margin="5 0 5 5"
                       Orientation="Vertical">
+                    <!-- Crescent: shown while a heat seeker is tracking this grid. -->
+                    <controls:Label Name="MissileLockWarning"
+                                    Visible="False"
+                                    HorizontalExpand="True"
+                                    Align="Center"
+                                    FontColorOverride="#FF3030"
+                                    Margin="0 0 0 4"/>
                     <!-- KS14: instrument panel in place of the stock StripeBack header. -->
                     <ksui:KsInstrumentPanel Name="DisplayPanel" Margin="0 0 0 4">
                     <controls:GridContainer Columns="2"

@@ -1145,9 +1145,6 @@ entities:
         43:
         - - Group2
           - Toggle
-        invalid:
-        - - Group3
-          - Toggle
         44:
         - - Group2
           - Toggle

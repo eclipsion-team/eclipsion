@@ -41,6 +41,7 @@ using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Containers;
+using Robust.Shared.GameStates;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Physics;
@@ -131,9 +132,28 @@ public abstract partial class SharedGunSystem : EntitySystem
         SubscribeLocalEvent<GunComponent, CycleModeEvent>(OnCycleMode);
         SubscribeLocalEvent<GunComponent, HandSelectedEvent>(OnGunSelected);
         SubscribeLocalEvent<GunComponent, MapInitEvent>(OnMapInit);
+        SubscribeLocalEvent<GunComponent, GunGetAmmoSpreadEvent>(OnGetAmmoSpread);
+
+        SubscribeLocalEvent<TargetedProjectileComponent, ComponentGetState>(OnTargetedProjectileGetState);
+        SubscribeLocalEvent<TargetedProjectileComponent, ComponentHandleState>(OnTargetedProjectileHandleState);
 
         Subs.CVar(_config, RMCCVars.RMCGunPrediction, v => GunPrediction = v, true);
         //_sawmill = IoCManager.Resolve<ILogManager>().GetSawmill("sharedgunsystem.shared");
+    }
+
+    private void OnTargetedProjectileGetState(Entity<TargetedProjectileComponent> ent, ref ComponentGetState args)
+    {
+        // The target may have died mid-flight; resolving a deleted uid logs a resolve error per player per send.
+        var target = ent.Comp.Target is { } t && !TerminatingOrDeleted(t) ? GetNetEntity(t) : (NetEntity?) null;
+        args.State = new TargetedProjectileComponentState(target);
+    }
+
+    private void OnTargetedProjectileHandleState(Entity<TargetedProjectileComponent> ent, ref ComponentHandleState args)
+    {
+        if (args.Current is not TargetedProjectileComponentState state)
+            return;
+
+        ent.Comp.Target = EnsureEntity<TargetedProjectileComponent>(state.Target, ent);
     }
 
     private void OnMapInit(Entity<GunComponent> gun, ref MapInitEvent args)
@@ -146,6 +166,11 @@ public abstract partial class SharedGunSystem : EntitySystem
 #endif
 
         RefreshModifiers((gun, gun));
+    }
+
+    private void OnGetAmmoSpread(Entity<GunComponent> gun, ref GunGetAmmoSpreadEvent args)
+    {
+        args.Spread *= gun.Comp.ShotgunSpreadMultiplier;
     }
 
     // private void OnGunMelee(EntityUid uid, GunComponent component, MeleeHitEvent args)

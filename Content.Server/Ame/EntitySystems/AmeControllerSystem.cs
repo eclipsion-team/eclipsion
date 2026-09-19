@@ -64,6 +64,9 @@ public sealed class AmeControllerSystem : EntitySystem
                 if (!TryGetAMENodeGroup(uid, out var group, nodes) || !IsActivelyOverloading(controller, group))
                 {
                     controller.ExplosionTime = null;
+                    // Injection was skipped for the whole countdown, so NextUpdate is stale; without this the
+                    // controller injects again this very tick and can re-arm (and re-announce) straight away.
+                    controller.NextUpdate = curTime + controller.UpdatePeriod;
                 }
                 else
                 {
@@ -71,6 +74,11 @@ public sealed class AmeControllerSystem : EntitySystem
                     {
                         controller.ExplosionTime = null;
                         group.ExplodeCores();
+
+                        // The blast is queued and resolves over later ticks, and the cores are still at zero
+                        // integrity. Left injecting, the controller re-armed on the next frame and broadcast a
+                        // second "detonation in 10 seconds" warning - then blew again if it survived.
+                        ShutDownGroup(group);
                     }
                     continue;
                 }
@@ -154,7 +162,8 @@ public sealed class AmeControllerSystem : EntitySystem
 
         // Once the reactor becomes critically unstable, arm a short countdown and warn the sector,
         // rather than detonating instantly, so there is always a heads-up before the blast.
-        if (controller.Stability <= 0 && overloading && controller.ExplosionTime == null)
+        // One countdown per reactor: with several controllers wired in, each used to arm and announce its own.
+        if (controller.Stability <= 0 && overloading && controller.ExplosionTime == null && !IsGroupArmed(group))
             ArmExplosion(uid, curTime, controller);
     }
 
@@ -186,6 +195,33 @@ public sealed class AmeControllerSystem : EntitySystem
         }
 
         return false;
+    }
+
+    private bool IsGroupArmed(AmeNodeGroup group)
+    {
+        foreach (var node in group.Nodes)
+        {
+            if (TryComp<AmeControllerComponent>(node.Owner, out var other) && other.ExplosionTime != null)
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Stops injection on every controller wired into the group once it has detonated.
+    /// </summary>
+    private void ShutDownGroup(AmeNodeGroup group)
+    {
+        var curTime = _gameTiming.CurTime;
+        foreach (var node in group.Nodes)
+        {
+            if (!TryComp<AmeControllerComponent>(node.Owner, out var other))
+                continue;
+
+            SetInjecting(node.Owner, false, null, other);
+            other.NextUpdate = curTime + other.UpdatePeriod;
+        }
     }
 
     /// <summary>

@@ -11,9 +11,6 @@
     sprite: _Crescent/Clothing/Empire/Head/mandateworker.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/Empire/Head/mandateworker.rsi
-  - type: PointLight
-    radius: 6
-    color: "#ffffed"
   - type: PressureProtection
     highPressureMultiplier: 0.1
     lowPressureMultiplier: 1000
@@ -40,9 +37,6 @@
     sprite: _Crescent/Clothing/Empire/Head/inspector.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/Empire/Head/inspector.rsi
-  - type: PointLight
-    radius: 6
-    color: "#ffffed"
   - type: PressureProtection
     highPressureMultiplier: 0.1
     lowPressureMultiplier: 1000
@@ -75,9 +69,6 @@
     sprite: _Crescent/Clothing/Empire/Head/clarizianworker.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/Empire/Head/clarizianworker.rsi
-  - type: PointLight
-    radius: 6
-    color: "#c3fffa"
   - type: PressureProtection
     highPressureMultiplier: 0.1
     lowPressureMultiplier: 1000
@@ -104,9 +95,6 @@
     sprite: _Crescent/Clothing/Empire/Head/clarizian.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/Empire/Head/clarizian.rsi
-  - type: PointLight
-    radius: 6
-    color: "#c3fffa"
   - type: PressureProtection
     highPressureMultiplier: 0.1
     lowPressureMultiplier: 1000
@@ -133,9 +121,6 @@
     sprite: _Crescent/Clothing/Empire/Head/mandatecommand.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/Empire/Head/mandatecommand.rsi
-  - type: PointLight
-    radius: 6
-    color: "#ffffed"
   - type: PressureProtection
     highPressureMultiplier: 0.1
     lowPressureMultiplier: 1000
@@ -167,9 +152,6 @@
     sprite: _Crescent/Clothing/Empire/Head/mandatesoldier.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/Empire/Head/mandatesoldier.rsi
-  - type: PointLight
-    radius: 6
-    color: "#ffffed"
   - type: PressureProtection
     highPressureMultiplier: 0.1
     lowPressureMultiplier: 1000
@@ -196,9 +178,6 @@
     sprite: _Crescent/Clothing/Empire/Head/mandateknight.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/Empire/Head/mandateknight.rsi
-  - type: PointLight
-    radius: 6
-    color: "#ffffed"
   - type: PressureProtection
     highPressureMultiplier: 0.1
     lowPressureMultiplier: 1000
@@ -225,9 +204,6 @@
     sprite: _Crescent/Clothing/Empire/Head/mandatejuggernauthelmet.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/Empire/Head/mandatejuggernauthelmet.rsi
-  - type: PointLight
-    radius: 6
-    color: "#ffffed"
   - type: PressureProtection
     highPressureMultiplier: 0.02
     lowPressureMultiplier: 1000
@@ -567,9 +543,6 @@
     sprite: _Crescent/Clothing/Empire/Head/ritterhelmet.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/Empire/Head/ritterhelmet.rsi
-  - type: PointLight
-    radius: 6
-    color: "#956acc"
   - type: HideLayerClothing
     slots:
     - Hair
@@ -588,9 +561,6 @@
     sprite: _Crescent/Clothing/Empire/Head/mandatenullweavepsion.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/Empire/Head/mandatenullweavepsion.rsi
-  - type: PointLight
-    radius: 6
-    color: "#e5d7ac"
   - type: PressureProtection
     highPressureMultiplier: 0.1
     lowPressureMultiplier: 1000

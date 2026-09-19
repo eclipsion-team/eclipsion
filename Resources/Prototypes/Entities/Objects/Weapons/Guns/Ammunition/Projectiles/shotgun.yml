@@ -285,7 +285,7 @@
 - type: entity
   id: PelletShotgunSpreadBirdshot
   categories: [ HideSpawnMenu ]
-  parent: PelletShotgun
+  parent: PelletShotgunBirdshot
   components:
   - type: ProjectileSpread
     proto: PelletShotgunBirdshot
@@ -310,7 +310,7 @@
 - type: entity
   id: PelletShotgunSpread00Buckshot
   categories: [ HideSpawnMenu ]
-  parent: PelletShotgun
+  parent: PelletShotgun00Buckshot
   components:
   - type: ProjectileSpread
     proto: PelletShotgun00Buckshot
@@ -335,7 +335,7 @@
 - type: entity
   id: PelletShotgunSpread0000Buckshot
   categories: [ HideSpawnMenu ]
-  parent: PelletShotgun
+  parent: PelletShotgun0000Buckshot
   components:
   - type: ProjectileSpread
     proto: PelletShotgun0000Buckshot

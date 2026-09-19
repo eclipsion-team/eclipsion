@@ -222,12 +222,10 @@ public sealed class DebrisFeaturePlacerSystem : BaseWorldSystem
                 if (uid != args.Chunk)
                     RaiseLocalEvent(args.Chunk, ref debrisFeatureEv);
 
+                // Not a failure: noise-driven selectors deliberately return nothing on low-noise points
+                // (e.g. WreckGraveyard clips 0-0.4 to zero) to keep wrecks sparse.
                 if (debrisFeatureEv.DebrisProto == null)
-                {
-                    // Nope.
-                    failures++;
                     continue;
-                }
             }
 
             // Debug: Log every prototype selected for placement

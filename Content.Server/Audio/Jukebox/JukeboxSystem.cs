@@ -44,10 +44,15 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
     /// <summary>
     /// Params every jukebox track is started with. The volume here is only the base level; each
     /// client scales it further with their own boombox volume slider once the stream arrives.
+    /// Rolloff is zeroed because the client's jukebox system plays music as a flat stream and
+    /// applies the distance falloff itself; OpenAL's positional processing garbles long tracks.
     /// </summary>
     private static AudioParams GetAudioParams(JukeboxComponent component)
     {
-        return AudioParams.Default.WithMaxDistance(component.Range).WithVolume(component.Volume);
+        return AudioParams.Default
+            .WithMaxDistance(component.Range)
+            .WithVolume(component.Volume)
+            .WithRolloffFactor(0f);
     }
 
     /// <summary>

@@ -19,6 +19,8 @@
             <PanelContainer Name="ContentBorder" StyleClasses="PdaBackground"/>
             <Control Margin="3 3">
                 <PanelContainer Name="ContentBackground" StyleClasses="PdaContentBackground"/>
+                <TextureRect Name="CustomBackground" Stretch="KeepAspectCovered" Visible="False"
+                             ModulateSelfOverride="#FFFFFF66" MouseFilter="Ignore"/>
                 <BoxContainer Access="Public" Name="ContentsContainer" Orientation="Vertical" StyleClasses="PdaContent"/>
 
             </Control>

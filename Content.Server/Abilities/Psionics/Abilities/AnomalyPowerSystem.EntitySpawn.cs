@@ -74,6 +74,14 @@ public sealed partial class AnomalyPowerSystem
             return;
 
         foreach (var tileref in tiles)
-            Spawn(_random.Pick(entry.Spawns), _mapSystem.ToCenterCoordinates(tileref, grid));
+        {
+            var coordinates = _mapSystem.ToCenterCoordinates(tileref, grid);
+
+            // Shadow kudzu and the like are the power made solid; they cannot form inside a null field.
+            if (_nullifier.IsInsideNullField(_xform.ToMapCoordinates(coordinates)))
+                continue;
+
+            Spawn(_random.Pick(entry.Spawns), coordinates);
+        }
     }
 }

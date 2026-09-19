@@ -1,3 +1,4 @@
+using Content.Shared.Crescent.Psionics;
 using Content.Server.Popups;
 using Content.Shared.Abilities.Psionics;
 using Content.Shared.Actions.Events;
@@ -76,6 +77,9 @@ public sealed class TelekineticManipulationPowerSystem : EntitySystem
             pushbackRatio: 0f,
             compensateFriction: true,
             recoil: false);
+
+        // Marked so a null field can tell this apart from a hand-thrown object and drop it short.
+        EnsureComp<PsionicManifestationComponent>(selected).DeleteOnNullify = false;
 
         ent.Comp.SelectedObject = null;
         _psionics.LogPowerUsed(ent, "telekinetic manipulation", 3, 5);

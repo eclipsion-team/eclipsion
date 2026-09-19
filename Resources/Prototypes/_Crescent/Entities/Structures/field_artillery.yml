@@ -38,12 +38,14 @@
     state: icon
   - type: InteractionOutline
   - type: Anchorable
+  - type: Rotatable
+    rotateWhileAnchored: true
   - type: Strap
     position: Stand
     buckleOffset: "0,0.45"
   - type: FieldArtillery
     firingArc: 99
-    maxRange: 10
+    maxRange: 13
     minRange: 3
   - type: Gun
     fireRate: 0.25

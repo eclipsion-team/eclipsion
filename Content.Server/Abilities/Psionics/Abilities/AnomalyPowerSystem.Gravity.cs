@@ -1,3 +1,4 @@
+using Content.Shared.Crescent.Psionics;
 using Content.Shared.Abilities.Psionics;
 using Content.Shared.Actions.Events;
 using Robust.Shared.Physics.Components;
@@ -45,6 +46,9 @@ public sealed partial class AnomalyPowerSystem
 
         foreach (var ent in lookup)
         {
+            if (HasComp<PsionicNullifierComponent>(ent))
+                continue;
+
             if (physQuery.TryGetComponent(ent, out var phys)
                 && (phys.CollisionMask & (int) CollisionGroup.GhostImpassable) != 0)
                 continue;
@@ -67,6 +71,9 @@ public sealed partial class AnomalyPowerSystem
 
         foreach (var ent in lookup)
         {
+            if (HasComp<PsionicNullifierComponent>(ent))
+                continue;
+
             if (physQuery.TryGetComponent(ent, out var phys)
                 && (phys.CollisionMask & (int) CollisionGroup.GhostImpassable) != 0)
                 continue;

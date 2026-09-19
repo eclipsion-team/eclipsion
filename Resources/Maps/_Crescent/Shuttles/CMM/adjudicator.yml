@@ -622,9 +622,6 @@ entities:
         16:
         - - Group3
           - Toggle
-        invalid:
-        - - Group3
-          - Toggle
         8:
         - - Group4
           - DoorBolt

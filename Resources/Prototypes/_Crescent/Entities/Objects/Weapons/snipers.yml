@@ -19,7 +19,7 @@
     - 0,0,5,2
   - type: Gun
     fireRate: 1.5
-    projectileSpeed: 45
+    projectileSpeed: 75
     soundGunshot:
       path: /Audio/_Crescent/Weapons/Guns/non_collection/amr.ogg
     selectedMode: SemiAuto
@@ -84,7 +84,7 @@
     - 0,0,5,2
   - type: Gun
     fireRate: 1
-    projectileSpeed: 45
+    projectileSpeed: 75
     soundGunshot:
       path: /Audio/_Crescent/Weapons/Guns/non_collection/amr.ogg
     selectedMode: SemiAuto
@@ -149,7 +149,7 @@
     - 0,0,5,2
   - type: Gun
     fireRate: 1
-    projectileSpeed: 45
+    projectileSpeed: 75
     soundGunshot:
       path: /Audio/_Crescent/Weapons/Guns/non_collection/amr.ogg
     selectedMode: SemiAuto
@@ -214,7 +214,7 @@
     - 0,0,5,2
   - type: Gun
     fireRate: 1
-    projectileSpeed: 45
+    projectileSpeed: 75
     soundGunshot:
       path: /Audio/_Crescent/Weapons/Guns/non_collection/amr.ogg
     selectedMode: SemiAuto
@@ -285,7 +285,7 @@
     - 0,0,5,2
   - type: Gun
     fireRate: 1.5
-    projectileSpeed: 45
+    projectileSpeed: 75
     soundGunshot:
       path: /Audio/_Crescent/Weapons/Guns/non_collection/amr.ogg
     selectedMode: SemiAuto

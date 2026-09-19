@@ -17,6 +17,7 @@ using Content.Shared.Alert;
 using Content.Shared._Crescent.CCvars;
 using Content.Shared.Crescent.Radar;
 using Content.Shared.Damage; // KS14
+using Content.Shared.Mobs.Components; // KS14
 using Robust.Shared.Timing; // KS14
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
@@ -734,14 +735,22 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
     /// <summary>
     ///     KS14: stamps the damaged entity's grid. Healing and no-op changes are ignored, so
     ///         a medbay patching someone up never reads as the ship being shot at.
+    ///     Only things sitting directly on the grid count, and never mobs: crew bleeding,
+    ///         suffocating or freezing (and their body parts, which live in containers) take
+    ///         damage every few seconds and kept the warning lit indefinitely.
     /// </summary>
     private void OnAnyDamageChanged(EntityUid uid, DamageableComponent component, DamageChangedEvent args)
     {
         if (args.DamageDelta is not { } delta || delta.GetTotal() <= 0)
             return;
 
-        if (_xformQuery.TryGetComponent(uid, out var xform) && xform.GridUid is { } grid)
-            _lastGridDamage[grid] = _timing.CurTime;
+        if (!_xformQuery.TryGetComponent(uid, out var xform)
+            || xform.GridUid is not { } grid
+            || xform.ParentUid != grid
+            || HasComp<MobStateComponent>(uid))
+            return;
+
+        _lastGridDamage[grid] = _timing.CurTime;
     }
 
     /// <summary>KS14: a deleted grid can never be hit again, so drop its stamp.</summary>
@@ -1040,11 +1049,12 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
         if (!Resolve(entity, ref entity.Comp1, ref entity.Comp2))
             return new NavInterfaceState(SharedRadarConsoleSystem.DefaultMaxRange, null, 0, docks, Shared._NF.Shuttles.Events.InertiaDampeningMode.Dampened, GetNetEntity(entity.Owner)); // Frontier: add inertia dampening
 
+        // Eclipsion: the radar is always drawn grid-up, however the console itself is turned.
         var state = GetNavState(
             entity,
             docks,
             entity.Comp2.Coordinates,
-            entity.Comp2.LocalRotation.Theta);
+            0);
         state.Target = entity.Comp1.Target;
         state.TargetEntity = GetNetEntity(entity.Comp1.TargetEntity);
         state.HideTarget = entity.Comp1.HideTarget;

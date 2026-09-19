@@ -12,11 +12,13 @@ using Robust.Shared.Containers;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Serialization;
+using Robust.Shared.Timing;
 
 namespace Content.Shared.Movement.Systems;
 
 public abstract class SharedJetpackSystem : EntitySystem
 {
+    [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly MovementSpeedModifierSystem _movementSpeedModifier = default!;
     [Dependency] protected readonly SharedAppearanceSystem Appearance = default!;
     [Dependency] protected readonly SharedContainerSystem Container = default!;
@@ -81,6 +83,12 @@ public abstract class SharedJetpackSystem : EntitySystem
 
     private void OnJetpackUserEntParentChanged(EntityUid uid, JetpackUserComponent component, ref EntParentChangedMessage args)
     {
+        // The client re-parents predicted entities while resetting them during state application. Adding or removing
+        // the relay components here then mutates the collection the engine is iterating ("Collection was modified").
+        // The server state already carries the right components.
+        if (_timing.ApplyingState)
+            return;
+
         RefreshOrDisableUser(uid, component, args.Transform);
     }
 

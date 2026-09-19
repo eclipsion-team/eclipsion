@@ -182,6 +182,9 @@
           volume: 3
     - type: Transform
       noRot: false
+      # Spawned straight onto the grid and never moves. Traversal would only run from inside the
+      # walker's own MoveEvent, where the engine's recursion guard is already held.
+      gridTraversal: false
     - type: Sprite
       drawdepth: FloorObjects
       color: "#FFFFFF80"

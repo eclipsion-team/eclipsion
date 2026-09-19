@@ -59,7 +59,7 @@ research-technology-electronics-materials = Basic Components
 research-technology-electronics-defense = Civilian Defense Pistols
 research-technology-electronics-terminus = Ogre Shocktrooper Armaments
 research-technology-electronics-pouches = Modular Pouch Rigging
-research-technology-electronics-dampener = Noospheric Dampener Belt
+research-technology-electronics-dampener = Noospheric Dampeners
 
 # MINUTEMEN
 research-technology-minutemen-hybrid-corvettes = minutemen hybrid corvettes

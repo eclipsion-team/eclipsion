@@ -7784,9 +7784,6 @@ entities:
         126:
         - - Pressed
           - Toggle
-        invalid:
-        - - Pressed
-          - Toggle
         124:
         - - Pressed
           - Toggle

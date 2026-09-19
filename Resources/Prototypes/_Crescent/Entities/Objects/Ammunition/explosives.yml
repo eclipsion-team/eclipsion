@@ -1287,8 +1287,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 40
-    acceleration: 25
-    topSpeed: 125
+    acceleration: 32
+    topSpeed: 162
   - type: ProjectileIFF
     visualType: SquareReticle
     color: Red

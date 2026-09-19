@@ -1,0 +1,41 @@
+# Boarding console. Anyone aboard can sign onto the roster; only somebody carrying the access listed on the
+# AccessReader below can aim it and send the order, so the access list is the knob that decides who leads a
+# boarding action. Do NOT add ActivatableUIRequiresAccess - the crew has to be able to open the console to
+# sign on, and the access check is applied to the launch order itself.
+#
+# Per-ship tuning lives on the IntruderTeleporter component: range, squad size, warning delay and cooldown.
+# Faction variants should override the AccessReader access list rather than copying the whole entity.
+
+- type: entity
+  parent: BaseComputer
+  id: ComputerIntruderTeleporter
+  name: intruder teleporter
+  description: A short-range bluespace projector. Signs a boarding party onto its roster and throws them at a hostile vessel, announcing itself to that vessel on the way.
+  components:
+  - type: IntruderTeleporter
+  - type: AccessReader
+    access:
+    - [ "Command" ]
+  # The scanner is drawn a little wider than the boarding range so the operator can see a target close in
+  # before it is actually reachable.
+  - type: RadarConsole
+    maxRange: 256
+  - type: ActivatableUI
+    key: enum.IntruderTeleporterUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.IntruderTeleporterUiKey.Key:
+        type: IntruderTeleporterBoundUserInterface
+  - type: Sprite
+    sprite: Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: teleport
+    - map: ["computerLayerKeys"]
+      state: telesci_key
+    - map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      state: generic_panel_open

@@ -836,6 +836,10 @@ public sealed class AutoDroneSystem : EntitySystem
             return;
         }
 
+        // Protect the hull immediately, including while FTL-docking or waiting for a deployment slot.
+        EnsureComp<DroneSpawnProtectionComponent>(shuttle.Owner).ExpiresAt =
+            _timing.CurTime + ent.Comp.SpawnCollisionProtectionDuration;
+
         if (price > 0)
             _market.TryWithdrawTreasury(station, price);
 

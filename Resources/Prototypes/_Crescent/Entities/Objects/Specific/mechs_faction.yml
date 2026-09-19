@@ -1,0 +1,292 @@
+# Faction mechs manufactured as research-gated flatpacks on station microforges.
+# Battery variants are used by their flatpacks as well as the admin spawn menu.
+# Conservative resale values prevent printing/deploying kits for cargo profit.
+# Tier stats and equipment whitelists inherit from Lancer, Bogatyr, and Gilgamesh.
+# TFCF retains the legacy TFSC faction ID.
+
+- type: entity
+  id: MechSHISuzume
+  parent: MechNCWLLancer
+  name: SHI mR-210 Suzume scout mechsuit
+  suffix: T1
+  description: A light Shinohara reconnaissance exosuit built around a compact sensor mast and ceramic armor. Its agile chassis accepts scout equipment.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Objects/Specific/Mechs/suzume.rsi
+    layers:
+    - map: [ "enum.MechVisualLayers.Base" ]
+      state: suzume
+    - map: [ "enum.MechVisualLayers.Power" ]
+      sprite: _Crescent/Objects/Specific/Mechs/suzume.rsi
+      state: suzume-open-power-off
+      shader: unshaded
+    - map: [ "enum.PaperLabelVisuals.Layer" ]
+      sprite: Structures/Storage/Crates/labels.rsi
+      state: paper
+  - type: Mech
+    baseState: suzume
+    openState: suzume-open
+    brokenState: suzume-broken
+  - type: StaticPrice
+    price: 500
+  - type: ProjectileIFF
+    color: "#d9d9d9"
+  - type: NpcFactionMember
+    factions:
+    - SHI
+
+- type: entity
+  id: MechSHISuzumeBattery
+  parent: MechSHISuzume
+  suffix: T1, Battery
+  components:
+  - type: ContainerFill
+    containers:
+      mech-battery-slot:
+      - PowerCageUraniumCell
+
+- type: entity
+  id: MechSHIJaipei
+  parent: MechNCWLBogatyr
+  name: SHI mR-410 Jaipei combat mechsuit
+  suffix: T2
+  description: Shinohara's original Jaipei medium combat chassis, clad in corporate ceramic armor. Its reinforced hardpoints accept scout and medium weapon systems.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Objects/Specific/Mechs/jaipei.rsi
+    layers:
+    - map: [ "enum.MechVisualLayers.Base" ]
+      state: jaipei
+    - map: [ "enum.MechVisualLayers.Power" ]
+      sprite: _Crescent/Objects/Specific/Mechs/jaipei.rsi
+      state: jaipei-open-power-off
+      shader: unshaded
+    - map: [ "enum.PaperLabelVisuals.Layer" ]
+      sprite: Structures/Storage/Crates/labels.rsi
+      state: paper
+  - type: Mech
+    baseState: jaipei
+    openState: jaipei-open
+    brokenState: jaipei-broken
+  - type: StaticPrice
+    price: 1000
+  - type: ProjectileIFF
+    color: "#d9d9d9"
+  - type: NpcFactionMember
+    factions:
+    - SHI
+
+- type: entity
+  id: MechSHIJaipeiBattery
+  parent: MechSHIJaipei
+  suffix: T2, Battery
+  components:
+  - type: ContainerFill
+    containers:
+      mech-battery-slot:
+      - PowerCagePlasmaCell
+
+- type: entity
+  id: MechTFCFYamori
+  parent: MechNCWLLancer
+  name: TFCF mk.I Yamori scout mechsuit
+  suffix: T1
+  description: A Corporate Federation scout exosuit assembled for patrols through the Taypan asteroid belts. Crimson armor and dark gunmetal fittings surround a lightweight chassis with scout equipment hardpoints.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Objects/Specific/Mechs/yamori.rsi
+    layers:
+    - map: [ "enum.MechVisualLayers.Base" ]
+      state: yamori
+    - map: [ "enum.MechVisualLayers.Power" ]
+      sprite: _Crescent/Objects/Specific/Mechs/yamori.rsi
+      state: yamori-open-power-off
+      shader: unshaded
+    - map: [ "enum.PaperLabelVisuals.Layer" ]
+      sprite: Structures/Storage/Crates/labels.rsi
+      state: paper
+  - type: Mech
+    baseState: yamori
+    openState: yamori-open
+    brokenState: yamori-broken
+  - type: StaticPrice
+    price: 500
+  - type: ProjectileIFF
+    color: "#d11d1d"
+  - type: NpcFactionMember
+    factions:
+    - TFSC
+
+- type: entity
+  id: MechTFCFYamoriBattery
+  parent: MechTFCFYamori
+  suffix: T1, Battery
+  components:
+  - type: ContainerFill
+    containers:
+      mech-battery-slot:
+      - PowerCageUraniumCell
+
+- type: entity
+  id: MechTFCFOni
+  parent: MechNCWLBogatyr
+  name: TFCF mk.II Oni combat mechsuit
+  suffix: T2
+  description: A Corporate Federation medium combat exosuit with crimson layered shoulder armor and distinctive paired antennae. Its rugged frame supports scout and medium weapon systems.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Objects/Specific/Mechs/oni.rsi
+    layers:
+    - map: [ "enum.MechVisualLayers.Base" ]
+      state: oni
+    - map: [ "enum.MechVisualLayers.Power" ]
+      sprite: _Crescent/Objects/Specific/Mechs/oni.rsi
+      state: oni-open-power-off
+      shader: unshaded
+    - map: [ "enum.PaperLabelVisuals.Layer" ]
+      sprite: Structures/Storage/Crates/labels.rsi
+      state: paper
+  - type: Mech
+    baseState: oni
+    openState: oni-open
+    brokenState: oni-broken
+  - type: StaticPrice
+    price: 1000
+  - type: ProjectileIFF
+    color: "#d11d1d"
+  - type: NpcFactionMember
+    factions:
+    - TFSC
+
+- type: entity
+  id: MechTFCFOniBattery
+  parent: MechTFCFOni
+  suffix: T2, Battery
+  components:
+  - type: ContainerFill
+    containers:
+      mech-battery-slot:
+      - PowerCagePlasmaCell
+
+- type: entity
+  id: MechTFCFRavager
+  parent: MechSHIGilgamesh
+  name: TFCF T-300 Ravager siege mechsuit
+  suffix: T3
+  description: A Corporate Federation siege exosuit combining a salvaged heavy chassis with Gorlex breaching armor. Slow, heavily protected, and fitted to carry siege-class equipment.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Objects/Specific/Mechs/ravager.rsi
+    layers:
+    - map: [ "enum.MechVisualLayers.Base" ]
+      state: ravager
+    - map: [ "enum.MechVisualLayers.Power" ]
+      sprite: _Crescent/Objects/Specific/Mechs/ravager.rsi
+      state: ravager-open-power-off
+      shader: unshaded
+    - map: [ "enum.PaperLabelVisuals.Layer" ]
+      sprite: Structures/Storage/Crates/labels.rsi
+      state: paper
+  - type: Mech
+    baseState: ravager
+    openState: ravager-open
+    brokenState: ravager-broken
+  - type: StaticPrice
+    price: 2500
+  - type: ProjectileIFF
+    color: "#d11d1d"
+  - type: NpcFactionMember
+    factions:
+    - TFSC
+
+- type: entity
+  id: MechTFCFRavagerBattery
+  parent: MechTFCFRavager
+  suffix: T3, Battery
+  components:
+  - type: ContainerFill
+    containers:
+      mech-battery-slot:
+      - PowerCageBananiumCell
+
+- type: entity
+  id: MechDSMBastion
+  parent: MechSHIGilgamesh
+  name: IEE mV-900 Bastion siege mechsuit
+  suffix: T3
+  description: An Imperial siege exosuit protected by immense ceremonial pauldrons and reinforced armor. The Bastion advances deliberately under fire with siege-class weapon hardpoints.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Objects/Specific/Mechs/bastion.rsi
+    layers:
+    - map: [ "enum.MechVisualLayers.Base" ]
+      state: bastion
+    - map: [ "enum.MechVisualLayers.Power" ]
+      sprite: _Crescent/Objects/Specific/Mechs/bastion.rsi
+      state: bastion-open-power-off
+      shader: unshaded
+    - map: [ "enum.PaperLabelVisuals.Layer" ]
+      sprite: Structures/Storage/Crates/labels.rsi
+      state: paper
+  - type: Mech
+    baseState: bastion
+    openState: bastion-open
+    brokenState: bastion-broken
+  - type: StaticPrice
+    price: 2500
+  - type: ProjectileIFF
+    color: "#ce7de3"
+  - type: NpcFactionMember
+    factions:
+    - DSM
+
+- type: entity
+  id: MechDSMBastionBattery
+  parent: MechDSMBastion
+  suffix: T3, Battery
+  components:
+  - type: ContainerFill
+    containers:
+      mech-battery-slot:
+      - PowerCageBananiumCell
+
+- type: entity
+  id: MechNCWLSvarog
+  parent: MechSHIGilgamesh
+  name: HNF mk.III Svarog siege mechsuit
+  suffix: T3
+  description: A Union Homeguard Naval Foundries siege exosuit built for sustained assaults. Its broad industrial frame trades speed for heavy protection and siege-class weapon systems.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Objects/Specific/Mechs/svarog.rsi
+    layers:
+    - map: [ "enum.MechVisualLayers.Base" ]
+      state: svarog
+    - map: [ "enum.MechVisualLayers.Power" ]
+      sprite: _Crescent/Objects/Specific/Mechs/svarog.rsi
+      state: svarog-open-power-off
+      shader: unshaded
+    - map: [ "enum.PaperLabelVisuals.Layer" ]
+      sprite: Structures/Storage/Crates/labels.rsi
+      state: paper
+  - type: Mech
+    baseState: svarog
+    openState: svarog-open
+    brokenState: svarog-broken
+  - type: StaticPrice
+    price: 2500
+  - type: ProjectileIFF
+    color: "#e08c38"
+  - type: NpcFactionMember
+    factions:
+    - NCWL
+
+- type: entity
+  id: MechNCWLSvarogBattery
+  parent: MechNCWLSvarog
+  suffix: T3, Battery
+  components:
+  - type: ContainerFill
+    containers:
+      mech-battery-slot:
+      - PowerCageBananiumCell

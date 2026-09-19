@@ -19,6 +19,7 @@ namespace Content.Client.PDA
         [Dependency] private readonly IGameTiming _gameTiming = default!;
         [Dependency] private readonly IEntitySystemManager _entitySystem = default!;
         private readonly ClientGameTicker _gameTicker;
+        private readonly PdaBackgroundSystem _background;
 
         public const int HomeView = 0;
         public const int ProgramListView = 1;
@@ -44,6 +45,7 @@ namespace Content.Client.PDA
         {
             IoCManager.InjectDependencies(this);
             _gameTicker = _entitySystem.GetEntitySystem<ClientGameTicker>();
+            _background = _entitySystem.GetEntitySystem<PdaBackgroundSystem>();
             RobustXamlLoader.Load(this);
 
             ViewContainer.OnChildAdded += control => control.Visible = false;
@@ -131,8 +133,27 @@ namespace Content.Client.PDA
             };
 
 
+            BackgroundButton.OnPressed += _ => { _background.PickBackground(); };
+            ResetBackgroundButton.OnPressed += _ => _background.ClearBackground();
+            _background.BackgroundChanged += OnBackgroundChanged;
+            OnBackgroundChanged(_background.Background);
+
             HideAllViews();
             ToHomeScreen();
+        }
+
+        private void OnBackgroundChanged(Texture? texture)
+        {
+            SetCustomBackground(texture);
+            ResetBackgroundButton.Visible = texture != null;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            if (disposing)
+                _background.BackgroundChanged -= OnBackgroundChanged;
         }
 
         public void UpdateState(PdaUpdateState state)

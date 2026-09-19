@@ -153,6 +153,7 @@
   cost: 12000
   recipeUnlocks:
   - ClothingBeltShieldElectronics
+  - ClothingHeadHelmetWaveformNullifierElectronics
 
 - type: technology
   id: AdvancedPartsElectronics

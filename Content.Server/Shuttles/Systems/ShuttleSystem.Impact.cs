@@ -1,3 +1,4 @@
+using Content.Server._Crescent.DroneControl;
 using Content.Server.Shuttles.Components;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Audio;
@@ -213,6 +214,10 @@ public sealed partial class ShuttleSystem
         )
             return;
 
+        // Skip the entire impact so a newly spawned drone cannot damage either hull.
+        if (HasDroneSpawnProtection(args.OurEntity) || HasDroneSpawnProtection(args.OtherEntity))
+            return;
+
         if (!_gridQuery.TryComp(args.OurEntity, out var ourGrid) ||
             !_gridQuery.TryComp(args.OtherEntity, out var otherGrid)
         )
@@ -284,6 +289,12 @@ public sealed partial class ShuttleSystem
         }
     }
 
+    private bool HasDroneSpawnProtection(EntityUid grid)
+    {
+        return TryComp<DroneSpawnProtectionComponent>(grid, out var protection)
+            && _gameTiming.CurTime < protection.ExpiresAt;
+    }
+
     /// <summary>
     /// Applies one queued impact. Called from <see cref="UpdateImpact"/>, never from a collision handler.
     /// </summary>
@@ -295,6 +306,9 @@ public sealed partial class ShuttleSystem
         // A tick has passed since the collision, so re-validate everything.
         if (TerminatingOrDeleted(ourEntity) || EntityManager.IsQueuedForDeletion(ourEntity)
             || TerminatingOrDeleted(otherEntity) || EntityManager.IsQueuedForDeletion(otherEntity))
+            return;
+
+        if (HasDroneSpawnProtection(ourEntity) || HasDroneSpawnProtection(otherEntity))
             return;
 
         if (!_gridQuery.TryComp(ourEntity, out var ourGrid) ||

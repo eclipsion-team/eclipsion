@@ -31,7 +31,7 @@
     - type: Gun
       fireOnDropChance: 0
       fireRate: 10
-      projectileSpeed: 110
+      projectileSpeed: 137.5
       selectedMode: FullAuto
       availableModes:
         - FullAuto
@@ -104,7 +104,7 @@
     - type: Gun
       fireOnDropChance: 0
       fireRate: 8
-      projectileSpeed: 110
+      projectileSpeed: 137.5
       angleDecay: 2.5
       minAngle: 1
       maxAngle: 3.5
@@ -176,7 +176,7 @@
     - type: Gun
       fireOnDropChance: 0
       fireRate: 18
-      projectileSpeed: 80
+      projectileSpeed: 100
       angleDecay: 0.75
       minAngle: 1.5
       maxAngle: 2.5
@@ -249,7 +249,7 @@
       reloadDuration: 3.5
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 95
+      projectileSpeed: 118.75
       fireRate: 4
       selectedMode: FullAuto
       availableModes:
@@ -323,7 +323,7 @@
       reloadDuration: 3.5
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 95
+      projectileSpeed: 118.75
       fireRate: 4
       selectedMode: FullAuto
       availableModes:
@@ -399,7 +399,7 @@
                 collection: MetalGlassBreak
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 105
+      projectileSpeed: 131.25
       fireRate: 4
       selectedMode: FullAuto
       availableModes:
@@ -474,7 +474,7 @@
                 collection: MetalGlassBreak
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 105
+      projectileSpeed: 131.25
       fireRate: 4
       selectedMode: FullAuto
       availableModes:
@@ -551,7 +551,7 @@
         ballistic-ammo: !type:Container
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 180
+      projectileSpeed: 225
       fireRate: .3
       selectedMode: FullAuto
       availableModes:
@@ -614,7 +614,7 @@
                 collection: MetalGlassBreak
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 125
+      projectileSpeed: 156.25
       burstFireRate: 8
       burstCooldown: 2
       shotsPerBurst: 3
@@ -692,7 +692,7 @@
       batteryRechargeRate: 64000
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 125
+      projectileSpeed: 156.25
       fireRate: 1.5
       angleDecay: 1.2
       minAngle: .5
@@ -740,7 +740,7 @@
         ballistic-ammo: !type:Container
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 190
+      projectileSpeed: 237.5
       fireRate: .15
       selectedMode: SemiAuto
       availableModes:
@@ -788,7 +788,7 @@
         - state: ncwl-howitzer
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 200
+      projectileSpeed: 250
       fireRate: .18
       angleDecay: .45
       minAngle: .2
@@ -862,7 +862,7 @@
           ents: []
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 105
+      projectileSpeed: 131.25
       fireRate: 1.2
       selectedMode: FullAuto
       availableModes:

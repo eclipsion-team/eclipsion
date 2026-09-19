@@ -63,7 +63,7 @@
         Structural: 55
         Piercing: 75
   - type: TimedDespawn
-    lifetime: 4
+    lifetime: 3.2
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/pdtcasing.rsi
     layers:
@@ -127,7 +127,7 @@
     color: orange
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 120
+    lifetime: 96
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/mortarcasing.rsi
     layers:
@@ -164,7 +164,7 @@
     color: orange
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 11
+    lifetime: 8.8
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/plasmahardpoint.rsi
     layers:
@@ -201,7 +201,7 @@
     color: red
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 80
+    lifetime: 64
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/plasmaheavy.rsi
     layers:
@@ -234,7 +234,7 @@
     color: blue
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 60
+    lifetime: 48
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/ion.rsi
     layers:
@@ -286,8 +286,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 25
-    acceleration: 25
-    topSpeed: 50
+    acceleration: 32
+    topSpeed: 65
     fieldOfView: 40
     defaultSeekingRange: 600
     guidanceAlgorithm: PredictiveGuidance
@@ -358,8 +358,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 7 # slow turn rate
-    acceleration: 5
-    topSpeed: 40
+    acceleration: 6
+    topSpeed: 52
     fieldOfView: 30
     defaultSeekingRange: 1500 # long range
     guidanceAlgorithm: PredictiveGuidance
@@ -436,8 +436,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 5 # slow turn rate
-    acceleration: 5
-    topSpeed: 40
+    acceleration: 6
+    topSpeed: 52
     fieldOfView: 30
     defaultSeekingRange: 1500 # long range
     guidanceAlgorithm: PredictiveGuidance
@@ -517,8 +517,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 15 # slow rotation so it isnt aimbot, still fairly accurate though
-    acceleration: 120
-    topSpeed: 120
+    acceleration: 156
+    topSpeed: 156
     fieldOfView: 30
     defaultSeekingRange: 400
     guidanceAlgorithm: PredictiveGuidance
@@ -568,7 +568,7 @@
     tags:
       - HeavyMortarShell
   - type: TimedDespawn
-    lifetime: 30
+    lifetime: 24
   - type: Sprite
     sprite: _Crescent/Objects/ShuttleWeapons/battleshell.rsi
     layers:
@@ -608,7 +608,7 @@
     tags:
       - FlakShell
   - type: TimedDespawn
-    lifetime: 15
+    lifetime: 12
   - type: Sprite
     sprite: _Crescent/Objects/ShuttleWeapons/flak.rsi
     layers:
@@ -650,7 +650,7 @@
     tags:
       - FlakShell
   - type: TimedDespawn
-    lifetime: 15
+    lifetime: 12
   - type: Sprite
     sprite: _Crescent/Objects/ShuttleWeapons/flak.rsi
     layers:
@@ -744,7 +744,7 @@
     color: red
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 20
+    lifetime: 16
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/plasmaheavy.rsi
     layers:
@@ -772,7 +772,7 @@
     tags:
       - CompaktLens
   - type: TimedDespawn
-    lifetime: 8
+    lifetime: 6.4
   - type: Sprite
     sprite: _Crescent/Objects/ShuttleWeapons/lenses.rsi
     layers:
@@ -811,7 +811,7 @@
     tags:
       - CompaktLens
   - type: TimedDespawn
-    lifetime: 25
+    lifetime: 20
   - type: Sprite
     sprite: _Crescent/Objects/ShuttleWeapons/lenses.rsi
     layers:
@@ -846,7 +846,7 @@
     tags:
       - CompaktLens
   - type: TimedDespawn
-    lifetime: 14
+    lifetime: 11.2
   - type: Sprite
     sprite: _Crescent/Objects/ShuttleWeapons/lenses.rsi
     layers:
@@ -887,7 +887,7 @@
     tags:
       - CompaktLens
   - type: TimedDespawn
-    lifetime: 14
+    lifetime: 11.2
   - type: Sprite
     sprite: _Crescent/Objects/ShuttleWeapons/lenses.rsi
     layers:
@@ -920,7 +920,7 @@
     tags:
       - CompaktLens
   - type: TimedDespawn
-    lifetime: 14
+    lifetime: 11.2
   - type: Sprite
     sprite: _Crescent/Objects/ShuttleWeapons/amcanister.rsi
     layers:
@@ -956,7 +956,7 @@
         Structural: 400
         Radiation: 20
   - type: TimedDespawn
-    lifetime: 14
+    lifetime: 11.2
   - type: Sprite
     sprite: _Crescent/Objects/ShuttleWeapons/amcanisterplas.rsi
     layers:
@@ -1007,8 +1007,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 20 # slow rotation so it isnt aimbot, still fairly accurate though
-    acceleration: 85
-    topSpeed: 85
+    acceleration: 110
+    topSpeed: 110
     fieldOfView: 20
     defaultSeekingRange: 400
     guidanceAlgorithm: PredictiveGuidance
@@ -1076,8 +1076,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 15
-    acceleration: 25
-    topSpeed: 125
+    acceleration: 32
+    topSpeed: 162
     fieldOfView: 30
     defaultSeekingRange: 400
     guidanceAlgorithm: PredictiveGuidance
@@ -1138,7 +1138,7 @@
     color: orange
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 22
+    lifetime: 17.6
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/plasmahardpoint.rsi
     layers:
@@ -1160,7 +1160,7 @@
         Piercing: 500
         Structural: 500
   - type: TimedDespawn
-    lifetime: 20
+    lifetime: 16
   - type: Sprite
     sprite: _Crescent/Objects/ShuttleWeapons/needler.rsi
     layers:
@@ -1209,8 +1209,8 @@
   - type: ProximityFuseTarget
   - type: HeatSeeking
     rotationSpeed: 25
-    acceleration: 5
-    topSpeed: 20
+    acceleration: 6
+    topSpeed: 26
     defaultSeekingRange: 300
     guidanceAlgorithm: PredictiveGuidance
   - type: PointLight
@@ -1248,7 +1248,7 @@
         Blunt: 40
         Piercing: 10
   - type: TimedDespawn
-    lifetime: 20
+    lifetime: 16
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/coilcasing.rsi
     layers:
@@ -1318,7 +1318,7 @@
         Piercing: 30
   - type: ProjectileIFF
   - type: TimedDespawn
-    lifetime: 15
+    lifetime: 12
   - type: Fixtures
     fixtures:
       projectile:
@@ -1360,7 +1360,7 @@
       types:
         Structural: 5000
   - type: TimedDespawn
-    lifetime: 300
+    lifetime: 240
     #roughly 39000m range
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/1000_armorpiercing_rail_casing.rsi
@@ -1394,7 +1394,7 @@
       types:
         Structural: 5
   - type: TimedDespawn
-    lifetime: 10
+    lifetime: 8
     #roughly 600m range
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/50_practice_machinegun_casing.rsi
@@ -1428,7 +1428,7 @@
       types:
         Structural: 150
   - type: TimedDespawn
-    lifetime: 10
+    lifetime: 8
     #roughly 600m range
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/50_highexplosive_machinegun_casing.rsi
@@ -1465,7 +1465,7 @@
         Structural: 400
         Piercing: 150
   - type: TimedDespawn
-    lifetime: 10
+    lifetime: 8
     #roughly 600m range
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/50_armorpiercing_machinegun_casing.rsi
@@ -1499,7 +1499,7 @@
         Structural: 35
         Blunt: 10
   - type: TimedDespawn
-    lifetime: 10
+    lifetime: 8
     #roughly 600m range
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/50_emp_machinegun_casing.rsi
@@ -1532,7 +1532,7 @@
       types:
         Structural: 1
   - type: TimedDespawn
-    lifetime: 240
+    lifetime: 192
     #roughly 22800m range
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/630_practice_shell_casing.rsi
@@ -1568,7 +1568,7 @@
       types:
         Structural: 1000
   - type: TimedDespawn
-    lifetime: 240
+    lifetime: 192
     #roughly 22800m range
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/630_highexplosive_shell_casing.rsi
@@ -1604,7 +1604,7 @@
       types:
         Structural: 1000
   - type: TimedDespawn
-    lifetime: 240
+    lifetime: 192
     #roughly 22800m range
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/630_armorpiercing_shell_casing.rsi

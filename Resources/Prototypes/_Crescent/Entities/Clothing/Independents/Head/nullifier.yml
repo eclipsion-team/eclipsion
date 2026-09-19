@@ -1,0 +1,26 @@
+# Eclipsion - a worn replica of χ Waveform Misalignment. The field is the point; the plating is an afterthought.
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHelmetWaveformNullifier
+  name: χ-phase nullifier helmet
+  description: A lead-lined skullcap wrapped around a lattice that forces the wearer's brainwaves out of phase with the noosphere. Every psion within five paces goes deaf to it, and nothing they send at the wearer holds together long enough to land.
+  components:
+  - type: Sprite
+    sprite: Nyanotrasen/Clothing/Head/Helmets/insulative_skullcap.rsi
+    color: "#8C96FF"
+  - type: Clothing
+    sprite: Nyanotrasen/Clothing/Head/Helmets/insulative_skullcap.rsi
+    clothingVisuals:
+      head:
+      - state: equipped-HELMET
+        color: "#8C96FF"
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.95
+        Radiation: 0.95
+  - type: PsionicNullifierClothing
+  - type: GuideHelp
+    guides: [ PsionicInsulation ]

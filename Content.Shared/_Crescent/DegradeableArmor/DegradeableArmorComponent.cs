@@ -31,7 +31,7 @@ public sealed partial class DegradeableArmorComponent : Component
     };
 
     [DataField, ViewVariables(VVAccess.ReadWrite), AutoNetworkedField]
-    public ArmorDegradation armorType = ArmorDegradation.Plastic;
+    public ArmorDegradation armorType = ArmorDegradation.Metallic;
 
     [DataField, ViewVariables(VVAccess.ReadWrite), AutoNetworkedField]
     public ArmorRepairMaterial armorRepair = ArmorRepairMaterial.PlasteelPlate;
@@ -56,8 +56,7 @@ public sealed partial class DegradeableArmorComponent : Component
 [Serializable, NetSerializable]
 public enum ArmorDegradation
 {
-    Ceramic = 1, // blocks damage but decay is exponential to the damage.
-    Metallic = 1<<1, // Linear damaage , linear scaling of protection
-    Plastic = 1<<2, // Complicated
+    Ceramic = 1, // Resists armor penetration, but cracks fast and protection falls off quadratically. Impact becomes stamina damage.
+    Metallic = 1<<1, // Weak to armor penetration, wears slowly with a protection floor. Impact becomes blunt trauma.
 }
 

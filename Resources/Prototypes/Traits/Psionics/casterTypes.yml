@@ -40,6 +40,7 @@
       components:
         - type: PsionicInsulation
         - type: Mindbroken
+        - type: PsionicNullifier # Eclipsion - psions within five tiles lose their powers
   requirements:
     - !type:CharacterItemGroupRequirement
       group: TraitsCasterType

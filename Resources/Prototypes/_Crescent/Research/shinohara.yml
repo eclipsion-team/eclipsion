@@ -409,7 +409,9 @@
     state: gilgamesh-open
   discipline: Corporate
   tier: 3
-  cost: 12500
+  cost: 25000
+  technologyPrerequisites:
+  - ShinoharaJaipei
   recipeUnlocks:
   - GilgameshFlatpack
 

@@ -1,0 +1,100 @@
+# Research-gated mecha kits. Battery included; weapons must be manufactured separately.
+# No ReverseEngineering: these new chassis require their faction's research progression.
+
+- type: entity
+  id: SuzumeFlatpack
+  parent: BaseFlatpack
+  name: SHI mR-210 'Suzume' exosuit construction kit
+  description: Parts used to build a light scout exosuit. Includes a charged powercell; weapon systems are supplied separately. Activate with a multitool to deploy.
+  components:
+  - type: Flatpack
+    entity: MechSHISuzumeBattery
+  - type: Sprite
+    layers:
+    - state: kit
+  - type: StaticPrice
+    price: 500
+
+- type: entity
+  id: JaipeiFlatpack
+  parent: BaseFlatpack
+  name: SHI mR-410 'Jaipei' exosuit construction kit
+  description: Parts used to build a medium combat exosuit. Includes a charged powercell; weapon systems are supplied separately. Activate with a multitool to deploy.
+  components:
+  - type: Flatpack
+    entity: MechSHIJaipeiBattery
+  - type: Sprite
+    layers:
+    - state: kit
+  - type: StaticPrice
+    price: 1000
+
+- type: entity
+  id: YamoriFlatpack
+  parent: BaseFlatpack
+  name: TFCF mk.I 'Yamori' exosuit construction kit
+  description: Parts used to build a light scout exosuit. Includes a charged powercell; weapon systems are supplied separately. Activate with a multitool to deploy.
+  components:
+  - type: Flatpack
+    entity: MechTFCFYamoriBattery
+  - type: Sprite
+    layers:
+    - state: kit
+  - type: StaticPrice
+    price: 500
+
+- type: entity
+  id: OniFlatpack
+  parent: BaseFlatpack
+  name: TFCF mk.II 'Oni' exosuit construction kit
+  description: Parts used to build a medium combat exosuit. Includes a charged powercell; weapon systems are supplied separately. Activate with a multitool to deploy.
+  components:
+  - type: Flatpack
+    entity: MechTFCFOniBattery
+  - type: Sprite
+    layers:
+    - state: kit
+  - type: StaticPrice
+    price: 1000
+
+- type: entity
+  id: RavagerFlatpack
+  parent: BaseFlatpack
+  name: TFCF T-300 'Ravager' exosuit construction kit
+  description: Parts used to build a heavy siege exosuit. Includes a charged powercell; weapon systems are supplied separately. Activate with a multitool to deploy.
+  components:
+  - type: Flatpack
+    entity: MechTFCFRavagerBattery
+  - type: Sprite
+    layers:
+    - state: kit
+  - type: StaticPrice
+    price: 2500
+
+- type: entity
+  id: BastionFlatpack
+  parent: BaseFlatpack
+  name: IEE mV-900 'Bastion' exosuit construction kit
+  description: Parts used to build a heavy siege exosuit. Includes a charged powercell; weapon systems are supplied separately. Activate with a multitool to deploy.
+  components:
+  - type: Flatpack
+    entity: MechDSMBastionBattery
+  - type: Sprite
+    layers:
+    - state: kit
+  - type: StaticPrice
+    price: 2500
+
+- type: entity
+  id: SvarogFlatpack
+  parent: BaseFlatpack
+  name: HNF mk.III 'Svarog' exosuit construction kit
+  description: Parts used to build a heavy siege exosuit. Includes a charged powercell; weapon systems are supplied separately. Activate with a multitool to deploy.
+  components:
+  - type: Flatpack
+    entity: MechNCWLSvarogBattery
+  - type: Sprite
+    layers:
+    - state: kit
+  - type: StaticPrice
+    price: 2500

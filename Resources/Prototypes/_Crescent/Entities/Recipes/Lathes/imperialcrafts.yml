@@ -543,9 +543,8 @@
     Steel: 2500
     Plasma: 1000
     Copper: 500
-    NanotrasenElectronics: 500
     BasicMechatronics: 1000
-    WeakLaserLocus: 5000
+    WeakLaserLocus: 10000
 
 - type: latheRecipe
   id: WeaponSniperDSMLegax

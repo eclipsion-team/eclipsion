@@ -6944,10 +6944,7 @@ entities:
       pos: -10.5,6.5
       parent: 1
     - type: DeviceLinkSource
-      linkedPorts:
-        invalid:
-        - - Pressed
-          - Toggle
+      linkedPorts: {}
 - proto: SinkEmpty
   entities:
   - uid: 1407

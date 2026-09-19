@@ -152,7 +152,7 @@
 # differ, and both are deliberate:
 #
 #   * It is dearer. A commercial yard takes 15% over what the hull it reinstates is worth; a fleet yard bills
-#     the crewman who authorises the job at 65% over. Nobody is competing for the work, the yard answers to a
+#     the crewman who authorises the job at 35% over. Nobody is competing for the work, the yard answers to a
 #     quartermaster rather than a customer, and the commercial slip is meant to stay worth the trip out to it.
 #
 #   * It is slower. Twice the time on every part, a longer floor under a trivial job and a ceiling of a quarter
@@ -172,7 +172,7 @@
   - type: FactionMachine
     restrictAccess: true
   - type: ShipRepairStation
-    priceMarkup: 1.65
+    priceMarkup: 1.35
     secondsPerPart: 0.8
     minRepairSeconds: 20
     maxRepairSeconds: 900

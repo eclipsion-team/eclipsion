@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Server._Crescent.Barricades;
+using Content.Server._Crescent.Psionics;
 using Content.Shared.Abilities.Psionics;
 using Content.Shared.Actions.Events;
 using Robust.Shared.Map;
@@ -29,6 +30,7 @@ public sealed class PsionicFlameBreathPowerSystem : EntitySystem
     [Dependency] private readonly CrescentTileFireSystem _tileFire = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
+    [Dependency] private readonly PsionicNullifierSystem _nullifier = default!;
     [Dependency] private readonly SharedPsionicAbilitiesSystem _psionics = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
 
@@ -72,7 +74,7 @@ public sealed class PsionicFlameBreathPowerSystem : EntitySystem
             }
 
             foreach (var tile in breath.Bands[breath.Band])
-                _tileFire.TrySpawnTileFire(breath.Grid, grid, tile);
+                TrySpawnFire(breath.Grid, grid, tile);
 
             breath.Band++;
             breath.NextWave = now + WaveInterval;
@@ -135,7 +137,7 @@ public sealed class PsionicFlameBreathPowerSystem : EntitySystem
         // The first band lights immediately, so the power always does something on the frame it is
         // pressed even if the caster is shot the instant afterwards.
         foreach (var tile in bands[0])
-            _tileFire.TrySpawnTileFire(gridUid, grid, tile);
+            TrySpawnFire(gridUid, grid, tile);
 
         if (bands.Count > 1)
         {
@@ -155,6 +157,17 @@ public sealed class PsionicFlameBreathPowerSystem : EntitySystem
 
         _psionics.LogPowerUsed(args.Performer, "flame breath", 5, 8);
         args.Handled = true;
+    }
+
+    /// <summary>
+    /// The flames are the power itself, so they will not catch on a tile inside a null field.
+    /// </summary>
+    private void TrySpawnFire(EntityUid gridUid, MapGridComponent grid, Vector2i tile)
+    {
+        if (_nullifier.IsInsideNullField(_transform.ToMapCoordinates(_map.GridTileToLocal(gridUid, grid, tile))))
+            return;
+
+        _tileFire.TrySpawnTileFire(gridUid, grid, tile);
     }
 
     private bool IsOccluded(

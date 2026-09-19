@@ -15816,8 +15816,6 @@ entities:
       parent: 1
     - type: DeviceLinkSource
       linkedPorts:
-        invalid:
-        - Pressed: Toggle
         1342:
         - Pressed: Toggle
         1343:

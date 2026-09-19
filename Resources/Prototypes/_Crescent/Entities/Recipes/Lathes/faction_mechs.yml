@@ -1,0 +1,118 @@
+# T1 matches Lancer; T2 matches Bogatyr/Paladin, including their battery tiers.
+# T3 exceeds Gilgamesh's material bill and retains its precursor-electronics bottleneck.
+# Siege costs cannot be discounted by upgraded stock parts. Times are base seconds.
+
+- type: latheRecipe
+  id: SuzumeFlatpack
+  category: Circuitry
+  result: SuzumeFlatpack
+  icon:
+    sprite: _Crescent/Objects/Specific/Mechs/suzume.rsi
+    state: suzume
+  completetime: 30
+  materials:
+    BasicMechatronics: 2500
+    AdvancedElectronics: 1000
+    Gold: 300
+    Silver: 500
+    Steel: 3000
+    Tungsten: 3000
+
+- type: latheRecipe
+  id: JaipeiFlatpack
+  category: Circuitry
+  result: JaipeiFlatpack
+  icon:
+    sprite: _Crescent/Objects/Specific/Mechs/jaipei.rsi
+    state: jaipei
+  completetime: 60
+  materials:
+    AdvancedMechatronics: 3500
+    AdvancedElectronics: 1500
+    Gold: 1000
+    Silver: 2500
+    Steel: 3500
+    Tungsten: 3500
+
+- type: latheRecipe
+  id: YamoriFlatpack
+  category: Circuitry
+  result: YamoriFlatpack
+  icon:
+    sprite: _Crescent/Objects/Specific/Mechs/yamori.rsi
+    state: yamori
+  completetime: 30
+  materials:
+    BasicMechatronics: 2500
+    AdvancedElectronics: 1000
+    Gold: 300
+    Silver: 500
+    Steel: 3000
+    Tungsten: 3000
+
+- type: latheRecipe
+  id: OniFlatpack
+  category: Circuitry
+  result: OniFlatpack
+  icon:
+    sprite: _Crescent/Objects/Specific/Mechs/oni.rsi
+    state: oni
+  completetime: 60
+  materials:
+    AdvancedMechatronics: 3500
+    AdvancedElectronics: 1500
+    Gold: 1000
+    Silver: 2500
+    Steel: 3500
+    Tungsten: 3500
+
+- type: latheRecipe
+  id: RavagerFlatpack
+  category: Circuitry
+  result: RavagerFlatpack
+  icon:
+    sprite: _Crescent/Objects/Specific/Mechs/ravager.rsi
+    state: ravager
+  completetime: 180
+  applyMaterialDiscount: false
+  materials:
+    AdvancedMechatronics: 4500
+    NanotrasenElectronics: 2500
+    Gold: 3500
+    Silver: 6000
+    Steel: 15000
+    Tungsten: 6000
+
+- type: latheRecipe
+  id: BastionFlatpack
+  category: Circuitry
+  result: BastionFlatpack
+  icon:
+    sprite: _Crescent/Objects/Specific/Mechs/bastion.rsi
+    state: bastion
+  completetime: 180
+  applyMaterialDiscount: false
+  materials:
+    AdvancedMechatronics: 4500
+    NanotrasenElectronics: 2500
+    Gold: 3500
+    Silver: 6000
+    Steel: 15000
+    Tungsten: 6000
+
+- type: latheRecipe
+  id: SvarogFlatpack
+  category: Circuitry
+  result: SvarogFlatpack
+  icon:
+    sprite: _Crescent/Objects/Specific/Mechs/svarog.rsi
+    state: svarog
+  completetime: 180
+  applyMaterialDiscount: false
+  materials:
+    AdvancedMechatronics: 4500
+    NanotrasenElectronics: 2500
+    Gold: 3500
+    Silver: 6000
+    Steel: 15000
+    Tungsten: 6000

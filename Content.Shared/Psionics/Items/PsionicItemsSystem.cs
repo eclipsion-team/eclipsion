@@ -1,5 +1,6 @@
 using Content.Shared.Inventory.Events;
 using Content.Shared.Clothing.Components;
+using Content.Shared.Crescent.Psionics;
 using Content.Shared.StatusEffect;
 
 namespace Content.Shared.Abilities.Psionics
@@ -8,6 +9,7 @@ namespace Content.Shared.Abilities.Psionics
     {
         [Dependency] private readonly StatusEffectsSystem _statusEffects = default!;
         [Dependency] private readonly IComponentFactory _componentFactory = default!;
+        [Dependency] private readonly PsionicNullifiedSystem _nullified = default!;
         public override void Initialize()
         {
             base.Initialize();
@@ -35,7 +37,8 @@ namespace Content.Shared.Abilities.Psionics
             if (!component.IsActive)
                 return;
 
-            if (!_statusEffects.HasStatusEffect(uid, "PsionicallyInsulated"))
+            // Eclipsion - taking a hat off must not strip the insulation a Waveform Misalignment was born with.
+            if (!_statusEffects.HasStatusEffect(uid, "PsionicallyInsulated") && !_nullified.ClaimsInsulation(args.Equipee))
                 RemComp<PsionicInsulationComponent>(args.Equipee);
 
             component.IsActive = false;

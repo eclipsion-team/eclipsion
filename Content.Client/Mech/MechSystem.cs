@@ -42,5 +42,29 @@ public sealed class MechSystem : SharedMechSystem
 
         layer.SetState(state);
         args.Sprite.DrawDepth = (int) drawDepth;
+
+        // Each chassis supplies aligned visor/service-light masks for its
+        // directional, open and broken RSI states.
+        if (args.Sprite.LayerMapTryGet(MechVisualLayers.Power, out var powerIndex) &&
+            args.Sprite.TryGetLayer(powerIndex, out var powerLayer))
+        {
+            _appearance.TryGetData<MechPowerState>(uid, MechVisuals.Power, out var power, args.Component);
+            var powerState = power switch
+            {
+                MechPowerState.Powered => "powered",
+                MechPowerState.Low => "low",
+                _ => "off"
+            };
+            // Broken hulls only have an unlit mask, even during state updates.
+            if (state == component.BrokenState)
+                powerState = "off";
+
+            powerLayer.SetState($"{state}-power-{powerState}");
+            args.Sprite.LayerSetColor(powerIndex, powerState == "off" ? Color.FromHex("#606060") : Color.White);
+            if (powerState == "off")
+                args.Sprite.LayerSetShader(powerIndex, null, null);
+            else
+                args.Sprite.LayerSetShader(powerIndex, "unshaded");
+        }
     }
 }

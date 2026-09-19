@@ -54,6 +54,7 @@
     fireStacks: 3
   - type: TimedDespawn
     lifetime: 5
+  - type: PsionicManifestation # Eclipsion - unravels inside a null field
 
 - type: entity
   id: ProjectileImpFireball

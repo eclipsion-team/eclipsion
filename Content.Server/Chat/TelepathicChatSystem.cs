@@ -1,3 +1,4 @@
+using Content.Shared.Crescent.Psionics;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
 using Content.Server.Chat.Managers;
@@ -80,6 +81,7 @@ public sealed partial class TelepathicChatSystem : EntitySystem
         return HasComp<TelepathyComponent>(entity)
             && !HasComp<PsionicsDisabledComponent>(entity)
             && !HasComp<PsionicInsulationComponent>(entity)
+            && !HasComp<PsionicallyNullifiedComponent>(entity)
             && !HasComp<SleepingComponent>(entity)
             && (!TryComp<MobStateComponent>(entity, out var mobstate) || mobstate.CurrentState == MobState.Alive);
     }

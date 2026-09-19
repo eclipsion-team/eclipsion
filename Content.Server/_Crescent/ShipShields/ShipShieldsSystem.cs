@@ -358,8 +358,15 @@ public sealed partial class ShipShieldsSystem : EntitySystem
         if (!Resolve(uid, ref component, false))
             return false;
 
-        Del(component.Shield);
-        RemComp<ShipShieldedComponent>(uid);
+        // Deleting a grid deletes its children, shield and emitter included, in no particular order. The emitter's
+        // shutdown lands here, and if the shield is already on its way out a second Del throws "Called Delete on an
+        // entity already being deleted" - every round restart and every destroyed shielded ship.
+        if (!TerminatingOrDeleted(component.Shield))
+            Del(component.Shield);
+
+        if (!TerminatingOrDeleted(uid))
+            RemComp<ShipShieldedComponent>(uid);
+
         return true;
     }
 

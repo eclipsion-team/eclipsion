@@ -40,7 +40,8 @@ public sealed partial class RadarConsoleSystem : SharedRadarConsoleSystem
         var xform = Transform(uid);
         var onGrid = xform.ParentUid == xform.GridUid;
         EntityCoordinates? coordinates = onGrid ? xform.Coordinates : null;
-        Angle? angle = onGrid ? xform.LocalRotation : null;
+        // Eclipsion: the radar is always drawn grid-up, however the console itself is turned.
+        Angle? angle = onGrid ? Angle.Zero : null;
 
         if (component.FollowEntity)
         {

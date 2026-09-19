@@ -11,7 +11,10 @@ trait-name-PsionicInsulation = χ Waveform Misalignment
 trait-description-PsionicInsulation =
     You are a flesh automaton animated by neurotransmitters. Within your skull lies a
     1.5kg sack of meat pretending at sentience. By modern epistemiological theory, you aren't even a sophont.
-    The good news is that you are immune to most positive and negative effects of psychic powers.
+    Your mind sits so far out of phase with the noosphere that it drags everything near you out of phase with it.
+    - No psionic power touches you. Nothing psychic can hurt, slow, move, read or heal you.
+    - Psions within five tiles of you cannot use any power, and whatever they had running collapses.
+    - Psionic fireballs, familiars, barriers and stasis fields fall apart when they come near you.
     There may be other consequences to this malady.
 
 trait-name-Elementalist = Elementalist

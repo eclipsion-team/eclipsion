@@ -103,7 +103,7 @@
           ents: []
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 95
+      projectileSpeed: 118.75
       fireRate: .4
       selectedMode: FullAuto
       availableModes:
@@ -171,7 +171,7 @@
           ents: []
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 85
+      projectileSpeed: 106.25
       fireRate: .5
       selectedMode: FullAuto
       availableModes:
@@ -239,7 +239,7 @@
           ents: []
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 100
+      projectileSpeed: 125
       fireRate: 6
       selectedMode: FullAuto
       availableModes:
@@ -307,7 +307,7 @@
           ents: []
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 105
+      projectileSpeed: 131.25
       fireRate: 8
       selectedMode: FullAuto
       availableModes:
@@ -377,7 +377,7 @@
           ents: []
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 95
+      projectileSpeed: 118.75
       burstFireRate: 16
       # 3-round bursts instead of the original 8, so the gap between them has to come down with it or the
       # magazine regenerates faster than it drains and the gun never runs dry. 3 / (3/16 + 0.47) = 4.56
@@ -450,7 +450,7 @@
           ents: []
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 100
+      projectileSpeed: 125
       burstFireRate: 24
       burstCooldown: 1.1
       shotsPerBurst: 8
@@ -522,7 +522,7 @@
           ents: []
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 70
+      projectileSpeed: 87.5
       fireRate: 2.5
       minAngle: 0.1
       maxAngle: 0.1
@@ -587,7 +587,7 @@
           ents: []
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 75
+      projectileSpeed: 93.75
       minAngle: 0.1
       maxAngle: 0.1
       fireRate: 3

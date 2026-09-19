@@ -34,8 +34,10 @@
       - type: Telepathic
       - type: LanguageAdder
         addSpoken:
+          - Tradeband
           - OldTaypani
         addUnderstood:
+          - Tradeband
           - OldTaypani
   access:
   - EmergencyShuttleRepealAll

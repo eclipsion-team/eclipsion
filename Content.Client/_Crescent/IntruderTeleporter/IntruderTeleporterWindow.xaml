@@ -1,0 +1,86 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
+                      Title="{Loc 'intruder-teleporter-title'}"
+                      SetSize="920 620"
+                      MinSize="720 520">
+    <BoxContainer Orientation="Horizontal" Margin="6" VerticalExpand="True" HorizontalExpand="True">
+
+        <!-- Left column: roster, target readout, orders. -->
+        <BoxContainer Orientation="Vertical" SetWidth="280" VerticalExpand="True" Margin="0 0 6 0">
+
+            <!-- Roster -->
+            <PanelContainer Margin="0 0 0 6">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BorderColor="#4d4d55" BorderThickness="2"/>
+                </PanelContainer.PanelOverride>
+
+                <BoxContainer Orientation="Vertical" Margin="8 6">
+                    <Label Name="RosterHeader" Text="{Loc 'intruder-teleporter-section-roster'}"
+                           StyleClasses="ConsoleSubHeading" HorizontalAlignment="Center"/>
+                    <PanelContainer StyleClasses="LowDivider" HorizontalExpand="True" SetHeight="2" Margin="0 4"/>
+
+                    <BoxContainer Name="RosterList" Orientation="Vertical" Margin="0 0 0 6" MinHeight="88"/>
+
+                    <controls:MonotoneButton Name="JoinButton" Text="{Loc 'intruder-teleporter-join'}"
+                                             HorizontalExpand="True"/>
+                </BoxContainer>
+            </PanelContainer>
+
+            <!-- Target -->
+            <PanelContainer Margin="0 0 0 6">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BorderColor="#4d4d55" BorderThickness="2"/>
+                </PanelContainer.PanelOverride>
+
+                <BoxContainer Orientation="Vertical" Margin="8 6">
+                    <Label Text="{Loc 'intruder-teleporter-section-target'}"
+                           StyleClasses="ConsoleSubHeading" HorizontalAlignment="Center"/>
+                    <PanelContainer StyleClasses="LowDivider" HorizontalExpand="True" SetHeight="2" Margin="0 4"/>
+
+                    <Label Name="TargetNameLabel" StyleClasses="ConsoleText" Margin="0 0 0 2"/>
+                    <Label Name="TargetDistanceLabel" StyleClasses="LabelSecondaryColor" Margin="0 0 0 2"/>
+                    <Label Name="TargetStatusLabel" StyleClasses="LabelSecondaryColor"/>
+                </BoxContainer>
+            </PanelContainer>
+
+            <!-- Orders -->
+            <PanelContainer Margin="0 0 0 6">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BorderColor="#4d4d55" BorderThickness="2"/>
+                </PanelContainer.PanelOverride>
+
+                <BoxContainer Orientation="Vertical" Margin="8 6">
+                    <Label Text="{Loc 'intruder-teleporter-section-orders'}"
+                           StyleClasses="ConsoleSubHeading" HorizontalAlignment="Center"/>
+                    <PanelContainer StyleClasses="LowDivider" HorizontalExpand="True" SetHeight="2" Margin="0 4"/>
+
+                    <Label Name="StatusLabel" StyleClasses="ConsoleText" Margin="0 0 0 6"/>
+
+                    <controls:MonotoneButton Name="LaunchButton" Text="{Loc 'intruder-teleporter-launch'}"
+                                             HorizontalExpand="True" Margin="0 0 0 4"/>
+                    <controls:MonotoneButton Name="AbortButton" Text="{Loc 'intruder-teleporter-abort'}"
+                                             HorizontalExpand="True" Visible="False"/>
+
+                    <Label Name="AccessHintLabel" Text="{Loc 'intruder-teleporter-access-hint'}"
+                           StyleClasses="LabelSecondaryColor" Margin="0 4 0 0" Visible="False"/>
+                </BoxContainer>
+            </PanelContainer>
+
+            <Control VerticalExpand="True"/>
+
+            <Label Name="HintLabel" Text="{Loc 'intruder-teleporter-hint'}" StyleClasses="LabelSecondaryColor"/>
+        </BoxContainer>
+
+        <!-- Right column: the scanner itself. -->
+        <PanelContainer VerticalExpand="True" HorizontalExpand="True">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BorderColor="#4d4d55" BorderThickness="2"/>
+            </PanelContainer.PanelOverride>
+
+            <ui:ShuttleNavControl Name="RadarScreen" Margin="4" HorizontalExpand="True" VerticalExpand="True"/>
+        </PanelContainer>
+
+    </BoxContainer>
+</controls:FancyWindow>

@@ -1,3 +1,4 @@
+using Content.Shared.Crescent.Psionics;
 using Content.Shared._Crescent.ShieldBelt;
 using Content.Shared.Abilities.Psionics;
 using Content.Shared.Clothing;
@@ -20,6 +21,7 @@ public sealed class ShieldBeltSystem : EntitySystem
     private const string InsulatedStatusEffect = "PsionicallyInsulated";
 
     [Dependency] private readonly InventorySystem _inventory = default!;
+    [Dependency] private readonly PsionicNullifiedSystem _nullified = default!;
     [Dependency] private readonly ItemToggleSystem _toggle = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly StatusEffectsSystem _statusEffects = default!;
@@ -91,6 +93,11 @@ public sealed class ShieldBeltSystem : EntitySystem
     private bool HasOtherInsulationSource(EntityUid wearer, EntityUid ignore)
     {
         if (_statusEffects.HasStatusEffect(wearer, InsulatedStatusEffect))
+            return true;
+
+        // A null field needs the insulation under it. Born with one, it was never ours to strip; worn, the
+        // nullifier takes the insulation over and strips it itself.
+        if (_nullified.ClaimsInsulation(wearer))
             return true;
 
         var slots = _inventory.GetSlotEnumerator(wearer);

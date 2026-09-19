@@ -1962,9 +1962,6 @@ entities:
         262:
         - - Pressed
           - Toggle
-        invalid:
-        - - Pressed
-          - Toggle
   - uid: 269
     components:
     - type: Transform
@@ -1990,9 +1987,6 @@ entities:
         - - Pressed
           - Toggle
         72:
-        - - Pressed
-          - Toggle
-        invalid:
         - - Pressed
           - Toggle
 - proto: SpawnDungeonLootOresFull

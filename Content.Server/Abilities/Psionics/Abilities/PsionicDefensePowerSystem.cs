@@ -1,3 +1,4 @@
+using Content.Shared.Crescent.Psionics;
 using System.Numerics;
 using Content.Shared.Abilities.Psionics;
 using Content.Shared.Actions.Events;
@@ -97,6 +98,10 @@ public sealed class PsionicDefensePowerSystem : EntitySystem
         PsionicArmorUpgradeComponent component,
         DamageModifyEvent args)
     {
+        // The reinforcement is the power itself, and inside a null field there is no power to hold it up.
+        if (HasComp<PsionicallyNullifiedComponent>(uid))
+            return;
+
         args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage, ArmorReinforcement);
     }
 

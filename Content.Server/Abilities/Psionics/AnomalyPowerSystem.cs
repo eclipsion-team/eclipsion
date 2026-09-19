@@ -1,3 +1,4 @@
+using Content.Server._Crescent.Psionics;
 using Content.Shared.Abilities.Psionics;
 using Content.Shared.Actions.Events;
 using Content.Shared.Psionics.Glimmer;
@@ -40,6 +41,7 @@ public sealed partial class AnomalyPowerSystem : EntitySystem
     [Dependency] private readonly SolutionContainerSystem _solutionContainer = default!;
     [Dependency] private readonly PuddleSystem _puddle = default!;
     [Dependency] private readonly FlammableSystem _flammable = default!;
+    [Dependency] private readonly PsionicNullifierSystem _nullifier = default!;
 
     public override void Initialize()
     {

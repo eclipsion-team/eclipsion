@@ -96,8 +96,8 @@
       - id: MedicatedSuture
       - id: RegenerativeMesh
       - id: SyringeEphedrine
-      - id: BruteAutoInjector
-      - id: BurnAutoInjector
+      - id: CombatMedipen
+        amount: 2
       - id: EmergencyMedipen
       - id: PainMedipen # Morphine
       - id: SyringeSaline

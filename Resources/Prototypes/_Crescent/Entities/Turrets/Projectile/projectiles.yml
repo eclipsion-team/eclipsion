@@ -23,7 +23,7 @@
     color: orange
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 11 # 1210 m at 110 m/s
+    lifetime: 8.8 # 1210 m at 137.5 m/s
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/pdtcasing.rsi
     layers:
@@ -62,7 +62,7 @@
     color: orange
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 14 #1960
+    lifetime: 11.2 #1960
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/pdtcasing.rsi
     layers:
@@ -128,7 +128,7 @@
     color: orange
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 15.79 # 1500 m at 95 m/s
+    lifetime: 12.63 # 1500 m at 118.75 m/s
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/pdtcasing.rsi
     layers:
@@ -167,7 +167,7 @@
     color: orange
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 15.79 # 1500 m at 95 m/s
+    lifetime: 12.63 # 1500 m at 118.75 m/s
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/pdtcasing.rsi
     layers:
@@ -236,7 +236,7 @@
     color: orange
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 22 # 2310 m at 105 m/s
+    lifetime: 17.6 # 2310 m at 131.25 m/s
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/pdtcasing.rsi
     layers:
@@ -274,7 +274,7 @@
     color: orange
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 22 # 2310 m at 105 m/s
+    lifetime: 17.6 # 2310 m at 131.25 m/s
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/pdtcasing.rsi
     layers:
@@ -312,7 +312,7 @@
     color: orange
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 22 # 2310 m at 105 m/s
+    lifetime: 17.6 # 2310 m at 131.25 m/s
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/pdtcasing.rsi
     layers:
@@ -352,7 +352,7 @@
     color: orange
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 21 # 2625 m at 125 m/s
+    lifetime: 16.8 # 2625 m at 156.25 m/s
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/mortarcasing.rsi
     layers:
@@ -383,7 +383,7 @@
     color: orange
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 21 # 2625 m at 125 m/s
+    lifetime: 16.8 # 2625 m at 156.25 m/s
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/mortarcasing.rsi
     layers:
@@ -421,7 +421,7 @@
     color: orange
     energy: 0.5
   - type: TimedDespawn
-    lifetime: 21 # 2625 m at 125 m/s
+    lifetime: 16.8 # 2625 m at 156.25 m/s
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/mortarcasing.rsi
     layers:
@@ -449,7 +449,7 @@
         Structural: 900
         Piercing: 250
   - type: TimedDespawn
-    lifetime: 23.33 # 4200 m at 180 m/s
+    lifetime: 18.66 # 4200 m at 225 m/s
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/630_armorpiercing_shell_casing.rsi
     layers:
@@ -487,7 +487,7 @@
         Structural: 1500
         Piercing: 300
   - type: TimedDespawn
-    lifetime: 23.33 # 4200 m at 180 m/s
+    lifetime: 18.66 # 4200 m at 225 m/s
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/630_armorpiercing_shell_casing.rsi
     layers:
@@ -523,7 +523,7 @@
         Structural: 250
         Piercing: 250
   - type: TimedDespawn
-    lifetime: 23.33 # 4200 m at 180 m/s
+    lifetime: 18.66 # 4200 m at 225 m/s
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/630_armorpiercing_shell_casing.rsi
     layers:
@@ -559,7 +559,7 @@
       types:
         Structural: 2600
   - type: TimedDespawn
-    lifetime: 25 #5000m
+    lifetime: 20 #5000m
   - type: Sprite
     sprite: _NF/Objects/SpaceArtillery/1000_armorpiercing_rail_casing.rsi
     layers:
@@ -602,7 +602,7 @@
     tags:
       - CorpusShell
   - type: TimedDespawn
-    lifetime: 12 # 1260 m at 105 m/s
+    lifetime: 9.6 # 1260 m at 131.25 m/s
   - type: Sprite
     sprite: _Crescent/Objects/ShuttleWeapons/flak.rsi
     layers:

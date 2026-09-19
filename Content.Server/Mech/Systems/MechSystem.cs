@@ -50,6 +50,7 @@ public sealed partial class MechSystem : SharedMechSystem
 
         SubscribeLocalEvent<MechComponent, InteractUsingEvent>(OnInteractUsing);
         SubscribeLocalEvent<MechComponent, EntInsertedIntoContainerMessage>(OnInsertBattery);
+        SubscribeLocalEvent<MechComponent, EntRemovedFromContainerMessage>(OnBatteryRemovedFromContainer);
         SubscribeLocalEvent<MechComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<MechComponent, GetVerbsEvent<AlternativeVerb>>(OnAlternativeVerb);
         SubscribeLocalEvent<MechComponent, MechOpenUiEvent>(OnOpenUi);
@@ -103,12 +104,14 @@ public sealed partial class MechSystem : SharedMechSystem
 
         _actionBlocker.UpdateCanMove(uid);
         UpdateUserInterface(uid, mech);
+        UpdateAppearance(uid, mech);
     }
 
     private void OnEmpDisabledRemoved(EntityUid uid, MechComponent component, EmpDisabledRemoved args)
     {
         _actionBlocker.UpdateCanMove(uid);
         UpdateUserInterface(uid, component);
+        UpdateAppearance(uid, component);
     }
 
     private void OnBatteryChargeChanged(EntityUid uid, BatteryComponent component, ref ChargeChangedEvent args)
@@ -125,6 +128,7 @@ public sealed partial class MechSystem : SharedMechSystem
         Dirty(parent, mech);
         _actionBlocker.UpdateCanMove(parent);
         UpdateUserInterface(parent, mech);
+        UpdateAppearance(parent, mech);
     }
 
     private void OnInteractUsing(EntityUid uid, MechComponent component, InteractUsingEvent args)
@@ -161,6 +165,21 @@ public sealed partial class MechSystem : SharedMechSystem
 
         Dirty(uid, component);
         _actionBlocker.UpdateCanMove(uid);
+        UpdateAppearance(uid, component);
+        UpdateUserInterface(uid, component);
+    }
+
+    private void OnBatteryRemovedFromContainer(EntityUid uid, MechComponent component, EntRemovedFromContainerMessage args)
+    {
+        if (args.Container != component.BatterySlot)
+            return;
+
+        component.Energy = 0;
+        component.MaxEnergy = 0;
+        Dirty(uid, component);
+        _actionBlocker.UpdateCanMove(uid);
+        UpdateAppearance(uid, component);
+        UpdateUserInterface(uid, component);
     }
 
     private void OnRemoveBattery(EntityUid uid, MechComponent component, RemoveBatteryEvent args)
@@ -186,10 +205,15 @@ public sealed partial class MechSystem : SharedMechSystem
 
         // TODO: this should just be damage and battery
         component.Integrity = component.MaxIntegrity;
-        component.Energy = component.MaxEnergy;
+        // ContainerFill may already have inserted a partially charged battery.
+        // Read the cell instead of assuming a full charge at map initialization.
+        var battery = component.BatterySlot.ContainedEntity;
+        component.Energy = TryComp<BatteryComponent>(battery, out var cell) ? cell.CurrentCharge : 0;
+        component.MaxEnergy = cell?.MaxCharge ?? 0;
 
         _actionBlocker.UpdateCanMove(uid);
         Dirty(uid, component);
+        UpdateAppearance(uid, component);
     }
 
     private void OnRemoveEquipmentMessage(EntityUid uid, MechComponent component, MechEquipmentRemoveMessage args)

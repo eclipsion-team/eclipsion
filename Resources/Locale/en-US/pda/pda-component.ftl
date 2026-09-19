@@ -42,6 +42,14 @@ comp-pda-ui-ringtone-button = Ringtone
 
 comp-pda-ui-ringtone-button-description = Change your PDA's ringtone
 
+comp-pda-ui-background-button = Background
+
+comp-pda-ui-background-button-description = Choose a custom image (PNG/JPG) for your PDA background
+
+comp-pda-ui-background-reset-button = Reset Background
+
+comp-pda-ui-background-reset-button-description = Restore the default PDA background
+
 comp-pda-ui-toggle-flashlight-button = Toggle Flashlight
 
 pda-bound-user-interface-music-button = Music Instrument

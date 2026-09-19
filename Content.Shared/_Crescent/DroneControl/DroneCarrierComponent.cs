@@ -59,6 +59,12 @@ public sealed partial class DroneCarrierComponent : Component
     public float LaunchClearance = 25f;
 
     /// <summary>
+    ///     How long a produced drone neither deals nor receives shuttle impact damage after spawning.
+    /// </summary>
+    [DataField]
+    public TimeSpan SpawnCollisionProtectionDuration = TimeSpan.FromMinutes(2);
+
+    /// <summary>
     ///     How close (meters) a drone must get to its slot to be considered holding formation.
     /// </summary>
     [DataField]

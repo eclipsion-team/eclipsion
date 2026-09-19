@@ -16236,9 +16236,6 @@ entities:
         2273:
           position: 0,3
           _rotation: East
-        invalid:
-          position: 3,2
-          _rotation: South
     - type: ContainerContainer
       containers:
         storagebase: !type:Container

@@ -49,7 +49,8 @@ internal sealed class NoosphericFryRule : StationEventSystem<NoosphericFryRuleCo
         var query = EntityQueryEnumerator<PsionicInsulationComponent, MobStateComponent>();
         while (query.MoveNext(out var psion, out _, out _))
         {
-            if (!_mobStateSystem.IsAlive(psion))
+            // Eclipsion - a null field is out of phase with the noosphere; the discharge has nothing to fry.
+            if (!_mobStateSystem.IsAlive(psion) || HasComp<Content.Shared.Crescent.Psionics.PsionicNullifierComponent>(psion))
                 continue;
 
             if (!_inventorySystem.TryGetSlotEntity(psion, "head", out var headItem))

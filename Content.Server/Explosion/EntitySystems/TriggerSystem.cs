@@ -79,6 +79,9 @@ using JetBrains.Annotations;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
+using Content.Shared.Projectiles;
+using Robust.Shared.Physics;
+using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
@@ -117,6 +120,10 @@ namespace Content.Server.Explosion.EntitySystems
         [Dependency] private readonly FixtureSystem _fixtures = default!;
         [Dependency] private readonly FlashSystem _flashSystem = default!;
         [Dependency] private readonly SharedBroadphaseSystem _broadphase = default!;
+        [Dependency] private readonly SharedPhysicsSystem _physics = default!;
+
+        // How far in front of the struck surface a colliding round detonates. Matches ProjectilePhasePreventerSystem.
+        private const float ImpactStandoff = 0.1f;
         [Dependency] private readonly IAdminLogManager _adminLogger = default!;
         [Dependency] private readonly SharedContainerSystem _container = default!;
         [Dependency] private readonly BodySystem _body = default!;
@@ -256,8 +263,46 @@ namespace Content.Server.Explosion.EntitySystems
 
         private void OnTriggerCollide(EntityUid uid, TriggerOnCollideComponent component, ref StartCollideEvent args)
         {
-            if (args.OurFixtureId == component.FixtureID && (!component.IgnoreOtherNonHard || args.OtherFixture.Hard))
-                Trigger(uid);
+            if (args.OurFixtureId != component.FixtureID || (component.IgnoreOtherNonHard && !args.OtherFixture.Hard))
+                return;
+
+            if (args.OtherFixture.Hard && HasComp<ProjectileComponent>(uid))
+                MoveToImpactPoint(uid, args.OurBody, args.OtherEntity, args.OtherFixture.CollisionLayer);
+
+            Trigger(uid);
+        }
+
+        /// <summary>
+        /// Physics reports a contact only after the step, when a fast round is already overlapping its target.
+        /// An explosion started there begins inside the wall's airtight tile, which blocks it and absorbs the
+        /// whole blast. Rewind the round along its path to just in front of the surface it struck.
+        /// </summary>
+        private void MoveToImpactPoint(EntityUid uid, PhysicsComponent body, EntityUid target, int targetLayer)
+        {
+            var speed = body.LinearVelocity.Length();
+            if (speed <= 0.01f)
+                return;
+
+            var direction = body.LinearVelocity / speed;
+            var mapPos = _transformSystem.GetMapCoordinates(uid);
+
+            // One tick of travel plus a margin covers the whole distance the round can have entered the target.
+            var rewind = speed * (float) _timing.TickPeriod.TotalSeconds + 1f;
+            var origin = mapPos.Position - direction * rewind;
+            var ray = new CollisionRay(origin, direction, targetLayer);
+
+            foreach (var hit in _physics.IntersectRay(mapPos.MapId, ray, rewind, uid, false))
+            {
+                if (hit.HitEntity != target)
+                    continue;
+
+                if (hit.Distance >= rewind)
+                    return;
+
+                _transformSystem.SetWorldPosition(uid,
+                    origin + direction * MathF.Max(hit.Distance - ImpactStandoff, 0f));
+                return;
+            }
         }
 
         private void OnSpawnTriggered(EntityUid uid, TriggerOnSpawnComponent component, MapInitEvent args)

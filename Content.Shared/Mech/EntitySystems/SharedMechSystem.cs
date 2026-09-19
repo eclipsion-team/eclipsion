@@ -558,7 +558,7 @@ public abstract class SharedMechSystem : EntitySystem
         RaiseLocalEvent(uid, ev);
     }
 
-    private void UpdateAppearance(EntityUid uid, MechComponent? component = null,
+    protected void UpdateAppearance(EntityUid uid, MechComponent? component = null,
         AppearanceComponent? appearance = null)
     {
         if (!Resolve(uid, ref component, ref appearance, false))
@@ -566,6 +566,15 @@ public abstract class SharedMechSystem : EntitySystem
 
         _appearance.SetData(uid, MechVisuals.Open, IsEmpty(component), appearance);
         _appearance.SetData(uid, MechVisuals.Broken, component.Broken, appearance);
+        var power = MechPowerState.Off;
+        if (!component.Broken && component.Energy > 0 && component.MaxEnergy > 0 &&
+            !HasComp<EmpDisabledComponent>(uid))
+        {
+            power = component.Energy.Float() / component.MaxEnergy.Float() <= 0.2f
+                ? MechPowerState.Low
+                : MechPowerState.Powered;
+        }
+        _appearance.SetData(uid, MechVisuals.Power, power, appearance);
     }
 
     private void OnDragDrop(EntityUid uid, MechComponent component, ref DragDropTargetEvent args)

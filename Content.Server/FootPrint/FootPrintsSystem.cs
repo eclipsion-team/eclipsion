@@ -53,7 +53,10 @@ public sealed class FootPrintsSystem : EntitySystem
 
     private void OnMove(EntityUid uid, FootPrintsComponent component, ref MoveEvent args)
     {
-        if (TerminatingOrDeleted(uid)
+        // A parent change is grid traversal re-parenting the mob, not a step. Spawning here re-enters the
+        // engine's traversal check from inside its guard ("Grid traversal attempted to handle movement...").
+        if (args.ParentChanged
+            || TerminatingOrDeleted(uid)
             || component.ContainedSolution.Volume <= 0
             || TryComp<PhysicsComponent>(uid, out var physics) && physics.BodyStatus != BodyStatus.OnGround
             || args.Entity.Comp1.GridUid is not {} gridUid)

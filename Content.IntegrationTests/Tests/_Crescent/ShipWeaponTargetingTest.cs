@@ -1,7 +1,9 @@
 using System.Numerics;
+using Content.Server.Explosion.Components;
 using Content.Server.PointCannons;
 using Content.Shared._Crescent;
 using Content.Shared.Damage;
+using Content.Shared.Explosion.Components;
 using Content.Shared.Physics;
 using Content.Shared.PointCannons;
 using Content.Shared.Projectiles;
@@ -10,6 +12,8 @@ using Content.Shared.Weapons.Ranged.Events;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
+using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics.Systems;
 
 namespace Content.IntegrationTests.Tests._Crescent;
 
@@ -98,6 +102,114 @@ public sealed class ShipWeaponTargetingTest
             Assert.That(maps.GetTileRef(map.Grid, Vector2i.Zero).Tile.IsEmpty, Is.True);
             Shoot(true, 30);
             Assert.That(em.GetComponent<DamageableComponent>(rear).TotalDamage, Is.GreaterThan(rearDamage));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [TestCase(false, 0)]
+    [TestCase(true, 0)]
+    [TestCase(false, 37)]
+    [TestCase(true, 37)]
+    public async Task ExplosiveRoundDetonatesOutsideWall(bool targetTiles, int rotation)
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+        var em = server.EntMan;
+        var maps = server.System<SharedMapSystem>();
+        var transforms = server.System<SharedTransformSystem>();
+
+        await server.WaitPost(() =>
+        {
+            for (var x = 0; x < 4; x++)
+            for (var y = 0; y < 2; y++)
+                maps.SetTile(map.Grid, new Vector2i(x, y), map.Tile.Tile);
+
+            em.SpawnEntity("WallSolid", new EntityCoordinates(map.Grid, 0.5f, 0.5f));
+            transforms.SetWorldRotation(map.Grid, Angle.FromDegrees(rotation));
+        });
+        await pair.RunTicksSync(2);
+
+        await server.WaitAssertion(() =>
+        {
+            var weapon = em.SpawnEntity(null, new MapCoordinates(new Vector2(-10, -10), map.MapId));
+            var start = transforms.ToMapCoordinates(new EntityCoordinates(map.Grid, -2f, 0.5f));
+            var round = em.SpawnEntity("Bullet300mmBase", start);
+            var projectile = em.GetComponent<ProjectileComponent>(round);
+            projectile.Weapon = weapon;
+            var phase = em.EnsureComponent<ProjectilePhasePreventComponent>(round);
+            phase.TargetTiles = targetTiles;
+            phase.relevantBitmasks = (int) (CollisionGroup.Impassable | CollisionGroup.BulletImpassable);
+
+            // One fast tick carries the round through the wall and past the far edge of the grid.
+            transforms.SetWorldPosition(round,
+                transforms.ToMapCoordinates(new EntityCoordinates(map.Grid, 3f, 0.5f)).Position);
+            server.System<ProjectilePhasePreventerSystem>().Update(1f / 60f);
+
+            Assert.That(projectile.DamagedEntity, Is.True, "The swept round must hit the wall.");
+            Assert.That(em.GetComponent<ExplosiveComponent>(round).Exploded, Is.True,
+                "A swept explosive round must detonate, not just deal its direct damage.");
+
+            var local = Vector2.Transform(transforms.GetWorldPosition(round), transforms.GetInvWorldMatrix(map.Grid));
+            // A margin is required: a point exactly on the wall's edge can round into the wall's own tile,
+            // where the airtight wall traps the whole blast.
+            Assert.That(local.X, Is.LessThan(-0.05f).And.GreaterThan(-0.5f),
+                "The blast must start just in front of the wall, not inside its airtight tile or behind it.");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [TestCase(0)]
+    [TestCase(37)]
+    public async Task PhysicsCollisionDetonatesOutsideWall(int rotation)
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+        var em = server.EntMan;
+        var maps = server.System<SharedMapSystem>();
+        var transforms = server.System<SharedTransformSystem>();
+
+        await server.WaitPost(() =>
+        {
+            for (var x = 0; x < 4; x++)
+            for (var y = 0; y < 2; y++)
+                maps.SetTile(map.Grid, new Vector2i(x, y), map.Tile.Tile);
+
+            em.SpawnEntity("WallSolid", new EntityCoordinates(map.Grid, 0.5f, 0.5f));
+            transforms.SetWorldRotation(map.Grid, Angle.FromDegrees(rotation));
+        });
+        await pair.RunTicksSync(2);
+
+        await server.WaitPost(() =>
+        {
+            // Rounds fired in wall mode have no phase prevention and detonate from the physics contact.
+            const float speed = 190f;
+            var travel = speed * (float) server.Timing.TickPeriod.TotalSeconds;
+            var weapon = em.SpawnEntity(null, new MapCoordinates(new Vector2(-10, -10), map.MapId));
+            var start = transforms.ToMapCoordinates(new EntityCoordinates(map.Grid, 0.5f - travel, 0.5f));
+            var round = em.SpawnEntity("Bullet300mmBase", start);
+            em.RemoveComponent<ProjectilePhasePreventComponent>(round);
+            em.GetComponent<ProjectileComponent>(round).Weapon = weapon;
+
+            // One step puts the centre of the round in the middle of the wall's tile.
+            var direction = Vector2.TransformNormal(Vector2.UnitX, transforms.GetWorldMatrix(map.Grid));
+            var physics = server.System<SharedPhysicsSystem>();
+            var body = em.GetComponent<PhysicsComponent>(round);
+            physics.SetLinearVelocity(round, direction * speed, body: body);
+            physics.SetAwake((round, body), true);
+        });
+        await pair.RunTicksSync(10);
+
+        await server.WaitAssertion(() =>
+        {
+            var query = em.EntityQueryEnumerator<ExplosionVisualsComponent>();
+            Assert.That(query.MoveNext(out var visuals), Is.True, "The round must explode on contact.");
+            var local = Vector2.Transform(visuals!.Epicenter.Position, transforms.GetInvWorldMatrix(map.Grid));
+            Assert.That(local.X, Is.LessThan(-0.05f).And.GreaterThan(-0.5f),
+                "The blast must start just in front of the wall, not inside its airtight tile.");
         });
 
         await pair.CleanReturnAsync();

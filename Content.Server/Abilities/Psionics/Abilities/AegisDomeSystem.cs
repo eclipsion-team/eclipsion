@@ -272,7 +272,7 @@ public sealed class AegisDomeSystem : EntitySystem
         Shatter(dome);
     }
 
-    private void Shatter(Entity<AegisDomeComponent> dome)
+    public void Shatter(Entity<AegisDomeComponent> dome)
     {
         Spawn(ShatterPrototype, _transform.GetMapCoordinates(dome.Owner));
 

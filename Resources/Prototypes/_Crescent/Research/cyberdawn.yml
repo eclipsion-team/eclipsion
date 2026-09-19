@@ -128,7 +128,7 @@
 
 - type: technology
   id: CyberdawnLancer
-  name: research-technology-cyberdawn-marauder
+  name: research-technology-mech-tfcf-scouts
   icon:
     sprite: _Crescent/Objects/Specific/mecha.rsi
     state: marauder
@@ -137,6 +137,7 @@
   cost: 15000
   recipeUnlocks:
   - MarauderFlatpack
+  - YamoriFlatpack
   - WeaponMechSword
   - WeaponMechCombatLightRifle
 

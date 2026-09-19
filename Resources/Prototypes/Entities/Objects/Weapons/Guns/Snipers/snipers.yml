@@ -405,6 +405,7 @@
   - type: Appearance
   - type: Gun
     damageModifier: 1.0
+    projectileSpeed: 75
     fireRate: 8
     selectedMode: SemiAuto
     availableModes:
@@ -460,6 +461,7 @@
   - type: Appearance
   - type: Gun
     damageModifier: 1.0
+    projectileSpeed: 75
     fireRate: 8
     selectedMode: SemiAuto
     availableModes:

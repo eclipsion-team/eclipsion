@@ -36,9 +36,6 @@
     sprite: _Crescent/Clothing/CMM/Head/midshipman.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/CMM/Head/midshipman.rsi
-  - type: PointLight
-    radius: 6
-    color: "#add8e6"
   - type: PressureProtection
     highPressureMultiplier: 0.1
     lowPressureMultiplier: 1000
@@ -66,9 +63,6 @@
     sprite: _Crescent/Clothing/CMM/Head/patrol.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/CMM/Head/patrol.rsi
-  - type: PointLight
-    radius: 6
-    color: "#add8e6"
   - type: PressureProtection
     highPressureMultiplier: 0.1
     lowPressureMultiplier: 1000
@@ -94,9 +88,6 @@
     sprite: _Crescent/Clothing/CMM/Head/ensign.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/CMM/Head/ensign.rsi
-  - type: PointLight
-    radius: 6
-    color: "#add8e6"
   - type: PressureProtection
     highPressureMultiplier: 0.1
     lowPressureMultiplier: 1000

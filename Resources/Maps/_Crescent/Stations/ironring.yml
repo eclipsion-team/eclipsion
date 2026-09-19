@@ -33840,10 +33840,7 @@ entities:
       pos: 1.3300729,-9.517697
       parent: 1
     - type: Storage
-      storedItems:
-        invalid:
-          position: 0,0
-          _rotation: East
+      storedItems: {}
     - type: ContainerContainer
       containers:
         storagebase: !type:Container
@@ -33855,10 +33852,7 @@ entities:
       pos: 13.493491,12.756289
       parent: 1
     - type: Storage
-      storedItems:
-        invalid:
-          position: 0,0
-          _rotation: East
+      storedItems: {}
     - type: ContainerContainer
       containers:
         storagebase: !type:Container
@@ -33870,10 +33864,7 @@ entities:
       pos: -17.486046,-5.285459
       parent: 1
     - type: Storage
-      storedItems:
-        invalid:
-          position: 0,0
-          _rotation: East
+      storedItems: {}
     - type: ContainerContainer
       containers:
         storagebase: !type:Container
@@ -33885,10 +33876,7 @@ entities:
       pos: 13.506447,0.5509217
       parent: 1
     - type: Storage
-      storedItems:
-        invalid:
-          position: 0,0
-          _rotation: East
+      storedItems: {}
     - type: ContainerContainer
       containers:
         storagebase: !type:Container
@@ -33900,10 +33888,7 @@ entities:
       pos: 12.662697,-3.2615783
       parent: 1
     - type: Storage
-      storedItems:
-        invalid:
-          position: 0,0
-          _rotation: East
+      storedItems: {}
     - type: ContainerContainer
       containers:
         storagebase: !type:Container

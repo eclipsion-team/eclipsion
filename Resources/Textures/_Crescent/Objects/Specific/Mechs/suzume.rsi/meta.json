@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "AI-generated with OpenAI imagegen for Encore. HULLROT mecha art used as style reference. Cropped, palette-normalized and packed into 48x48 RSI states.",
+  "size": {
+    "x": 48,
+    "y": 48
+  },
+  "states": [
+    {
+      "name": "suzume",
+      "directions": 4
+    },
+    {
+      "name": "suzume-open"
+    },
+    {
+      "name": "suzume-broken"
+    },
+    {
+      "name": "suzume-power-powered",
+      "directions": 4
+    },
+    {
+      "name": "suzume-open-power-powered"
+    },
+    {
+      "name": "suzume-power-low",
+      "directions": 4
+    },
+    {
+      "name": "suzume-open-power-low"
+    },
+    {
+      "name": "suzume-power-off",
+      "directions": 4
+    },
+    {
+      "name": "suzume-open-power-off"
+    },
+    {
+      "name": "suzume-broken-power-off"
+    }
+  ]
+}

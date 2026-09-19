@@ -39,7 +39,7 @@
       machine_parts: !type:Container
   - type: Gun
     fireOnDropChance: 0
-    projectileSpeed: 95
+    projectileSpeed: 118.75
     fireRate: 1.2
     selectedMode: FullAuto
     availableModes:
@@ -113,7 +113,7 @@
       machine_parts: !type:Container
   - type: Gun
     fireOnDropChance: 0
-    projectileSpeed: 95
+    projectileSpeed: 118.75
     fireRate: 2.4
     selectedMode: SemiAuto
     angleDecay: 45
@@ -281,7 +281,7 @@
       ballistic-ammo: !type:Container
   - type: Gun
     fireOnDropChance: 0
-    projectileSpeed: 135
+    projectileSpeed: 168.75
     fireRate: 1
     angleDecay: 45
     minAngle: 0
@@ -371,7 +371,7 @@
       gun_magazine: !type:ContainerSlot
   - type: Gun
     fireOnDropChance: 0
-    projectileSpeed: 100
+    projectileSpeed: 125
     fireRate: 0.3
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
@@ -469,7 +469,7 @@
   - type: Gun
     fireOnDropChance: 0
     fireRate: 2
-    projectileSpeed: 80
+    projectileSpeed: 100
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/50cal.ogg
     soundEmpty:
@@ -568,7 +568,7 @@
   - type: Gun
     fireOnDropChance: 0
     fireRate: 0.7
-    projectileSpeed: 70
+    projectileSpeed: 87.5
     selectedMode: Burst
     availableModes:
     - Burst
@@ -684,7 +684,7 @@
   - type: Gun
     fireOnDropChance: 0
     fireRate: 4
-    projectileSpeed: 95
+    projectileSpeed: 118.75
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/ship_duster.ogg
     soundEmpty:
@@ -765,7 +765,7 @@
   - type: Gun
     fireOnDropChance: 0
     fireRate: 0.1
-    projectileSpeed: 135
+    projectileSpeed: 168.75
     soundGunshot:
       path: /Audio/Effects/railfire.ogg
     soundEmpty:
@@ -871,7 +871,7 @@
   - type: Gun
     fireOnDropChance: 0
     fireRate: 12
-    projectileSpeed: 135
+    projectileSpeed: 168.75
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/vulcan.ogg
     soundEmpty:
@@ -979,7 +979,7 @@
     fireRate: 36
     maxAngle: 4
     minAngle: 0
-    projectileSpeed: 135
+    projectileSpeed: 168.75
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/vulcan.ogg
     soundEmpty:

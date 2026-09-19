@@ -7,7 +7,16 @@ namespace Content.Shared.Mech;
 public enum MechVisuals : byte
 {
     Open, //whether or not it's open and has a rider
-    Broken //if it broke and no longer works.
+    Broken, //if it broke and no longer works.
+    Power
+}
+
+[Serializable, NetSerializable]
+public enum MechPowerState : byte
+{
+    Off,
+    Low,
+    Powered
 }
 
 [Serializable, NetSerializable]
@@ -19,7 +28,8 @@ public enum MechAssemblyVisuals : byte
 [Serializable, NetSerializable]
 public enum MechVisualLayers : byte
 {
-    Base
+    Base,
+    Power
 }
 
 /// <summary>

@@ -843,9 +843,6 @@ entities:
       parent: 1
     - type: DeviceLinkSource
       linkedPorts:
-        invalid:
-        - - Pressed
-          - Toggle
         11:
         - - Pressed
           - Toggle

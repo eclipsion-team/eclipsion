@@ -60,3 +60,15 @@
     Gold: 150
     Plastic: 200
     BasicElectronics: 300
+
+- type: latheRecipe
+  id: ClothingHeadHelmetWaveformNullifierElectronics
+  category: Armor
+  result: ClothingHeadHelmetWaveformNullifier
+  completetime: 6
+  materials:
+    Steel: 300
+    Silver: 300
+    Gold: 250
+    Plastic: 150
+    BasicElectronics: 400

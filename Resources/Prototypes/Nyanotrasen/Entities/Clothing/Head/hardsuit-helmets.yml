@@ -67,8 +67,6 @@
     sprite: Nyanotrasen/Clothing/Head/Hardsuits/ERThelmets/ertcentcomm.rsi
   - type: Clothing
     sprite: Nyanotrasen/Clothing/Head/Hardsuits/ERThelmets/ertcentcomm.rsi
-  - type: PointLight
-    color: "#00aa5c"
   - type: ToggleableLightVisuals
     spriteLayer: light
     clothingVisuals:

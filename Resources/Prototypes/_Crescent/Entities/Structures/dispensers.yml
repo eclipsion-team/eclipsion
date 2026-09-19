@@ -658,7 +658,8 @@
   - type: Dispenser
     defaultItem: TradeDeedStub
     dynamicInventory:
-      TradeGoodAmmo: 4500
+      # No SHI production here: the CF-22 fabricator on Tatsumoto makes ammo, gunparts and plasma
+      # crates, and the Shinohara fablathe makes miltech, alloys, cybernetics, scop and gunparts.
       TradeGoodAlcohol: 4500
       TradeGoodScrap: 4500
       TradeGoodAntibiotics: 4500
@@ -667,7 +668,6 @@
       TradeGoodGoodScrap: 10000
       TradeGoodFabrics: 7500
       TradeGoodWine: 7500
-      TradeGoodPlasma: 6000
       TradeGoodNanoTrasen: 4500
       TradeGoodOldCyber: 4500
       TradeGoodOldParts: 4500

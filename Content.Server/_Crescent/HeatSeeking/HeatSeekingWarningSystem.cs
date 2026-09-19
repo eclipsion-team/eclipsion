@@ -1,6 +1,6 @@
 using System.Linq;
 using Content.Shared._Crescent.HeatSeeking;
-using Content.Shared.Popups;
+using Content.Shared.Shuttles.Components;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
@@ -9,7 +9,8 @@ using Robust.Shared.Timing;
 namespace Content.Server._Crescent.HeatSeeking;
 
 /// <summary>
-/// Tells a crew when something has locked onto their hull, so a missile isn't the first they hear of it.
+/// Flags a grid's shuttle consoles when something has locked onto its hull, so a missile isn't the first
+/// the pilot hears of it. Only whoever is flying the ship is told; the rest of the crew isn't spammed.
 /// </summary>
 public sealed class HeatSeekingWarningSystem : EntitySystem
 {
@@ -23,12 +24,10 @@ public sealed class HeatSeekingWarningSystem : EntitySystem
 
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
 
     private readonly Dictionary<EntityUid, TimeSpan> _nextWarning = new();
 
-    private readonly HashSet<EntityUid> _lockedGrids = new();
+    private readonly Dictionary<EntityUid, int> _lockedGrids = new();
 
     private readonly HashSet<EntityUid> _warningGrids = new();
 
@@ -53,8 +52,10 @@ public sealed class HeatSeekingWarningSystem : EntitySystem
                 continue;
 
             if (Transform(target).GridUid is { } grid)
-                _lockedGrids.Add(grid);
+                _lockedGrids[grid] = _lockedGrids.GetValueOrDefault(grid) + 1;
         }
+
+        UpdateLockComponents();
 
         if (_lockedGrids.Count == 0)
         {
@@ -65,7 +66,7 @@ public sealed class HeatSeekingWarningSystem : EntitySystem
         var now = _timing.CurTime;
         _warningGrids.Clear();
 
-        foreach (var grid in _lockedGrids)
+        foreach (var grid in _lockedGrids.Keys)
         {
             if (_nextWarning.TryGetValue(grid, out var next) && now < next)
                 continue;
@@ -75,29 +76,53 @@ public sealed class HeatSeekingWarningSystem : EntitySystem
         }
 
         if (_warningGrids.Count > 0)
-            WarnGrids();
+            WarnPilots();
 
         if (_nextWarning.Count > _lockedGrids.Count)
         {
             foreach (var grid in _nextWarning.Keys.ToArray())
             {
-                if (!_lockedGrids.Contains(grid))
+                if (!_lockedGrids.ContainsKey(grid))
                     _nextWarning.Remove(grid);
             }
         }
     }
 
-    private void WarnGrids()
+    private void UpdateLockComponents()
     {
-        var message = Loc.GetString("heat-seeking-lock-warning");
-
-        var actors = EntityQueryEnumerator<ActorComponent, TransformComponent>();
-        while (actors.MoveNext(out var uid, out var actor, out var xform))
+        var locks = EntityQueryEnumerator<MissileLockWarningComponent>();
+        while (locks.MoveNext(out var grid, out _))
         {
-            if (xform.GridUid is not { } grid || !_warningGrids.Contains(grid))
+            if (!_lockedGrids.ContainsKey(grid))
+                RemCompDeferred<MissileLockWarningComponent>(grid);
+        }
+
+        foreach (var (grid, seekers) in _lockedGrids)
+        {
+            if (TerminatingOrDeleted(grid))
                 continue;
 
-            _popup.PopupEntity(message, uid, actor.PlayerSession, PopupType.LargeCaution);
+            var warning = EnsureComp<MissileLockWarningComponent>(grid);
+            if (warning.Seekers == seekers)
+                continue;
+
+            warning.Seekers = seekers;
+            Dirty(grid, warning);
+        }
+    }
+
+    private void WarnPilots()
+    {
+        var pilots = EntityQueryEnumerator<PilotComponent, ActorComponent>();
+        while (pilots.MoveNext(out _, out var pilot, out var actor))
+        {
+            if (pilot.Console is not { } console ||
+                Transform(console).GridUid is not { } grid ||
+                !_warningGrids.Contains(grid))
+            {
+                continue;
+            }
+
             _audio.PlayGlobal(WarningSound, actor.PlayerSession);
         }
     }

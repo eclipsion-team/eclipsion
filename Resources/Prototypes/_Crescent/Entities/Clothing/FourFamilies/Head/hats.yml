@@ -54,9 +54,6 @@
     sprite: _Crescent/Clothing/FourFamilies/Head/draugrhelmet.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/FourFamilies/Head/draugrhelmet.rsi
-  - type: PointLight
-    radius: 6
-    color: "#97b350"
   - type: PressureProtection
     highPressureMultiplier: 0.1
     lowPressureMultiplier: 1000
@@ -83,9 +80,6 @@
     sprite: _Crescent/Clothing/FourFamilies/Head/izdarihelmet.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/FourFamilies/Head/izdarihelmet.rsi
-  - type: PointLight
-    radius: 6
-    color: "#e3c291"
   - type: PressureProtection
     highPressureMultiplier: 0.1
     lowPressureMultiplier: 1000
@@ -112,9 +106,6 @@
     sprite: _Crescent/Clothing/FourFamilies/Head/thukkerhelmet.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/FourFamilies/Head/thukkerhelmet.rsi
-  - type: PointLight
-    radius: 6
-    color: "#e3af91"
   - type: PressureProtection
     highPressureMultiplier: 0.1
     lowPressureMultiplier: 1000
@@ -140,9 +131,6 @@
     sprite: _Crescent/Clothing/FourFamilies/Head/prophetmask.rsi
   - type: Clothing
     sprite: _Crescent/Clothing/FourFamilies/Head/prophetmask.rsi
-  - type: PointLight
-    radius: 6
-    color: "#fcd59a"
   - type: PressureProtection
     highPressureMultiplier: 0.1
     lowPressureMultiplier: 1000

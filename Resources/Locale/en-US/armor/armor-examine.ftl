@@ -19,3 +19,5 @@ armor-damage-type-shock = Shock
 armor-damage-type-structural = Structural
 armor-examine-stamina = - [color=cyan]Stamina[/color] damage reduced by [color=lightblue]{$num}%[/color].
 armor-material-examine = It is plated with [color=cyan]{$material}[/color].
+armor-degradation-ceramic = ceramic
+armor-degradation-metallic = metal

@@ -277,7 +277,7 @@
   - type: Clothing
     sprite: _Crescent/Objects/Weapons/Guns/lecter.rsi
   - type: Gun
-    fireRate: 8
+    fireRate: 7
     soundGunshot:
       path: /Audio/_Crescent/Weapons/Guns/rifle_1/rifle_gunshot_2.ogg
     fireOnDropChance: 0.2

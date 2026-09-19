@@ -11,6 +11,8 @@ using Robust.Shared.Physics.Components;
 using Content.Client._Crescent.ShipShields; // Rat
 using Content.Client._KS14.UI; // KS14
 using Robust.Client.UserInterface; // KS14
+using Content.Shared._Crescent.HeatSeeking;
+using Robust.Shared.Timing;
 
 namespace Content.Client.Shuttles.UI;
 
@@ -18,6 +20,7 @@ namespace Content.Client.Shuttles.UI;
 public sealed partial class NavScreen : BoxContainer
 {
     [Dependency] private readonly IEntityManager _entManager = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
     private SharedTransformSystem _xformSystem;
 
     private EntityUid? _shuttleEntity;
@@ -105,6 +108,7 @@ public sealed partial class NavScreen : BoxContainer
         if (!_entManager.TryGetComponent(_shuttleEntity, out TransformComponent? gridXform) ||
             !_entManager.TryGetComponent(_shuttleEntity, out PhysicsComponent? gridBody))
         {
+            MissileLockWarning.Visible = false;
             return;
         }
 
@@ -143,6 +147,26 @@ public sealed partial class NavScreen : BoxContainer
         }
         // Rat-end
 
+        UpdateMissileLockWarning(_shuttleEntity.Value);
+
 		ShipName.Text = $"{_entManager.GetComponent<MetaDataComponent>(_shuttleEntity.Value).EntityName}";
+    }
+
+    /// <summary>
+    ///     Crescent: blinks a lock warning on the console while heat seekers are tracking this grid.
+    /// </summary>
+    private void UpdateMissileLockWarning(EntityUid grid)
+    {
+        if (!_entManager.TryGetComponent(grid, out MissileLockWarningComponent? warning) || warning.Seekers <= 0)
+        {
+            MissileLockWarning.Visible = false;
+            return;
+        }
+
+        MissileLockWarning.Visible = true;
+        MissileLockWarning.Text = Loc.GetString("shuttle-console-missile-lock", ("count", warning.Seekers));
+
+        var blinkOn = _timing.RealTime.TotalSeconds % 0.8 < 0.5;
+        MissileLockWarning.FontColorOverride = blinkOn ? Color.FromHex("#FF3030") : Color.FromHex("#7A1010");
     }
 }

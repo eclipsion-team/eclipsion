@@ -31,7 +31,7 @@
         ballistic-ammo: !type:Container
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 145
+      projectileSpeed: 181.25
       fireRate: 5
       selectedMode: FullAuto
       availableModes:
@@ -75,7 +75,7 @@
   components:
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 145
+      projectileSpeed: 181.25
       fireRate: 5.5
     - type: Machine
       board: WeaponTurretPDTAdvancedCircuitboard
@@ -114,7 +114,7 @@
     - type: Gun
       fireOnDropChance: 0
       fireRate: 10
-      projectileSpeed: 135
+      projectileSpeed: 168.75
       selectedMode: FullAuto
       availableModes:
         - FullAuto
@@ -214,7 +214,7 @@
     #       ents: []
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 75
+      projectileSpeed: 93.75
       fireRate: 6 #balanced by long cooldown
       selectedMode: FullAuto
       availableModes:
@@ -304,7 +304,7 @@
                 collection: MetalGlassBreak
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 130
+      projectileSpeed: 162.5
       fireRate: 2
       selectedMode: FullAuto
       availableModes:
@@ -373,7 +373,7 @@
           ents: []
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 110
+      projectileSpeed: 137.5
       fireRate: 0.6
       selectedMode: FullAuto
       availableModes:
@@ -473,7 +473,7 @@
         ballistic-ammo: !type:Container
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 95
+      projectileSpeed: 118.75
       fireRate: 8
       selectedMode: FullAuto
       availableModes:
@@ -608,7 +608,7 @@
           ents: []
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 130
+      projectileSpeed: 162.5
       fireRate: 0.6
       selectedMode: FullAuto
       availableModes:
@@ -710,7 +710,7 @@
     - type: Gun
       fireOnDropChance: 0
       fireRate: 7
-      projectileSpeed: 145
+      projectileSpeed: 181.25
       selectedMode: FullAuto
       availableModes:
         - FullAuto
@@ -843,7 +843,7 @@
           ents: []
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 85
+      projectileSpeed: 106.25
       fireRate: 0.9
       selectedMode: FullAuto
       availableModes:
@@ -922,7 +922,7 @@
           ents: []
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 130
+      projectileSpeed: 162.5
       fireRate: 0.2
       selectedMode: FullAuto
       availableModes:
@@ -1001,7 +1001,7 @@
           ents: []
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 90
+      projectileSpeed: 112.5
       fireRate: 0.8
       selectedMode: FullAuto
       availableModes:
@@ -1180,7 +1180,7 @@
         ballistic-ammo: !type:Container
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 75
+      projectileSpeed: 93.75
       fireRate: 1.7
       selectedMode: FullAuto
       availableModes:
@@ -1249,7 +1249,7 @@
         ballistic-ammo: !type:Container
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 95
+      projectileSpeed: 118.75
       fireRate: 12
       selectedMode: FullAuto
       availableModes:
@@ -1336,7 +1336,7 @@
         ballistic-ammo: !type:Container
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 95
+      projectileSpeed: 118.75
       fireRate: 3.5
       selectedMode: FullAuto
       availableModes:
@@ -1603,7 +1603,7 @@
     - type: Gun
       fireOnDropChance: 0
       fireRate: 2
-      projectileSpeed: 80
+      projectileSpeed: 100
       soundGunshot:
         path: /Audio/Weapons/Guns/Gunshots/50cal.ogg
       soundEmpty:
@@ -1690,7 +1690,7 @@
     - type: ProjectileIFF
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 95
+      projectileSpeed: 118.75
       fireRate: 0.6
       selectedMode: FullAuto
       availableModes:
@@ -1757,7 +1757,7 @@
     - type: ProjectileIFF
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 95
+      projectileSpeed: 118.75
       fireRate: 5
       selectedMode: FullAuto
       availableModes:
@@ -1826,7 +1826,7 @@
         ballistic-ammo: !type:Container
     - type: Gun
       fireOnDropChance: 0
-      projectileSpeed: 95
+      projectileSpeed: 118.75
       fireRate: 3
       selectedMode: FullAuto
       availableModes:
