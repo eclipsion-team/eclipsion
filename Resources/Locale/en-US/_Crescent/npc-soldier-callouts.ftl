@@ -251,3 +251,68 @@ npc-soldier-callout-ind-idle-1 = Could really use a drink.
 npc-soldier-callout-ind-idle-2 = This suit smells like the last guy who wore it.
 npc-soldier-callout-ind-idle-3 = Big factions, big wars, same small paycheck.
 npc-soldier-callout-ind-idle-4 = Keep your head down and your hand on your wallet.
+
+## Colonial Minutemen
+
+npc-soldier-callout-cmm-battlecry-1 = Minutemen, stand your ground!
+npc-soldier-callout-cmm-battlecry-2 = For the colonies!
+npc-soldier-callout-cmm-battlecry-3 = Remember Analiesse!
+npc-soldier-callout-cmm-battlecry-4 = By Minutemen law, drop your weapon!
+npc-soldier-callout-cmm-battlecry-5 = Protect the civilians!
+npc-soldier-callout-cmm-battlecry-6 = Hold the line, Minutemen!
+npc-soldier-callout-cmm-battlecry-7 = Nobody bribes a Minuteman!
+npc-soldier-callout-cmm-battlecry-8 = These routes are under our protection!
+npc-soldier-callout-cmm-battlecry-9 = Ready at a minute's notice!
+npc-soldier-callout-cmm-battlecry-10 = You're under arrest - or under fire!
+
+npc-soldier-callout-cmm-acknowledge-1 = Understood, Watchmaster.
+npc-soldier-callout-cmm-acknowledge-2 = Copy that.
+npc-soldier-callout-cmm-acknowledge-3 = Moving.
+npc-soldier-callout-cmm-acknowledge-4 = On it, by the book.
+npc-soldier-callout-cmm-acknowledge-5 = Roger, logging it.
+
+npc-soldier-callout-cmm-recruited-1 = Minuteman reporting. Where do you need me?
+npc-soldier-callout-cmm-recruited-2 = Deputized and ready.
+npc-soldier-callout-cmm-recruited-3 = You lead, I'll keep it lawful.
+npc-soldier-callout-cmm-recruited-4 = Patrol's with you.
+
+npc-soldier-callout-cmm-idle-1 = Quiet shift. Let's keep it that way.
+npc-soldier-callout-cmm-idle-2 = Port fees paid for this rifle. Treat it right.
+npc-soldier-callout-cmm-idle-3 = Somebody has to keep these routes safe.
+npc-soldier-callout-cmm-idle-4 = Gliess Santo won't guard itself.
+
+## Saint's Militia
+
+npc-soldier-callout-srm-engage-1 = Quarry sighted!
+npc-soldier-callout-srm-engage-2 = The Hunt is on!
+npc-soldier-callout-srm-engage-3 = There - the prey!
+npc-soldier-callout-srm-engage-4 = Marked for the Hunt!
+npc-soldier-callout-srm-engage-5 = No one is spared! Fire!
+npc-soldier-callout-srm-engage-6 = Another soul for the Saint!
+
+npc-soldier-callout-srm-battlecry-1 = For Saint Romaine!
+npc-soldier-callout-srm-battlecry-2 = The Hunt spares no one!
+npc-soldier-callout-srm-battlecry-3 = Run, prey! Run!
+npc-soldier-callout-srm-battlecry-4 = The Saint sees you!
+npc-soldier-callout-srm-battlecry-5 = Your blood for the Saint!
+npc-soldier-callout-srm-battlecry-6 = There is no innocence in the Hunt!
+npc-soldier-callout-srm-battlecry-7 = Faith guides the bullet!
+npc-soldier-callout-srm-battlecry-8 = None escape the Militia!
+npc-soldier-callout-srm-battlecry-9 = Burn the unworthy!
+npc-soldier-callout-srm-battlecry-10 = The Hunt is declared! All are quarry!
+
+npc-soldier-callout-srm-acknowledge-1 = As the Saint wills.
+npc-soldier-callout-srm-acknowledge-2 = Understood, Overseer.
+npc-soldier-callout-srm-acknowledge-3 = The Hunt obeys.
+npc-soldier-callout-srm-acknowledge-4 = By your word.
+npc-soldier-callout-srm-acknowledge-5 = It will be done.
+
+npc-soldier-callout-srm-recruited-1 = A fellow Hunter. I follow.
+npc-soldier-callout-srm-recruited-2 = Lead the Hunt. My rifle is yours.
+npc-soldier-callout-srm-recruited-3 = The Saint brought us together. Lead on.
+npc-soldier-callout-srm-recruited-4 = Point me at the quarry.
+
+npc-soldier-callout-srm-idle-1 = The prey is close. I can feel it.
+npc-soldier-callout-srm-idle-2 = Pray, and keep your eyes open.
+npc-soldier-callout-srm-idle-3 = The Saint is patient. So are we.
+npc-soldier-callout-srm-idle-4 = No one leaves this place alive.

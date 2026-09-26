@@ -223,3 +223,57 @@
   values:
     prefix: npc-soldier-callout-ind-idle-
     count: 4
+
+- type: localizedDataset
+  id: NpcSoldierCalloutCMMBattleCry
+  values:
+    prefix: npc-soldier-callout-cmm-battlecry-
+    count: 10
+
+- type: localizedDataset
+  id: NpcSoldierCalloutCMMAcknowledge
+  values:
+    prefix: npc-soldier-callout-cmm-acknowledge-
+    count: 5
+
+- type: localizedDataset
+  id: NpcSoldierCalloutCMMRecruited
+  values:
+    prefix: npc-soldier-callout-cmm-recruited-
+    count: 4
+
+- type: localizedDataset
+  id: NpcSoldierCalloutCMMIdle
+  values:
+    prefix: npc-soldier-callout-cmm-idle-
+    count: 4
+
+- type: localizedDataset
+  id: NpcSoldierCalloutSRMEngage
+  values:
+    prefix: npc-soldier-callout-srm-engage-
+    count: 6
+
+- type: localizedDataset
+  id: NpcSoldierCalloutSRMBattleCry
+  values:
+    prefix: npc-soldier-callout-srm-battlecry-
+    count: 10
+
+- type: localizedDataset
+  id: NpcSoldierCalloutSRMAcknowledge
+  values:
+    prefix: npc-soldier-callout-srm-acknowledge-
+    count: 5
+
+- type: localizedDataset
+  id: NpcSoldierCalloutSRMRecruited
+  values:
+    prefix: npc-soldier-callout-srm-recruited-
+    count: 4
+
+- type: localizedDataset
+  id: NpcSoldierCalloutSRMIdle
+  values:
+    prefix: npc-soldier-callout-srm-idle-
+    count: 4

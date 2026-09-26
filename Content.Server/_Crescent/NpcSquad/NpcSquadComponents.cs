@@ -38,6 +38,13 @@ public sealed partial class NpcSquadRecruitableComponent : Component
     /// </summary>
     [DataField]
     public float GuardMoveRange = 4f;
+
+    /// <summary>
+    /// How long the NPC stays set on someone its leader pointed out - and, unless they are of its own
+    /// faction, on everyone of theirs.
+    /// </summary>
+    [DataField]
+    public TimeSpan OrderedHostilityTime = TimeSpan.FromMinutes(2);
 }
 
 /// <summary>

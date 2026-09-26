@@ -30,7 +30,7 @@ public enum NpcSquadOrder : byte
     Attack,
 
     /// <summary>
-    /// Stay on the leader and don't start anything.
+    /// Stand still where it is and don't start anything.
     /// </summary>
     HoldFire,
 }

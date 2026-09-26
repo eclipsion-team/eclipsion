@@ -1,0 +1,516 @@
+# Crescent: faction ghost roles, alongside the SRM, TAP and CMM ones in Entities/Mobs/Player/humanoid.yml.
+# Admin-placed spawners for a hardsuited strike team of each power: a rank-and-file role and a leader. They
+# spawn already wearing their side's hardsuit (the helmet deploys from it), magboots and gas mask, with a
+# jetpack in suit storage, their side's gun in hand, spare magazines, a combat medkit and air.
+
+## Imperial Mandate
+
+- type: entity
+  id: RandomHumanoidSpawnerDSMLevyman
+  name: Imperial Levyman
+  suffix: DSM, Levyman, Ghost Role
+  components:
+    - type: Sprite
+      sprite: _Crescent/Clothing/Empire/OuterClothing/mandatesoldier.rsi
+      state: icon
+    - type: RandomHumanoidSpawner
+      settings: DSMLevymanGhostSpawner
+
+- type: randomHumanoidSettings
+  id: DSMLevymanGhostSpawner
+  randomizeName: true
+  speciesBlacklist:
+    - Monkey
+    - Kobold
+    - Abductor
+  components:
+    - type: GhostRole
+      name: Imperial Levyman
+      description: A hardsuited levyman of the Imperial Mandate, sent in as part of a strike team.
+      rules: Serve the Mandate and follow your Knight. Fight the enemies of the Kaiser.
+      raffle:
+        settings: short
+    - type: LanguageAdder
+      addSpoken:
+        - LowImperial
+      addUnderstood:
+        - LowImperial
+        - HighImperial
+        - TauCetiBasic
+    - type: GhostTakeoverAvailable
+    - type: Loadout
+      prototypes: [ DSMLevymanGhostGear ]
+    - type: HullrotFaction
+      faction: DSM
+
+- type: startingGear
+  id: DSMLevymanGhostGear
+  equipment:
+    id: LevymanPDA
+    ears: ClothingHeadsetEmpire
+    jumpsuit: ClothingUniformJumpsuitImperialCombat
+    outerClothing: ClothingOuterHardsuitImperialSoldier
+    mask: ClothingMaskImperialCombatGasmask
+    gloves: ClothingHandsGlovesImperialLonggloves
+    shoes: ClothingShoesBootsMagDSM
+    suitstorage: JetpackBlackFilled
+    pocket1: DoubleEmergencyOxygenTankFilled
+    pocket2: CombatMedipen
+    belt: ClothingBeltMilitaryWebbing
+    back: ClothingBackpackDSM
+  inhand:
+    - WeaponRifleMiller
+  storage:
+    back:
+      - MedkitCombatFilled
+      - MagazineLightRifle
+      - MagazineLightRifle
+      - MagazineLightRifle
+      - MagazineLightRifle
+
+- type: entity
+  id: RandomHumanoidSpawnerDSMKnight
+  name: Imperial Knight
+  suffix: DSM, Knight, Ghost Role
+  components:
+    - type: Sprite
+      sprite: _Crescent/Clothing/Empire/OuterClothing/mandateknight.rsi
+      state: icon
+    - type: RandomHumanoidSpawner
+      settings: DSMKnightGhostSpawner
+
+- type: randomHumanoidSettings
+  id: DSMKnightGhostSpawner
+  randomizeName: true
+  speciesBlacklist:
+    - Monkey
+    - Kobold
+    - Abductor
+  components:
+    - type: GhostRole
+      name: Imperial Knight
+      description: A Knight of the Imperial Mandate, leading a strike team of levymen.
+      rules: Lead your levymen and serve the Mandate. Fight the enemies of the Kaiser.
+      raffle:
+        settings: short
+    - type: LanguageAdder
+      addSpoken:
+        - LowImperial
+      addUnderstood:
+        - LowImperial
+        - HighImperial
+        - TauCetiBasic
+    - type: GhostTakeoverAvailable
+    - type: Loadout
+      prototypes: [ DSMKnightGhostGear ]
+    - type: HullrotFaction
+      faction: DSM
+
+- type: startingGear
+  id: DSMKnightGhostGear
+  equipment:
+    id: KnightPDA
+    ears: ClothingHeadsetEmpire
+    jumpsuit: ClothingUniformJumpsuitImperialCombat
+    outerClothing: ClothingOuterHardsuitImperialKnight
+    mask: ClothingMaskImperialCombatGasmask
+    gloves: ClothingHandsGlovesImperialLonggloves
+    shoes: ClothingShoesBootsMagDSM
+    suitstorage: JetpackBlackFilled
+    pocket1: DoubleEmergencyOxygenTankFilled
+    pocket2: CombatMedipen
+    belt: ClothingBeltMilitaryWebbing
+    back: ClothingBackpackDSM
+  inhand:
+    - WeaponRifleMiller
+  storage:
+    back:
+      - MedkitCombatFilled
+      - MagazineLightRifle
+      - MagazineLightRifle
+      - MagazineLightRifle
+      - MagazineLightRifle
+
+## New Communard Workers' League
+
+- type: entity
+  id: RandomHumanoidSpawnerNCWLSoldat
+  name: Communard Soldat
+  suffix: NCWL, Soldat, Ghost Role
+  components:
+    - type: Sprite
+      sprite: _Crescent/Clothing/NCWL/OuterClothing/infantryhardsuit.rsi
+      state: icon
+    - type: RandomHumanoidSpawner
+      settings: NCWLSoldatGhostSpawner
+
+- type: randomHumanoidSettings
+  id: NCWLSoldatGhostSpawner
+  randomizeName: true
+  speciesBlacklist:
+    - Monkey
+    - Kobold
+    - Abductor
+  components:
+    - type: GhostRole
+      name: Communard Soldat
+      description: A hardsuited Homeguard soldat of the League, sent in as part of a strike team.
+      rules: Serve the League and follow your squad captain. Fight the enemies of the workers.
+      raffle:
+        settings: short
+    - type: LanguageAdder
+      addSpoken:
+        - Dockta
+      addUnderstood:
+        - Dockta
+        - TauCetiBasic
+    - type: GhostTakeoverAvailable
+    - type: Loadout
+      prototypes: [ NCWLSoldatGhostGear ]
+    - type: HullrotFaction
+      faction: NCWL
+
+- type: startingGear
+  id: NCWLSoldatGhostGear
+  equipment:
+    id: NCWLHomeguardSoldatPDA
+    ears: ClothingHeadsetNCWL
+    jumpsuit: ClothingUniformJumpsuitNCWL
+    outerClothing: ClothingOuterHardsuitNCWLInfantry
+    mask: ClothingMaskNCWLBalaclava
+    gloves: ClothingHandsGlovesCombat
+    shoes: ClothingShoesBootsMagNCWL
+    suitstorage: JetpackBlackFilled
+    pocket1: DoubleEmergencyOxygenTankFilled
+    pocket2: CombatMedipen
+    belt: ClothingBeltMilitaryWebbing
+    back: ClothingBackpackNCWL
+  inhand:
+    - WeaponRifleFAL
+  storage:
+    back:
+      - MedkitCombatFilled
+      - MagazineLightRifle
+      - MagazineLightRifle
+      - MagazineLightRifle
+      - MagazineLightRifle
+
+- type: entity
+  id: RandomHumanoidSpawnerNCWLSquadCaptain
+  name: Communard Squad Captain
+  suffix: NCWL, SquadCaptain, Ghost Role
+  components:
+    - type: Sprite
+      sprite: _Crescent/Clothing/NCWL/OuterClothing/commieheavy.rsi
+      state: icon
+    - type: RandomHumanoidSpawner
+      settings: NCWLSquadCaptainGhostSpawner
+
+- type: randomHumanoidSettings
+  id: NCWLSquadCaptainGhostSpawner
+  randomizeName: true
+  speciesBlacklist:
+    - Monkey
+    - Kobold
+    - Abductor
+  components:
+    - type: GhostRole
+      name: Communard Squad Captain
+      description: A Homeguard squad captain of the League, leading a strike team of soldats.
+      rules: Lead your soldats and serve the League. Fight the enemies of the workers.
+      raffle:
+        settings: short
+    - type: LanguageAdder
+      addSpoken:
+        - Dockta
+      addUnderstood:
+        - Dockta
+        - TauCetiBasic
+    - type: GhostTakeoverAvailable
+    - type: Loadout
+      prototypes: [ NCWLSquadCaptainGhostGear ]
+    - type: HullrotFaction
+      faction: NCWL
+
+- type: startingGear
+  id: NCWLSquadCaptainGhostGear
+  equipment:
+    id: NCWLHomeguardSquadCaptainPDA
+    ears: ClothingHeadsetNCWL
+    jumpsuit: ClothingUniformJumpsuitNCWL
+    outerClothing: ClothingOuterHardsuitNCWLPetya
+    mask: ClothingMaskNCWLBalaclava
+    gloves: ClothingHandsGlovesCombat
+    shoes: ClothingShoesBootsMagNCWL
+    suitstorage: JetpackBlackFilled
+    pocket1: DoubleEmergencyOxygenTankFilled
+    pocket2: CombatMedipen
+    belt: ClothingBeltMilitaryWebbing
+    back: ClothingBackpackNCWL
+  inhand:
+    - WeaponRifleFAL
+  storage:
+    back:
+      - MedkitCombatFilled
+      - MagazineLightRifle
+      - MagazineLightRifle
+      - MagazineLightRifle
+      - MagazineLightRifle
+
+## Trans-Federation Sovereign Coalition
+
+- type: entity
+  id: RandomHumanoidSpawnerTFSCInfanteer
+  name: Coalition Infanteer
+  suffix: TFSC, Infanteer, Ghost Role
+  components:
+    - type: Sprite
+      sprite: _Crescent/Clothing/Syndicate/OuterClothing/syndicatesbg.rsi
+      state: icon
+    - type: RandomHumanoidSpawner
+      settings: TFSCInfanteerGhostSpawner
+
+- type: randomHumanoidSettings
+  id: TFSCInfanteerGhostSpawner
+  randomizeName: true
+  speciesBlacklist:
+    - Monkey
+    - Kobold
+    - Abductor
+  components:
+    - type: GhostRole
+      name: Coalition Infanteer
+      description: A hardsuited Coalition infanteer, sent in as part of a strike team.
+      rules: Serve the Coalition and follow your lieutenant. Fight the enemies of the Coalition.
+      raffle:
+        settings: short
+    - type: LanguageAdder
+      addSpoken:
+        - Freespeak
+      addUnderstood:
+        - Freespeak
+        - SolCommon
+        - TauCetiBasic
+    - type: GhostTakeoverAvailable
+    - type: Loadout
+      prototypes: [ TFSCInfanteerGhostGear ]
+    - type: HullrotFaction
+      faction: TFSC
+
+- type: startingGear
+  id: TFSCInfanteerGhostGear
+  equipment:
+    id: InfanteerPDA
+    ears: ClothingHeadsetTFSC
+    jumpsuit: ClothingUniformJumpsuitSyndicate
+    outerClothing: ClothingOuterHardsuitSyndicateBG
+    mask: ClothingMaskGasSyndicate
+    gloves: ClothingHandsGlovesCombat
+    shoes: ClothingShoesBootsMagSyndie
+    suitstorage: JetpackBlackFilled
+    pocket1: DoubleEmergencyOxygenTankFilled
+    pocket2: CombatMedipen
+    belt: ClothingBeltMilitaryWebbing
+    back: ClothingBackpackTFSC
+  inhand:
+    - WeaponRifleAk
+  storage:
+    back:
+      - MedkitCombatFilled
+      - MagazineRifle
+      - MagazineRifle
+      - MagazineRifle
+      - MagazineRifle
+
+- type: entity
+  id: RandomHumanoidSpawnerTFSCLieutenant
+  name: Coalition Lieutenant
+  suffix: TFSC, Lieutenant, Ghost Role
+  components:
+    - type: Sprite
+      sprite: _Crescent/Clothing/Syndicate/OuterClothing/syndicatesbg.rsi
+      state: icon
+    - type: RandomHumanoidSpawner
+      settings: TFSCLieutenantGhostSpawner
+
+- type: randomHumanoidSettings
+  id: TFSCLieutenantGhostSpawner
+  randomizeName: true
+  speciesBlacklist:
+    - Monkey
+    - Kobold
+    - Abductor
+  components:
+    - type: GhostRole
+      name: Coalition Lieutenant
+      description: A Coalition lieutenant, leading a strike team of infanteers.
+      rules: Lead your infanteers and serve the Coalition. Fight the enemies of the Coalition.
+      raffle:
+        settings: short
+    - type: LanguageAdder
+      addSpoken:
+        - Freespeak
+      addUnderstood:
+        - Freespeak
+        - SolCommon
+        - TauCetiBasic
+    - type: GhostTakeoverAvailable
+    - type: Loadout
+      prototypes: [ TFSCLieutenantGhostGear ]
+    - type: HullrotFaction
+      faction: TFSC
+
+- type: startingGear
+  id: TFSCLieutenantGhostGear
+  equipment:
+    id: LieutenantPDA
+    ears: ClothingHeadsetTFSC
+    jumpsuit: ClothingUniformJumpsuitSyndicate
+    outerClothing: ClothingOuterHardsuitSyndicateBG
+    mask: ClothingMaskGasSyndicate
+    gloves: ClothingHandsGlovesCombat
+    shoes: ClothingShoesBootsMagSyndie
+    suitstorage: JetpackBlackFilled
+    pocket1: DoubleEmergencyOxygenTankFilled
+    pocket2: CombatMedipen
+    belt: ClothingBeltMilitaryWebbing
+    back: ClothingBackpackTFSC
+  inhand:
+    - WeaponRifleAk
+  storage:
+    back:
+      - MedkitCombatFilled
+      - MagazineRifle
+      - MagazineRifle
+      - MagazineRifle
+      - MagazineRifle
+
+## Shinohara Heavy Industries
+
+- type: entity
+  id: RandomHumanoidSpawnerSHICorpsec
+  name: Shinohara Corpsec
+  suffix: SHI, Corpsec, Ghost Role
+  components:
+    - type: Sprite
+      sprite: _Crescent/Clothing/SHI/OuterClothing/corpsec.rsi
+      state: icon
+    - type: RandomHumanoidSpawner
+      settings: SHICorpsecGhostSpawner
+
+- type: randomHumanoidSettings
+  id: SHICorpsecGhostSpawner
+  randomizeName: true
+  speciesBlacklist:
+    - Monkey
+    - Kobold
+    - Abductor
+  components:
+    - type: GhostRole
+      name: Shinohara Corpsec
+      description: A hardsuited Shinohara corporate security officer, sent in as part of a security team.
+      rules: Serve Shinohara and follow your Highsec officer. Protect company assets.
+      raffle:
+        settings: short
+    - type: LanguageAdder
+      addSpoken:
+        - Kaishago
+        - Tradeband
+      addUnderstood:
+        - Kaishago
+        - Tradeband
+        - TauCetiBasic
+    - type: GhostTakeoverAvailable
+    - type: Loadout
+      prototypes: [ SHICorpsecGhostGear ]
+    - type: HullrotFaction
+      faction: SHI
+
+- type: startingGear
+  id: SHICorpsecGhostGear
+  equipment:
+    id: CorpsecPDA
+    ears: ClothingHeadsetShinohara
+    jumpsuit: ClothingUniformJumpsuitShinoharaSecurity
+    outerClothing: ClothingOuterHardsuitHighsec
+    mask: ClothingMaskGasSecurity
+    gloves: ClothingHandsGlovesCombat
+    shoes: ClothingShoesBootsMagCombat
+    suitstorage: JetpackBlackFilled
+    pocket1: DoubleEmergencyOxygenTankFilled
+    pocket2: CombatMedipen
+    belt: ClothingBeltMilitaryWebbing
+    back: ClothingBackpackSHI
+  inhand:
+    - WeaponSubMachineGunMP49
+  storage:
+    back:
+      - MedkitCombatFilled
+      - MagazinePistolSubMachineGun
+      - MagazinePistolSubMachineGun
+      - MagazinePistolSubMachineGun
+      - MagazinePistolSubMachineGun
+
+- type: entity
+  id: RandomHumanoidSpawnerSHIHighsec
+  name: Shinohara Highsec
+  suffix: SHI, Highsec, Ghost Role
+  components:
+    - type: Sprite
+      sprite: _Crescent/Clothing/SHI/OuterClothing/corpsec_ua.rsi
+      state: icon
+    - type: RandomHumanoidSpawner
+      settings: SHIHighsecGhostSpawner
+
+- type: randomHumanoidSettings
+  id: SHIHighsecGhostSpawner
+  randomizeName: true
+  speciesBlacklist:
+    - Monkey
+    - Kobold
+    - Abductor
+  components:
+    - type: GhostRole
+      name: Shinohara Highsec
+      description: A Shinohara Highsec officer, leading a corporate security team.
+      rules: Lead your security team and serve Shinohara. Protect company assets.
+      raffle:
+        settings: short
+    - type: LanguageAdder
+      addSpoken:
+        - Kaishago
+        - Tradeband
+      addUnderstood:
+        - Kaishago
+        - Tradeband
+        - TauCetiBasic
+    - type: GhostTakeoverAvailable
+    - type: Loadout
+      prototypes: [ SHIHighsecGhostGear ]
+    - type: HullrotFaction
+      faction: SHI
+
+- type: startingGear
+  id: SHIHighsecGhostGear
+  equipment:
+    id: HighsecPDA
+    ears: ClothingHeadsetShinohara
+    jumpsuit: ClothingUniformJumpsuitShinoharaSecurity
+    outerClothing: ClothingOuterHardsuitHighsecUA
+    mask: ClothingMaskGasSecurity
+    gloves: ClothingHandsGlovesCombat
+    shoes: ClothingShoesBootsMagCombat
+    suitstorage: JetpackBlackFilled
+    pocket1: DoubleEmergencyOxygenTankFilled
+    pocket2: CombatMedipen
+    belt: ClothingBeltMilitaryWebbing
+    back: ClothingBackpackSHI
+  inhand:
+    - WeaponSubMachineGunMP49
+  storage:
+    back:
+      - MedkitCombatFilled
+      - MagazinePistolSubMachineGun
+      - MagazinePistolSubMachineGun
+      - MagazinePistolSubMachineGun
+      - MagazinePistolSubMachineGun

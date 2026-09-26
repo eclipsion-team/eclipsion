@@ -71,7 +71,7 @@ public sealed class HullrotNpcFactionSyncSystem : EntitySystem
         // miss by a character to silently resolve to nothing.
         var faction = comp.Faction.Trim();
 
-        // Only ids that exist as an npcFaction get applied. Several Hullrot factions (ATH, GS, SRM, TAP, TSP)
+        // Only ids that exist as an npcFaction get applied. Several Hullrot factions (ATH, GS, TAP, TSP)
         // have no NPC counterpart at all, and AddFaction logs an error for every call with an unknown id.
         Apply(uid, _proto.HasIndex<NpcFactionPrototype>(faction) ? faction : null);
     }

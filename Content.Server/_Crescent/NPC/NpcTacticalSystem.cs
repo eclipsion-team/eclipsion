@@ -60,6 +60,7 @@ public sealed partial class NpcTacticalSystem : EntitySystem
     [Dependency] private readonly MobThresholdSystem _thresholds = default!;
     [Dependency] private readonly NpcFactionSystem _npcFaction = default!;
     [Dependency] private readonly NpcIffSystem _iff = default!;
+    [Dependency] private readonly NpcPassiveTargetSystem _passiveTarget = default!;
     [Dependency] private readonly NpcSquadSystem _squad = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
@@ -702,7 +703,7 @@ public sealed partial class NpcTacticalSystem : EntitySystem
         _threats.Clear();
         foreach (var hostile in _npcFaction.GetNearbyHostiles(owner, vision))
         {
-            if (_mobState.IsAlive(hostile))
+            if (_mobState.IsAlive(hostile) && !_passiveTarget.IsLeftAlone(owner, hostile))
                 _threats.Add(hostile);
         }
 

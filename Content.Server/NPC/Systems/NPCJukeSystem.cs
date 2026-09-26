@@ -70,6 +70,14 @@ public sealed class NPCJukeSystem : EntitySystem
                 {
                     var index = (startIndex + i) % 8;
                     var neighbor = ((Direction) index).ToIntVec() + currentTile;
+
+                    // Crescent: never juke off the floor - out into space off the grid's edge.
+                    if (!_map.TryGetTileRef(args.Transform.GridUid.Value, grid, neighbor, out var neighborTile) ||
+                        neighborTile.Tile.IsEmpty)
+                    {
+                        continue;
+                    }
+
                     var valid = true;
 
                     // TODO: Probably make this a helper on engine maybe

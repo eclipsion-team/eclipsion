@@ -58,6 +58,8 @@
                   min: 3
                   max: 5
     - type: TurretIFF
+    # Soldier AI walks past it until it shoots one of them.
+    - type: NpcPassiveTarget
     - type: Gun
       projectileSpeed: 25
       fireRate: 10

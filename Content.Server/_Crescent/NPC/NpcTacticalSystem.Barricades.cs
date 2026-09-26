@@ -78,7 +78,7 @@ public sealed partial class NpcTacticalSystem
 
         foreach (var hostile in _npcFaction.GetNearbyHostiles(npc, vision))
         {
-            if (!_mobState.IsAlive(hostile))
+            if (!_mobState.IsAlive(hostile) || _passiveTarget.IsLeftAlone(npc, hostile))
                 continue;
 
             var distance = (_transform.GetMapCoordinates(hostile).Position - ownPos).LengthSquared();

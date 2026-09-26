@@ -1,0 +1,475 @@
+# Mapping markers for the faction soldier AI in Mobs/NPCs/soldier_ai.yml. Each one puts its soldier down
+# where it stands when the map starts. Soldiers stay on the grid they were put on (NpcGridBound) - they won't
+# walk off its edge into space or onto a docked ship, so a mapped garrison holds its post.
+
+- type: entity
+  abstract: true
+  parent: MarkerBase
+  id: SpawnMobSoldierAIBase
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - state: ai
+
+# Imperial Mandate
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAIDSMRandom
+  name: imperial soldier spawner
+  suffix: DSM, Random role
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAIDSMRifleman
+    - MobSoldierAIDSMShock
+    - MobSoldierAIDSMShotgunner
+    - MobSoldierAIDSMMarksman
+    - MobSoldierAIDSMGunner
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAIDSMRifleman
+  name: imperial rifleman spawner
+  suffix: DSM, Rifleman
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAIDSMRifleman
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAIDSMShock
+  name: imperial shocktrooper spawner
+  suffix: DSM, Shock
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAIDSMShock
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAIDSMShotgunner
+  name: imperial breacher spawner
+  suffix: DSM, Shotgunner
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAIDSMShotgunner
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAIDSMMarksman
+  name: imperial marksman spawner
+  suffix: DSM, Marksman
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAIDSMMarksman
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAIDSMGunner
+  name: imperial machinegunner spawner
+  suffix: DSM, Gunner
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAIDSMGunner
+
+# New Communard Workers' League
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAINCWLRandom
+  name: communard soldier spawner
+  suffix: NCWL, Random role
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAINCWLRifleman
+    - MobSoldierAINCWLShock
+    - MobSoldierAINCWLShotgunner
+    - MobSoldierAINCWLMarksman
+    - MobSoldierAINCWLGunner
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAINCWLRifleman
+  name: communard rifleman spawner
+  suffix: NCWL, Rifleman
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAINCWLRifleman
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAINCWLShock
+  name: communard shocktrooper spawner
+  suffix: NCWL, Shock
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAINCWLShock
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAINCWLShotgunner
+  name: communard breacher spawner
+  suffix: NCWL, Shotgunner
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAINCWLShotgunner
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAINCWLMarksman
+  name: communard marksman spawner
+  suffix: NCWL, Marksman
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAINCWLMarksman
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAINCWLGunner
+  name: communard machinegunner spawner
+  suffix: NCWL, Gunner
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAINCWLGunner
+
+# Trans-Federation Sovereign Coalition
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAITFSCRandom
+  name: coalition soldier spawner
+  suffix: TFSC, Random role
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAITFSCRifleman
+    - MobSoldierAITFSCShock
+    - MobSoldierAITFSCShotgunner
+    - MobSoldierAITFSCMarksman
+    - MobSoldierAITFSCGunner
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAITFSCRifleman
+  name: coalition rifleman spawner
+  suffix: TFSC, Rifleman
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAITFSCRifleman
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAITFSCShock
+  name: coalition shocktrooper spawner
+  suffix: TFSC, Shock
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAITFSCShock
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAITFSCShotgunner
+  name: coalition breacher spawner
+  suffix: TFSC, Shotgunner
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAITFSCShotgunner
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAITFSCMarksman
+  name: coalition marksman spawner
+  suffix: TFSC, Marksman
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAITFSCMarksman
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAITFSCGunner
+  name: coalition machinegunner spawner
+  suffix: TFSC, Gunner
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAITFSCGunner
+
+# Shinohara Heavy Industries
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAISHIRandom
+  name: corporate soldier spawner
+  suffix: SHI, Random role
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAISHIRifleman
+    - MobSoldierAISHIShock
+    - MobSoldierAISHIShotgunner
+    - MobSoldierAISHIMarksman
+    - MobSoldierAISHIGunner
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAISHIRifleman
+  name: corporate rifleman spawner
+  suffix: SHI, Rifleman
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAISHIRifleman
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAISHIShock
+  name: corporate shocktrooper spawner
+  suffix: SHI, Shock
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAISHIShock
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAISHIShotgunner
+  name: corporate breacher spawner
+  suffix: SHI, Shotgunner
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAISHIShotgunner
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAISHIMarksman
+  name: corporate marksman spawner
+  suffix: SHI, Marksman
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAISHIMarksman
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAISHIGunner
+  name: corporate machinegunner spawner
+  suffix: SHI, Gunner
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAISHIGunner
+
+# Independents
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAIINDRandom
+  name: independent soldier spawner
+  suffix: IND, Random role
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAIINDRifleman
+    - MobSoldierAIINDShock
+    - MobSoldierAIINDShotgunner
+    - MobSoldierAIINDMarksman
+    - MobSoldierAIINDGunner
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAIINDRifleman
+  name: independent gunhand spawner
+  suffix: IND, Rifleman
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAIINDRifleman
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAIINDShock
+  name: independent enforcer spawner
+  suffix: IND, Shock
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAIINDShock
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAIINDShotgunner
+  name: independent breacher spawner
+  suffix: IND, Shotgunner
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAIINDShotgunner
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAIINDMarksman
+  name: independent sharpshooter spawner
+  suffix: IND, Marksman
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAIINDMarksman
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAIINDGunner
+  name: independent machinegunner spawner
+  suffix: IND, Gunner
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAIINDGunner
+
+# Colonial Minutemen
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAICMMRandom
+  name: minuteman soldier spawner
+  suffix: CMM, Random role
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAICMMRifleman
+    - MobSoldierAICMMShock
+    - MobSoldierAICMMShotgunner
+    - MobSoldierAICMMMarksman
+    - MobSoldierAICMMGunner
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAICMMRifleman
+  name: minuteman rifleman spawner
+  suffix: CMM, Rifleman
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAICMMRifleman
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAICMMShock
+  name: minuteman shocktrooper spawner
+  suffix: CMM, Shock
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAICMMShock
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAICMMShotgunner
+  name: minuteman breacher spawner
+  suffix: CMM, Shotgunner
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAICMMShotgunner
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAICMMMarksman
+  name: minuteman marksman spawner
+  suffix: CMM, Marksman
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAICMMMarksman
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAICMMGunner
+  name: minuteman machinegunner spawner
+  suffix: CMM, Gunner
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAICMMGunner
+
+# Saint's Militia - hostile to everyone but SRM.
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAISRMRandom
+  name: hunter spawner
+  suffix: SRM, Hostile, Random role
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAISRMRifleman
+    - MobSoldierAISRMShock
+    - MobSoldierAISRMShotgunner
+    - MobSoldierAISRMMarksman
+    - MobSoldierAISRMGunner
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAISRMRifleman
+  name: hunter spawner
+  suffix: SRM, Hostile, Rifleman
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAISRMRifleman
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAISRMShock
+  name: hunter stalker spawner
+  suffix: SRM, Hostile, Shock
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAISRMShock
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAISRMShotgunner
+  name: hunter breacher spawner
+  suffix: SRM, Hostile, Shotgunner
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAISRMShotgunner
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAISRMMarksman
+  name: hunter marksman spawner
+  suffix: SRM, Hostile, Marksman
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAISRMMarksman
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAISRMGunner
+  name: hunter machinegunner spawner
+  suffix: SRM, Hostile, Gunner
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAISRMGunner

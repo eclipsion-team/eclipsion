@@ -2,21 +2,29 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using Content.Server._Crescent.NPC;
+using Content.Server._Crescent.DynamicAcces;
 using Content.Server._Crescent.NpcSquad;
 using Content.Server.NPC;
 using Content.Server.NPC.Components;
 using Content.Server.NPC.HTN;
+using Content.Server.NPC.Pathfinding;
 using Content.Server.NPC.Systems;
 using Content.Server.Weapons.Ranged.Systems;
 using Content.Server.Atmos.Components;
+using Content.Server.Atmos.EntitySystems;
+using Content.Server.Body.Components;
+using Content.Server.Body.Systems;
 using Content.Server.Damage.Systems;
 using Content.Server.Gravity;
 using Content.Server.Power.Components;
+using Content.Shared._Crescent;
 using Content.Shared._Crescent.Barricades;
 using Content.Shared._Crescent.HardsuitInjection;
 using Content.Shared._Crescent.HullrotFaction;
 using Content.Shared._Crescent.NpcSquad;
 using Content.Shared.Access.Components;
+using Content.Shared.Access.Systems;
+using Content.Shared.Atmos;
 using Content.Shared.CCVar;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Damage;
@@ -29,6 +37,9 @@ using Content.Shared.Language.Components;
 using Content.Shared.Maps;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Movement.Components;
+using Content.Shared.NPC;
+using Content.Shared.NPC.Systems;
 using Content.Shared.Strip.Components;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
@@ -261,6 +272,45 @@ public sealed class NpcSoldierTacticsTest
                 Assert.That(entMan.GetComponent<NpcIffComponent>(soldier).SquadLeader, Is.Null);
                 Assert.That(blackboard.GetValueOrDefault<Enum>(NPCBlackboard.CurrentOrders, entMan), Is.Null);
             });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task HoldingSoldierStaysPut()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitPost(() => server.CfgMan.SetCVar(CCVars.NPCPauseWhenNoPlayersInRange, false));
+
+        EntityUid soldier = default;
+        var start = Vector2.Zero;
+        var xformSys = server.System<SharedTransformSystem>();
+
+        await server.WaitPost(() =>
+        {
+            var entMan = server.EntMan;
+            var squad = server.System<NpcSquadSystem>();
+            LayFloor(server, map, -2, 12, -3, 3);
+
+            soldier = entMan.SpawnEntity(DsmSoldier, new EntityCoordinates(map.Grid, new Vector2(0.5f, 0.5f)));
+            var leader = SpawnPlayer(entMan, new EntityCoordinates(map.Grid, new Vector2(10.5f, 0.5f)), "DSM");
+
+            Assert.That(squad.TryRecruit(leader, soldier), Is.True);
+            squad.SetOrder(soldier, entMan.GetComponent<NpcSquadMemberComponent>(soldier), NpcSquadOrder.HoldFire);
+            start = xformSys.GetWorldPosition(soldier);
+        });
+
+        // Following, it would have walked most of the way over to its leader by now.
+        await server.WaitRunTicks(server.Timing.TickRate * 5);
+
+        await server.WaitAssertion(() =>
+        {
+            var moved = (xformSys.GetWorldPosition(soldier) - start).Length();
+            Assert.That(moved, Is.LessThan(0.25f), $"A soldier told to hold moved {moved:0.00} tiles.");
         });
 
         await pair.CleanReturnAsync();
@@ -515,6 +565,7 @@ public sealed class NpcSoldierTacticsTest
     [TestCase("MobSoldierAITFSCMarksman", "Freespeak")]
     [TestCase("MobSoldierAISHIShotgunner", "Kaishago")]
     [TestCase("MobSoldierAIINDRifleman", "Tradeband")]
+    [TestCase("MobSoldierAICMMShock", "American")]
     public async Task SoldierSpeaksItsFactionsLanguage(string proto, string language)
     {
         await using var pair = await PoolManager.GetServerClient();
@@ -542,6 +593,7 @@ public sealed class NpcSoldierTacticsTest
     [TestCase("MobSoldierAITFSCMarksman", "TFSCIDCardInfanteer")]
     [TestCase("MobSoldierAISHIShotgunner", "SHIIDCardCorpSec")]
     [TestCase("MobSoldierAIINDGunner", "SpacerIDCard")]
+    [TestCase("MobSoldierAICMMMarksman", "CMMIDCardMinuteman")]
     public async Task SoldierWearsNamedFactionId(string proto, string card)
     {
         await using var pair = await PoolManager.GetServerClient();
@@ -716,6 +768,51 @@ public sealed class NpcSoldierTacticsTest
     /// A soldier shot at from behind a wall turns round and goes to look, and tells the friend next to it -
     /// instead of standing there taking it because the shooter isn't in sight.
     /// </summary>
+    [Test]
+    public async Task LeavesAntiBoarderTurretAloneUntilShot()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        EntityUid soldier = default, friend = default, turret = default, enemy = default;
+
+        await server.WaitPost(() =>
+        {
+            var entMan = server.EntMan;
+            var npc = server.System<NPCSystem>();
+
+            soldier = entMan.SpawnEntity(DsmSoldier, map.GridCoords);
+            friend = entMan.SpawnEntity(DsmSoldier, map.GridCoords);
+            turret = entMan.SpawnEntity("WeaponTurretAutoPDNCWL", map.GridCoords);
+            enemy = entMan.SpawnEntity(NcwlSoldier, map.GridCoords);
+
+            foreach (var uid in new[] { soldier, friend, turret, enemy })
+            {
+                npc.SleepNPC(uid);
+            }
+        });
+        await server.WaitRunTicks(1);
+
+        await server.WaitAssertion(() =>
+        {
+            var squad = server.System<NpcSquadSystem>();
+
+            Assert.That(squad.IsTargetAllowed(soldier, enemy), Is.True);
+            Assert.That(squad.IsTargetAllowed(soldier, turret), Is.False,
+                "A soldier went for an enemy anti-boarder turret that never shot at it.");
+
+            // It hits the soldier's friend: now the whole side is in the fight with it.
+            var damage = new DamageSpecifier(server.ProtoMan.Index<DamageTypePrototype>("Piercing"), 5);
+            server.System<DamageableSystem>().TryChangeDamage(friend, damage, true, origin: turret);
+
+            Assert.That(squad.IsTargetAllowed(friend, turret), Is.True, "The soldier it shot didn't fight back.");
+            Assert.That(squad.IsTargetAllowed(soldier, turret), Is.True, "The soldier's friend being shot was ignored.");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
     [Test]
     public async Task SoldierFollowsUpWhereItWasShotFrom()
     {
@@ -1093,6 +1190,103 @@ public sealed class NpcSoldierTacticsTest
     }
 
     /// <summary>
+    /// The same, but the airlock is one its ID doesn't open: it leaves the door - and the wall beside it -
+    /// alone, rather than beating its way through.
+    /// </summary>
+    [Test]
+    public async Task SoldierDoesntBreakDoorItCantOpen()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitPost(() => server.CfgMan.SetCVar(CCVars.NPCPauseWhenNoPlayersInRange, false));
+
+        EntityUid soldier = default, shooter = default, airlock = default;
+        var walls = new List<EntityUid>();
+
+        await server.WaitPost(() =>
+        {
+            var entMan = server.EntMan;
+            var mapSys = server.System<SharedMapSystem>();
+            GiveGravity(entMan, map.Grid);
+
+            for (var x = -4; x <= 16; x++)
+            {
+                for (var y = -4; y <= 4; y++)
+                {
+                    mapSys.SetTile(map.Grid.Owner, map.Grid.Comp, new Vector2i(x, y), map.Tile.Tile);
+                }
+            }
+
+            for (var y = -4; y <= 4; y++)
+            {
+                var uid = entMan.SpawnEntity(y == 0 ? "Airlock" : "WallSolid",
+                    new EntityCoordinates(map.Grid, new Vector2(6.5f, y + 0.5f)));
+
+                if (y != 0)
+                {
+                    walls.Add(uid);
+                    continue;
+                }
+
+                airlock = uid;
+                entMan.GetComponent<ApcPowerReceiverComponent>(uid).NeedsPower = false;
+
+                // Locked to a ship code the soldier's card doesn't carry.
+                var codes = server.System<DynamicCodeSystem>();
+                codes.AddKeyToComponent(entMan.EnsureComponent<DynamicCodeHolderComponent>(uid), codes.retrieveKey(), null);
+            }
+
+            soldier = entMan.SpawnEntity(DsmSoldier, new EntityCoordinates(map.Grid, new Vector2(1.5f, 0.5f)));
+            shooter = entMan.SpawnEntity(NcwlSoldier, new EntityCoordinates(map.Grid, new Vector2(12.5f, 2.5f)));
+            server.System<NPCSystem>().SleepNPC(shooter);
+        });
+        await server.WaitRunTicks(server.Timing.TickRate);
+
+        await server.WaitPost(() =>
+        {
+            Assert.That(server.System<AccessReaderSystem>().IsAllowed(soldier, airlock), Is.False,
+                "The soldier's ID opens the airlock, so the test proves nothing.");
+
+            // It works doors, but never smashes, pries or vaults its way anywhere.
+            var flags = server.System<PathfindingSystem>().GetFlags(soldier);
+            Assert.That(flags, Is.EqualTo(PathFlags.Interact));
+
+            var damage = new DamageSpecifier(server.ProtoMan.Index<DamageTypePrototype>("Piercing"), 5);
+            server.System<DamageableSystem>().TryChangeDamage(soldier, damage, true, origin: shooter);
+        });
+
+        var doorOpened = false;
+
+        for (var second = 0; second < 10; second++)
+        {
+            await server.WaitRunTicks(server.Timing.TickRate);
+            await server.WaitPost(() =>
+                doorOpened |= server.EntMan.GetComponent<DoorComponent>(airlock).State is DoorState.Opening or DoorState.Open);
+        }
+
+        await server.WaitAssertion(() =>
+        {
+            var entMan = server.EntMan;
+            Assert.Multiple(() =>
+            {
+                Assert.That(doorOpened, Is.False, "The soldier got through an airlock its ID doesn't open.");
+                Assert.That(entMan.GetComponent<DamageableComponent>(airlock).TotalDamage, Is.EqualTo(FixedPoint2.Zero),
+                    "The soldier beat on an airlock its ID doesn't open.");
+
+                foreach (var wall in walls)
+                {
+                    Assert.That(entMan.GetComponent<DamageableComponent>(wall).TotalDamage, Is.EqualTo(FixedPoint2.Zero),
+                        "The soldier beat on the wall instead.");
+                }
+            });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
     /// Left to its own HTN, a squad soldier told to defend with an enemy in sight digs in: puts up a barricade
     /// on the side facing the enemy, out of its own steel, and then fights from behind it.
     /// </summary>
@@ -1296,6 +1490,278 @@ public sealed class NpcSoldierTacticsTest
         var ev = new Content.Shared.Weapons.Ranged.Events.GetAmmoCountEvent();
         entMan.EventBus.RaiseLocalEvent(gun, ref ev);
         return ev.Count;
+    }
+
+    /// <summary>
+    /// A soldier told to walk out into space stops at the edge of the grid it was put on - and without
+    /// NpcGridBound the same order does take it off, so the edge isn't what's stopping it.
+    /// </summary>
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task SoldierStaysOnItsGrid(bool bound)
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitPost(() => server.CfgMan.SetCVar(CCVars.NPCPauseWhenNoPlayersInRange, false));
+
+        EntityUid soldier = default;
+
+        await server.WaitPost(() =>
+        {
+            var mapSys = server.System<SharedMapSystem>();
+            GiveGravity(server.EntMan, map.Grid);
+
+            for (var x = -2; x <= 2; x++)
+            {
+                for (var y = -2; y <= 2; y++)
+                {
+                    mapSys.SetTile(map.Grid.Owner, map.Grid.Comp, new Vector2i(x, y), map.Tile.Tile);
+                }
+            }
+
+            soldier = server.EntMan.SpawnEntity(DsmSoldier, new EntityCoordinates(map.Grid, new Vector2(0.5f, 0.5f)));
+
+            // Only the walk-off order: nothing else steering it, and no jetpack flying it back.
+            server.EntMan.RemoveComponent<HTNComponent>(soldier);
+            server.EntMan.RemoveComponent<NpcJetpackComponent>(soldier);
+
+            if (!bound)
+                server.EntMan.RemoveComponent<NpcGridBoundComponent>(soldier);
+        });
+        await server.WaitRunTicks(5);
+
+        await server.WaitPost(() =>
+        {
+            server.EntMan.EnsureComponent<ActiveNPCComponent>(soldier);
+
+            // Straight out past the edge, beelined rather than pathed - there's no path into space.
+            var target = new EntityCoordinates(map.MapUid, new Vector2(8.5f, 0.5f));
+            var steering = server.System<NPCSteeringSystem>().Register(soldier, target);
+            steering.RepathRange = 100f;
+        });
+
+        var gridUid = map.Grid.Owner;
+        var leftGrid = false;
+
+        for (var second = 0; second < 5 && !leftGrid; second++)
+        {
+            await server.WaitRunTicks(server.Timing.TickRate);
+            await server.WaitPost(() => leftGrid = server.EntMan.GetComponent<TransformComponent>(soldier).GridUid != gridUid);
+        }
+
+        if (bound)
+            Assert.That(leftGrid, Is.False, "The grid-bound soldier walked off its grid into space.");
+        else
+            Assert.That(leftGrid, Is.True, "Without NpcGridBound the soldier never walked off, so the test proves nothing.");
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// A soldier that ends up floating in space lights the jetpack it wears, flies back onto the grid it last
+    /// stood on, and shuts the jetpack off again once it is there.
+    /// </summary>
+    [Test]
+    public async Task SoldierJetpacksBackFromSpace()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitPost(() => server.CfgMan.SetCVar(CCVars.NPCPauseWhenNoPlayersInRange, false));
+
+        EntityUid soldier = default;
+
+        await server.WaitPost(() =>
+        {
+            var mapSys = server.System<SharedMapSystem>();
+            GiveGravity(server.EntMan, map.Grid);
+
+            for (var x = -2; x <= 2; x++)
+            {
+                for (var y = -2; y <= 2; y++)
+                {
+                    mapSys.SetTile(map.Grid.Owner, map.Grid.Comp, new Vector2i(x, y), map.Tile.Tile);
+                }
+            }
+
+            soldier = server.EntMan.SpawnEntity(DsmSoldier, new EntityCoordinates(map.Grid, new Vector2(0.5f, 0.5f)));
+
+            // Nothing but the jetpack moving it.
+            server.EntMan.RemoveComponent<HTNComponent>(soldier);
+        });
+
+        // Long enough for it to note where it stands.
+        await server.WaitRunTicks(server.Timing.TickRate);
+
+        await server.WaitPost(() =>
+        {
+            server.EntMan.EnsureComponent<ActiveNPCComponent>(soldier);
+            server.System<SharedTransformSystem>().SetCoordinates(soldier, new EntityCoordinates(map.MapUid, new Vector2(10.5f, 0.5f)));
+        });
+
+        var gridUid = map.Grid.Owner;
+        var flew = false;
+        var back = false;
+
+        for (var second = 0; second < 20 && !back; second++)
+        {
+            await server.WaitRunTicks(server.Timing.TickRate);
+            await server.WaitPost(() =>
+            {
+                flew |= server.EntMan.HasComponent<JetpackUserComponent>(soldier);
+                back = server.EntMan.GetComponent<TransformComponent>(soldier).GridUid == gridUid;
+            });
+        }
+
+        // Let it settle, so the jetpack has been shut off.
+        await server.WaitRunTicks(server.Timing.TickRate);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(flew, Is.True, "The soldier never lit its jetpack in space.");
+            Assert.That(back, Is.True, "The soldier never made it back onto its grid.");
+            Assert.That(server.EntMan.HasComponent<JetpackUserComponent>(soldier), Is.False,
+                "The soldier kept its jetpack lit back on the grid.");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// In vacuum a soldier breathes from its pocket tank, falls back on its jetpack once that runs dry, and shuts
+    /// its tank again once it is somewhere with air, so a garrison doesn't breathe itself dry standing in a
+    /// pressurised room.
+    /// </summary>
+    [Test]
+    public async Task SoldierWorksItsInternals()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        EntityUid soldier = default;
+        await server.WaitPost(() =>
+        {
+            soldier = server.EntMan.SpawnEntity(DsmSoldier, map.GridCoords);
+            server.System<NPCSystem>().SleepNPC(soldier);
+        });
+        await server.WaitRunTicks(server.Timing.TickRate * 3);
+
+        var internals = server.System<InternalsSystem>();
+        await server.WaitAssertion(() =>
+        {
+            var comp = server.EntMan.GetComponent<InternalsComponent>(soldier);
+            Assert.That(internals.AreInternalsWorking(comp), Is.True, "The soldier isn't on internals in vacuum.");
+            Assert.That(PrototypeOf(server.EntMan, comp.GasTankEntity), Is.EqualTo("DoubleEmergencyOxygenTankFilled"),
+                "The soldier isn't breathing from its pocket tank, but from its jetpack.");
+
+            // Breathe it dry.
+            server.EntMan.GetComponent<GasTankComponent>(comp.GasTankEntity!.Value).Air.Clear();
+        });
+        await server.WaitRunTicks(server.Timing.TickRate * 3);
+
+        await server.WaitAssertion(() =>
+        {
+            var comp = server.EntMan.GetComponent<InternalsComponent>(soldier);
+            Assert.That(internals.AreInternalsWorking(comp), Is.True, "The soldier came off internals with its tank empty.");
+            Assert.That(PrototypeOf(server.EntMan, comp.GasTankEntity), Is.EqualTo("JetpackSoldierAIFilled"),
+                "The soldier stayed on its empty tank instead of falling back on its jetpack.");
+
+            var moles = new float[Atmospherics.AdjustedNumberOfGases];
+            moles[(int) Gas.Oxygen] = 21.824779f;
+            moles[(int) Gas.Nitrogen] = 82.10312f;
+            server.System<AtmosphereSystem>().SetMapAtmosphere(map.MapUid, false, new GasMixture(moles, Atmospherics.T20C));
+        });
+        await server.WaitRunTicks(server.Timing.TickRate * 10);
+
+        await server.WaitAssertion(() =>
+        {
+            var comp = server.EntMan.GetComponent<InternalsComponent>(soldier);
+            Assert.That(internals.AreInternalsWorking(comp), Is.False,
+                "The soldier kept drawing on its tank with breathable air around it.");
+            Assert.That(server.System<MobStateSystem>().IsAlive(soldier), Is.True);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// A player of the soldier's own side who shoots it becomes its target, with its rounds no longer passing
+    /// through them, until they are down - then they are a friend again, until they shoot it again. A friendly
+    /// soldier AI hitting it never starts that.
+    /// </summary>
+    [Test]
+    public async Task SoldierFightsBackAgainstOwnSideUntilTheyDrop()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        EntityUid soldier = default;
+        EntityUid player = default;
+        var retaliation = server.System<NpcFriendlyFireRetaliationSystem>();
+        var iff = server.System<NpcIffSystem>();
+        var mobState = server.System<MobStateSystem>();
+        var damageable = server.System<DamageableSystem>();
+
+        await server.WaitAssertion(() =>
+        {
+            var entMan = server.EntMan;
+            soldier = entMan.SpawnEntity(DsmSoldier, map.GridCoords);
+            player = SpawnPlayer(entMan, map.GridCoords, "DSM");
+            var ally = entMan.SpawnEntity(DsmSoldier, map.GridCoords);
+            server.System<NPCSystem>().SleepNPC(soldier);
+            server.System<NPCSystem>().SleepNPC(ally);
+
+            var damage = new DamageSpecifier(server.ProtoMan.Index<DamageTypePrototype>("Blunt"), 5);
+
+            damageable.TryChangeDamage(soldier, damage, true, origin: ally);
+            Assert.That(retaliation.HasGrudge(soldier, ally), Is.False, "The soldier turned on a friendly soldier AI.");
+            Assert.That(iff.IsFriendly(soldier, ally), Is.True);
+
+            Assert.That(iff.IsFriendly(soldier, player), Is.True);
+            damageable.TryChangeDamage(soldier, damage, true, origin: player);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(retaliation.HasGrudge(soldier, player), Is.True, "The soldier let its own side shoot it.");
+                Assert.That(iff.IsFriendly(soldier, player), Is.False);
+                Assert.That(iff.ShouldPassThrough(soldier, player), Is.False,
+                    "The soldier's rounds still pass through the player who shot it.");
+                Assert.That(server.System<NpcSquadSystem>().IsTargetAllowed(soldier, player), Is.True);
+                Assert.That(server.System<NpcFactionSystem>().GetNearbyHostiles(soldier, 10f), Does.Contain(player));
+            });
+
+            // Through damage, since a state set by hand is put straight back by the thresholds - poison, which
+            // takes no limbs off.
+            Assert.That(server.System<MobThresholdSystem>().TryGetThresholdForState(player, MobState.Critical, out var crit));
+            var poison = new DamageSpecifier(server.ProtoMan.Index<DamageTypePrototype>("Poison"), crit!.Value + 5);
+            damageable.TryChangeDamage(player, poison, true);
+            Assert.That(mobState.IsCritical(player), Is.True);
+        });
+        await server.WaitRunTicks(server.Timing.TickRate);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(retaliation.HasGrudge(soldier, player), Is.False, "The soldier kept after them once they were down.");
+            Assert.That(iff.IsFriendly(soldier, player), Is.True, "The player stayed an enemy after going down.");
+
+            damageable.SetAllDamage(player, server.EntMan.GetComponent<DamageableComponent>(player), 0);
+            Assert.That(mobState.IsAlive(player), Is.True);
+            var damage = new DamageSpecifier(server.ProtoMan.Index<DamageTypePrototype>("Blunt"), 5);
+            damageable.TryChangeDamage(soldier, damage, true, origin: player);
+            Assert.That(retaliation.HasGrudge(soldier, player), Is.True, "Shooting it again didn't set it off again.");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    private static string? PrototypeOf(IEntityManager entMan, EntityUid? uid)
+    {
+        return uid is { } ent ? entMan.GetComponent<MetaDataComponent>(ent).EntityPrototype?.ID : null;
     }
 
     /// <summary>

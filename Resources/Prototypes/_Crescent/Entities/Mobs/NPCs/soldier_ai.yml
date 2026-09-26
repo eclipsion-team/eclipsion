@@ -3,8 +3,8 @@
 # that any NPC holding a Hullrot gun needs.
 #
 # They fight from cover rather than charging (FactionSoldierCompound in NPCs/soldier_tactical.yml), never
-# shoot their own side (NpcIff), reload from the magazines and ammo boxes they carry, treat their own wounds
-# with dressings and medipens, and shout their faction's battle cries - the lines are looked up by faction,
+# shoot their own side (NpcIff) unless one of them shoots first (NpcFriendlyFireRetaliation), reload
+# from the magazines and ammo boxes they carry, treat their own wounds with dressings and medipens, and shout their faction's battle cries - the lines are looked up by faction,
 # see NpcTacticalSystem. Players of the same side can right-click one to recruit it into their squad
 # (NpcSquadRecruitable); squad soldiers look after a wounded leader and throw up barricades with the steel
 # they carry.
@@ -38,18 +38,26 @@
     - EmergencyMedipen
     - CombatMedipen
   - type: NpcIff
+  # Someone of its own side who shoots it gets shot back until they drop, then is forgiven.
+  - type: NpcFriendlyFireRetaliation
   - type: NpcSquadRecruitable
+  # Never walks off the grid it was put on - see the spawners in Markers/Spawners/soldier_ai.yml.
+  - type: NpcGridBound
+  # Blown out into space anyway, it flies back on the jetpack in its suit storage.
+  - type: NpcJetpack
   # Can't be stripped, and crumbles to dust with all its gear when it dies.
   - type: NpcNoLoot
   - type: HTN
     rootTask:
       task: FactionSoldierCompound
     blackboard:
+      # Never vaults tables or railings - which at a grid's edge is a vault out into space - and never smashes
+      # its way through anything: windows, tables, or a door its ID won't open. It paths around those, or gives up.
       NavClimb: !type:Bool
-        true
+        false
       NavSmash: !type:Bool
-        true
-      # Works doors: opens the ones its ID lets it through, and only breaks down the ones it doesn't.
+        false
+      # Works doors: opens the ones its ID lets it through, and leaves the ones it doesn't alone.
       NavInteract: !type:Bool
         true
       MeleeRange: !type:Single
@@ -80,11 +88,13 @@
     rootTask:
       task: FactionSoldierCompound
     blackboard:
+      # Never vaults tables or railings - which at a grid's edge is a vault out into space - and never smashes
+      # its way through anything: windows, tables, or a door its ID won't open. It paths around those, or gives up.
       NavClimb: !type:Bool
-        true
+        false
       NavSmash: !type:Bool
-        true
-      # Works doors: opens the ones its ID lets it through, and only breaks down the ones it doesn't.
+        false
+      # Works doors: opens the ones its ID lets it through, and leaves the ones it doesn't alone.
       NavInteract: !type:Bool
         true
       MeleeRange: !type:Single
@@ -107,11 +117,13 @@
     rootTask:
       task: FactionSoldierCompound
     blackboard:
+      # Never vaults tables or railings - which at a grid's edge is a vault out into space - and never smashes
+      # its way through anything: windows, tables, or a door its ID won't open. It paths around those, or gives up.
       NavClimb: !type:Bool
-        true
+        false
       NavSmash: !type:Bool
-        true
-      # Works doors: opens the ones its ID lets it through, and only breaks down the ones it doesn't.
+        false
+      # Works doors: opens the ones its ID lets it through, and leaves the ones it doesn't alone.
       NavInteract: !type:Bool
         true
       MeleeRange: !type:Single
@@ -134,11 +146,13 @@
     rootTask:
       task: FactionSoldierCompound
     blackboard:
+      # Never vaults tables or railings - which at a grid's edge is a vault out into space - and never smashes
+      # its way through anything: windows, tables, or a door its ID won't open. It paths around those, or gives up.
       NavClimb: !type:Bool
-        true
+        false
       NavSmash: !type:Bool
-        true
-      # Works doors: opens the ones its ID lets it through, and only breaks down the ones it doesn't.
+        false
+      # Works doors: opens the ones its ID lets it through, and leaves the ones it doesn't alone.
       NavInteract: !type:Bool
         true
       MeleeRange: !type:Single
@@ -161,11 +175,13 @@
     rootTask:
       task: FactionSoldierCompound
     blackboard:
+      # Never vaults tables or railings - which at a grid's edge is a vault out into space - and never smashes
+      # its way through anything: windows, tables, or a door its ID won't open. It paths around those, or gives up.
       NavClimb: !type:Bool
-        true
+        false
       NavSmash: !type:Bool
-        true
-      # Works doors: opens the ones its ID lets it through, and only breaks down the ones it doesn't.
+        false
+      # Works doors: opens the ones its ID lets it through, and leaves the ones it doesn't alone.
       NavInteract: !type:Bool
         true
       MeleeRange: !type:Single
@@ -617,6 +633,22 @@
   - type: Loadout
     prototypes:
     - SoldierAIGearINDRifleman
+  # Independents go anywhere: the mob itself carries all access, so every door opens for it whatever ID
+  # it has on (or none). The other IND roles only get this from their second parent, which is fine - none
+  # of the role archetypes has an Access of its own to win over it.
+  - type: Access
+    groups:
+    - AllAccess
+    tags:
+    - CentralCommand
+    - Frontier
+    - Mercenary
+    - NuclearOperative
+    - Pilot
+    - SAN
+    - StationTrafficController
+    - SyndicateAgent
+    - DV-SpareSafe
 
 - type: entity
   parent: [ BaseMobSoldierAIShock, MobSoldierAIINDRifleman ]
@@ -697,3 +729,221 @@
   - type: Loadout
     prototypes:
     - SoldierAIGearINDGunner
+
+# Colonial Minutemen
+
+- type: entity
+  parent: BaseMobSoldierAI
+  id: MobSoldierAICMMRifleman
+  name: minuteman rifleman
+  description: A Colonial Minuteman in a Midshipman hardsuit, carrying a Carter.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - CMM
+  - type: LanguageKnowledge
+    speaks:
+    - American
+    - Tradeband
+    understands:
+    - American
+    - Tradeband
+    - TauCetiBasic
+  - type: Loadout
+    prototypes:
+    - SoldierAIGearCMMRifleman
+
+- type: entity
+  parent: [ BaseMobSoldierAIShock, MobSoldierAICMMRifleman ]
+  id: MobSoldierAICMMShock
+  name: minuteman shocktrooper
+  description: A Colonial Minuteman in a Midshipman hardsuit, carrying an MP5.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - CMM
+  - type: LanguageKnowledge
+    speaks:
+    - American
+    - Tradeband
+    understands:
+    - American
+    - Tradeband
+    - TauCetiBasic
+  - type: Loadout
+    prototypes:
+    - SoldierAIGearCMMShock
+
+- type: entity
+  parent: [ BaseMobSoldierAIShotgunner, MobSoldierAICMMRifleman ]
+  id: MobSoldierAICMMShotgunner
+  name: minuteman breacher
+  description: A Colonial Minuteman in a Midshipman hardsuit, carrying a Kammerer.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - CMM
+  - type: LanguageKnowledge
+    speaks:
+    - American
+    - Tradeband
+    understands:
+    - American
+    - Tradeband
+    - TauCetiBasic
+  - type: Loadout
+    prototypes:
+    - SoldierAIGearCMMShotgunner
+
+- type: entity
+  parent: [ BaseMobSoldierAIMarksman, MobSoldierAICMMRifleman ]
+  id: MobSoldierAICMMMarksman
+  name: minuteman marksman
+  description: A Colonial Minuteman in a Midshipman hardsuit, carrying a Nimrod.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - CMM
+  - type: LanguageKnowledge
+    speaks:
+    - American
+    - Tradeband
+    understands:
+    - American
+    - Tradeband
+    - TauCetiBasic
+  - type: Loadout
+    prototypes:
+    - SoldierAIGearCMMMarksman
+
+- type: entity
+  parent: [ BaseMobSoldierAIGunner, MobSoldierAICMMRifleman ]
+  id: MobSoldierAICMMGunner
+  name: minuteman machinegunner
+  description: A Colonial Minuteman in a Midshipman hardsuit, carrying a Washington.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - CMM
+  - type: LanguageKnowledge
+    speaks:
+    - American
+    - Tradeband
+    understands:
+    - American
+    - Tradeband
+    - TauCetiBasic
+  - type: Loadout
+    prototypes:
+    - SoldierAIGearCMMGunner
+
+# Saint's Militia
+#
+# A declared Hunt: these spare only their own and SRM players, and shoot everyone else on sight - the other
+# powers' troops, independents and civilians alike. SRM is what makes an SRM player a friend (see
+# player_factions.yml), SRMHunt is what makes everyone else a target and lets the others shoot back.
+
+- type: entity
+  parent: BaseMobSoldierAI
+  id: MobSoldierAISRMRifleman
+  name: hunter
+  description: A Hunter of the Saint's Militia on a declared Hunt, hardsuited and carrying a Hunter DMR. Spares no one.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - SRM
+    - SRMHunt
+  - type: LanguageKnowledge
+    speaks:
+    - LowImperial
+    understands:
+    - LowImperial
+    - HighImperial
+    - TauCetiBasic
+  - type: Loadout
+    prototypes:
+    - SoldierAIGearSRMRifleman
+
+- type: entity
+  parent: [ BaseMobSoldierAIShock, MobSoldierAISRMRifleman ]
+  id: MobSoldierAISRMShock
+  name: hunter stalker
+  description: A Hunter of the Saint's Militia on a declared Hunt, hardsuited and carrying a Beetle. Spares no one.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - SRM
+    - SRMHunt
+  - type: LanguageKnowledge
+    speaks:
+    - LowImperial
+    understands:
+    - LowImperial
+    - HighImperial
+    - TauCetiBasic
+  - type: Loadout
+    prototypes:
+    - SoldierAIGearSRMShock
+
+- type: entity
+  parent: [ BaseMobSoldierAIShotgunner, MobSoldierAISRMRifleman ]
+  id: MobSoldierAISRMShotgunner
+  name: hunter breacher
+  description: A Hunter of the Saint's Militia on a declared Hunt, hardsuited and carrying a Reno. Spares no one.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - SRM
+    - SRMHunt
+  - type: LanguageKnowledge
+    speaks:
+    - LowImperial
+    understands:
+    - LowImperial
+    - HighImperial
+    - TauCetiBasic
+  - type: Loadout
+    prototypes:
+    - SoldierAIGearSRMShotgunner
+
+- type: entity
+  parent: [ BaseMobSoldierAIMarksman, MobSoldierAISRMRifleman ]
+  id: MobSoldierAISRMMarksman
+  name: hunter marksman
+  description: A Hunter of the Saint's Militia on a declared Hunt, hardsuited and carrying an Imperator. Spares no one.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - SRM
+    - SRMHunt
+  - type: LanguageKnowledge
+    speaks:
+    - LowImperial
+    understands:
+    - LowImperial
+    - HighImperial
+    - TauCetiBasic
+  - type: Loadout
+    prototypes:
+    - SoldierAIGearSRMMarksman
+
+- type: entity
+  parent: [ BaseMobSoldierAIGunner, MobSoldierAISRMRifleman ]
+  id: MobSoldierAISRMGunner
+  name: hunter machinegunner
+  description: A Hunter of the Saint's Militia on a declared Hunt, hardsuited and carrying a Dominion. Spares no one.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - SRM
+    - SRMHunt
+  - type: LanguageKnowledge
+    speaks:
+    - LowImperial
+    understands:
+    - LowImperial
+    - HighImperial
+    - TauCetiBasic
+  - type: Loadout
+    prototypes:
+    - SoldierAIGearSRMGunner

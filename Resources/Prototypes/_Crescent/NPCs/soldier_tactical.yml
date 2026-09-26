@@ -17,6 +17,15 @@
 - type: htnCompound
   id: FactionSoldierCompound
   branches:
+  # Squad ordered to hold: stay exactly where it is and don't start anything. Above everything else, so it
+  # doesn't walk off to find cover, run over to the leader or chase a lead either.
+  - preconditions:
+    - !type:HasOrdersPrecondition
+      orders: enum.NpcSquadOrder.HoldFire
+    tasks:
+    - !type:HTNCompoundTask
+      task: SoldierHoldCompound
+
   # Badly hurt and carrying something that would help: get out of sight and patch up.
   - preconditions:
     - !type:NpcNeedsHealingPrecondition
@@ -43,14 +52,6 @@
 
     - !type:HTNPrimitiveTask
       operator: !type:NpcTendLeaderOperator
-
-  # Squad ordered to hold fire: stay on the leader and don't start anything.
-  - preconditions:
-    - !type:HasOrdersPrecondition
-      orders: enum.NpcSquadOrder.HoldFire
-    tasks:
-    - !type:HTNCompoundTask
-      task: FollowCompound
 
   # Dig in: told to defend with enemies about, or the leader is hurt and the squad rings them in.
   - preconditions:
@@ -365,6 +366,27 @@
   - tasks:
     - !type:HTNPrimitiveTask
       operator: !type:NpcSelfHealOperator
+
+# Holding: patch itself up where it stands if it needs to, otherwise stand there and look around.
+- type: htnCompound
+  id: SoldierHoldCompound
+  branches:
+  - preconditions:
+    - !type:NpcNeedsHealingPrecondition
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcSelfHealOperator
+
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:RandomOperator
+        targetKey: IdleTime
+        minKey: MinimumIdleTime
+        maxKey: MaximumIdleTime
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcLookAroundOperator
+        durationKey: IdleTime
 
 # Nothing going on: wander a little way and look around, like someone on watch rather than a statue.
 - type: htnCompound

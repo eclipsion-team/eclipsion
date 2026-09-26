@@ -30,14 +30,14 @@ npc-squad-order-holdfire = Hold fire
 npc-squad-order-follow-desc = Stay close and fight anything that gets near me.
 npc-squad-order-defend-desc = Dig in where I'm standing now and hold that ground.
 npc-squad-order-attack-desc = Engage every enemy in sight and push onto them.
-npc-squad-order-holdfire-desc = Stay close and don't start anything.
+npc-squad-order-holdfire-desc = Stay exactly where you are and don't start anything.
 
 ## Window
 
 npc-squad-ui-title = Squad Command
 npc-squad-ui-count = Squad: {$count}/{$max}
 npc-squad-ui-squad-orders = Orders for the whole squad:
-npc-squad-ui-point-hint = Point at an enemy to have the squad focus it.
+npc-squad-ui-point-hint = Point at anyone to have the squad attack them - and their faction, for a while.
 npc-squad-ui-empty = Nobody is following you. Right-click a soldier of your side to recruit them.
 npc-squad-ui-dismiss-all = Dismiss all
 npc-squad-ui-dismiss = Dismiss

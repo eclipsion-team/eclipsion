@@ -1,5 +1,6 @@
 using Content.Shared._Crescent.HullrotFaction;
 using Content.Shared.Mobs.Components;
+using Content.Shared.NPC.Components;
 using Content.Shared.NPC.Systems;
 
 namespace Content.Shared._Crescent.NpcSquad;
@@ -12,6 +13,7 @@ public sealed class NpcIffSystem : EntitySystem
     private EntityQuery<NpcIffComponent> _iffQuery;
     private EntityQuery<MobStateComponent> _mobQuery;
     private EntityQuery<HullrotFactionComponent> _hullrotQuery;
+    private EntityQuery<FactionExceptionComponent> _exceptionQuery;
 
     public override void Initialize()
     {
@@ -20,6 +22,7 @@ public sealed class NpcIffSystem : EntitySystem
         _iffQuery = GetEntityQuery<NpcIffComponent>();
         _mobQuery = GetEntityQuery<MobStateComponent>();
         _hullrotQuery = GetEntityQuery<HullrotFactionComponent>();
+        _exceptionQuery = GetEntityQuery<FactionExceptionComponent>();
     }
 
     /// <summary>
@@ -42,12 +45,19 @@ public sealed class NpcIffSystem : EntitySystem
 
     /// <summary>
     /// Whether <paramref name="other"/> is on the same side as <paramref name="npc"/>: its squad, its NPC
-    /// factions, or a player whose Hullrot faction is one of them.
+    /// factions, or a player whose Hullrot faction is one of them - unless the NPC has been set on them
+    /// specifically, as it is on a friend who shot it (NpcFriendlyFireRetaliation).
     /// </summary>
     public bool IsFriendly(Entity<NpcIffComponent?> npc, EntityUid other)
     {
         if (npc.Owner == other)
             return true;
+
+        if (_exceptionQuery.TryComp(npc, out var exception)
+            && _npcFaction.GetHostiles((npc.Owner, exception)).Contains(other))
+        {
+            return false;
+        }
 
         if (_iffQuery.Resolve(npc, ref npc.Comp, false) && npc.Comp.SquadLeader is { } leader)
         {

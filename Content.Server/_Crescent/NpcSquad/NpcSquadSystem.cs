@@ -13,6 +13,7 @@ using Content.Shared.Actions;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.NPC.Systems;
 using Content.Shared.Pointing;
 using Content.Shared.Popups;
 using Content.Shared.Verbs;
@@ -32,7 +33,8 @@ namespace Content.Server._Crescent.NpcSquad;
 /// <para>
 /// Recruiting is a right-click verb on the NPC, open to anyone the NPC counts as its own side. The first
 /// recruit gives the player a hotbar action that opens the squad window, where orders are given to everyone
-/// at once or to one soldier at a time. Pointing at an enemy has the squad focus it.
+/// at once or to one soldier at a time. Pointing at anyone - friend or foe - has the squad go for them, and
+/// for a while for everyone of their faction too.
 /// </para>
 /// <para>
 /// Orders reach the HTN as <see cref="NPCBlackboard.CurrentOrders"/>, the same key the rat king uses for its
@@ -48,8 +50,12 @@ public sealed class NpcSquadSystem : EntitySystem
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly NPCSystem _npc = default!;
+    [Dependency] private readonly NpcFactionSystem _npcFaction = default!;
     [Dependency] private readonly NpcGunHandlingSystem _npcGun = default!;
+    [Dependency] private readonly NpcFriendlyFireRetaliationSystem _retaliation = default!;
     [Dependency] private readonly NpcIffSystem _iff = default!;
+    [Dependency] private readonly NpcSquadHostilitySystem _hostility = default!;
+    [Dependency] private readonly NpcPassiveTargetSystem _passiveTarget = default!;
     [Dependency] private readonly NpcTacticalSystem _tactical = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly SharedActionsSystem _actions = default!;
@@ -76,6 +82,9 @@ public sealed class NpcSquadSystem : EntitySystem
     private static readonly TimeSpan UpdateInterval = TimeSpan.FromSeconds(1);
 
     private TimeSpan _nextUpdate;
+
+    private readonly List<string> _targetAllegiances = new();
+    private readonly List<string> _leaderAllegiances = new();
 
     public override void Initialize()
     {
@@ -394,21 +403,44 @@ public sealed class NpcSquadSystem : EntitySystem
     {
         var target = args.Pointed;
 
-        if (ent.Comp.Members.Contains(target) || !HasComp<MobStateComponent>(target) || !_mobState.IsAlive(target))
+        if (target == ent.Owner || !HasComp<MobStateComponent>(target) || !_mobState.IsAlive(target))
             return;
+
+        // Pointing out one of its own squad turns the rest on them: it is out of the squad first, so it no
+        // longer counts as their squadmate.
+        if (ent.Comp.Members.Contains(target))
+            Dismiss(target);
+
+        // Whoever is pointed out gets attacked, friend or foe, and for a while so does everyone of their
+        // faction - except the soldier's own, and its leader's.
+        _hostility.GetAllegiances(target, _targetAllegiances);
+        _hostility.GetAllegiances(ent.Owner, _leaderAllegiances);
 
         var anyone = false;
         var acknowledged = false;
 
-        foreach (var npc in ent.Comp.Members)
+        foreach (var npc in ent.Comp.Members.ToArray())
         {
             if (!TryComp<NpcSquadMemberComponent>(npc, out var member) || member.Order == NpcSquadOrder.HoldFire)
                 continue;
 
-            // Pointing out a friend is not an order to shoot them. Friend to this one, anyway: a squad can mix
-            // allied factions, and the others may still go for it.
-            if (_iff.IsFriendly(npc, target))
-                continue;
+            var duration = CompOrNull<NpcSquadRecruitableComponent>(npc)?.OrderedHostilityTime ?? TimeSpan.FromMinutes(2);
+
+            // Also what lets it shoot a friend: its rounds would pass straight through one otherwise.
+            _hostility.AddTarget(npc, target, duration);
+
+            foreach (var faction in _targetAllegiances)
+            {
+                if (!_npcFaction.IsMember(npc, faction) && !_leaderAllegiances.Contains(faction))
+                    _hostility.AddFaction(npc, faction, duration);
+            }
+
+            // A pointed-out soldier of its own side fights back instead of standing there taking it.
+            if (HasComp<HTNComponent>(target) && !HasComp<ActorComponent>(target) && _iff.IsFriendly(target, npc))
+            {
+                _hostility.AddTarget(target, npc, duration);
+                ForceReplan(target);
+            }
 
             member.FocusTarget = target;
             _npc.SetBlackboard(npc, NPCBlackboard.CurrentOrderedTarget, target);
@@ -470,7 +502,10 @@ public sealed class NpcSquadSystem : EntitySystem
     /// Throws away whatever the NPC was doing so the new order takes effect now rather than whenever its
     /// current task happens to end.
     /// </summary>
-    private void ForceReplan(EntityUid npc, HTNComponent? htn = null)
+    /// <summary>
+    /// Drops whatever the NPC is doing and has it plan again from scratch.
+    /// </summary>
+    public void ForceReplan(EntityUid npc, HTNComponent? htn = null)
     {
         if (!Resolve(npc, ref htn, false))
             return;
@@ -558,14 +593,25 @@ public sealed class NpcSquadSystem : EntitySystem
 
     /// <summary>
     /// Whether this NPC should be shooting at <paramref name="target"/>: never at its own side, never at all
-    /// under a hold-fire order, and only near its anchor while following or defending.
+    /// under a hold-fire order, and only near its anchor while following or defending - except back at
+    /// whoever just shot it. Anti-boarder guns are left be until they shoot one of its side.
     /// </summary>
     public bool IsTargetAllowed(EntityUid npc, EntityUid target)
     {
         if (_iff.IsFriendly(npc, target))
             return false;
 
-        if (!TryComp<NpcSquadMemberComponent>(npc, out var member))
+        // Someone on its own side who shot it gets shot back, whatever the orders.
+        if (_retaliation.HasGrudge(npc, target))
+            return true;
+
+        TryComp<NpcSquadMemberComponent>(npc, out var member);
+
+        // Anti-boarder guns and the like are left be until they shoot one of its side, unless pointed out.
+        if (member?.FocusTarget != target && _passiveTarget.IsLeftAlone(npc, target))
+            return false;
+
+        if (member == null)
             return true;
 
         if (member.Order == NpcSquadOrder.HoldFire)

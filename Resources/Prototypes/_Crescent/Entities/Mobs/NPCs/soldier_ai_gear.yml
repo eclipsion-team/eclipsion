@@ -11,6 +11,10 @@
 # or ammo boxes for its gun go in there and in the backpack, but those are added on spawn by NpcGunHandling
 # (spareMagazines, spareAmmoBoxes), so the gear doesn't have to know which ammunition each faction's guns
 # take. The combat medkit, steel and hardsuit medipens come from NpcTactical (supplies, injectorSupplies).
+#
+# Air: the double emergency tank in a pocket, and 125 minutes of oxygen in the jetpack in suit storage
+# (see JetpackSoldierAIFilled below). NpcStartInternals only opens a tank while the air around them is
+# unbreathable, and moves them onto the next one when the tank they are on runs low.
 
 # Imperial Mandate
 
@@ -25,6 +29,7 @@
     shoes: ClothingShoesBootsMagDSM
     ears: ClothingHeadsetEmpire
     id: DSMIDCardLevyman
+    suitstorage: JetpackSoldierAIFilled
     pocket1: DoubleEmergencyOxygenTankFilled
     belt: ClothingBeltMilitaryWebbingSoldierAIFilled
     back: ClothingBackpackDSM
@@ -77,6 +82,7 @@
     shoes: ClothingShoesBootsMagNCWL
     ears: ClothingHeadsetNCWL
     id: NCWLIDCardHomeguardSoldat
+    suitstorage: JetpackSoldierAIFilled
     pocket1: DoubleEmergencyOxygenTankFilled
     belt: ClothingBeltMilitaryWebbingSoldierAIFilled
     back: ClothingBackpackNCWL
@@ -129,6 +135,7 @@
     shoes: ClothingShoesBootsMagSyndie
     ears: ClothingHeadsetTFSC
     id: TFSCIDCardInfanteer
+    suitstorage: JetpackSoldierAIFilled
     pocket1: DoubleEmergencyOxygenTankFilled
     belt: ClothingBeltMilitaryWebbingSoldierAIFilled
     back: ClothingBackpackTFSC
@@ -181,6 +188,7 @@
     shoes: ClothingShoesBootsMagCombat
     ears: ClothingHeadsetShinohara
     id: SHIIDCardCorpSec
+    suitstorage: JetpackSoldierAIFilled
     pocket1: DoubleEmergencyOxygenTankFilled
     belt: ClothingBeltMilitaryWebbingSoldierAIFilled
     back: ClothingBackpackSHI
@@ -233,6 +241,7 @@
     shoes: ClothingShoesBootsMagCombat
     ears: ClothingHeadsetFreelance
     id: SpacerIDCard
+    suitstorage: JetpackSoldierAIFilled
     pocket1: DoubleEmergencyOxygenTankFilled
     belt: ClothingBeltMilitaryWebbingSoldierAIFilled
     back: ClothingBackpack
@@ -271,6 +280,131 @@
   - SoldierAIGearIND
   inhand:
   - WeaponLightMachineGunMG42
+
+# Colonial Minutemen
+
+- type: startingGear
+  id: SoldierAIGearCMM
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCMM
+    outerClothing: ClothingOuterHardsuitMidshipman
+    head: ClothingHeadHelmetHardsuitMidshipman
+    mask: ClothingMaskGas
+    gloves: ClothingHandsGlovesCombat
+    shoes: ClothingShoesBootsMagCombat
+    ears: ClothingHeadsetCMM
+    neck: ClothingNeckScarfCMMCloak
+    id: CMMIDCardMinuteman
+    suitstorage: JetpackSoldierAIFilled
+    pocket1: DoubleEmergencyOxygenTankFilled
+    belt: ClothingBeltMilitaryWebbingSoldierAIFilled
+    back: ClothingBackpackMinuteman
+
+- type: startingGear
+  id: SoldierAIGearCMMRifleman
+  subGear:
+  - SoldierAIGearCMM
+  inhand:
+  - WeaponRifleCarter
+
+- type: startingGear
+  id: SoldierAIGearCMMShock
+  subGear:
+  - SoldierAIGearCMM
+  inhand:
+  - WeaponSubMachineGunMP5
+
+- type: startingGear
+  id: SoldierAIGearCMMShotgunner
+  subGear:
+  - SoldierAIGearCMM
+  inhand:
+  - WeaponShotgunKammerer
+
+- type: startingGear
+  id: SoldierAIGearCMMMarksman
+  subGear:
+  - SoldierAIGearCMM
+  inhand:
+  - WeaponRifleCMMNimrod
+
+- type: startingGear
+  id: SoldierAIGearCMMGunner
+  subGear:
+  - SoldierAIGearCMM
+  inhand:
+  - WeaponLightMachineGunWashington
+
+# Saint's Militia
+
+- type: startingGear
+  id: SoldierAIGearSRM
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitHunter
+    outerClothing: ClothingOuterHardsuitHunter
+    head: ClothingHeadHelmetHardsuitHunter
+    mask: ClothingMaskImperialCombatGasmask
+    gloves: ClothingHandsGlovesHunter
+    shoes: ClothingShoesBootsMagDSM
+    ears: ClothingHeadsetHunter
+    id: SRMIDCardHunter
+    suitstorage: JetpackSoldierAIFilled
+    pocket1: DoubleEmergencyOxygenTankFilled
+    belt: ClothingBeltMilitaryWebbingSoldierAIFilled
+    back: ClothingBackpackSRM
+
+- type: startingGear
+  id: SoldierAIGearSRMRifleman
+  subGear:
+  - SoldierAIGearSRM
+  inhand:
+  - WeaponRifleHunter
+
+- type: startingGear
+  id: SoldierAIGearSRMShock
+  subGear:
+  - SoldierAIGearSRM
+  inhand:
+  - WeaponSubMachineGunBeetle
+
+- type: startingGear
+  id: SoldierAIGearSRMShotgunner
+  subGear:
+  - SoldierAIGearSRM
+  inhand:
+  - WeaponShotgunReno
+
+- type: startingGear
+  id: SoldierAIGearSRMMarksman
+  subGear:
+  - SoldierAIGearSRM
+  inhand:
+  - WeaponSniperImperator
+
+- type: startingGear
+  id: SoldierAIGearSRMGunner
+  subGear:
+  - SoldierAIGearSRM
+  inhand:
+  - WeaponLightMachineGunDSMDominion
+
+# The jetpack in suit storage is what gets a soldier back onto a grid when it ends up in space (NpcJetpack).
+# It also stands in for the oxygen tank that used to sit there, so it carries the same 125 minutes of oxygen
+# - about 50 minutes of thrust. The soldier breathes from its pocket tank first and only falls back on the
+# jetpack once that is empty (NpcStartInternals), so the ride home isn't breathed away.
+
+- type: entity
+  parent: JetpackBlack
+  id: JetpackSoldierAIFilled
+  suffix: Soldier AI, Filled
+  components:
+  - type: GasTank
+    outputPressure: 21.3
+    air:
+      volume: 20
+      moles:
+      - 8.205516200 # oxygen
+      temperature: 293.15
 
 # The rig is filled by the entity rather than listed as startingGear storage: the role gears pull the
 # faction gear in as subGear, and merging subGear storage into a gear that has none of its own throws.

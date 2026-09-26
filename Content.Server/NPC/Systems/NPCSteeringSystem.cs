@@ -1,6 +1,7 @@
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using Content.Server._Crescent.NPC;
 using Content.Server.Administration.Managers;
 using Content.Server.DoAfter;
 using Content.Server.NPC.Components;
@@ -62,6 +63,7 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly SharedCombatModeSystem _combat = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
+    [Dependency] private readonly NpcGridBoundSystem _gridBound = default!; // Crescent
 
     private EntityQuery<FixturesComponent> _fixturesQuery;
     private EntityQuery<MovementSpeedModifierComponent> _modifierQuery;
@@ -381,6 +383,9 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
 
         // Blend last and current tick
         Blend(steering, frameTime, interest, danger);
+
+        // Crescent: an NPC bound to its grid never steers off the edge of it.
+        _gridBound.AvoidLeavingGrid(uid, xform, worldPos, offsetRot, agentRadius, steering.Danger);
 
         // Remove the danger map from the interest map.
         var desiredDirection = -1;
