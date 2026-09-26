@@ -31,6 +31,44 @@
     - WhitelistChameleon
 
 - type: entity
+  parent: ClothingHandsBase
+  id: ClothingHandsCyberGorilla
+  name: Cybernetic gorilla gloves placeholder
+  description: Placeholder description for now.
+  components:
+  - type: Sprite
+    sprite: Clothing/Hands/Gloves/combat.rsi
+  - type: Clothing
+    sprite: Clothing/Hands/Gloves/combat.rsi
+    equipDelay: 15
+    unequipDelay: 1200 # unremovable comp means you can't even put them on, so this will do.
+  - type: StaminaDamageOnHit
+    damage: 10
+  - type: MeleeWeapon
+    attackRate: 1
+    damage:
+      types:
+        Blunt: 35
+        Structural: 50
+  - type: MeleeThrowOnHit
+    speed: 8
+    lifetime: 0.4
+  - type: KnockdownOnHit
+    duration: 1
+    soundHit:
+      collection: BoxingHit
+    animation: WeaponArcFist
+    mustBeEquippedToUse: true
+  - type: Fiber
+    fiberMaterial: fibers-leather
+    fiberColor: fibers-red
+  - type: FingerprintMask
+  - type: Tag
+    tags:
+    - Kangaroo
+    - WhitelistChameleon
+
+- type: entity
   parent: ClothingHandsGlovesBoxingRed
   id: ClothingHandsGlovesBoxingBlue
   name: blue boxing gloves

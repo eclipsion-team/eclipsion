@@ -124,6 +124,11 @@
         Slash: 15
         Piercing: 15
         Heat: 10
+  - type: MeleeThrowOnHit #each punch knocks people to the ground (not a stun though, just moved and proned).
+    speed: 8
+    lifetime: 0.4
+  - type: KnockdownOnHit
+    duration: 1
   # His theme walks in with him: no boombox, no way to switch it off, and it loops until he is
   # dead. The Jukebox component below only carries it - the range is the boombox's own falloff.
   - type: ThemeSong
