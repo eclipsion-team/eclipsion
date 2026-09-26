@@ -21,6 +21,21 @@ jobs:
       - name: Install Python dependencies
         run: |
           pip3 install --ignore-installed --user pillow jsonschema
+      # The engine schema only lists CC licenses. "Custom" marks assets under
+      # LICENSE-ECLIPSION-ASSETS.txt (see LEGAL.md), so allow it for this checkout.
+      - name: Allow Eclipsion asset license
+        run: |
+          python3 - <<'EOF'
+          import json
+          path = "RobustToolbox/Schemas/rsi.json"
+          with open(path, encoding="utf-8-sig") as f:
+              schema = json.load(f)
+          licenses = schema["properties"]["license"]["enum"]
+          if "Custom" not in licenses:
+              licenses.append("Custom")
+          with open(path, "w", encoding="utf-8") as f:
+              json.dump(schema, f, indent=4)
+          EOF
       - name: Validate RSIs
         run: |
           python3 RobustToolbox/Schemas/validate_rsis.py Resources/

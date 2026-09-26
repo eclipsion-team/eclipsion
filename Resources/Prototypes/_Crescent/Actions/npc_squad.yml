@@ -1,0 +1,14 @@
+# Given to a player when they recruit their first faction soldier NPC, and taken away with the last one.
+- type: entity
+  id: ActionNpcSquadCommand
+  name: Squad command
+  description: Give orders to the soldiers following you.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    itemIconStyle: NoItem
+    icon:
+      sprite: _RMC14/Actions/marine_actions.rsi
+      state: focus
+    event: !type:NpcSquadMenuActionEvent
+    useDelay: 0.3

@@ -575,6 +575,7 @@ public abstract class SharedMechSystem : EntitySystem
                 : MechPowerState.Powered;
         }
         _appearance.SetData(uid, MechVisuals.Power, power, appearance);
+        RaiseLocalEvent(uid, new MechStateUpdatedEvent()); // Crescent
     }
 
     private void OnDragDrop(EntityUid uid, MechComponent component, ref DragDropTargetEvent args)

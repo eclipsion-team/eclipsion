@@ -47,7 +47,7 @@
     enabled: false
     radius: 3
     energy: 2
-    mask: /Textures/Effects/LightMasks/cone.png
+    lightMask: Cone
     autoRot: true
     netsync: false
   - type: Appearance

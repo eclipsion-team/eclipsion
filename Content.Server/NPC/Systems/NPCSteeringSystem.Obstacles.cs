@@ -5,6 +5,7 @@ using Content.Shared.Climbing;
 using Content.Shared.CombatMode;
 using Content.Shared.DoAfter;
 using Content.Shared.Doors.Components;
+using Content.Shared.Doors.Systems;
 using Content.Shared.NPC;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
@@ -17,6 +18,8 @@ namespace Content.Server.NPC.Systems;
 
 public sealed partial class NPCSteeringSystem
 {
+    [Dependency] private readonly SharedDoorSystem _doors = default!; // Crescent
+
     /*
      * For any custom path handlers, e.g. destroying walls, opening airlocks, etc.
      * Putting it onto steering seemed easier than trying to make a custom compound task for it.
@@ -79,6 +82,25 @@ public sealed partial class NPCSteeringSystem
             var isDoor = (poly.Data.Flags & PathfindingBreadcrumbFlag.Door) != 0x0;
             var isAccessRequired = (poly.Data.Flags & PathfindingBreadcrumbFlag.Access) != 0x0;
             var isClimbable = (poly.Data.Flags & PathfindingBreadcrumbFlag.Climb) != 0x0;
+
+            // Crescent: a door the NPC is allowed through, it opens itself. A bump doesn't register when the NPC
+            // is already pressed up against the door, and it shouldn't pry or smash a door its own ID opens.
+            if (isDoor)
+            {
+                var doorQuery = GetEntityQuery<DoorComponent>();
+
+                foreach (var ent in obstacleEnts)
+                {
+                    if (!doorQuery.TryGetComponent(ent, out var door))
+                        continue;
+
+                    if (door.State is DoorState.Opening or DoorState.Open)
+                        return SteeringObstacleStatus.Continuing;
+
+                    if (door.State == DoorState.Closed && _doors.TryOpen(ent, door, uid, quiet: true))
+                        return SteeringObstacleStatus.Continuing;
+                }
+            }
 
             // Just walk into it stupid
             if (isDoor && !isAccessRequired)
@@ -161,7 +183,8 @@ public sealed partial class NPCSteeringSystem
             // Try smashing obstacles.
             else if ((component.Flags & PathFlags.Smashing) != 0x0)
             {
-                if (_melee.TryGetWeapon(uid, out _, out var meleeWeapon) && meleeWeapon.NextAttack <= _timing.CurTime && TryComp<CombatModeComponent>(uid, out var combatMode))
+                // Crescent: attack with the weapon it found, not with itself holding that weapon's stats.
+                if (_melee.TryGetWeapon(uid, out var weaponUid, out var meleeWeapon) && meleeWeapon.NextAttack <= _timing.CurTime && TryComp<CombatModeComponent>(uid, out var combatMode))
                 {
                     _combat.SetInCombatMode(uid, true, combatMode);
                     var destructibleQuery = GetEntityQuery<DestructibleComponent>();
@@ -175,7 +198,7 @@ public sealed partial class NPCSteeringSystem
                         // TODO: Validate we can damage it
                         if (destructibleQuery.HasComponent(ent))
                         {
-                            attackResult = _melee.AttemptLightAttack(uid, uid, meleeWeapon, ent);
+                            attackResult = _melee.AttemptLightAttack(uid, weaponUid, meleeWeapon, ent);
                             break;
                         }
                     }

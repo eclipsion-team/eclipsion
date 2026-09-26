@@ -3,6 +3,14 @@
 # Each faction has one base gear listing the hardsuit and everything under it, which the per-role gears
 # pull in as subGear and then add the weapon to. The weapon goes in `inhand` on purpose: NPC gun combat
 # only looks at the active hand, and nothing in the HTN can take a gun out of suit storage.
+#
+# The ID card is the plain rank-and-file card of the soldier's side, with its own name put on it at spawn
+# by NpcTacticalSystem.
+#
+# The chest rig carries the soldier's field dressings, which it uses on itself when hurt. Spare magazines
+# or ammo boxes for its gun go in there and in the backpack, but those are added on spawn by NpcGunHandling
+# (spareMagazines, spareAmmoBoxes), so the gear doesn't have to know which ammunition each faction's guns
+# take. The combat medkit, steel and hardsuit medipens come from NpcTactical (supplies, injectorSupplies).
 
 # Imperial Mandate
 
@@ -16,7 +24,10 @@
     gloves: ClothingHandsGlovesImperialLonggloves
     shoes: ClothingShoesBootsMagDSM
     ears: ClothingHeadsetEmpire
+    id: DSMIDCardLevyman
     pocket1: DoubleEmergencyOxygenTankFilled
+    belt: ClothingBeltMilitaryWebbingSoldierAIFilled
+    back: ClothingBackpackDSM
 
 - type: startingGear
   id: SoldierAIGearDSMRifleman
@@ -65,7 +76,10 @@
     gloves: ClothingHandsGlovesCombat
     shoes: ClothingShoesBootsMagNCWL
     ears: ClothingHeadsetNCWL
+    id: NCWLIDCardHomeguardSoldat
     pocket1: DoubleEmergencyOxygenTankFilled
+    belt: ClothingBeltMilitaryWebbingSoldierAIFilled
+    back: ClothingBackpackNCWL
 
 - type: startingGear
   id: SoldierAIGearNCWLRifleman
@@ -114,7 +128,10 @@
     gloves: ClothingHandsGlovesCombat
     shoes: ClothingShoesBootsMagSyndie
     ears: ClothingHeadsetTFSC
+    id: TFSCIDCardInfanteer
     pocket1: DoubleEmergencyOxygenTankFilled
+    belt: ClothingBeltMilitaryWebbingSoldierAIFilled
+    back: ClothingBackpackTFSC
 
 - type: startingGear
   id: SoldierAIGearTFSCRifleman
@@ -163,7 +180,10 @@
     gloves: ClothingHandsGlovesCombat
     shoes: ClothingShoesBootsMagCombat
     ears: ClothingHeadsetShinohara
+    id: SHIIDCardCorpSec
     pocket1: DoubleEmergencyOxygenTankFilled
+    belt: ClothingBeltMilitaryWebbingSoldierAIFilled
+    back: ClothingBackpackSHI
 
 - type: startingGear
   id: SoldierAIGearSHIRifleman
@@ -212,7 +232,10 @@
     gloves: ClothingHandsGlovesCombat
     shoes: ClothingShoesBootsMagCombat
     ears: ClothingHeadsetFreelance
+    id: SpacerIDCard
     pocket1: DoubleEmergencyOxygenTankFilled
+    belt: ClothingBeltMilitaryWebbingSoldierAIFilled
+    back: ClothingBackpack
 
 - type: startingGear
   id: SoldierAIGearINDRifleman
@@ -248,3 +271,43 @@
   - SoldierAIGearIND
   inhand:
   - WeaponLightMachineGunMG42
+
+# The rig is filled by the entity rather than listed as startingGear storage: the role gears pull the
+# faction gear in as subGear, and merging subGear storage into a gear that has none of its own throws.
+
+- type: entity
+  parent: ClothingBeltMilitaryWebbing
+  id: ClothingBeltMilitaryWebbingSoldierAIFilled
+  suffix: Soldier AI, Filled
+  components:
+  - type: StorageFill
+    contents:
+    - id: SoldierAIGauze
+    - id: SoldierAIBrutepack
+    - id: SoldierAIOintment
+
+# Field dressings. A few uses each, so a soldier can pull itself through one bad firefight, not ten.
+
+- type: entity
+  parent: Gauze
+  id: SoldierAIGauze
+  suffix: Soldier AI
+  components:
+  - type: Stack
+    count: 4
+
+- type: entity
+  parent: Brutepack
+  id: SoldierAIBrutepack
+  suffix: Soldier AI
+  components:
+  - type: Stack
+    count: 3
+
+- type: entity
+  parent: Ointment
+  id: SoldierAIOintment
+  suffix: Soldier AI
+  components:
+  - type: Stack
+    count: 2

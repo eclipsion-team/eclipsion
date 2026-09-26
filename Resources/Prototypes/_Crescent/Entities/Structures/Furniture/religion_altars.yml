@@ -1,0 +1,133 @@
+# Sector Crescent religion altars (Sector_Crescent_Religion_Update.pdf).
+# Decorative only for now - not tied to any faith/conversion system yet.
+
+- type: entity
+  id: AltarCrescentBase
+  parent: AltarBase
+  abstract: true
+  components:
+  - type: Sprite
+    state: icon
+  - type: Icon
+    state: icon
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 125
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+    - trigger:
+        !type:DamageTrigger
+        damage: 25
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 1
+            max: 5
+          MaterialCloth1:
+            min: 1
+            max: 3
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+# TAP
+- type: entity
+  id: AltarVeiledMother
+  parent: AltarCrescentBase
+  name: altar of the Veiled Mother
+  description: A Covenant shrine of the Taypani-Atyrian Pact. One family, one Mother, one road beyond the veil.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Furniture/Altars/veiled_mother.rsi
+  - type: Icon
+    sprite: _Crescent/Structures/Furniture/Altars/veiled_mother.rsi
+
+# SRM / Saint's Militia
+- type: entity
+  id: AltarUnbrokenPattern
+  parent: AltarCrescentBase
+  name: altar of the Unbroken Pattern
+  description: A Saint's Militia hunting shrine. What is whole must hunt what would deform it.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Furniture/Altars/unbroken_pattern.rsi
+  - type: Icon
+    sprite: _Crescent/Structures/Furniture/Altars/unbroken_pattern.rsi
+
+# CMM / Gliessian lawmen
+- type: entity
+  id: AltarLastWatch
+  parent: AltarCrescentBase
+  name: memorial of the Last Watch
+  description: A memorial altar kept by Gliessian lawmen in honour of Analliesse. Analliesse did not fall. It completed its watch.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Furniture/Altars/last_watch.rsi
+  - type: Icon
+    sprite: _Crescent/Structures/Furniture/Altars/last_watch.rsi
+
+# SHI
+- type: entity
+  id: AltarGoldenLedger
+  parent: AltarCrescentBase
+  name: altar of the Golden Ledger
+  description: A Shinohara contract-altar where Soul Clauses are sealed. Everything has a price. Eternity is simply the longest contract.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Furniture/Altars/golden_ledger.rsi
+  - type: Icon
+    sprite: _Crescent/Structures/Furniture/Altars/golden_ledger.rsi
+
+# TFCF
+- type: entity
+  id: AltarInfernalExchange
+  parent: AltarCrescentBase
+  name: altar of the Infernal Exchange
+  description: A Free Company bargaining altar where brokers witness soul-wagers. No master owns the market - not even in Hell.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Furniture/Altars/infernal_exchange.rsi
+  - type: Icon
+    sprite: _Crescent/Structures/Furniture/Altars/infernal_exchange.rsi
+
+# DSM
+- type: entity
+  id: AltarFourSaints
+  parent: AltarCrescentBase
+  name: altar of the Four Great Saints
+  description: An orthodox Imperial altar to Serraine, Romaine, Remiel and Guies. Civilization survives through ordered virtues.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Furniture/Altars/four_saints.rsi
+  - type: Icon
+    sprite: _Crescent/Structures/Furniture/Altars/four_saints.rsi
+
+# NCWL
+- type: entity
+  id: AltarCommonHands
+  parent: AltarCrescentBase
+  name: memorial of Common Hands
+  description: A workers' memorial table from a union hall. No throne, no saint, no owner built the world alone.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Furniture/Altars/common_hands.rsi
+  - type: Icon
+    sprite: _Crescent/Structures/Furniture/Altars/common_hands.rsi
+
+# Spacers / civilians
+- type: entity
+  id: AltarReturningTide
+  parent: AltarCrescentBase
+  name: shrine of the Returning Tide
+  description: A dockside Tide-Reader shrine for spacers and prospectors. Reality forgets nothing. It only remembers in waves.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Furniture/Altars/returning_tide.rsi
+  - type: Icon
+    sprite: _Crescent/Structures/Furniture/Altars/returning_tide.rsi

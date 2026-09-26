@@ -70,10 +70,21 @@ public sealed class HTNPlanJob : Job<HTNPlan>
                 case HTNCompoundTask compound:
                     await SuspendIfOutOfTime();
 
+                    // Crescent: decompose depth-first. The branch's tasks go ahead of whatever was still
+                    // queued after the compound, so a compound in the middle of a branch is planned in order.
+                    var remainingTasks = tasksToProcess.ToArray();
+                    tasksToProcess.Clear();
+
                     if (TryFindSatisfiedMethod(compound, tasksToProcess, _blackboard, ref btrIndex))
                     {
+                        foreach (var remaining in remainingTasks)
+                        {
+                            tasksToProcess.Enqueue(remaining);
+                        }
+
                         // Need to copy worldstate to roll it back
-                        // Don't need to copy taskstoprocess as we can just clear it and set it to the compound task we roll back to.
+                        // Crescent: the tasks queued after the compound are kept too, so rolling back to it also
+                        // brings back the rest of the parent branch.
                         // Don't need to copy finalplan as we can just count how many primitives we've added since last record
 
                         decompHistory.Push(new DecompositionState()
@@ -82,6 +93,7 @@ public sealed class HTNPlanJob : Job<HTNPlan>
                             CompoundTask = compound,
                             BranchTraversal = btrIndex,
                             PrimitiveCount = primitiveCount,
+                            RemainingTasks = remainingTasks, // Crescent
                         });
 
                         // TODO: Early out if existing plan is better and save lots of time.
@@ -182,6 +194,9 @@ public sealed class HTNPlanJob : Job<HTNPlan>
                 tasksToProcess.Enqueue(task);
             }
 
+            // Crescent: record the branch actually taken, so rolling back moves on to the next branch and
+            // the traversal record can be used to compare plans.
+            mtrIndex = i;
             return true;
         }
 
@@ -219,6 +234,12 @@ public sealed class HTNPlanJob : Job<HTNPlan>
         primitiveCount = lastDecomp.PrimitiveCount;
         blackboard = lastDecomp.Blackboard;
         tasksToProcess.Enqueue(lastDecomp.CompoundTask);
+
+        // Crescent
+        foreach (var remaining in lastDecomp.RemainingTasks)
+        {
+            tasksToProcess.Enqueue(remaining);
+        }
     }
 
     /// <summary>
@@ -247,5 +268,10 @@ public sealed class HTNPlanJob : Job<HTNPlan>
         /// this gets incremented by 1 so we check the next method.
         /// </summary>
         public int BranchTraversal;
+
+        /// <summary>
+        /// Crescent: the tasks that were queued after the compound task when it was decomposed.
+        /// </summary>
+        public HTNTask[] RemainingTasks = Array.Empty<HTNTask>();
     }
 }

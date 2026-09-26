@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "license": "CC-BY-SA-3.0",
-  "copyright": "Original shipyard console screen design by Taleryn for Hullrot:Eclipsion, drawn to the existing Crescent computer screen footprint and packed as a four-direction, six-frame loop.",
+  "license": "Custom",
+  "copyright": "Original shipyard console screen design by Taleryn for Hullrot:Eclipsion, drawn to the existing Crescent computer screen footprint and packed as a four-direction, six-frame loop. Covered by LICENSE-ECLIPSION-ASSETS.txt: use outside Eclipsion requires written permission from Taleryn and the Eclipsion Team.",
   "size": {
     "x": 32,
     "y": 32

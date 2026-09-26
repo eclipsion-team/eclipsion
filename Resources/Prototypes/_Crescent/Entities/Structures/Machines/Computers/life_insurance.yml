@@ -65,7 +65,7 @@
     energy: 1.6
     color: "#b89f25"
     enabled: false
-    mask: /Textures/Effects/LightMasks/cone.png
+    lightMask: Cone
     autoRot: true
     offset: "0, 0.4"
     castShadows: false

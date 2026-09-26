@@ -202,7 +202,7 @@
     enabled: false
     radius: 3.5
     softness: 1
-    mask: /Textures/Effects/LightMasks/cone.png
+    lightMask: Cone
     autoRot: true
   - type: StepTriggerImmune
   - type: InputMover

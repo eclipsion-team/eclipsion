@@ -1,0 +1,225 @@
+# Crescent: what the faction soldier AI shouts. Looked up by name in NpcTacticalSystem as
+# NpcSoldierCallout{Faction}{Occasion}, falling back to NpcSoldierCallout{Occasion}. The lines themselves
+# are in Locale/en-US/_Crescent/npc-soldier-callouts.ftl.
+
+- type: localizedDataset
+  id: NpcSoldierCalloutEngage
+  values:
+    prefix: npc-soldier-callout-engage-
+    count: 8
+
+- type: localizedDataset
+  id: NpcSoldierCalloutBattleCry
+  values:
+    prefix: npc-soldier-callout-battlecry-
+    count: 5
+
+- type: localizedDataset
+  id: NpcSoldierCalloutReload
+  values:
+    prefix: npc-soldier-callout-reload-
+    count: 6
+
+- type: localizedDataset
+  id: NpcSoldierCalloutHeal
+  values:
+    prefix: npc-soldier-callout-heal-
+    count: 6
+
+- type: localizedDataset
+  id: NpcSoldierCalloutAcknowledge
+  values:
+    prefix: npc-soldier-callout-acknowledge-
+    count: 5
+
+- type: localizedDataset
+  id: NpcSoldierCalloutRecruited
+  values:
+    prefix: npc-soldier-callout-recruited-
+    count: 3
+
+- type: localizedDataset
+  id: NpcSoldierCalloutDismissed
+  values:
+    prefix: npc-soldier-callout-dismissed-
+    count: 4
+
+- type: localizedDataset
+  id: NpcSoldierCalloutFortify
+  values:
+    prefix: npc-soldier-callout-fortify-
+    count: 5
+
+- type: localizedDataset
+  id: NpcSoldierCalloutMedic
+  values:
+    prefix: npc-soldier-callout-medic-
+    count: 5
+
+- type: localizedDataset
+  id: NpcSoldierCalloutGuard
+  values:
+    prefix: npc-soldier-callout-guard-
+    count: 5
+
+- type: localizedDataset
+  id: NpcSoldierCalloutSearch
+  values:
+    prefix: npc-soldier-callout-search-
+    count: 6
+
+- type: localizedDataset
+  id: NpcSoldierCalloutAdvance
+  values:
+    prefix: npc-soldier-callout-advance-
+    count: 7
+
+- type: localizedDataset
+  id: NpcSoldierCalloutIdle
+  values:
+    prefix: npc-soldier-callout-idle-
+    count: 4
+
+- type: localizedDataset
+  id: NpcSoldierCalloutDSMBattleCry
+  values:
+    prefix: npc-soldier-callout-dsm-battlecry-
+    count: 12
+
+- type: localizedDataset
+  id: NpcSoldierCalloutDSMAcknowledge
+  values:
+    prefix: npc-soldier-callout-dsm-acknowledge-
+    count: 5
+
+- type: localizedDataset
+  id: NpcSoldierCalloutDSMRecruited
+  values:
+    prefix: npc-soldier-callout-dsm-recruited-
+    count: 4
+
+- type: localizedDataset
+  id: NpcSoldierCalloutDSMFortify
+  values:
+    prefix: npc-soldier-callout-dsm-fortify-
+    count: 3
+
+- type: localizedDataset
+  id: NpcSoldierCalloutDSMMedic
+  values:
+    prefix: npc-soldier-callout-dsm-medic-
+    count: 3
+
+- type: localizedDataset
+  id: NpcSoldierCalloutDSMIdle
+  values:
+    prefix: npc-soldier-callout-dsm-idle-
+    count: 5
+
+- type: localizedDataset
+  id: NpcSoldierCalloutNCWLBattleCry
+  values:
+    prefix: npc-soldier-callout-ncwl-battlecry-
+    count: 12
+
+- type: localizedDataset
+  id: NpcSoldierCalloutNCWLAcknowledge
+  values:
+    prefix: npc-soldier-callout-ncwl-acknowledge-
+    count: 5
+
+- type: localizedDataset
+  id: NpcSoldierCalloutNCWLRecruited
+  values:
+    prefix: npc-soldier-callout-ncwl-recruited-
+    count: 4
+
+- type: localizedDataset
+  id: NpcSoldierCalloutNCWLFortify
+  values:
+    prefix: npc-soldier-callout-ncwl-fortify-
+    count: 3
+
+- type: localizedDataset
+  id: NpcSoldierCalloutNCWLMedic
+  values:
+    prefix: npc-soldier-callout-ncwl-medic-
+    count: 3
+
+- type: localizedDataset
+  id: NpcSoldierCalloutNCWLIdle
+  values:
+    prefix: npc-soldier-callout-ncwl-idle-
+    count: 5
+
+- type: localizedDataset
+  id: NpcSoldierCalloutTFSCBattleCry
+  values:
+    prefix: npc-soldier-callout-tfsc-battlecry-
+    count: 10
+
+- type: localizedDataset
+  id: NpcSoldierCalloutTFSCAcknowledge
+  values:
+    prefix: npc-soldier-callout-tfsc-acknowledge-
+    count: 5
+
+- type: localizedDataset
+  id: NpcSoldierCalloutTFSCRecruited
+  values:
+    prefix: npc-soldier-callout-tfsc-recruited-
+    count: 4
+
+- type: localizedDataset
+  id: NpcSoldierCalloutTFSCIdle
+  values:
+    prefix: npc-soldier-callout-tfsc-idle-
+    count: 4
+
+- type: localizedDataset
+  id: NpcSoldierCalloutSHIBattleCry
+  values:
+    prefix: npc-soldier-callout-shi-battlecry-
+    count: 10
+
+- type: localizedDataset
+  id: NpcSoldierCalloutSHIAcknowledge
+  values:
+    prefix: npc-soldier-callout-shi-acknowledge-
+    count: 5
+
+- type: localizedDataset
+  id: NpcSoldierCalloutSHIRecruited
+  values:
+    prefix: npc-soldier-callout-shi-recruited-
+    count: 4
+
+- type: localizedDataset
+  id: NpcSoldierCalloutSHIIdle
+  values:
+    prefix: npc-soldier-callout-shi-idle-
+    count: 4
+
+- type: localizedDataset
+  id: NpcSoldierCalloutINDBattleCry
+  values:
+    prefix: npc-soldier-callout-ind-battlecry-
+    count: 9
+
+- type: localizedDataset
+  id: NpcSoldierCalloutINDAcknowledge
+  values:
+    prefix: npc-soldier-callout-ind-acknowledge-
+    count: 5
+
+- type: localizedDataset
+  id: NpcSoldierCalloutINDRecruited
+  values:
+    prefix: npc-soldier-callout-ind-recruited-
+    count: 4
+
+- type: localizedDataset
+  id: NpcSoldierCalloutINDIdle
+  values:
+    prefix: npc-soldier-callout-ind-idle-
+    count: 4

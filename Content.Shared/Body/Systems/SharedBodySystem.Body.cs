@@ -207,6 +207,72 @@ public partial class SharedBodySystem
         }
     }
 
+    // Crescent
+    /// <summary>
+    /// Respawns any body parts missing from the body's prototype layout, leaving attached parts untouched.
+    /// Heads are skipped, a severed head carries the brain and the mind with it.
+    /// </summary>
+    public void RestoreMissingLimbs(EntityUid bodyEntity, BodyComponent? body = null)
+    {
+        if (!Resolve(bodyEntity, ref body, logMissing: false)
+            || body.Prototype is null
+            || GetRootPartOrNull(bodyEntity, body) is not { } root)
+            return;
+
+        var prototype = _prototypeManager.Index(body.Prototype.Value);
+        var coordinates = Transform(bodyEntity).Coordinates;
+
+        // Same BFS as MapInitParts, but existing parts are reused instead of spawned.
+        var frontier = new Queue<(string SlotId, EntityUid Part)>();
+        var visited = new HashSet<string> { prototype.Root };
+        frontier.Enqueue((prototype.Root, root.Entity));
+
+        while (frontier.TryDequeue(out var current))
+        {
+            if (!TryComp(current.Part, out BodyPartComponent? parentPart))
+                continue;
+
+            foreach (var connection in prototype.Slots[current.SlotId].Connections)
+            {
+                if (!visited.Add(connection))
+                    continue;
+
+                if (Containers.TryGetContainer(current.Part, GetPartSlotContainerId(connection), out var container)
+                    && container.ContainedEntities.Count > 0)
+                {
+                    var attached = container.ContainedEntities[0];
+                    if (HasComp<BodyPartComponent>(attached))
+                        frontier.Enqueue((connection, attached));
+                    continue;
+                }
+
+                var connectionSlot = prototype.Slots[connection];
+                if (connectionSlot.Part is not { } partProto
+                    || !_prototypeManager.Index(partProto).TryGetComponent(out BodyPartComponent? protoPart, EntityManager.ComponentFactory)
+                    || protoPart.PartType == BodyPartType.Head)
+                    continue;
+
+                var childPart = Spawn(partProto, coordinates);
+                var childPartComponent = Comp<BodyPartComponent>(childPart);
+
+                if (!TryCreatePartSlot(current.Part, connection, childPartComponent.PartType, out _, parentPart)
+                    || !AttachPart(current.Part, connection, childPart, parentPart, childPartComponent))
+                {
+                    Log.Error($"Could not regrow {connection} on {ToPrettyString(bodyEntity)}");
+                    QueueDel(childPart);
+                    continue;
+                }
+
+                SetupOrgans((childPart, childPartComponent), connectionSlot.Organs);
+
+                var ev = new BodyPartAttachedEvent((childPart, childPartComponent));
+                RaiseLocalEvent(bodyEntity, ref ev);
+
+                frontier.Enqueue((connection, childPart));
+            }
+        }
+    }
+
     private void SetupOrgans(Entity<BodyPartComponent> ent, Dictionary<string, string> organs)
     {
         foreach (var (organSlotId, organProto) in organs)

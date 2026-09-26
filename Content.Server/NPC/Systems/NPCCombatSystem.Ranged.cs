@@ -18,6 +18,7 @@ public sealed partial class NPCCombatSystem
     [Dependency] private readonly RotateToFaceSystem _rotate = default!;
     [Dependency] private readonly MapSystem _map = default!;
     [Dependency] private readonly NpcGunHandlingSystem _npcGun = default!; // Crescent
+    [Dependency] private readonly NpcTacticalSystem _npcTactical = default!; // Crescent
 
     private EntityQuery<CombatModeComponent> _combatQuery;
     private EntityQuery<NPCSteeringComponent> _steeringQuery;
@@ -151,6 +152,9 @@ public sealed partial class NPCCombatSystem
                 // For consistency with NPC steering.
                 var collisionGroup = comp.UseOpaqueForLOSChecks ? CollisionGroup.Opaque : (CollisionGroup.Impassable | CollisionGroup.InteractImpassable);
                 comp.TargetInLOS = _interaction.InRangeUnobstructed(uid, comp.Target, distance + 0.1f, collisionGroup);
+
+                // Crescent: soldier AI doesn't waste rounds on cover that sight passes over but bullets don't.
+                comp.ShotBlocked = comp.TargetInLOS && _npcTactical.UpdateLineOfFire(uid, comp.Target);
             }
 
             if (!comp.TargetInLOS)
@@ -199,6 +203,10 @@ public sealed partial class NPCCombatSystem
 
             // Crescent: facing and LOS are up to date now, but the gun still isn't ready to fire.
             if (!gunReady)
+                continue;
+
+            // Crescent: hold fire until the way clears or the NPC finds a better angle.
+            if (comp.ShotBlocked)
                 continue;
 
             if (!Enabled || !_gun.CanShoot(gun))

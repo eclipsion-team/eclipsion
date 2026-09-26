@@ -1,0 +1,66 @@
+Eclipsion Restricted Asset License
+
+Copyright (c) 2025-2026 Taleryn and the Eclipsion Team. All rights reserved.
+
+
+1. Covered Assets
+
+This license applies to every asset (sprites, textures, audio, and other
+non-code resources) that either:
+
+  a) has "license": "Custom" in its meta.json and a "copyright" field that
+     refers to LICENSE-ECLIPSION-ASSETS.txt, or
+  b) is accompanied by a notice stating that it is covered by this license.
+
+These are called the "Covered Assets".
+
+
+2. Permitted Use
+
+The Covered Assets may be used, reproduced, displayed, and distributed,
+modified or unmodified, only:
+
+  a) as part of the Eclipsion project published by the Eclipsion Team at
+     https://github.com/eclipsion-team/eclipsion, and
+  b) on game servers operated by the Eclipsion Team or with its written
+     authorization.
+
+Nothing in this license limits rights granted by the terms of service of the
+platform hosting this repository, such as viewing or forking it on GitHub.
+Copies made under those terms do not carry any further right to use the
+Covered Assets.
+
+
+3. Everything Else Requires Permission
+
+Any other use of the Covered Assets requires prior written permission from
+both Taleryn and the Eclipsion Team. This includes, but is not limited to:
+using them in another project, fork, or server; modifying them for use
+elsewhere; redistributing them; relicensing them; or using them commercially.
+
+To request permission, contact the Eclipsion Team and Taleryn:
+
+  Discord: https://discord.gg/3wbbHgUmYr
+  GitHub:  https://github.com/eclipsion-team/eclipsion/issues
+
+
+4. Earlier Versions
+
+Some Covered Assets were published under another license, such as
+CC-BY-SA 3.0 or CC0 1.0, before 26 September 2026. Those earlier versions
+remain available under the license they were published with, to the extent
+that license requires. This license applies to versions published on or
+after 26 September 2026.
+
+
+5. Attribution
+
+Any permitted use must credit "Taleryn and the Eclipsion Team" and keep the
+copyright text from the asset's meta.json.
+
+
+6. No Warranty
+
+THE COVERED ASSETS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES, OR
+OTHER LIABILITY ARISING FROM THE USE OF THE COVERED ASSETS.

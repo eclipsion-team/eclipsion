@@ -14,6 +14,9 @@ public sealed class MechPowerVisualTest
 {
     [TestCase("MechSHISuzumeBattery")]
     [TestCase("MechDSMBastionBattery")]
+    [TestCase("MechCMMDeputyBattery")]
+    [TestCase("MechCMMBailiffBattery")]
+    [TestCase("MechCMMJusticiarBattery")]
     public async Task IndicatorTracksBatteryAndDisabledStates(string prototype)
     {
         await using var pair = await PoolManager.GetServerClient();

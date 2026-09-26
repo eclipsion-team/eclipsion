@@ -247,7 +247,18 @@ public sealed class SharedExecutionSystem : EntitySystem
             RaiseLocalEvent(victim, suicideGhostEvent);
         }
         else
+        {
+            // Crescent: read the weapon's damage while Executing is still set so it includes execution bonuses.
+            var meleeDamage = _melee.GetDamage(weapon, attacker, meleeWeaponComp);
             _melee.AttemptLightAttack(attacker, weapon, meleeWeaponComp, victim);
+
+            // The swing alone isn't a reliable kill: it can be blocked by the attack cooldown, a parry or
+            // a cancelled attack, and weak weapons don't reach the death threshold even with the
+            // multiplier. Finish the victim off with the weapon's own damage type, server-side only so
+            // the damage isn't applied twice under prediction.
+            if (_net.IsServer)
+                ApplyExecutionKill(victim, GetDominantDamageType(meleeDamage) ?? "Blunt");
+        }
 
         _combat.SetInCombatMode(attacker, prev);
         entity.Comp.Executing = false;
@@ -281,7 +292,9 @@ public sealed class SharedExecutionSystem : EntitySystem
         var projectiles = _gun.AttemptShoot((weapon, gunComp), attacker, victimCoords);
 
         // Nothing came out of the barrel (empty mag / no round chambered) - no free kill.
-        if (projectiles == null || projectiles.Count == 0)
+        // Crescent: hitscan shots never produce a projectile entity, so an empty list still means the laser fired.
+        if (projectiles == null
+            || projectiles.Count == 0 && !HasComp<HitscanBatteryAmmoProviderComponent>(weapon))
         {
             ShowExecutionInternalPopup(gun.Comp.EmptyGunExecutionMessage, attacker, victim, weapon, false);
             return false;
@@ -316,12 +329,27 @@ public sealed class SharedExecutionSystem : EntitySystem
         // Guarantee the kill regardless of where the point-blank projectile actually ended up. The
         // damage type follows whatever was actually loaded rather than always being Piercing, so
         // executing with a laser burns and executing with a shotgun slug pierces.
-        if (TryComp<DamageableComponent>(victim, out var damageable))
-            _suicide.ApplyLethalDamage((victim, damageable), damageType);
+        ApplyExecutionKill(victim, damageType);
 
         ShowExecutionInternalPopup(gun.Comp.CompleteInternalGunExecutionMessage, attacker, victim, weapon, false);
         ShowExecutionExternalPopup(gun.Comp.CompleteExternalGunExecutionMessage, attacker, victim, weapon);
         return true;
+    }
+
+    /// <summary>
+    /// Deals exactly enough damage of <paramref name="damageType"/> to push the victim past their death
+    /// threshold, ignoring resistances. Falls back to Blunt if the victim's damage container doesn't
+    /// accept that type and they survived.
+    /// </summary>
+    private void ApplyExecutionKill(EntityUid victim, string damageType)
+    {
+        if (_mobState.IsDead(victim) || !TryComp<DamageableComponent>(victim, out var damageable))
+            return;
+
+        _suicide.ApplyLethalDamage((victim, damageable), damageType);
+
+        if (!_mobState.IsDead(victim) && damageType != "Blunt")
+            _suicide.ApplyLethalDamage((victim, damageable), "Blunt");
     }
 
     /// <summary>
@@ -343,16 +371,26 @@ public sealed class SharedExecutionSystem : EntitySystem
             if (!TryComp<ProjectileComponent>(projectile, out var proj))
                 continue;
 
-            var dominant = proj.Damage.DamageDict
-                .Where(kv => kv.Key != "Structural" && kv.Value > 0)
-                .ToList();
-
-            if (dominant.Count == 0)
-                continue;
-
-            return dominant.Aggregate((a, b) => a.Value > b.Value ? a : b).Key;
+            if (GetDominantDamageType(proj.Damage) is { } dominant)
+                return dominant;
         }
 
         return fallback;
+    }
+
+    /// <summary>
+    /// Returns the damage type with the highest value in <paramref name="damage"/>, ignoring Structural,
+    /// or null if there is no positive damage.
+    /// </summary>
+    private static string? GetDominantDamageType(DamageSpecifier damage)
+    {
+        var dominant = damage.DamageDict
+            .Where(kv => kv.Key != "Structural" && kv.Value > 0)
+            .ToList();
+
+        if (dominant.Count == 0)
+            return null;
+
+        return dominant.Aggregate((a, b) => a.Value > b.Value ? a : b).Key;
     }
 }

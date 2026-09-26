@@ -12,8 +12,8 @@ public sealed class EventSchedulerSystem : SharedEventSchedulerSystem
     private uint NextId() { return _id++; }
 
     private Dictionary<uint, DelayedEvent> _eventDict = new();
-    private static PriorityQueue<uint, TimeSpan> _eventQueue = new(_comparer);
-    private static EventSchedulerComparer _comparer = new();
+    // Crescent: per instance, like _eventDict, so servers running in the same process don't share a queue.
+    private readonly PriorityQueue<uint, TimeSpan> _eventQueue = new();
 
     private void Enqueue(DelayedEvent delayedEvent, TimeSpan time)
     {

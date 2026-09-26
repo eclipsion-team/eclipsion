@@ -1,0 +1,14 @@
+{
+    "version":  1,
+    "size":  {
+                 "x":  32,
+                 "y":  32
+             },
+    "license":  "CC0-1.0",
+    "copyright":  "Generated with OpenAI image generation for Sector Crescent. Original design for Church of the Returning Tide / neutral spacers; based on Sector_Crescent_Religion_Update.pdf.",
+    "states":  [
+                   {
+                       "name":  "icon"
+                   }
+               ]
+}

@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "license": "CC-BY-SA-4.0",
-  "copyright": "Sprite by Taleryn for Hullrot:Eclipsion.",
+  "license": "Custom",
+  "copyright": "Sprite by Taleryn for Hullrot:Eclipsion. Covered by LICENSE-ECLIPSION-ASSETS.txt: use outside Eclipsion requires written permission from Taleryn and the Eclipsion Team.",
   "size": {
     "x": 64,
     "y": 32

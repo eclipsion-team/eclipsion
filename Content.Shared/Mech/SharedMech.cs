@@ -32,6 +32,10 @@ public enum MechVisualLayers : byte
     Power
 }
 
+// Crescent
+/// <summary>Raised after pilot, damage, battery or EMP appearance state changes.</summary>
+public sealed class MechStateUpdatedEvent : EntityEventArgs;
+
 /// <summary>
 /// Event raised on equipment when it is inserted into a mech
 /// </summary>

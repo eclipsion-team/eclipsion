@@ -24,8 +24,25 @@ public sealed partial class NpcGunHandlingComponent : Component
     /// Refill the gun once it runs dry, as if the NPC were carrying spare magazines. Off by default so
     /// ordinary NPCs still burn through what they spawned with and then go looking for another gun.
     /// </summary>
+    /// <remarks>
+    /// Crescent: real magazines the NPC carries always go in first; this only kicks in once those are gone.
+    /// </remarks>
     [DataField]
     public bool Resupply;
+
+    /// <summary>
+    /// Crescent: how many spare magazines for its starting gun the NPC is handed on spawn. They go into
+    /// whatever storage it is wearing.
+    /// </summary>
+    [DataField]
+    public int SpareMagazines;
+
+    /// <summary>
+    /// Crescent: for a gun that loads loose rounds instead of taking magazines - pump shotguns, bolt-action
+    /// rifles - how many boxes of its ammunition the NPC is handed on spawn instead.
+    /// </summary>
+    [DataField]
+    public int SpareAmmoBoxes;
 
     /// <summary>
     /// How long a resupply takes. Roughly a magazine change.

@@ -4,26 +4,29 @@
 # Tier stats and equipment whitelists inherit from Lancer, Bogatyr, and Gilgamesh.
 # TFCF retains the legacy TFSC faction ID.
 
-# CMM refits surplus hulls; only the armor layer is tinted, leaving power indicators readable.
+# CMM police hulls have their own directional art and status lights.
 - type: entity
   id: MechCMMDeputy
   parent: MechSHISuzume
   name: CMM M-110 Deputy scout mechsuit
   suffix: T1
-  description: A surplus Suzume light exosuit refitted for Colonial Minutemen reconnaissance and rapid patrol response. Blue armor and a compact sensor mast distinguish its agile frame, which accepts scout weapons and light industrial equipment.
+  description: A Colonial Minutemen rapid-response police exosuit. White ceramic armor, navy patrol stripes and a marshal's badge distinguish its slender reconnaissance frame. Accepts scout weapons and light industrial equipment.
   components:
   - type: Sprite
+    sprite: _Crescent/Objects/Specific/Mechs/cmm_deputy.rsi
     layers:
     - map: [ "enum.MechVisualLayers.Base" ]
-      state: suzume
-      color: "#729bd6"
+      state: deputy
     - map: [ "enum.MechVisualLayers.Power" ]
-      sprite: _Crescent/Objects/Specific/Mechs/suzume.rsi
-      state: suzume-open-power-off
+      state: deputy-open-power-off
       shader: unshaded
     - map: [ "enum.PaperLabelVisuals.Layer" ]
       sprite: Structures/Storage/Crates/labels.rsi
       state: paper
+  - type: Mech
+    baseState: deputy
+    openState: deputy-open
+    brokenState: deputy-broken
   - type: ProjectileIFF
     color: "#4e8fd6"
   - type: HullrotFaction
@@ -47,20 +50,23 @@
   parent: MechSHIJaipei
   name: CMM M-220 Bailiff patrol mechsuit
   suffix: T2
-  description: A surplus Jaipei medium exosuit refitted for Colonial Minutemen boarding actions and convoy patrols. Blue armor surrounds a reinforced cockpit, with hardpoints for scout and medium weapon systems.
+  description: A Colonial Minutemen patrol and boarding exosuit with broad white shoulder armor, light-gray reinforcement and navy identification stripes. Accepts scout and medium weapon systems.
   components:
   - type: Sprite
+    sprite: _Crescent/Objects/Specific/Mechs/cmm_bailiff.rsi
     layers:
     - map: [ "enum.MechVisualLayers.Base" ]
-      state: jaipei
-      color: "#729bd6"
+      state: bailiff
     - map: [ "enum.MechVisualLayers.Power" ]
-      sprite: _Crescent/Objects/Specific/Mechs/jaipei.rsi
-      state: jaipei-open-power-off
+      state: bailiff-open-power-off
       shader: unshaded
     - map: [ "enum.PaperLabelVisuals.Layer" ]
       sprite: Structures/Storage/Crates/labels.rsi
       state: paper
+  - type: Mech
+    baseState: bailiff
+    openState: bailiff-open
+    brokenState: bailiff-broken
   - type: ProjectileIFF
     color: "#4e8fd6"
   - type: HullrotFaction
@@ -84,20 +90,23 @@
   parent: MechDSMBastion
   name: CMM M-330 Justiciar siege mechsuit
   suffix: T3
-  description: A salvaged Bastion siege exosuit rebuilt for Colonial Minutemen heavy boarding operations. Blue armor plates protect its massive frame, trading mobility for sustained protection and siege-class weapon hardpoints.
+  description: A Colonial Minutemen heavy police exosuit protected by massive white and pale-gray armor plates over a navy armored skirt. Shield insignia mark its imposing siege frame, built for heavy boarding operations and siege-class weapon systems.
   components:
   - type: Sprite
+    sprite: _Crescent/Objects/Specific/Mechs/cmm_justiciar.rsi
     layers:
     - map: [ "enum.MechVisualLayers.Base" ]
-      state: bastion
-      color: "#729bd6"
+      state: justiciar
     - map: [ "enum.MechVisualLayers.Power" ]
-      sprite: _Crescent/Objects/Specific/Mechs/bastion.rsi
-      state: bastion-open-power-off
+      state: justiciar-open-power-off
       shader: unshaded
     - map: [ "enum.PaperLabelVisuals.Layer" ]
       sprite: Structures/Storage/Crates/labels.rsi
       state: paper
+  - type: Mech
+    baseState: justiciar
+    openState: justiciar-open
+    brokenState: justiciar-broken
   - type: ProjectileIFF
     color: "#4e8fd6"
   - type: HullrotFaction

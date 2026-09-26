@@ -1,0 +1,38 @@
+# Light mask textures used by PointLight's lightMask field.
+# The light cones only feed LightLevelSystem; rendering uses the mask texture.
+
+- type: lightMask
+  id: Cone
+  maskPath: /Textures/Effects/LightMasks/cone.png
+  lightCones:
+  - direction: 0
+    innerWidth: 35
+    outerWidth: 60
+
+- type: lightMask
+  id: DoubleCone
+  maskPath: /Textures/Effects/LightMasks/double_cone.png
+  lightCones:
+  - direction: 0
+    innerWidth: 35
+    outerWidth: 60
+  - direction: 180
+    innerWidth: 35
+    outerWidth: 60
+
+- type: lightMask
+  id: RMCQuadCone
+  maskPath: /Textures/_RMC14/Effects/LightMasks/quad_cone.png
+  lightCones:
+  - direction: 0
+    innerWidth: 20
+    outerWidth: 40
+  - direction: 90
+    innerWidth: 20
+    outerWidth: 40
+  - direction: 180
+    innerWidth: 20
+    outerWidth: 40
+  - direction: 270
+    innerWidth: 20
+    outerWidth: 40

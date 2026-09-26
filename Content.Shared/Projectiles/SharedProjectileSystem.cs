@@ -1,5 +1,6 @@
 using Content.Shared._RMC14.Weapons.Ranged.Prediction;
 using Content.Shared._RMC14.Random;
+using Content.Shared._Crescent.NpcSquad; // Crescent
 using Content.Shared._Crescent.SpaceArtillery;
 using Content.Shared._Shitmed.Targeting;
 using Content.Shared.Administration.Logs;
@@ -52,6 +53,7 @@ public abstract partial class SharedProjectileSystem : EntitySystem
     [Dependency] private readonly DamageableSystem _damageableSystem = default!;
     [Dependency] private readonly SharedGunSystem _guns = default!;
     [Dependency] private readonly SharedCameraRecoilSystem _sharedCameraRecoil = default!;
+    [Dependency] private readonly NpcIffSystem _npcIff = default!; // Crescent
 
     public override void Initialize()
     {
@@ -358,6 +360,10 @@ public abstract partial class SharedProjectileSystem : EntitySystem
         if (component.IgnoreShooter && (args.OtherEntity == component.Shooter || args.OtherEntity == component.Weapon))
             args.Cancelled = true;
 
+        // Crescent: faction soldier AI rounds fly through their own side.
+        if (_npcIff.ShouldPassThrough(component.Shooter, args.OtherEntity))
+            args.Cancelled = true;
+
         if (component.IgnoreWeaponGrid && component.Weapon != null && !TerminatingOrDeleted(component.Weapon) && Transform(args.OtherEntity).GridUid == Transform((EntityUid) component.Weapon).GridUid)
             args.Cancelled = true;
 
@@ -462,6 +468,10 @@ public abstract partial class SharedProjectileSystem : EntitySystem
 
         // PreventCollideEvent never runs for phase-prevention hits, so the same-shuttle check has to be repeated here.
         if (IsFriendlyShipProjectile(uid, component, args.hitEntity))
+            return;
+
+        // Crescent: same pass-through as PreventCollision, which this sweep never goes through either.
+        if (_npcIff.ShouldPassThrough(component.Shooter, args.hitEntity))
             return;
 
         ProjectileCollide((uid, component, args.selfPhys), args.hitEntity);

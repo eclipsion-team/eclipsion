@@ -46,4 +46,16 @@ public sealed partial class GameTicker
     private void RandomizeLobbyBackground() {
         LobbyBackground = _lobbyBackgrounds!.Any() ? _robustRandom.Pick(_lobbyBackgrounds!) : null;
     }
+
+    // Crescent: used by the setlobbybackground admin command.
+    public IReadOnlyList<LobbyBackgroundPrototype> LobbyBackgrounds => _lobbyBackgrounds;
+
+    /// <summary>
+    /// Forces the lobby background and pushes the change to all connected clients.
+    /// </summary>
+    public void SetLobbyBackground(LobbyBackgroundPrototype background)
+    {
+        LobbyBackground = background;
+        SendStatusToAll();
+    }
 }

@@ -1381,3 +1381,101 @@ Entries:
     id: 6120
     time: '2026-09-14T00:00:00.0000000+00:00'
     url: null
+  - author: Taleryn
+    changes:
+      - message: The Homeguard shashka and trench estoc scabbards have their own charcoal-leather and red sprites, and now show the blade sitting in them when worn on the belt.
+        type: Tweak
+      - message: Fuel extractors now have their own machine sprite instead of borrowing a chasm tile.
+        type: Tweak
+    id: 6121
+    time: '2026-09-22T00:00:00.0000000+00:00'
+    url: null
+  - author: Taleryn
+    changes:
+      - message: Added about 150 new hairstyles to the character editor.
+        type: Add
+      - message: Gun executions now kill with the damage the loaded round actually deals, so a laser burns and a slug pierces, and the shot kicks the executioner's view back.
+        type: Tweak
+      - message: The NCWL Häyhä and IRM Leveller anti-materiel rifles now load like other single-shot bolt-action rifles. Put a round in, and work the bolt after every shot.
+        type: Tweak
+      - message: The DSM and NCWL main cloner databases in Unionfall now take 150000 damage to destroy instead of 15000, and only take 35 percent of heat damage. A single torpedo used to hit all 16 of their tiles at full strength.
+        type: Tweak
+    id: 6122
+    time: '2026-09-24T00:00:00.0000000+00:00'
+    url: null
+  - author: Taleryn
+    changes:
+      - message: Added company franchise vendors. Shinohara coffee machines, Shinohara compact ration vendors, the TFCF Nightshift Energy drink vendor and TFCF grill machines never refill on their own. They are restocked with stock modules printed at a lathe, and their stock, module level and owning company carry over between rounds.
+        type: Add
+      - message: Stock modules come in three levels, each holding more goods, unlocked by the Franchise Stock Modules I to III research in the Corporate (Shinohara) and Cyberdawn (TFCF) trees. Only staff of that company can install them.
+        type: Add
+      - message: Company staff can use a stock module on a rival's machine of the same kind to take it over for their own company, as long as the faction hosting the machine has a trade agreement or alliance with them.
+        type: Add
+      - message: Added faction security HUDs for DSM, NCWL, SHI, SRM, TAP, TFCF and the Minutemen. They read the ID of everyone in view and mark them by your faction's diplomatic standing with theirs.
+        type: Add
+      - message: Added the civilian identification HUD, which only shows which faction issued someone's ID. It is sold at the Taypani surplus vendor.
+        type: Add
+      - message: Added faction security vendors for DSM, NCWL, SHI, SRM, TAP, the Minutemen and Gliess Santo, stocked with that side's security gear and HUD.
+        type: Add
+      - message: Added three Divine Sol Mandate wines, Rabenau Reserve, Conclave Gold and Courtier's Rose, each with its own reagent and flavour.
+        type: Add
+      - message: Added the Minutemen exosuit line in the Minutemen research tree. The M-110 Deputy scout, M-220 Bailiff patrol and M-330 Justiciar siege mechsuits are built from Minutemen Exosuit Components.
+        type: Add
+      - message: Every faction home station now has its own named territory of the same size, and the Taypani-Atyrian Pact hideout announces the Pact Outlands wherever it lands. Low Imperial Orbit is now the Imperial Reach.
+        type: Tweak
+      - message: All faction fighter and warship thrusters now share the same stats and take 300 damage to destroy. TFCF thrusters used to take 400, and most other factions' 200.
+        type: Tweak
+      - message: Internals now find air tanks carried inside bags and pouches, and keep working while the tank stays in them.
+        type: Tweak
+      - message: Pulsing a vending machine's eject wire now only spits out two items per machine, and an EMP'd vending machine no longer sprays free stock. It just shuts down.
+        type: Tweak
+      - message: Removed the playing card decks from the loadout.
+        type: Remove
+      - message: Fixed one NPC waiting on its fire rate stopping every other NPC from shooting that tick.
+        type: Fix
+      - message: Fixed walking between two zones that share a name replaying the zone banner and the parallax fade.
+        type: Fix
+      - message: Fixed long vending machine names pushing the close button off the window, and the character editor losing half its width to an empty tab.
+        type: Fix
+    id: 6123
+    time: '2026-09-25T00:00:00.0000000+00:00'
+    url: null
+  - author: Taleryn
+    changes:
+      - message: Added faction soldier NPCs for DSM, NCWL, TFCF, SHI and independents, in rifleman, shocktrooper, breacher, marksman and machinegunner roles. They are spawned by admins and events.
+        type: Add
+      - message: Soldier NPCs fight from cover and keep to the range their role suits, instead of charging. They hold fire rather than waste rounds on cover in the way, and their rounds pass through their own side.
+        type: Add
+      - message: Soldier NPCs carry spare magazines or ammo boxes and reload from them, patch themselves up with field dressings, a combat medkit and hardsuit medipens, and shout battle cries in their faction's own language.
+        type: Add
+      - message: Right-click a soldier NPC of your own side to recruit it into your squad, up to six. The Squad command action lets you order them to follow, defend a spot, attack or hold fire, and pointing at an enemy has the whole squad focus it. Squad soldiers look after a wounded leader and put up barricades with the steel they carry.
+        type: Add
+      - message: Soldier NPCs cannot be stripped, and crumble to dust with all their gear when they die.
+        type: Add
+      - message: Mechs now have life support. The pilot always breathes a standard atmosphere and is kept safe from vacuum, fire and plasma outside, whether the mech is airtight or not.
+        type: Tweak
+      - message: Empty mechs can now be dragged, slowly. Whoever drags one walks at 60 percent speed and sprints at 40 percent. The pet-sized mech has no penalty.
+        type: Add
+      - message: Mechs are now drawn above the people standing next to them.
+        type: Tweak
+      - message: The Minutemen Deputy, Bailiff and Justiciar mechsuits have their own white and navy police art and status lights, instead of recoloured Shinohara and Mandate hulls.
+        type: Tweak
+      - message: The three Divine Sol Mandate wines now have their own bottle sprites.
+        type: Tweak
+      - message: Added three NCWL vodkas, Chengridz, Commune and Foundry.
+        type: Add
+      - message: Added eight faith altars and memorials, one for each of the cluster's main creeds, from the Veiled Mother and the Four Great Saints to the Golden Ledger and the Common Hands.
+        type: Add
+      - message: Faction backpacks, satchels and duffels in the loadout are now open to every job in that faction. Some ranks were missing from the old per-job lists.
+        type: Tweak
+      - message: Melee executions now always kill. A parry, the attack cooldown or a weak weapon could leave the victim alive.
+        type: Fix
+      - message: Fixed people walking straight through mechs.
+        type: Fix
+      - message: NPCs now wake up within half a second of a player coming near, instead of up to two seconds.
+        type: Fix
+      - message: Fixed NPC plans running their steps in the wrong order and retrying the same failed option, which made NPCs hesitate or choose cover before choosing a target.
+        type: Fix
+    id: 6124
+    time: '2026-09-26T00:00:00.0000000+00:00'
+    url: null

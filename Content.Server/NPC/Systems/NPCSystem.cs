@@ -49,7 +49,8 @@ namespace Content.Server.NPC.Systems
         private bool _pauseWhenNoPlayersInRange;
         private float _playerPauseDistance;
         private float _playerDistanceCheckTimer;
-        private const float PlayerDistanceCheckInterval = 2.0f;
+        // Crescent: short so an NPC wakes up soon after a player walks up to it.
+        private const float PlayerDistanceCheckInterval = 0.5f;
 
         private readonly List<(EntityUid Entity, EntityCoordinates Coords)> _playerPauseCandidates = new();
         private readonly HashSet<EntityUid> _activePlayers = new();
@@ -235,7 +236,9 @@ namespace Content.Server.NPC.Systems
                     if (!playerEnt.Valid || TerminatingOrDeleted(playerEnt))
                         continue;
 
-                    if (TryComp<MobStateComponent>(playerEnt, out var state) && state.CurrentState != MobState.Alive)
+                    // Crescent: only dead players stop counting. A crit / soft-crit player is still there, and the
+                    // NPC that downed them shouldn't fall asleep on top of them.
+                    if (TryComp<MobStateComponent>(playerEnt, out var state) && state.CurrentState == MobState.Dead)
                         continue;
 
                     _playerPauseCandidates.Add((playerEnt, Transform(playerEnt).Coordinates));

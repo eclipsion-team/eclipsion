@@ -179,7 +179,8 @@ public sealed class HealingSystem : EntitySystem
             args.Handled = true;
     }
 
-    private bool TryHeal(EntityUid uid, EntityUid user, EntityUid target, HealingComponent component)
+    // Crescent: public so NPCs can treat themselves with what they carry without a hand to use it from.
+    public bool TryHeal(EntityUid uid, EntityUid user, EntityUid target, HealingComponent component)
     {
         if (!TryComp<DamageableComponent>(target, out var targetDamage))
             return false;

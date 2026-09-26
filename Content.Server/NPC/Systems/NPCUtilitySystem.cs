@@ -1,3 +1,5 @@
+using Content.Server._Crescent.NPC.Queries; // Crescent
+using Content.Server._Crescent.NpcSquad; // Crescent
 using Content.Server._Crescent.Diplomacy; // Eclipsion
 using Content.Server._Crescent.Factions; // Eclipsion
 using Content.Server._Mono.NPC.HTN;
@@ -67,6 +69,7 @@ public sealed class NPCUtilitySystem : EntitySystem
     [Dependency] private readonly ExamineSystemShared _examine = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
     [Dependency] private readonly TurretTargetSettingsSystem _turretTargetSettings = default!;
+    [Dependency] private readonly NpcSquadSystem _npcSquad = default!; // Crescent
 
     // Eclipsion - inventory slot an anti-boarder gun inspects for a sealed suit.
     private const string OuterClothingSlot = "outerClothing";
@@ -379,6 +382,11 @@ public sealed class NPCUtilitySystem : EntitySystem
                 }
 
                 return 0f;
+            }
+            // Crescent - soldier AI: not its own side, and within what its squad orders allow.
+            case NpcSquadTargetCon:
+            {
+                return _npcSquad.IsTargetAllowed(owner, targetUid) ? 1f : 0f;
             }
             case TurretTargetingCon:
             {

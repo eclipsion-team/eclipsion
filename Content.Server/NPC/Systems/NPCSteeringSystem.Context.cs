@@ -216,6 +216,10 @@ public sealed partial class NPCSteeringSystem
                     // We're still coming to a stop so wait for the do_after.
                     if (body.LinearVelocity.LengthSquared() > 0.01f)
                     {
+                        // Crescent: and actually stop. Left alone, what was left of the last tick's interest
+                        // kept it running into the obstacle at full pace, so it never did come to a stop and
+                        // never got round to opening or breaking it.
+                        Array.Clear(steering.Interest);
                         return true;
                     }
 

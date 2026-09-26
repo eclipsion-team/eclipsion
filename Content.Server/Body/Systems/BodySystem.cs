@@ -10,6 +10,7 @@ using Content.Shared.Mind;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Events;
 using Content.Shared.Movement.Systems;
+using Content.Shared.Rejuvenate;
 using Robust.Shared.Audio;
 using Robust.Shared.Timing;
 using System.Numerics;
@@ -35,6 +36,13 @@ public sealed class BodySystem : SharedBodySystem
 
         SubscribeLocalEvent<BodyComponent, MoveInputEvent>(OnRelayMoveInput);
         SubscribeLocalEvent<BodyComponent, ApplyMetabolicMultiplierEvent>(OnApplyMetabolicMultiplier);
+        SubscribeLocalEvent<BodyComponent, RejuvenateEvent>(OnRejuvenate); // Crescent
+    }
+
+    // Crescent: rejuvenating also regrows missing limbs.
+    private void OnRejuvenate(Entity<BodyComponent> ent, ref RejuvenateEvent args)
+    {
+        RestoreMissingLimbs(ent, ent.Comp);
     }
 
     private void OnRelayMoveInput(Entity<BodyComponent> ent, ref MoveInputEvent args)

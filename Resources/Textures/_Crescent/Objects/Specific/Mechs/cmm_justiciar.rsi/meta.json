@@ -1,0 +1,45 @@
+{
+    "version": 1,
+    "license": "CC0-1.0",
+    "copyright": "Original CMM police mechs generated with OpenAI imagegen for Encore.",
+    "size": {
+        "y": 48,
+        "x": 48
+    },
+    "states": [
+        {
+            "directions": 4,
+            "name": "justiciar"
+        },
+        {
+            "name": "justiciar-open"
+        },
+        {
+            "name": "justiciar-broken"
+        },
+        {
+            "directions": 4,
+            "name": "justiciar-power-powered"
+        },
+        {
+            "name": "justiciar-open-power-powered"
+        },
+        {
+            "directions": 4,
+            "name": "justiciar-power-low"
+        },
+        {
+            "name": "justiciar-open-power-low"
+        },
+        {
+            "directions": 4,
+            "name": "justiciar-power-off"
+        },
+        {
+            "name": "justiciar-open-power-off"
+        },
+        {
+            "name": "justiciar-broken-power-off"
+        }
+    ]
+}

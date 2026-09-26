@@ -7,7 +7,7 @@
   description: A quadruped light exosuit intended for light cargo freight and mining duty that has been stamped with the Imperiatoria Eques Exercitus. This exosuit has been given an internal gyroscope and course-correction thrusters, allowing spaceflight. The cockpit is barely armored, and the pilot takes a great deal of the beating if attacked.
   components:
   - type: Sprite
-    drawdepth: Mobs
+    drawdepth: OverMobs # Crescent - mechs render above people standing next to them
     noRot: true
     sprite: _Crescent/Objects/Specific/mecha.rsi
     layers:
@@ -77,7 +77,7 @@
     damageModifierSet: HeavyArmorNT
   - type: Sprite
     scale: 1.4, 1.4
-    drawdepth: Mobs
+    drawdepth: OverMobs # Crescent - mechs render above people standing next to them
     noRot: true
     sprite: _Crescent/Objects/Specific/mecha.rsi
     layers:
@@ -146,7 +146,7 @@
   description: A light biped exosuit that can take both light weapon and some industrial modules. Developed by Pang Tai Arms under the codename Project Goldenstar, and adapted for the uses of the State by the Union Homeguard Naval Foundries some time after. The workhorse of the Homeguard Navy.
   components:
   - type: Sprite
-    drawdepth: Mobs
+    drawdepth: OverMobs # Crescent - mechs render above people standing next to them
     noRot: true
     sprite: _Crescent/Objects/Specific/mecha.rsi
     layers:
@@ -213,7 +213,7 @@
   description: A light biped exosuit that has been jury rigged with upgraded servos and thrusters while sacrificing it's industrial capacity. The Marauder-type exosuits are commonly used by the Gorlex Security Consulting outlaws fleet, designed for quick raids and guerilla warfare. Fragile and lightly armored.
   components:
   - type: Sprite
-    drawdepth: Mobs
+    drawdepth: OverMobs # Crescent - mechs render above people standing next to them
     noRot: true
     sprite: _Crescent/Objects/Specific/mecha.rsi
     layers:
@@ -281,7 +281,7 @@
   components:
   - type: Sprite
     scale: 1.7, 1.7
-    drawdepth: Mobs
+    drawdepth: OverMobs # Crescent - mechs render above people standing next to them
     noRot: true
     sprite: _Crescent/Objects/Specific/mecha.rsi
     layers:
@@ -355,7 +355,7 @@
     damageModifierSet: MediumArmorNT
   - type: Sprite
     scale: 1.3, 1.3
-    drawdepth: Mobs
+    drawdepth: OverMobs # Crescent - mechs render above people standing next to them
     noRot: true
     sprite: _Crescent/Objects/Specific/mecha.rsi
     layers:
@@ -473,7 +473,7 @@
     damageModifierSet: MediumArmorNT
   - type: Sprite
     scale: 1.1, 1.1
-    drawdepth: Mobs
+    drawdepth: OverMobs # Crescent - mechs render above people standing next to them
     noRot: true
     sprite: _Crescent/Objects/Specific/mecha.rsi
     layers:
@@ -541,7 +541,7 @@
   description: The Wanderer class is a mainstay of the Imperial Cavalry corps as its low profile and light maintenance makes it perfectly suited for freshly graduated cadets and down-on-their-luck Ritters to support the Imperial Navy and heavier Exos. Their construction, while fragile, is speedy enough to perform reconnaissance in asteroid belts and battlefields alike, and powerful synthmuscle arms can mount a variety of infantry level equipment for harassment. Wanderers frequently fall short and are expected to be recalled or bunker down on nearby wrecks or asteroids when enemy fighter support is in a sector, as any caught in the open are doomed to be stripped apart.
   components:
   - type: Sprite
-    drawdepth: Mobs
+    drawdepth: OverMobs # Crescent - mechs render above people standing next to them
     noRot: true
     sprite: _Crescent/Objects/Specific/mecha.rsi
     layers:

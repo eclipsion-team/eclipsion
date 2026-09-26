@@ -28,20 +28,20 @@ public sealed class MechSystem : SharedMechSystem
             return;
 
         var state = component.BaseState;
-        var drawDepth = DrawDepth.Mobs;
+        var drawDepth = GetBaseDrawDepth(uid);
         if (component.BrokenState != null && _appearance.TryGetData<bool>(uid, MechVisuals.Broken, out var broken, args.Component) && broken)
         {
             state = component.BrokenState;
-            drawDepth = DrawDepth.SmallMobs;
+            drawDepth = (int) DrawDepth.SmallMobs;
         }
         else if (component.OpenState != null && _appearance.TryGetData<bool>(uid, MechVisuals.Open, out var open, args.Component) && open)
         {
             state = component.OpenState;
-            drawDepth = DrawDepth.SmallMobs;
+            drawDepth = (int) DrawDepth.SmallMobs;
         }
 
         layer.SetState(state);
-        args.Sprite.DrawDepth = (int) drawDepth;
+        args.Sprite.DrawDepth = drawDepth;
 
         // Each chassis supplies aligned visor/service-light masks for its
         // directional, open and broken RSI states.
@@ -66,5 +66,19 @@ public sealed class MechSystem : SharedMechSystem
             else
                 args.Sprite.LayerSetShader(powerIndex, "unshaded");
         }
+    }
+
+    /// <summary>
+    /// Crescent: the draw depth the hull's prototype asks for, so a mech can stand over the people next to it.
+    /// </summary>
+    private int GetBaseDrawDepth(EntityUid uid)
+    {
+        if (MetaData(uid).EntityPrototype is { } proto &&
+            proto.TryGetComponent<SpriteComponent>(out var sprite, EntityManager.ComponentFactory))
+        {
+            return sprite.DrawDepth;
+        }
+
+        return (int) DrawDepth.Mobs;
     }
 }

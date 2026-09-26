@@ -37,7 +37,7 @@
     radius: 2
     energy: 1.6
     color: "#e08a4a"
-    mask: /Textures/Effects/LightMasks/cone.png
+    lightMask: Cone
     autoRot: true
   - type: Transform
     noRot: false

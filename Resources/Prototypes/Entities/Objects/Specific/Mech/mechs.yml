@@ -65,8 +65,9 @@
     - DoorBumpOpener
     - FootstepSound
   - type: Pullable
+  - type: HeavyPullable # Crescent - draggable despite the 15 tonnes, but slowly
   - type: Physics
-    bodyType: KinematicController
+    bodyType: Dynamic # Crescent - two KinematicControllers never collide, so mobs walked straight through mechs
   - type: Clickable
   - type: WiresPanel
   - type: Fixtures
@@ -79,7 +80,7 @@
         mask:
         - MobMask
         layer:
-        - MobLayer
+        - MachineLayer # Crescent - was MobLayer; needs MidImpassable so people bump into it, but not HighImpassable so floor items don't snag on it
   - type: Appearance
   - type: ContainerContainer
     containers:
@@ -115,7 +116,7 @@
     enabled: false
     softness: 5
     autoRot: true
-    mask: /Textures/Effects/LightMasks/cone.png
+    lightMask: Cone
     radius: 7
     energy: 3
     netsync: false
@@ -156,7 +157,7 @@
   description: Versatile and lightly armored, the Ripley is useful for almost any heavy work scenario. The "APLU" stands for Autonomous Power Loading Unit.
   components:
   - type: Sprite
-    drawdepth: Mobs
+    drawdepth: OverMobs # Crescent - mechs render above people standing next to them
     noRot: true
     sprite: Objects/Specific/Mech/mecha.rsi
     layers:
@@ -201,7 +202,7 @@
   description: "Produced by \"Tyranny of Honk, INC\", this exosuit is designed as heavy clown-support. Used to spread the fun and joy of life. HONK!"
   components:
   - type: Sprite
-    drawdepth: Mobs
+    drawdepth: OverMobs # Crescent - mechs render above people standing next to them
     noRot: true
     sprite: Objects/Specific/Mech/mecha.rsi
     layers:
@@ -237,7 +238,7 @@
   description: "An experimental mech which uses a brain–computer interface to connect directly to a hamsters brain."
   components:
   - type: Sprite
-    drawdepth: Mobs
+    drawdepth: OverMobs # Crescent - mechs render above people standing next to them
     noRot: true
     sprite: Objects/Specific/Mech/mecha.rsi
     layers:
@@ -286,7 +287,7 @@
   description: A miniature exosuit from Nanotrasen, developed to let the irreplaceable station pets live a little longer.
   components:
   - type: Sprite
-    drawdepth: Mobs
+    drawdepth: OverMobs # Crescent - mechs render above people standing next to them
     noRot: true
     sprite: Objects/Specific/Mech/mecha.rsi
     layers:
@@ -303,6 +304,9 @@
         - MobMask
         layer:
         - MobLayer
+  - type: HeavyPullable # Crescent - a pet-sized mech isn't heavy to drag
+    dragWalkSpeedMultiplier: 1
+    dragSprintSpeedMultiplier: 1
   - type: FootstepModifier
     footstepSoundCollection:
       path: /Audio/Mecha/mechmove03.ogg

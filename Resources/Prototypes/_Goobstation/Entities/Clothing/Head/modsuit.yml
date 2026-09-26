@@ -96,7 +96,7 @@
     radius: 6
     energy: 2
     color: "#ffeead"
-    mask: /Textures/Effects/LightMasks/cone.png
+    lightMask: Cone
     autoRot: true
     netsync: false
   - type: HandheldLight

@@ -71,6 +71,34 @@ documents another license. Each Shiptest-derived asset identifies Shiptest, its 
 modifications in the containing `meta.json`. A copy of the attribution notice is distributed with the
 game resources at [Resources/ShiptestAttribution.txt](./Resources/ShiptestAttribution.txt).
 
+### Eclipsion restricted assets
+
+Original assets made by Taleryn and the Eclipsion Team are covered by the
+[Eclipsion Restricted Asset License](./LICENSE-ECLIPSION-ASSETS.txt). These assets have
+`"license": "Custom"` in their `meta.json` and name that license in their `copyright` field.
+They may be used only as part of Eclipsion. Any other use requires prior written permission from
+both Taleryn and the Eclipsion Team; ask in our [Discord](https://discord.gg/3wbbHgUmYr).
+
+This covers only work that is entirely Taleryn's or the Eclipsion Team's own. Assets derived from
+another author's work keep that work's license, as recorded in their `meta.json`.
+
+### Code by Taleryn and the Eclipsion Team
+
+Code written by Taleryn and the Eclipsion Team is licensed under the AGPLv3 like the rest of the
+project. The AGPLv3 does not allow a permission requirement to be added, so asking first is a
+request, not a condition: if you want to reuse this code in another project, please contact
+Taleryn and the Eclipsion Team first.
+
+As an additional term under AGPLv3 §7(b), source files carrying the following header must keep
+this author attribution:
+
+```csharp
+// SPDX-FileCopyrightText: 2026 Taleryn and the Eclipsion Team
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Additional term (AGPLv3 §7(b)): preserve the author attribution above.
+// For reuse outside Eclipsion, please contact Taleryn and the Eclipsion Team: https://discord.gg/3wbbHgUmYr
+```
+
 Please note that some assets are licensed under non-commercial licenses such as  
 [CC-BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/) or similar.  
 If you intend to use this project commercially, such assets must be removed.

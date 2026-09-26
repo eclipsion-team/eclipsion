@@ -13,8 +13,7 @@
 #
 # Every faction that can hold ground has one, all cut from the same sprite sheet: cloth in the faction's colour with
 # its trim along the edge, on the same grey pole. DSM, NCWL and TAP were drawn by hand; the rest are recoloured from
-# the sheet's neutral master by Tools/generate_conquest_banners.py, so edit the colours there and re-run rather than
-# hand-painting a new state. There is deliberately no IND banner — unaffiliated crews hold no territory.
+# the sheet's neutral master. There is deliberately no IND banner — unaffiliated crews hold no territory.
 #
 # Every banner is indestructible (no Damageable — nothing can damage or blow it up) and immovable (anchored, with no
 # Anchorable/Pullable/Item, so it cannot be wrenched loose, pulled, or picked up).

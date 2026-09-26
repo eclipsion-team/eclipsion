@@ -1,0 +1,458 @@
+# Crescent: faction soldier AI.
+#
+# Soldiers fight from cover instead of walking straight at their target, never shoot through their own side,
+# reload from the magazines and ammo boxes they carry, patch themselves up when hurt, and can be recruited
+# into a player's squad and ordered around. In a squad, one of them runs over to patch the leader up when
+# the leader gets hurt while the rest stand watch around the two of them, and they put up barricades when
+# told to defend or when the leader is down. They keep shooting while they move, step out of cover to fire
+# and duck back, spread out around their target instead of bunching up, follow up on where an enemy was
+# last seen or shot at them from, call nearby friends over, and look around while they wait. Ordered to
+# attack, they bound forward from cover to cover until they're on top of the enemy. The C#
+# half lives in NpcTacticalSystem and NpcSquadSystem.
+#
+# Branch order is priority order: the HTN replans every half second and switches to any plan that comes
+# from an earlier branch, so treating a wound interrupts a firefight but a firefight never interrupts
+# treating a wound.
+
+- type: htnCompound
+  id: FactionSoldierCompound
+  branches:
+  # Badly hurt and carrying something that would help: get out of sight and patch up.
+  - preconditions:
+    - !type:NpcNeedsHealingPrecondition
+    tasks:
+    - !type:HTNCompoundTask
+      task: SoldierSelfHealCompound
+
+  # Squad leader hurt: one squadmate (the first to claim it) goes over and patches them up.
+  - preconditions:
+    - !type:NpcShouldTendLeaderPrecondition
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcPickLeaderOperator
+        targetKey: LeaderCoordinates
+        rangeKey: LeaderRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: true
+        removeKeyOnFinish: false
+        targetKey: LeaderCoordinates
+        pathfindKey: LeaderPathfind
+        rangeKey: LeaderRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcTendLeaderOperator
+
+  # Squad ordered to hold fire: stay on the leader and don't start anything.
+  - preconditions:
+    - !type:HasOrdersPrecondition
+      orders: enum.NpcSquadOrder.HoldFire
+    tasks:
+    - !type:HTNCompoundTask
+      task: FollowCompound
+
+  # Dig in: told to defend with enemies about, or the leader is hurt and the squad rings them in.
+  - preconditions:
+    - !type:NpcWantsToFortifyPrecondition
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcPickBarricadeSpotOperator
+        targetKey: BarricadeCoordinates
+        rangeKey: BarricadeRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: true
+        removeKeyOnFinish: false
+        targetKey: BarricadeCoordinates
+        pathfindKey: BarricadePathfind
+        rangeKey: BarricadeRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcBuildBarricadeOperator
+        targetKey: BarricadeCoordinates
+
+  - tasks:
+    - !type:HTNCompoundTask
+      task: SoldierRangedCombatCompound
+
+  - tasks:
+    - !type:HTNCompoundTask
+      task: SoldierMeleeCombatCompound
+
+  # Another squadmate is patching the leader up: everyone else rings the two of them, looking outward. Below
+  # the fighting on purpose - anyone who shows up gets shot at, and the guard picks up again after.
+  - preconditions:
+    - !type:NpcShouldGuardLeaderPrecondition
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcPickGuardSpotOperator
+        targetKey: GuardCoordinates
+        rangeKey: GuardRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: true
+        removeKeyOnFinish: false
+        targetKey: GuardCoordinates
+        pathfindKey: GuardPathfind
+        rangeKey: GuardRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcGuardOperator
+
+  # Lost sight of an enemy, got shot at by one it can't see, or a friend nearby called one out: go and look
+  # where it was, then look around. Below the fighting, so spotting anyone on the way is a fight again.
+  - preconditions:
+    - !type:NpcHasLeadPrecondition
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcPickSearchSpotOperator
+        targetKey: SearchCoordinates
+        rangeKey: SearchRange
+
+    # Not pathfound while planning: a lead it can't reach costs a few failed moves, not a pathfind on every
+    # replan until it is forgotten.
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: false
+        removeKeyOnFinish: false
+        targetKey: SearchCoordinates
+        rangeKey: SearchRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcLookAroundOperator
+        clearLead: true
+
+  # Nothing to fight: go where the squad wants you. Defending uses the post as its follow target.
+  - preconditions:
+    - !type:HasOrdersPrecondition
+      orders: enum.NpcSquadOrder.Follow
+    tasks:
+    - !type:HTNCompoundTask
+      task: FollowCompound
+
+  - preconditions:
+    - !type:HasOrdersPrecondition
+      orders: enum.NpcSquadOrder.Attack
+    tasks:
+    - !type:HTNCompoundTask
+      task: FollowCompound
+
+  - preconditions:
+    - !type:HasOrdersPrecondition
+      orders: enum.NpcSquadOrder.Defend
+    tasks:
+    - !type:HTNCompoundTask
+      task: FollowCompound
+
+  - tasks:
+    - !type:HTNCompoundTask
+      task: SoldierIdleCompound
+
+- type: htnCompound
+  id: SoldierRangedCombatCompound
+  branches:
+  # An empty gun gets a fresh magazine, not thrown on the floor.
+  - preconditions:
+    - !type:NpcCanReloadPrecondition
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcReloadOperator
+
+  # Ordered to attack: push in on the target in bounds, from one bit of cover to the next one closer,
+  # shooting all the way and stopping only briefly at each, until close enough for the gun it carries -
+  # then hold there and fight. Nowhere closer to go and it falls back to fighting from cover below.
+  - preconditions:
+    - !type:NpcAssaultingPrecondition
+    - !type:GunAmmoPrecondition
+      minPercent: 0.001
+    tasks:
+    - !type:HTNCompoundTask
+      task: SoldierPickTargetCompound
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcPickAdvanceSpotOperator
+        targetKey: Target
+        coverKey: AdvanceCoordinates
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcFireOnTheMoveOperator
+        targetKey: Target
+
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        shutdownState: PlanFinished
+        pathfindInPlanning: true
+        removeKeyOnFinish: false
+        targetKey: AdvanceCoordinates
+        pathfindKey: AdvancePathfind
+        rangeKey: MovementRangeClose
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcTacticalGunOperator
+        targetKey: Target
+
+  # Pick a target, get next to something solid with a clear shot at it, and fight from there. The soldier
+  # opens fire before it sets off and keeps shooting on the way, and the move keeps going in the background
+  # once it's there. From cover it steps out to one side every few seconds to shoot and ducks back.
+  - preconditions:
+    - !type:GunAmmoPrecondition
+      minPercent: 0.001
+    tasks:
+    - !type:HTNCompoundTask
+      task: SoldierPickTargetCompound
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcPickCoverOperator
+        targetKey: Target
+        coverKey: CoverCoordinates
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcFireOnTheMoveOperator
+        targetKey: Target
+
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        shutdownState: PlanFinished
+        pathfindInPlanning: true
+        removeKeyOnFinish: false
+        targetKey: CoverCoordinates
+        pathfindKey: CoverPathfind
+        rangeKey: MovementRangeClose
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcTacticalGunOperator
+        targetKey: Target
+
+  # No cover near it with a shot: find anywhere round the target it can actually shoot from - the far side
+  # of an airlock, past the glass it saw them through, across a dock - and go round to it, shooting on the way.
+  - preconditions:
+    - !type:GunAmmoPrecondition
+      minPercent: 0.001
+    tasks:
+    - !type:HTNCompoundTask
+      task: SoldierPickTargetCompound
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcPickCoverOperator
+        mode: Firing
+        targetKey: Target
+        coverKey: FiringCoordinates
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcFireOnTheMoveOperator
+        targetKey: Target
+
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        shutdownState: PlanFinished
+        pathfindInPlanning: true
+        removeKeyOnFinish: false
+        targetKey: FiringCoordinates
+        pathfindKey: FiringPathfind
+        rangeKey: MovementRangeClose
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcTacticalGunOperator
+        targetKey: Target
+
+  # Nowhere to shoot from at all that it can find: head straight for the target and stop as soon as there's a
+  # line of sight. The range is kept short on purpose - with its fighting range here, a target it could see
+  # through a window counted as already reached, and it stood there staring at the glass.
+  - preconditions:
+    - !type:GunAmmoPrecondition
+      minPercent: 0.001
+    tasks:
+    - !type:HTNCompoundTask
+      task: SoldierPickTargetCompound
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcFireOnTheMoveOperator
+        targetKey: Target
+
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        shutdownState: PlanFinished
+        pathfindInPlanning: true
+        removeKeyOnFinish: false
+        targetKey: TargetCoordinates
+        pathfindKey: TargetPathfind
+        stopOnLineOfSight: true
+        rangeKey: MovementRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:JukeOperator
+        jukeType: AdjacentTile
+
+    # Nothing to duck back behind out here; the juke keeps it moving instead.
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcTacticalGunOperator
+        targetKey: Target
+        peek: false
+
+  # Out of magazines and out of resupply: find another gun, or get rid of the empty one.
+  - preconditions:
+    - !type:ActiveHandComponentPrecondition
+      components:
+      - type: Gun
+      invert: true
+    tasks:
+    - !type:HTNCompoundTask
+      task: PickupGunCompound
+
+  - preconditions:
+    - !type:ActiveHandComponentPrecondition
+      components:
+      - type: Gun
+    - !type:GunAmmoPrecondition
+      maxPercent: 0.001
+    tasks:
+    - !type:HTNPrimitiveTask
+      preconditions:
+      - !type:ActiveHandEntityPrecondition
+      operator: !type:DropOperator
+
+- type: htnCompound
+  id: SoldierPickTargetCompound
+  branches:
+  # Whatever the squad leader pointed out.
+  - preconditions:
+    - !type:KeyExistsPrecondition
+      key: CurrentOrderedTarget
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:UtilityOperator
+        proto: SoldierOrderedTargets
+
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:UtilityOperator
+        proto: SoldierGunTargets
+
+- type: htnCompound
+  id: SoldierMeleeCombatCompound
+  branches:
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:UtilityOperator
+        proto: SoldierMeleeTargets
+    - !type:HTNCompoundTask
+      task: BeforeMeleeAttackTargetCompound
+
+- type: htnCompound
+  id: SoldierSelfHealCompound
+  branches:
+  # Out of sight of every enemy nearby first, if there's anywhere to go.
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcPickCoverOperator
+        mode: Hide
+        coverKey: CoverCoordinates
+
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: true
+        targetKey: CoverCoordinates
+        pathfindKey: CoverPathfind
+        rangeKey: MovementRangeClose
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcSelfHealOperator
+
+  # Nowhere to hide: treat it where it stands. Treatment doesn't stop for being shot at.
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcSelfHealOperator
+
+# Nothing going on: wander a little way and look around, like someone on watch rather than a statue.
+- type: htnCompound
+  id: SoldierIdleCompound
+  branches:
+  - preconditions:
+    - !type:BuckledPrecondition
+      isBuckled: false
+    - !type:PulledPrecondition
+      isPulled: false
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:PickAccessibleOperator
+        rangeKey: IdleRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: false
+
+    - !type:HTNPrimitiveTask
+      operator: !type:RandomOperator
+        targetKey: IdleTime
+        minKey: MinimumIdleTime
+        maxKey: MaximumIdleTime
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcLookAroundOperator
+        durationKey: IdleTime
+
+  # Strapped into a seat or being dragged: just look around.
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:RandomOperator
+        targetKey: IdleTime
+        minKey: MinimumIdleTime
+        maxKey: MaximumIdleTime
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcLookAroundOperator
+        durationKey: IdleTime
+
+# Targets
+
+- type: utilityQuery
+  id: SoldierGunTargets
+  query:
+  - !type:NearbyHostilesQuery
+  considerations:
+  - !type:TargetIsAliveCon
+    curve: !type:BoolCurve
+  - !type:TargetIsCritCon
+    curve: !type:InverseBoolCurve
+  - !type:NpcSquadTargetCon
+    curve: !type:BoolCurve
+  - !type:TargetDistanceCon
+    curve: !type:PresetCurve
+      preset: TargetDistance
+  - !type:TargetAccessibleCon
+    curve: !type:BoolCurve
+  - !type:TargetInLOSOrCurrentCon
+    curve: !type:BoolCurve
+
+# No LOS requirement: a pointed-out target gets hunted down, not just shot at if it happens to be visible.
+- type: utilityQuery
+  id: SoldierOrderedTargets
+  query:
+  - !type:OrderedTargetQuery
+  considerations:
+  - !type:TargetIsAliveCon
+    curve: !type:BoolCurve
+  - !type:NpcSquadTargetCon
+    curve: !type:BoolCurve
+  - !type:TargetAccessibleCon
+    curve: !type:BoolCurve
+
+- type: utilityQuery
+  id: SoldierMeleeTargets
+  query:
+  - !type:NearbyHostilesQuery
+  considerations:
+  - !type:TargetIsAliveCon
+    curve: !type:BoolCurve
+  - !type:NpcSquadTargetCon
+    curve: !type:BoolCurve
+  - !type:TargetDistanceCon
+    curve: !type:PresetCurve
+      preset: TargetDistance
+  - !type:TargetAccessibleCon
+    curve: !type:BoolCurve
+  - !type:TargetInLOSOrCurrentCon
+    curve: !type:BoolCurve

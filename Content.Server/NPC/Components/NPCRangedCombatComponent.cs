@@ -41,6 +41,13 @@ public sealed partial class NPCRangedCombatComponent : Component
     public bool TargetInLOS = false;
 
     /// <summary>
+    /// Crescent: something the round would stop on stands between the NPC and the target, as of the last LOS
+    /// check - a machine or other cover that doesn't block sight, or for an NPC without IFF, one of its own.
+    /// </summary>
+    [ViewVariables]
+    public bool ShotBlocked;
+
+    /// <summary>
     /// If true, only opaque objects will block line of sight.
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]

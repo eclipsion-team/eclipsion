@@ -9,7 +9,7 @@
   - type: Sprite
     layers:
     - state: red
-    - sprite: Objects/Consumable/Drinks/pwinebottle.rsi
+    - sprite: _Crescent/Objects/Consumable/Drinks/dsm_rabenau_wine.rsi
       state: icon
   - type: RandomSpawner
     prototypes:

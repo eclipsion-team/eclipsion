@@ -216,13 +216,16 @@ public sealed class HTNSystem : EntitySystem
                     var oldMtr = comp.Plan.BranchTraversalRecord;
                     var mtr = comp.PlanningJob.Result.BranchTraversalRecord;
 
-                    for (var i = 0; i < oldMtr.Count; i++)
+                    // Crescent: the first level where the two differ decides. A later level only means
+                    // anything while every level above it matches - a worse root branch with a better
+                    // sub-branch is still a worse plan.
+                    for (var i = 0; i < oldMtr.Count && i < mtr.Count; i++)
                     {
-                        if (i < mtr.Count && oldMtr[i] > mtr[i])
-                        {
-                            newPlanBetter = true;
-                            break;
-                        }
+                        if (oldMtr[i] == mtr[i])
+                            continue;
+
+                        newPlanBetter = oldMtr[i] > mtr[i];
+                        break;
                     }
                 }
 

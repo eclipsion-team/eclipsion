@@ -8,21 +8,8 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - CommandantNCWL
-        - KommissarNCWL
-        - MVDOfficerNCWL
-        - MVDGruntNCWL
-        - FleetkapitanNCWL
-        - PartisanNCWL
-        - DirectorNCWL
-        - DoctorNCWL
-        - WorkerOverbossNCWL
-        - DockhandNCWL
-        - IndustryTaskmasterNCWL
-        - ArtificerNCWL
-        - WorkerNCWL
+    - !type:FactionRequirement
+      factionID: "NCWL"
 
 - type: loadout
   id: LoadoutBackpackNCWLSatchel
@@ -34,21 +21,8 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - CommandantNCWL
-        - KommissarNCWL
-        - MVDOfficerNCWL
-        - MVDGruntNCWL
-        - FleetkapitanNCWL
-        - PartisanNCWL
-        - DirectorNCWL
-        - DoctorNCWL
-        - WorkerOverbossNCWL
-        - DockhandNCWL
-        - IndustryTaskmasterNCWL
-        - ArtificerNCWL
-        - WorkerNCWL
+    - !type:FactionRequirement
+      factionID: "NCWL"
 
 - type: loadout
   id: LoadoutBackpackNCWLDuffel
@@ -60,21 +34,8 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - CommandantNCWL
-        - KommissarNCWL
-        - MVDOfficerNCWL
-        - MVDGruntNCWL
-        - FleetkapitanNCWL
-        - PartisanNCWL
-        - DirectorNCWL
-        - DoctorNCWL
-        - WorkerOverbossNCWL
-        - DockhandNCWL
-        - IndustryTaskmasterNCWL
-        - ArtificerNCWL
-        - WorkerNCWL
+    - !type:FactionRequirement
+      factionID: "NCWL"
 
 - type: loadout
   id: LoadoutBackpackTFSC
@@ -86,20 +47,8 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - TraumasecTFSC
-        - ForemanTFSC
-        - InfanteerTFSC
-        - IntelligenceOfficerTFSC
-        - LieutenantTFSC
-        - OperativeTFSC
-        - CyberdawnTechTFSC
-        - RingleaderTFSC
-        - RipperdocTFSC
-        - ShipbreakerTFSC
-        - TechnicianTFSC
-        - CoordinatorTFSC
+    - !type:FactionRequirement
+      factionID: "TFSC"
 
 - type: loadout
   id: LoadoutBackpackTFSCSatchel
@@ -111,20 +60,8 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - TraumasecTFSC
-        - ForemanTFSC
-        - InfanteerTFSC
-        - IntelligenceOfficerTFSC
-        - LieutenantTFSC
-        - OperativeTFSC
-        - CyberdawnTechTFSC
-        - RingleaderTFSC
-        - RipperdocTFSC
-        - ShipbreakerTFSC
-        - TechnicianTFSC
-        - CoordinatorTFSC
+    - !type:FactionRequirement
+      factionID: "TFSC"
 
 - type: loadout
   id: LoadoutBackpackTFSCDuffel
@@ -136,20 +73,8 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - TraumasecTFSC
-        - ForemanTFSC
-        - InfanteerTFSC
-        - IntelligenceOfficerTFSC
-        - LieutenantTFSC
-        - OperativeTFSC
-        - CyberdawnTechTFSC
-        - RingleaderTFSC
-        - RipperdocTFSC
-        - ShipbreakerTFSC
-        - TechnicianTFSC
-        - CoordinatorTFSC
+    - !type:FactionRequirement
+      factionID: "TFSC"
 
 - type: loadout
   id: LoadoutBackpackDSM
@@ -161,24 +86,8 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - AdjutantDSM
-        - AdvocatusDSM
-        - ArchmaesterDSM
-        - ForemanDSM
-        - FreeholderDSM
-        - OathboundDSM
-        - GovernorDSM
-        - KnightDSM
-        - RitterDSM
-        - LevymanDSM
-        - LaborDSM
-        - CourtierDSM
-        - ScribeDSM
-        - SurgeonDSM
-        - TemplarDSM
-        - WealthDSM
+    - !type:FactionRequirement
+      factionID: "DSM"
 
 - type: loadout
   id: LoadoutBackpackDSMSatchel
@@ -190,24 +99,8 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - AdjutantDSM
-        - AdvocatusDSM
-        - ArchmaesterDSM
-        - ForemanDSM
-        - FreeholderDSM
-        - OathboundDSM
-        - GovernorDSM
-        - KnightDSM
-        - RitterDSM
-        - LevymanDSM
-        - LaborDSM
-        - CourtierDSM
-        - ScribeDSM
-        - SurgeonDSM
-        - TemplarDSM
-        - WealthDSM
+    - !type:FactionRequirement
+      factionID: "DSM"
 
 - type: loadout
   id: LoadoutBackpackSRM
@@ -219,13 +112,8 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - AcolyteSRM
-        - HunterSRM
-        - MontagneSRM
-        - OverseerSRM
-        - TenderSRM
+    - !type:FactionRequirement
+      factionID: "SRM"
 
 - type: loadout
   id: LoadoutBackpackSRMSatchel
@@ -237,13 +125,8 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - AcolyteSRM
-        - HunterSRM
-        - MontagneSRM
-        - OverseerSRM
-        - TenderSRM
+    - !type:FactionRequirement
+      factionID: "SRM"
 
 - type: loadout
   id: LoadoutBackpackSHI
@@ -255,28 +138,8 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - BoardSHI
-        - EmployeeSHI
-        - ExecutiveSHI
-        - HighsecSHI
-        - MedtechSHI
-        - CorpsecSHI
-        - AcolyteTAP
-        - Antiquarian
-        - BeltrunnerTAP
-        - DraugrTAP
-        - HangarTechTAP
-        - ProphetTAP
-        - ServileTAP
-        - TechminerTAP
-        - TinkererTAP
-        - Spacer
-        - GliessianDockhand
-        - GliessianDockmaster
-        - GliessianSheriff
-        - GliessianDeputy
+    - !type:FactionRequirement
+      factionID: "SHI"
 
 - type: loadout
   id: LoadoutBackpackSHISatchel
@@ -288,28 +151,8 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - BoardSHI
-        - EmployeeSHI
-        - ExecutiveSHI
-        - HighsecSHI
-        - MedtechSHI
-        - CorpsecSHI
-        - AcolyteTAP
-        - Antiquarian
-        - BeltrunnerTAP
-        - DraugrTAP
-        - HangarTechTAP
-        - ProphetTAP
-        - ServileTAP
-        - TechminerTAP
-        - TinkererTAP
-        - Spacer
-        - GliessianDockhand
-        - GliessianDockmaster
-        - GliessianSheriff
-        - GliessianDeputy
+    - !type:FactionRequirement
+      factionID: "SHI"
 
 - type: loadout
   id: LoadoutBackpackSHIDuffel
@@ -321,28 +164,8 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - BoardSHI
-        - EmployeeSHI
-        - ExecutiveSHI
-        - HighsecSHI
-        - MedtechSHI
-        - CorpsecSHI
-        - AcolyteTAP
-        - Antiquarian
-        - BeltrunnerTAP
-        - DraugrTAP
-        - HangarTechTAP
-        - ProphetTAP
-        - ServileTAP
-        - TechminerTAP
-        - TinkererTAP
-        - Spacer
-        - GliessianDockhand
-        - GliessianDockmaster
-        - GliessianSheriff
-        - GliessianDeputy
+    - !type:FactionRequirement
+      factionID: "SHI"
 
 - type: loadout
   id: LoadoutBackpackCMM
@@ -354,18 +177,8 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - PhysicianCMM
-        - DeputyMarshalCMM
-        - MachinistCMM
-        - MarshalCMM
-        - MinutemanCMM
-        - OrdnancemanCMM
-        - WatchmasterCMM
-        - GliessianDeputy
-        - GliessianSheriff
-        - GliessianDockhand
+    - !type:FactionRequirement
+      factionID: "CMM"
 
 - type: loadout
   id: LoadoutBackpackCMMSatchel
@@ -377,18 +190,8 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - PhysicianCMM
-        - DeputyMarshalCMM
-        - MachinistCMM
-        - MarshalCMM
-        - MinutemanCMM
-        - OrdnancemanCMM
-        - WatchmasterCMM
-        - GliessianSheriff
-        - GliessianDeputy
-        - GliessianDockhand
+    - !type:FactionRequirement
+      factionID: "CMM"
 
 - type: loadout
   id: LoadoutBackpackCMMDuffel
@@ -400,15 +203,5 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: LoadoutBackpacks
-    - !type:CharacterJobRequirement
-      jobs:
-        - PhysicianCMM
-        - DeputyMarshalCMM
-        - MachinistCMM
-        - MarshalCMM
-        - MinutemanCMM
-        - OrdnancemanCMM
-        - WatchmasterCMM
-        - GliessianSheriff
-        - GliessianDeputy
-        - GliessianDockhand
+    - !type:FactionRequirement
+      factionID: "CMM"

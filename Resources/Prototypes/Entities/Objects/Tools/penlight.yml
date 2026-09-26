@@ -19,7 +19,7 @@
       heldPrefix: off
     - type: PointLight
       enabled: false
-      mask: /Textures/Effects/LightMasks/cone.png
+      lightMask: Cone
       autoRot: true
       radius: 2
       netsync: false
@@ -68,7 +68,7 @@
       heldPrefix: off
     - type: PointLight
       enabled: false
-      mask: /Textures/Effects/LightMasks/cone.png
+      lightMask: Cone
       autoRot: true
       radius: 2
       netsync: false

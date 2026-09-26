@@ -352,6 +352,14 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
             return;
         }
 
+        // Crescent: arrived, so stand still. Any interest left over from the last tick is a full-speed step,
+        // which makes the NPC overshoot and twitch about its spot.
+        if (steering.CanSeek && steering.Status == SteeringStatus.InRange)
+        {
+            SetDirection(uid, mover, steering, Vector2.Zero);
+            return;
+        }
+
         DebugTools.Assert(!float.IsNaN(interest[0]));
 
         // Don't steer too frequently to avoid twitchiness.

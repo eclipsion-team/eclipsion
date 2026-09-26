@@ -1,0 +1,20 @@
+{
+    "version":  1,
+    "size":  {
+                 "x":  32,
+                 "y":  32
+             },
+    "license":  "CC0-1.0",
+    "copyright":  "Original NCWL vodka bottle sprites generated with OpenAI imagegen for Encore.",
+    "states":  [
+                   {
+                       "name":  "icon"
+                   },
+                   {
+                       "name":  "icon_open"
+                   },
+                   {
+                       "name":  "icon_empty"
+                   }
+               ]
+}

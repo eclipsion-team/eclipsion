@@ -2,8 +2,16 @@
 # weapons, which they actually fire - see NpcGunHandlingSystem for the wielding/bolt/cycling handling
 # that any NPC holding a Hullrot gun needs.
 #
-# Roles differ in what they carry and in how close they want to be: a shotgunner walks into your face,
-# a marksman hangs back at the edge of its vision. Gear lives in soldier_ai_gear.yml.
+# They fight from cover rather than charging (FactionSoldierCompound in NPCs/soldier_tactical.yml), never
+# shoot their own side (NpcIff), reload from the magazines and ammo boxes they carry, treat their own wounds
+# with dressings and medipens, and shout their faction's battle cries - the lines are looked up by faction,
+# see NpcTacticalSystem. Players of the same side can right-click one to recruit it into their squad
+# (NpcSquadRecruitable); squad soldiers look after a wounded leader and throw up barricades with the steel
+# they carry.
+#
+# Roles differ in what they carry and in the range band they like to fight in (CombatRangeMin/Max): a
+# shotgunner gets into your face, a marksman hangs back at the edge of its vision. Gear lives in
+# soldier_ai_gear.yml.
 
 - type: entity
   abstract: true
@@ -18,16 +26,38 @@
   - type: NpcStartInternals
   - type: NpcGunHandling
     resupply: true
+    spareMagazines: 4
+    spareAmmoBoxes: 2
+  - type: NpcTactical
+    # Into the backpack: a combat medkit, and steel for two barricades.
+    supplies:
+    - MedkitCombatFilled
+    - SheetSteel10
+    # Into the hardsuit's injector slots. The suit fires the first one by itself if they go critical.
+    injectorSupplies:
+    - EmergencyMedipen
+    - CombatMedipen
+  - type: NpcIff
+  - type: NpcSquadRecruitable
+  # Can't be stripped, and crumbles to dust with all its gear when it dies.
+  - type: NpcNoLoot
   - type: HTN
     rootTask:
-      task: SimpleHumanoidHostileCompound
+      task: FactionSoldierCompound
     blackboard:
       NavClimb: !type:Bool
         true
       NavSmash: !type:Bool
         true
+      # Works doors: opens the ones its ID lets it through, and only breaks down the ones it doesn't.
+      NavInteract: !type:Bool
+        true
       MeleeRange: !type:Single
         4
+      CombatRangeMin: !type:Single
+        4
+      CombatRangeMax: !type:Single
+        11
       VisionRadius: !type:Single
         14
       AggroVisionRadius: !type:Single
@@ -37,7 +67,9 @@
 #
 # The role archetype has to be the *first* parent so its HTN wins, but with multiple parents the first one
 # also wins every other shared component - including NpcFactionMember, which it inherits from MobHuman as
-# NanoTrasen. So every role mob restates its faction itself, or it ends up friendly to every player.
+# NanoTrasen. So every role mob restates its faction itself, or it ends up friendly to every player. The same
+# goes for LanguageKnowledge: MobHuman only speaks Sign, so without its side's languages restated a soldier
+# shouts its callouts in sign language. The languages follow what that faction's own jobs hand out.
 
 - type: entity
   abstract: true
@@ -46,14 +78,21 @@
   components:
   - type: HTN
     rootTask:
-      task: SimpleHumanoidHostileCompound
+      task: FactionSoldierCompound
     blackboard:
       NavClimb: !type:Bool
         true
       NavSmash: !type:Bool
         true
+      # Works doors: opens the ones its ID lets it through, and only breaks down the ones it doesn't.
+      NavInteract: !type:Bool
+        true
       MeleeRange: !type:Single
         2
+      CombatRangeMin: !type:Single
+        2.5
+      CombatRangeMax: !type:Single
+        7
       VisionRadius: !type:Single
         12
       AggroVisionRadius: !type:Single
@@ -66,14 +105,21 @@
   components:
   - type: HTN
     rootTask:
-      task: SimpleHumanoidHostileCompound
+      task: FactionSoldierCompound
     blackboard:
       NavClimb: !type:Bool
         true
       NavSmash: !type:Bool
         true
+      # Works doors: opens the ones its ID lets it through, and only breaks down the ones it doesn't.
+      NavInteract: !type:Bool
+        true
       MeleeRange: !type:Single
         1.5
+      CombatRangeMin: !type:Single
+        1.5
+      CombatRangeMax: !type:Single
+        5
       VisionRadius: !type:Single
         10
       AggroVisionRadius: !type:Single
@@ -86,14 +132,21 @@
   components:
   - type: HTN
     rootTask:
-      task: SimpleHumanoidHostileCompound
+      task: FactionSoldierCompound
     blackboard:
       NavClimb: !type:Bool
         true
       NavSmash: !type:Bool
         true
+      # Works doors: opens the ones its ID lets it through, and only breaks down the ones it doesn't.
+      NavInteract: !type:Bool
+        true
       MeleeRange: !type:Single
         9
+      CombatRangeMin: !type:Single
+        8
+      CombatRangeMax: !type:Single
+        16
       VisionRadius: !type:Single
         18
       AggroVisionRadius: !type:Single
@@ -106,14 +159,21 @@
   components:
   - type: HTN
     rootTask:
-      task: SimpleHumanoidHostileCompound
+      task: FactionSoldierCompound
     blackboard:
       NavClimb: !type:Bool
         true
       NavSmash: !type:Bool
         true
+      # Works doors: opens the ones its ID lets it through, and only breaks down the ones it doesn't.
+      NavInteract: !type:Bool
+        true
       MeleeRange: !type:Single
         6
+      CombatRangeMin: !type:Single
+        5
+      CombatRangeMax: !type:Single
+        13
       VisionRadius: !type:Single
         16
       AggroVisionRadius: !type:Single
@@ -122,6 +182,8 @@
   - type: NpcGunHandling
     resupply: true
     resupplyDelay: 6
+    spareMagazines: 2
+    spareAmmoBoxes: 2
   - type: MovementSpeedModifier
     baseWalkSpeed: 2.2
     baseSprintSpeed: 3.2
@@ -137,6 +199,13 @@
   - type: NpcFactionMember
     factions:
     - DSM
+  - type: LanguageKnowledge
+    speaks:
+    - LowImperial
+    understands:
+    - LowImperial
+    - HighImperial
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearDSMRifleman
@@ -150,6 +219,13 @@
   - type: NpcFactionMember
     factions:
     - DSM
+  - type: LanguageKnowledge
+    speaks:
+    - LowImperial
+    understands:
+    - LowImperial
+    - HighImperial
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearDSMShock
@@ -163,6 +239,13 @@
   - type: NpcFactionMember
     factions:
     - DSM
+  - type: LanguageKnowledge
+    speaks:
+    - LowImperial
+    understands:
+    - LowImperial
+    - HighImperial
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearDSMShotgunner
@@ -176,6 +259,13 @@
   - type: NpcFactionMember
     factions:
     - DSM
+  - type: LanguageKnowledge
+    speaks:
+    - LowImperial
+    understands:
+    - LowImperial
+    - HighImperial
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearDSMMarksman
@@ -189,6 +279,13 @@
   - type: NpcFactionMember
     factions:
     - DSM
+  - type: LanguageKnowledge
+    speaks:
+    - LowImperial
+    understands:
+    - LowImperial
+    - HighImperial
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearDSMGunner
@@ -204,6 +301,12 @@
   - type: NpcFactionMember
     factions:
     - NCWL
+  - type: LanguageKnowledge
+    speaks:
+    - Dockta
+    understands:
+    - Dockta
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearNCWLRifleman
@@ -217,6 +320,12 @@
   - type: NpcFactionMember
     factions:
     - NCWL
+  - type: LanguageKnowledge
+    speaks:
+    - Dockta
+    understands:
+    - Dockta
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearNCWLShock
@@ -230,6 +339,12 @@
   - type: NpcFactionMember
     factions:
     - NCWL
+  - type: LanguageKnowledge
+    speaks:
+    - Dockta
+    understands:
+    - Dockta
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearNCWLShotgunner
@@ -243,6 +358,12 @@
   - type: NpcFactionMember
     factions:
     - NCWL
+  - type: LanguageKnowledge
+    speaks:
+    - Dockta
+    understands:
+    - Dockta
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearNCWLMarksman
@@ -256,6 +377,12 @@
   - type: NpcFactionMember
     factions:
     - NCWL
+  - type: LanguageKnowledge
+    speaks:
+    - Dockta
+    understands:
+    - Dockta
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearNCWLGunner
@@ -271,6 +398,13 @@
   - type: NpcFactionMember
     factions:
     - TFSC
+  - type: LanguageKnowledge
+    speaks:
+    - Freespeak
+    understands:
+    - Freespeak
+    - SolCommon
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearTFSCRifleman
@@ -284,6 +418,13 @@
   - type: NpcFactionMember
     factions:
     - TFSC
+  - type: LanguageKnowledge
+    speaks:
+    - Freespeak
+    understands:
+    - Freespeak
+    - SolCommon
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearTFSCShock
@@ -297,6 +438,13 @@
   - type: NpcFactionMember
     factions:
     - TFSC
+  - type: LanguageKnowledge
+    speaks:
+    - Freespeak
+    understands:
+    - Freespeak
+    - SolCommon
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearTFSCShotgunner
@@ -310,6 +458,13 @@
   - type: NpcFactionMember
     factions:
     - TFSC
+  - type: LanguageKnowledge
+    speaks:
+    - Freespeak
+    understands:
+    - Freespeak
+    - SolCommon
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearTFSCMarksman
@@ -323,6 +478,13 @@
   - type: NpcFactionMember
     factions:
     - TFSC
+  - type: LanguageKnowledge
+    speaks:
+    - Freespeak
+    understands:
+    - Freespeak
+    - SolCommon
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearTFSCGunner
@@ -338,6 +500,14 @@
   - type: NpcFactionMember
     factions:
     - SHI
+  - type: LanguageKnowledge
+    speaks:
+    - Kaishago
+    - Tradeband
+    understands:
+    - Kaishago
+    - Tradeband
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearSHIRifleman
@@ -351,6 +521,14 @@
   - type: NpcFactionMember
     factions:
     - SHI
+  - type: LanguageKnowledge
+    speaks:
+    - Kaishago
+    - Tradeband
+    understands:
+    - Kaishago
+    - Tradeband
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearSHIShock
@@ -364,6 +542,14 @@
   - type: NpcFactionMember
     factions:
     - SHI
+  - type: LanguageKnowledge
+    speaks:
+    - Kaishago
+    - Tradeband
+    understands:
+    - Kaishago
+    - Tradeband
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearSHIShotgunner
@@ -377,6 +563,14 @@
   - type: NpcFactionMember
     factions:
     - SHI
+  - type: LanguageKnowledge
+    speaks:
+    - Kaishago
+    - Tradeband
+    understands:
+    - Kaishago
+    - Tradeband
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearSHIMarksman
@@ -390,6 +584,14 @@
   - type: NpcFactionMember
     factions:
     - SHI
+  - type: LanguageKnowledge
+    speaks:
+    - Kaishago
+    - Tradeband
+    understands:
+    - Kaishago
+    - Tradeband
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearSHIGunner
@@ -405,6 +607,13 @@
   - type: NpcFactionMember
     factions:
     - IND
+  - type: LanguageKnowledge
+    speaks:
+    - Tradeband
+    understands:
+    - Tradeband
+    - LowImperial
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearINDRifleman
@@ -418,6 +627,13 @@
   - type: NpcFactionMember
     factions:
     - IND
+  - type: LanguageKnowledge
+    speaks:
+    - Tradeband
+    understands:
+    - Tradeband
+    - LowImperial
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearINDShock
@@ -431,6 +647,13 @@
   - type: NpcFactionMember
     factions:
     - IND
+  - type: LanguageKnowledge
+    speaks:
+    - Tradeband
+    understands:
+    - Tradeband
+    - LowImperial
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearINDShotgunner
@@ -444,6 +667,13 @@
   - type: NpcFactionMember
     factions:
     - IND
+  - type: LanguageKnowledge
+    speaks:
+    - Tradeband
+    understands:
+    - Tradeband
+    - LowImperial
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearINDMarksman
@@ -457,6 +687,13 @@
   - type: NpcFactionMember
     factions:
     - IND
+  - type: LanguageKnowledge
+    speaks:
+    - Tradeband
+    understands:
+    - Tradeband
+    - LowImperial
+    - TauCetiBasic
   - type: Loadout
     prototypes:
     - SoldierAIGearINDGunner

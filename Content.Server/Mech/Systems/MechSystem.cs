@@ -5,6 +5,7 @@ using Content.Server.Mech.Components;
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Shared.ActionBlocker;
+using Content.Shared.Atmos;
 using Content.Shared.Damage;
 using Content.Shared.DoAfter;
 using Content.Shared.Emp;
@@ -457,47 +458,44 @@ public sealed partial class MechSystem : SharedMechSystem
     }
 
     #region Atmos Handling
+    // Crescent: every cockpit has life support, so the pilot always breathes and feels a standard atmosphere,
+    // whether the hull is airtight or not and whatever is outside (vacuum, fire, plasma).
     private void OnInhale(EntityUid uid, MechPilotComponent component, InhaleLocationEvent args)
     {
-        if (!TryComp<MechComponent>(component.Mech, out var mech) ||
-            !TryComp<MechAirComponent>(component.Mech, out var mechAir))
-        {
-            return;
-        }
-
-        if (mech.Airtight)
-            args.Gas = mechAir.Air;
+        if (GetCockpitAir(component.Mech) is { } air)
+            args.Gas = air;
     }
 
     private void OnExhale(EntityUid uid, MechPilotComponent component, ExhaleLocationEvent args)
     {
-        if (!TryComp<MechComponent>(component.Mech, out var mech) ||
-            !TryComp<MechAirComponent>(component.Mech, out var mechAir))
-        {
-            return;
-        }
-
-        if (mech.Airtight)
-            args.Gas = mechAir.Air;
+        if (GetCockpitAir(component.Mech) is { } air)
+            args.Gas = air;
     }
 
     private void OnExpose(EntityUid uid, MechPilotComponent component, ref AtmosExposedGetAirEvent args)
     {
-        if (args.Handled)
+        if (args.Handled || GetCockpitAir(component.Mech) is not { } air)
             return;
 
-        if (!TryComp(component.Mech, out MechComponent? mech))
-            return;
-
-        if (mech.Airtight && TryComp(component.Mech, out MechAirComponent? air))
-        {
-            args.Handled = true;
-            args.Gas = air.Air;
-            return;
-        }
-
-        args.Gas =  _atmosphere.GetContainingMixture(component.Mech, excite: args.Excite);
+        args.Gas = air;
         args.Handled = true;
+    }
+
+    /// <summary>
+    /// Scrubs and refills the cockpit to one atmosphere of 20°C air before the pilot uses it.
+    /// </summary>
+    private GasMixture? GetCockpitAir(EntityUid mech)
+    {
+        if (!HasComp<MechComponent>(mech))
+            return null;
+
+        var air = EnsureComp<MechAirComponent>(mech).Air;
+        air.Clear();
+        air.Temperature = Atmospherics.T20C;
+        var moles = Atmospherics.OneAtmosphere * air.Volume / (Atmospherics.R * Atmospherics.T20C);
+        air.AdjustMoles(Gas.Oxygen, moles * Atmospherics.OxygenStandard);
+        air.AdjustMoles(Gas.Nitrogen, moles * Atmospherics.NitrogenStandard);
+        return air;
     }
 
     private void OnGetFilterAir(EntityUid uid, MechAirComponent comp, ref GetFilterAirEvent args)

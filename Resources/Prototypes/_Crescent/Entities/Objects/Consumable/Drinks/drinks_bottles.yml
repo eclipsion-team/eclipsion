@@ -71,3 +71,39 @@
         reagents:
         - ReagentId: SportsDrinkRed
           Quantity: 30
+
+- type: entity
+  parent: [DrinkBottleVisualsOpenable, DrinkBottleGlassBaseFull]
+  id: DrinkNCWLVodkaChengridzBottleFull
+  name: Chengridz vodka bottle
+  description: Distilled potato vodka, Chengridz brand. Bottled for the Workers of the NCWL.
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      drink:
+        reagents:
+        - ReagentId: Vodka
+          Quantity: 100
+  - type: Label
+    currentLabel: vodka
+  - type: Sprite
+    sprite: _Crescent/Objects/Consumable/Drinks/ncwl_vodka_chengridz.rsi
+  - type: Sealable
+
+- type: entity
+  parent: DrinkNCWLVodkaChengridzBottleFull
+  id: DrinkNCWLVodkaCommuneBottleFull
+  name: Commune vodka bottle
+  description: A plain, honest vodka shared out by the communes of the NCWL.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Objects/Consumable/Drinks/ncwl_vodka_commune.rsi
+
+- type: entity
+  parent: DrinkNCWLVodkaChengridzBottleFull
+  id: DrinkNCWLVodkaFoundryBottleFull
+  name: Foundry vodka bottle
+  description: A harsh vodka favored by NCWL foundry workers after a long shift.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Objects/Consumable/Drinks/ncwl_vodka_foundry.rsi

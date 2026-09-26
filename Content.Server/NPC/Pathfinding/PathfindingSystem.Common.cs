@@ -63,6 +63,13 @@ public sealed partial class PathfindingSystem
             {
                 modifier += 0.5f;
             }
+            // Crescent: a door that wants access, for an NPC that works doors. Its ID card may well open it -
+            // steering tries, and breaks it down or gives up if it doesn't. Without this a soldier would rather
+            // smash through a wall than use an airlock its own card opens.
+            else if (isDoor && isAccess && (request.Flags & PathFlags.Interact) != 0x0)
+            {
+                modifier += 2f;
+            }
             // Door we can force open one way or another
             else if (isDoor && isAccess && (request.Flags & PathFlags.Prying) != 0x0)
             {

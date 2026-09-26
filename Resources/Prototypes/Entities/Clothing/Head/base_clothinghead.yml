@@ -77,7 +77,7 @@
     enabled: false
     radius: 3
     energy: 1
-    mask: /Textures/Effects/LightMasks/cone.png
+    lightMask: Cone
     autoRot: true
     netsync: false
   - type: Appearance
@@ -296,7 +296,7 @@
     color: "#ffa1ff"
     radius: 4
     energy: 3
-    mask: /Textures/Effects/LightMasks/cone.png
+    lightMask: Cone
     autoRot: true
     netsync: false
   - type: Appearance
@@ -418,7 +418,7 @@
     radius: 6
     energy: 2
     color: "#ffeead"
-    mask: /Textures/Effects/LightMasks/cone.png
+    lightMask: Cone
     autoRot: true
     netsync: false
   - type: Appearance

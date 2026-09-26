@@ -1,0 +1,45 @@
+{
+    "version": 1,
+    "license": "CC0-1.0",
+    "copyright": "Original CMM police mechs generated with OpenAI imagegen for Encore.",
+    "size": {
+        "y": 48,
+        "x": 48
+    },
+    "states": [
+        {
+            "directions": 4,
+            "name": "bailiff"
+        },
+        {
+            "name": "bailiff-open"
+        },
+        {
+            "name": "bailiff-broken"
+        },
+        {
+            "directions": 4,
+            "name": "bailiff-power-powered"
+        },
+        {
+            "name": "bailiff-open-power-powered"
+        },
+        {
+            "directions": 4,
+            "name": "bailiff-power-low"
+        },
+        {
+            "name": "bailiff-open-power-low"
+        },
+        {
+            "directions": 4,
+            "name": "bailiff-power-off"
+        },
+        {
+            "name": "bailiff-open-power-off"
+        },
+        {
+            "name": "bailiff-broken-power-off"
+        }
+    ]
+}

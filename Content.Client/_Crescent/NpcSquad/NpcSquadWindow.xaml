@@ -1,0 +1,30 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      Title="{Loc 'npc-squad-ui-title'}"
+                      MinSize="520 420"
+                      SetSize="560 520">
+    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="6">
+        <BoxContainer Orientation="Horizontal">
+            <Label Name="CountLabel" StyleClasses="LabelHeading" HorizontalExpand="True"/>
+            <Button Name="DismissAllButton" Text="{Loc 'npc-squad-ui-dismiss-all'}" StyleClasses="Caution"/>
+        </BoxContainer>
+
+        <Label Text="{Loc 'npc-squad-ui-squad-orders'}" StyleClasses="LabelSecondaryColor"/>
+        <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+            <Button Name="FollowAllButton" Text="{Loc 'npc-squad-order-follow'}" HorizontalExpand="True"
+                    ToolTip="{Loc 'npc-squad-order-follow-desc'}"/>
+            <Button Name="DefendAllButton" Text="{Loc 'npc-squad-order-defend'}" HorizontalExpand="True"
+                    ToolTip="{Loc 'npc-squad-order-defend-desc'}"/>
+            <Button Name="AttackAllButton" Text="{Loc 'npc-squad-order-attack'}" HorizontalExpand="True"
+                    ToolTip="{Loc 'npc-squad-order-attack-desc'}"/>
+            <Button Name="HoldFireAllButton" Text="{Loc 'npc-squad-order-holdfire'}" HorizontalExpand="True"
+                    ToolTip="{Loc 'npc-squad-order-holdfire-desc'}"/>
+        </BoxContainer>
+        <Label Text="{Loc 'npc-squad-ui-point-hint'}" StyleClasses="LabelSecondaryColor"/>
+
+        <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+            <BoxContainer Name="MembersContainer" Orientation="Vertical" SeparationOverride="6"/>
+        </ScrollContainer>
+        <Label Name="EmptyLabel" Text="{Loc 'npc-squad-ui-empty'}" StyleClasses="LabelSecondaryColor" Visible="False"/>
+    </BoxContainer>
+</controls:FancyWindow>

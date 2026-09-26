@@ -88,7 +88,7 @@
     castShadows: false
     radius: 2
     energy: 1.5
-    mask: /Textures/Effects/LightMasks/cone.png
+    lightMask: Cone
     autoRot: true
   - type: LitOnPowered
   - type: ApcPowerReceiver
@@ -185,7 +185,7 @@
     castShadows: false
     radius: 2
     energy: 1.5
-    mask: /Textures/Effects/LightMasks/cone.png
+    lightMask: Cone
     autoRot: true
   - type: Actions
   - type: SentienceTarget
@@ -281,7 +281,7 @@
     castShadows: false
     radius: 2
     energy: 1.5
-    mask: /Textures/Effects/LightMasks/cone.png
+    lightMask: Cone
     autoRot: true
   - type: Actions
   - type: SentienceTarget
@@ -377,7 +377,7 @@
     castShadows: false
     radius: 2
     energy: 1.5
-    mask: /Textures/Effects/LightMasks/cone.png
+    lightMask: Cone
     autoRot: true
   - type: Actions
   - type: SentienceTarget

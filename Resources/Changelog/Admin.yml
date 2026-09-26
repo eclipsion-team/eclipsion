@@ -86,3 +86,15 @@ Entries:
     - {message: 'Fixed AGhosts not being able to drop items past the default range.', type: Fix}
   id: 14
   time: '2024-1-4T01:30:00.0000000+00:00'
+- author: Taleryn
+  changes:
+  - {message: 'Added the makepsionic command. It makes a target a latent psychic with no powers, at level one with one point to spend, and undoes mindbreaking to get there.', type: Add}
+  id: 15
+  time: '2026-09-22T00:00:00.0000000+00:00'
+- author: Taleryn
+  changes:
+  - {message: 'Added the setlobbybackground command. It sets the lobby background for everyone, or cycles to the next one when given no argument.', type: Add}
+  - {message: 'Rejuvenate now regrows missing arms, legs, hands and feet. A severed head is left alone, since it carries the brain.', type: Tweak}
+  - {message: 'Faction soldier NPCs can be spawned for DSM, NCWL, TFCF, SHI and independents. See the player changelog for what they do.', type: Add}
+  id: 16
+  time: '2026-09-26T00:00:00.0000000+00:00'
