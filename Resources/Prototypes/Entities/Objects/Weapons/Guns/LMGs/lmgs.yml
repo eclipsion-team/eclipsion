@@ -104,8 +104,8 @@
     angleDecay: 26
     fireRate: 12
   - type: HeldSpeedModifier
-    walkModifier: 0.6
-    sprintModifier: 0.6
+    walkModifier: 0.75
+    sprintModifier: 0.75
   - type: Sprite
     sprite: _Crescent/Objects/Weapons/Guns/l6saw.rsi
     layers:
@@ -180,8 +180,8 @@
     sprite: _Crescent/Objects/Weapons/Guns/surplus_dsm_lmg.rsi
   - type: Appearance
   - type: HeldSpeedModifier
-    walkModifier: 0.6
-    sprintModifier: 0.4
+    walkModifier: 0.75
+    sprintModifier: 0.6
   - type: Item
     size: Ginormous
   - type: Gun
@@ -255,5 +255,5 @@
     zeroVisible: true
   - type: Appearance
   - type: HeldSpeedModifier
-    walkModifier: 0.4
-    sprintModifier: 0.3
+    walkModifier: 0.6
+    sprintModifier: 0.5

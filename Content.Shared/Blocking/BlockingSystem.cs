@@ -173,12 +173,12 @@ public sealed partial class BlockingSystem : SharedBlockingSystem // Crescent
     private void OnShutdown(EntityUid uid, BlockingComponent component, ComponentShutdown args)
     {
         //In theory the user should not be null when this fires off
-        if (component.User != null)
+        if (component.User is { } user)
         {
-            _actionsSystem.RemoveProvidedActions(component.User.Value, uid);
-            StopBlockingHelper(uid, component, component.User.Value);
+            _actionsSystem.RemoveProvidedActions(user, uid);
+            // StopBlockingHelper clears component.User, so only the captured user is safe to use after it.
+            StopBlockingHelper(uid, component, user);
             // Crescent changes start
-            var user = component.User.Value;
             if (HasComp<BlockingVisualsComponent>(user))
                 RemCompDeferred<BlockingVisualsComponent>(user);
             // Crescent changes end

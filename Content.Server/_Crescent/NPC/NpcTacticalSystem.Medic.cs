@@ -1,4 +1,5 @@
 using Content.Server.Medical.Components;
+using Content.Shared._Crescent.NpcSquad;
 
 namespace Content.Server._Crescent.NPC;
 
@@ -8,6 +9,11 @@ public sealed partial class NpcTacticalSystem
     /// How far away the leader may be for a squadmate to break off and go to them.
     /// </summary>
     private const float MedicReach = 20f;
+
+    /// <summary>
+    /// How close a hurt leader has to be for a soldier holding a post to see to them without them being down.
+    /// </summary>
+    private const float DefendTendReach = 2.5f;
 
     /// <summary>
     /// Once it has started on the leader, the medic keeps going until they're under this fraction.
@@ -29,7 +35,16 @@ public sealed partial class NpcTacticalSystem
         var npcPos = _transform.GetMapCoordinates(npc);
         var leaderPos = _transform.GetMapCoordinates(leader);
 
-        if (npcPos.MapId != leaderPos.MapId || (npcPos.Position - leaderPos.Position).Length() > MedicReach)
+        if (npcPos.MapId != leaderPos.MapId)
+            return false;
+
+        var distance = (npcPos.Position - leaderPos.Position).Length();
+        if (distance > MedicReach)
+            return false;
+
+        // Holding a post, it only leaves it for a leader who is actually down - or one right next to it,
+        // which takes no leaving at all.
+        if (_squad.GetOrder(npc) == NpcSquadOrder.Defend && !_mobState.IsCritical(leader) && distance > DefendTendReach)
             return false;
 
         if (!_mobState.IsCritical(leader) &&

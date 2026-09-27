@@ -7,8 +7,10 @@
 # told to defend or when the leader is down. They keep shooting while they move, step out of cover to fire
 # and duck back, spread out around their target instead of bunching up, follow up on where an enemy was
 # last seen or shot at them from, call nearby friends over, and look around while they wait. Ordered to
-# attack, they bound forward from cover to cover until they're on top of the enemy. The C#
-# half lives in NpcTacticalSystem and NpcSquadSystem.
+# attack, they bound forward from cover to cover until they're on top of the enemy. Told to hold or defend,
+# they stay on their own spot and fight from right there. Following, they can keep a formation on their
+# leader, and on the word they barricade the squad in. The C# half lives in NpcTacticalSystem and
+# NpcSquadSystem.
 #
 # Branch order is priority order: the HTN replans every half second and switches to any plan that comes
 # from an earlier branch, so treating a wound interrupts a firefight but a firefight never interrupts
@@ -25,6 +27,15 @@
     tasks:
     - !type:HTNCompoundTask
       task: SoldierHoldCompound
+
+  # Squad ordered to defend: hold its post and fight from it. Up here for the same reason - nothing below
+  # gets to walk it off its post.
+  - preconditions:
+    - !type:HasOrdersPrecondition
+      orders: enum.NpcSquadOrder.Defend
+    tasks:
+    - !type:HTNCompoundTask
+      task: SoldierDefendCompound
 
   # Badly hurt and carrying something that would help: get out of sight and patch up.
   - preconditions:
@@ -53,7 +64,15 @@
     - !type:HTNPrimitiveTask
       operator: !type:NpcTendLeaderOperator
 
-  # Dig in: told to defend with enemies about, or the leader is hurt and the squad rings them in.
+  # Told to barricade the squad in: build the ring round the leader. Above the fighting, so it gets built.
+  - preconditions:
+    - !type:HasOrdersPrecondition
+      orders: enum.NpcSquadOrder.Fortify
+    tasks:
+    - !type:HTNCompoundTask
+      task: SoldierBuildFortCompound
+
+  # Dig in: the leader is hurt and the squad rings them in.
   - preconditions:
     - !type:NpcWantsToFortifyPrecondition
     tasks:
@@ -126,7 +145,14 @@
       operator: !type:NpcLookAroundOperator
         clearLead: true
 
-  # Nothing to fight: go where the squad wants you. Defending uses the post as its follow target.
+  # Nothing to fight and the squad keeps a formation: take its slot in it.
+  - preconditions:
+    - !type:NpcInFormationPrecondition
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcKeepFormationOperator
+
+  # Nothing to fight: go where the squad wants you.
   - preconditions:
     - !type:HasOrdersPrecondition
       orders: enum.NpcSquadOrder.Follow
@@ -137,13 +163,6 @@
   - preconditions:
     - !type:HasOrdersPrecondition
       orders: enum.NpcSquadOrder.Attack
-    tasks:
-    - !type:HTNCompoundTask
-      task: FollowCompound
-
-  - preconditions:
-    - !type:HasOrdersPrecondition
-      orders: enum.NpcSquadOrder.Defend
     tasks:
     - !type:HTNCompoundTask
       task: FollowCompound
@@ -367,7 +386,8 @@
     - !type:HTNPrimitiveTask
       operator: !type:NpcSelfHealOperator
 
-# Holding: patch itself up where it stands if it needs to, otherwise stand there and look around.
+# Holding: patch itself up where it stands if it needs to, get back on its spot if it was pushed off it,
+# otherwise stand there and look around.
 - type: htnCompound
   id: SoldierHoldCompound
   branches:
@@ -376,6 +396,179 @@
     tasks:
     - !type:HTNPrimitiveTask
       operator: !type:NpcSelfHealOperator
+
+  - preconditions:
+    - !type:CoordinatesNotInRangePrecondition
+      targetKey: DefendCoordinates
+      rangeKey: DefendLeaveRange
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: true
+        removeKeyOnFinish: false
+        targetKey: DefendCoordinates
+        pathfindKey: DefendPathfind
+        rangeKey: DefendRange
+
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:RandomOperator
+        targetKey: IdleTime
+        minKey: MinimumIdleTime
+        maxKey: MaximumIdleTime
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcLookAroundOperator
+        durationKey: IdleTime
+
+# Defending: holds its post and fights from right there - no cover to run to, no better angle, no lead to
+# chase. It moves only to get back onto the post: pushed off it, back from patching up its downed leader, or
+# walking over to a post round them. The leader has to be down for it to leave the post to treat them.
+- type: htnCompound
+  id: SoldierDefendCompound
+  branches:
+  - preconditions:
+    - !type:NpcNeedsHealingPrecondition
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcSelfHealOperator
+
+  - preconditions:
+    - !type:NpcShouldTendLeaderPrecondition
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcPickLeaderOperator
+        targetKey: LeaderCoordinates
+        rangeKey: LeaderRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: true
+        removeKeyOnFinish: false
+        targetKey: LeaderCoordinates
+        pathfindKey: LeaderPathfind
+        rangeKey: LeaderRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcTendLeaderOperator
+
+  - preconditions:
+    - !type:NpcCanReloadPrecondition
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcReloadOperator
+
+  # Off its post with someone to shoot: back onto it, shooting all the way.
+  - preconditions:
+    - !type:CoordinatesNotInRangePrecondition
+      targetKey: DefendCoordinates
+      rangeKey: DefendLeaveRange
+    - !type:GunAmmoPrecondition
+      minPercent: 0.001
+    tasks:
+    - !type:HTNCompoundTask
+      task: SoldierPickTargetCompound
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcFireOnTheMoveOperator
+        targetKey: Target
+
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        shutdownState: PlanFinished
+        pathfindInPlanning: true
+        removeKeyOnFinish: false
+        targetKey: DefendCoordinates
+        pathfindKey: DefendPathfind
+        rangeKey: DefendRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcTacticalGunOperator
+        targetKey: Target
+        peek: false
+
+  - preconditions:
+    - !type:CoordinatesNotInRangePrecondition
+      targetKey: DefendCoordinates
+      rangeKey: DefendLeaveRange
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: true
+        removeKeyOnFinish: false
+        targetKey: DefendCoordinates
+        pathfindKey: DefendPathfind
+        rangeKey: DefendRange
+
+  # Enemies about: a barricade on the side facing them, right next to the post.
+  - preconditions:
+    - !type:NpcWantsToFortifyPrecondition
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcPickBarricadeSpotOperator
+        targetKey: BarricadeCoordinates
+        rangeKey: BarricadeRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: true
+        removeKeyOnFinish: false
+        targetKey: BarricadeCoordinates
+        pathfindKey: BarricadePathfind
+        rangeKey: BarricadeRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcBuildBarricadeOperator
+        targetKey: BarricadeCoordinates
+
+  # Fight from where it stands. Nowhere to duck back behind but what it built.
+  - preconditions:
+    - !type:GunAmmoPrecondition
+      minPercent: 0.001
+    tasks:
+    - !type:HTNCompoundTask
+      task: SoldierPickTargetCompound
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcTacticalGunOperator
+        targetKey: Target
+        peek: false
+
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:RandomOperator
+        targetKey: IdleTime
+        minKey: MinimumIdleTime
+        maxKey: MaximumIdleTime
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcLookAroundOperator
+        durationKey: IdleTime
+
+# Barricading the squad in: take the nearest edge of the ring nobody else is on and build it. Once there is
+# nothing left it can build, NpcSquadSystem moves it on to defending inside; until then it looks around.
+- type: htnCompound
+  id: SoldierBuildFortCompound
+  branches:
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcPickFortSlotOperator
+        targetKey: FortCoordinates
+        standKey: FortStandCoordinates
+        rangeKey: FortRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: true
+        removeKeyOnFinish: false
+        targetKey: FortStandCoordinates
+        pathfindKey: FortPathfind
+        rangeKey: FortRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcBuildBarricadeOperator
+        targetKey: FortCoordinates
+        fort: true
 
   - tasks:
     - !type:HTNPrimitiveTask

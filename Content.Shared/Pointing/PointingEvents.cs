@@ -1,3 +1,4 @@
+using Robust.Shared.Map; // Crescent
 using Robust.Shared.Serialization;
 
 namespace Content.Shared.Pointing;
@@ -31,3 +32,11 @@ public readonly record struct AfterPointedAtEvent(EntityUid Pointed);
 /// <param name="Pointer"></param>
 [ByRefEvent]
 public readonly record struct AfterGotPointedAtEvent(EntityUid Pointer);
+
+// Crescent changes start
+/// <summary>
+/// Raised on the entity who is pointing after they point at a spot on the floor rather than at an entity.
+/// </summary>
+[ByRefEvent]
+public readonly record struct AfterPointedAtTileEvent(EntityCoordinates Coordinates);
+// Crescent changes end

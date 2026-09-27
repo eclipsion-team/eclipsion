@@ -34,7 +34,8 @@ public sealed partial class TraitPreferenceSelector : Control
             _showUnusable = value;
             Visible = Valid || _showUnusable;
             PreferenceButton.RemoveStyleClass(StyleBase.ButtonDanger);
-            PreferenceButton.AddStyleClass(Valid ? "" : StyleBase.ButtonDanger);
+            if (!Valid)
+                PreferenceButton.AddStyleClass(StyleBase.ButtonDanger);
         }
     }
 

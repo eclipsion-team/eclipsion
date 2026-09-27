@@ -356,7 +356,6 @@
     - MobSoldierAICMMShock
     - MobSoldierAICMMShotgunner
     - MobSoldierAICMMMarksman
-    - MobSoldierAICMMGunner
 
 - type: entity
   parent: SpawnMobSoldierAIBase
@@ -398,15 +397,6 @@
     prototypes:
     - MobSoldierAICMMMarksman
 
-- type: entity
-  parent: SpawnMobSoldierAIBase
-  id: SpawnMobSoldierAICMMGunner
-  name: minuteman machinegunner spawner
-  suffix: CMM, Gunner
-  components:
-  - type: ConditionalSpawner
-    prototypes:
-    - MobSoldierAICMMGunner
 
 # Saint's Militia - hostile to everyone but SRM.
 

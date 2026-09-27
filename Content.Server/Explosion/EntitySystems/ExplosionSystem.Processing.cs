@@ -462,7 +462,8 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
                 }
 
                 // Keep normal explosion damage for structures and other entities without a body.
-                if (!HasComp<BodyComponent>(entity))
+                // Bodies that can't be damaged themselves (e.g. aghosts) shouldn't have their limbs blown off either.
+                if (!HasComp<BodyComponent>(entity) || !HasComp<DamageableComponent>(entity))
                 {
                     _damageableSystem.TryChangeDamage(entity, damage, ignoreResistances: true);
                     continue;

@@ -50,15 +50,15 @@
       types:
         Blunt: 35
         Structural: 50
+    soundHit:
+      collection: BoxingHit
+    animation: WeaponArcFist
+    mustBeEquippedToUse: true
   - type: MeleeThrowOnHit
     speed: 8
     lifetime: 0.4
   - type: KnockdownOnHit
     duration: 1
-    soundHit:
-      collection: BoxingHit
-    animation: WeaponArcFist
-    mustBeEquippedToUse: true
   - type: Fiber
     fiberMaterial: fibers-leather
     fiberColor: fibers-red

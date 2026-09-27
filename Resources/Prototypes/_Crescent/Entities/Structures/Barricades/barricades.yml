@@ -216,6 +216,10 @@
     stackType: CrescentBarbedWire
     count: 1
   - type: BarricadeWire
+  - type: Construction
+    graph: CrescentBarbedWire
+    node: wire
+    deconstructionTarget: null
 
 - type: stack
   id: CrescentBarbedWire

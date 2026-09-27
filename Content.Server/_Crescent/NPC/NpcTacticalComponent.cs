@@ -442,6 +442,14 @@ public sealed partial class NpcTacticalComponent : Component
     public Angle PendingBarricadeRotation;
 
     /// <summary>
+    /// Whether the pending barricade is one edge of the squad's barricade ring rather than one the NPC
+    /// picked for itself. Those go on a border tile the NPC may well be standing on, see
+    /// <see cref="NpcTacticalSystem.CanBuildFortBarricade"/>.
+    /// </summary>
+    [ViewVariables]
+    public bool PendingBarricadeFort;
+
+    /// <summary>
     /// Set once the pending barricade has actually gone up.
     /// </summary>
     [ViewVariables]

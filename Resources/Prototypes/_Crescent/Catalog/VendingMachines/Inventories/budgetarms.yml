@@ -20,6 +20,10 @@
     WeaponRifleSHINimrodSHIBudgetVend: 6
     SpeedLoaderRifleSHIBudgetVend: 12
     ClothingOuterHardsuitFishbedSHIBudgetVend: 8
+    ClothingOuterHardsuitFishbedSilverSHIBudgetVend: 4
+    ClothingOuterHardsuitFishbedGoldSHIBudgetVend: 4
+    ClothingOuterHardsuitFishbedColonialSHIBudgetVend: 4
+    ClothingOuterHardsuitFishbedNLFSHIBudgetVend: 4
 
 # Storefront variants keep the BudgetArms mark-up local to this vendor.
 - type: entity
@@ -169,6 +173,38 @@
 - type: entity
   parent: ClothingOuterHardsuitFishbed
   id: ClothingOuterHardsuitFishbedSHIBudgetVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 8000
+
+- type: entity
+  parent: ClothingOuterHardsuitFishbedSilver
+  id: ClothingOuterHardsuitFishbedSilverSHIBudgetVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 8000
+
+- type: entity
+  parent: ClothingOuterHardsuitFishbedGold
+  id: ClothingOuterHardsuitFishbedGoldSHIBudgetVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 8000
+
+- type: entity
+  parent: ClothingOuterHardsuitFishbedColonial
+  id: ClothingOuterHardsuitFishbedColonialSHIBudgetVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 8000
+
+- type: entity
+  parent: ClothingOuterHardsuitFishbedNLF
+  id: ClothingOuterHardsuitFishbedNLFSHIBudgetVend
   categories: [ HideSpawnMenu ]
   components:
   - type: StaticPrice

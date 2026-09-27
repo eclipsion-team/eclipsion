@@ -45,8 +45,8 @@
     soundGunshot:
       path: /Audio/_Crescent/Weapons/Guns/conscript/gunshot.ogg
   - type: HeldSpeedModifier
-    walkModifier: 0.8
-    sprintModifier: 0.8
+    walkModifier: 0.9
+    sprintModifier: 0.9
   - type: MagazineVisuals
     magState: mag
     steps: 3
@@ -136,8 +136,8 @@
           True: { state: deployed }
           False: { state: base }
   - type: HeldSpeedModifier
-    walkModifier: 0.55
-    sprintModifier: 0.45
+    walkModifier: 0.7
+    sprintModifier: 0.6
 
 - type: entity
   name: C 54 ROW
@@ -294,8 +294,8 @@
     soundGunshot:
       path: /Audio/_Crescent/Weapons/Guns/lmg_1/lmg_gunshot_1.ogg
   - type: HeldSpeedModifier
-    walkModifier: 0.65
-    sprintModifier: 0.65
+    walkModifier: 0.8
+    sprintModifier: 0.8
   - type: Sprite
     sprite: _Crescent/Objects/Weapons/Guns/rpd.rsi
     layers:
@@ -384,8 +384,8 @@
     soundGunshot:
       path: /Audio/_Crescent/Weapons/Guns/lmg_2/lmg_gunshot_1.ogg
   - type: HeldSpeedModifier
-    walkModifier: 0.7
-    sprintModifier: 0.7
+    walkModifier: 0.8
+    sprintModifier: 0.8
   - type: MagazineVisuals
     magState: mag
     steps: 3

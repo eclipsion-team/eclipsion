@@ -565,7 +565,7 @@ public sealed class NpcSoldierTacticsTest
     [TestCase("MobSoldierAITFSCMarksman", "Freespeak")]
     [TestCase("MobSoldierAISHIShotgunner", "Kaishago")]
     [TestCase("MobSoldierAIINDRifleman", "Tradeband")]
-    [TestCase("MobSoldierAICMMShock", "American")]
+    [TestCase("MobSoldierAICMMShock", "Tradeband")]
     public async Task SoldierSpeaksItsFactionsLanguage(string proto, string language)
     {
         await using var pair = await PoolManager.GetServerClient();
@@ -580,6 +580,43 @@ public sealed class NpcSoldierTacticsTest
         {
             var speaker = server.EntMan.GetComponent<LanguageSpeakerComponent>(soldier);
             Assert.That(speaker.CurrentLanguage, Is.EqualTo(language));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// Opposing soldiers stay enemies once they are dressed: no suit of theirs slips them a faction they share,
+    /// as the Midshipman and Hunter suits once did with IND.
+    /// </summary>
+    [TestCase("MobSoldierAISRMRifleman", "MobSoldierAICMMRifleman")]
+    [TestCase("MobSoldierAISRMRifleman", "MobSoldierAIINDRifleman")]
+    [TestCase("MobSoldierAICMMRifleman", "MobSoldierAIINDRifleman")]
+    public async Task OpposingSoldiersAreNotFriendly(string first, string second)
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        EntityUid a = default;
+        EntityUid b = default;
+        await server.WaitPost(() =>
+        {
+            a = server.EntMan.SpawnEntity(first, map.GridCoords);
+            b = server.EntMan.SpawnEntity(second, map.GridCoords);
+            server.System<NPCSystem>().SleepNPC(a);
+            server.System<NPCSystem>().SleepNPC(b);
+        });
+        await server.WaitRunTicks(1);
+
+        await server.WaitAssertion(() =>
+        {
+            var iff = server.System<NpcIffSystem>();
+            Assert.Multiple(() =>
+            {
+                Assert.That(iff.IsFriendly(a, b), Is.False, $"{first} counts {second} as a friend.");
+                Assert.That(iff.IsFriendly(b, a), Is.False, $"{second} counts {first} as a friend.");
+            });
         });
 
         await pair.CleanReturnAsync();
@@ -1450,6 +1487,327 @@ public sealed class NpcSoldierTacticsTest
         {
             Assert.That(tended, Is.True, "Nobody went to patch the leader up.");
             Assert.That(barricade, Is.Not.Null, "Nobody put a barricade up by the wounded leader.");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// Told to defend, a soldier digs in on its own spot - not over by its leader - and stays on it.
+    /// </summary>
+    [Test]
+    public async Task DefendingSoldierHoldsItsOwnSpot()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitPost(() => server.CfgMan.SetCVar(CCVars.NPCPauseWhenNoPlayersInRange, false));
+
+        EntityUid soldier = default;
+        var start = Vector2.Zero;
+        var xformSys = server.System<SharedTransformSystem>();
+
+        await server.WaitPost(() =>
+        {
+            var entMan = server.EntMan;
+            var squad = server.System<NpcSquadSystem>();
+            LayFloor(server, map, -2, 12, -3, 3);
+
+            soldier = entMan.SpawnEntity(DsmSoldier, new EntityCoordinates(map.Grid, new Vector2(0.5f, 0.5f)));
+            var leader = SpawnPlayer(entMan, new EntityCoordinates(map.Grid, new Vector2(10.5f, 0.5f)), "DSM");
+
+            Assert.That(squad.TryRecruit(leader, soldier), Is.True);
+            squad.SetOrder(soldier, entMan.GetComponent<NpcSquadMemberComponent>(soldier), NpcSquadOrder.Defend);
+            start = xformSys.GetWorldPosition(soldier);
+        });
+
+        await server.WaitRunTicks(server.Timing.TickRate * 6);
+
+        await server.WaitAssertion(() =>
+        {
+            var moved = (xformSys.GetWorldPosition(soldier) - start).Length();
+            Assert.That(moved, Is.LessThan(0.5f), $"A soldier told to defend wandered {moved:0.00} tiles off its spot.");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// A holding soldier shoved off its spot walks straight back onto it.
+    /// </summary>
+    [Test]
+    public async Task HoldingSoldierGoesBackToItsSpot()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitPost(() => server.CfgMan.SetCVar(CCVars.NPCPauseWhenNoPlayersInRange, false));
+
+        EntityUid soldier = default;
+        var start = Vector2.Zero;
+        var xformSys = server.System<SharedTransformSystem>();
+
+        await server.WaitPost(() =>
+        {
+            var entMan = server.EntMan;
+            var squad = server.System<NpcSquadSystem>();
+            LayFloor(server, map, -2, 12, -3, 3);
+
+            soldier = entMan.SpawnEntity(DsmSoldier, new EntityCoordinates(map.Grid, new Vector2(0.5f, 0.5f)));
+            var leader = SpawnPlayer(entMan, new EntityCoordinates(map.Grid, new Vector2(10.5f, 0.5f)), "DSM");
+
+            Assert.That(squad.TryRecruit(leader, soldier), Is.True);
+            squad.SetOrder(soldier, entMan.GetComponent<NpcSquadMemberComponent>(soldier), NpcSquadOrder.HoldFire);
+            start = xformSys.GetWorldPosition(soldier);
+        });
+        await server.WaitRunTicks(5);
+
+        await server.WaitPost(() =>
+        {
+            xformSys.SetCoordinates(soldier, new EntityCoordinates(map.Grid, new Vector2(3.5f, 2.5f)));
+        });
+
+        await server.WaitRunTicks(server.Timing.TickRate * 6);
+
+        await server.WaitAssertion(() =>
+        {
+            var off = (xformSys.GetWorldPosition(soldier) - start).Length();
+            Assert.That(off, Is.LessThan(0.9f), $"A holding soldier pushed off its spot stayed {off:0.00} tiles away.");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// Pointing at a spot sends the soldiers holding within ten tiles of it over there to hold it instead;
+    /// one holding further off stays where it is.
+    /// </summary>
+    [Test]
+    public async Task HoldingSoldierMovesToPointedSpot()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitPost(() => server.CfgMan.SetCVar(CCVars.NPCPauseWhenNoPlayersInRange, false));
+
+        EntityUid near = default, far = default, leader = default;
+        var farStart = Vector2.Zero;
+        var spot = new Vector2(6.5f, 0.5f);
+        var xformSys = server.System<SharedTransformSystem>();
+
+        await server.WaitPost(() =>
+        {
+            var entMan = server.EntMan;
+            LayFloor(server, map, -2, 22, -3, 3);
+
+            leader = SpawnPlayer(entMan, new EntityCoordinates(map.Grid, new Vector2(3.5f, 2.5f)), "DSM");
+            entMan.RemoveComponent<BarotraumaComponent>(leader);
+            near = entMan.SpawnEntity(DsmSoldier, new EntityCoordinates(map.Grid, new Vector2(0.5f, 0.5f)));
+            far = entMan.SpawnEntity(DsmSoldier, new EntityCoordinates(map.Grid, new Vector2(20.5f, 0.5f)));
+        });
+        await server.WaitRunTicks(5);
+
+        await server.WaitPost(() =>
+        {
+            var entMan = server.EntMan;
+            var squad = server.System<NpcSquadSystem>();
+
+            foreach (var soldier in new[] { near, far })
+            {
+                Assert.That(squad.TryRecruit(leader, soldier), Is.True);
+                squad.SetOrder(soldier, entMan.GetComponent<NpcSquadMemberComponent>(soldier), NpcSquadOrder.HoldFire);
+            }
+
+            farStart = xformSys.GetWorldPosition(far);
+
+            var comp = entMan.GetComponent<NpcSquadLeaderComponent>(leader);
+            Assert.That(squad.MoveHoldersTo((leader, comp), new EntityCoordinates(map.Grid, spot)), Is.EqualTo(1));
+        });
+
+        await server.WaitRunTicks(server.Timing.TickRate * 8);
+
+        await server.WaitAssertion(() =>
+        {
+            var entMan = server.EntMan;
+            var off = (xformSys.GetWorldPosition(near) - spot).Length();
+            Assert.That(off, Is.LessThan(0.9f), $"The holding soldier ended up {off:0.00} tiles from the spot it was sent to.");
+            Assert.That(entMan.GetComponent<NpcSquadMemberComponent>(near).Order, Is.EqualTo(NpcSquadOrder.HoldFire));
+
+            var farMoved = (xformSys.GetWorldPosition(far) - farStart).Length();
+            Assert.That(farMoved, Is.LessThan(0.5f), "A soldier holding well out of range went too.");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// In a column, the squad lines up in single file behind the way its leader is heading.
+    /// </summary>
+    [Test]
+    public async Task SquadKeepsColumnBehindLeader()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitPost(() => server.CfgMan.SetCVar(CCVars.NPCPauseWhenNoPlayersInRange, false));
+
+        EntityUid first = default, second = default, leader = default;
+        var xformSys = server.System<SharedTransformSystem>();
+
+        await server.WaitPost(() =>
+        {
+            var entMan = server.EntMan;
+            LayFloor(server, map, -4, 14, -5, 5);
+
+            leader = SpawnPlayer(entMan, new EntityCoordinates(map.Grid, new Vector2(6.5f, 0.5f)), "DSM");
+            entMan.RemoveComponent<BarotraumaComponent>(leader);
+            first = entMan.SpawnEntity(DsmSoldier, new EntityCoordinates(map.Grid, new Vector2(1.5f, 3.5f)));
+            second = entMan.SpawnEntity(DsmSoldier, new EntityCoordinates(map.Grid, new Vector2(1.5f, -2.5f)));
+        });
+        await server.WaitRunTicks(5);
+
+        await server.WaitPost(() =>
+        {
+            var squad = server.System<NpcSquadSystem>();
+            Assert.That(squad.TryRecruit(leader, first), Is.True);
+            Assert.That(squad.TryRecruit(leader, second), Is.True);
+
+            var comp = server.EntMan.GetComponent<NpcSquadLeaderComponent>(leader);
+            squad.SetFormation((leader, comp), NpcSquadFormation.Column);
+        });
+        await server.WaitRunTicks(2);
+
+        // A step east, so the squad knows which way is forward.
+        await server.WaitPost(() =>
+        {
+            xformSys.SetCoordinates(leader, new EntityCoordinates(map.Grid, new Vector2(8.5f, 0.5f)));
+        });
+
+        await server.WaitRunTicks(server.Timing.TickRate * 10);
+
+        await server.WaitAssertion(() =>
+        {
+            var leaderPos = xformSys.GetWorldPosition(leader);
+
+            foreach (var soldier in new[] { first, second })
+            {
+                var pos = xformSys.GetWorldPosition(soldier);
+                Assert.That(pos.X, Is.LessThan(leaderPos.X - 0.75f), $"{soldier} isn't behind its leader: {pos} vs {leaderPos}.");
+                Assert.That(MathF.Abs(pos.Y - leaderPos.Y), Is.LessThan(1f), $"{soldier} is out of the column: {pos} vs {leaderPos}.");
+            }
+
+            var gap = MathF.Abs(xformSys.GetWorldPosition(first).X - xformSys.GetWorldPosition(second).X);
+            Assert.That(gap, Is.GreaterThan(0.75f), "The column bunched up onto one spot.");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// On the word, the squad closes the 3x3 square round its leader in with barricades on its outer edges,
+    /// leaving just the one gap in the middle of a side, and then holds inside it.
+    /// </summary>
+    [Test]
+    public async Task SquadBuildsBarricadeRing()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitPost(() => server.CfgMan.SetCVar(CCVars.NPCPauseWhenNoPlayersInRange, false));
+
+        EntityUid leader = default;
+        var soldiers = new List<EntityUid>();
+
+        await server.WaitPost(() =>
+        {
+            var entMan = server.EntMan;
+            LayFloor(server, map, -8, 8, -8, 8);
+
+            leader = SpawnPlayer(entMan, new EntityCoordinates(map.Grid, new Vector2(0.5f, 0.5f)), "DSM");
+            entMan.RemoveComponent<BarotraumaComponent>(leader);
+
+            // Six of them carry steel for twelve, and the ring takes eleven.
+            for (var i = 0; i < 6; i++)
+            {
+                var at = new Vector2(-4.5f + (i % 3) * 4f, i < 3 ? 4.5f : -3.5f);
+                soldiers.Add(entMan.SpawnEntity(DsmSoldier, new EntityCoordinates(map.Grid, at)));
+            }
+        });
+        await server.WaitRunTicks(5);
+
+        await server.WaitPost(() =>
+        {
+            var squad = server.System<NpcSquadSystem>();
+            foreach (var soldier in soldiers)
+            {
+                Assert.That(squad.TryRecruit(leader, soldier), Is.True);
+            }
+
+            var comp = server.EntMan.GetComponent<NpcSquadLeaderComponent>(leader);
+            Assert.That(squad.BuildFort((leader, comp)), Is.True);
+        });
+
+        var done = false;
+        for (var s = 0; s < 60 && !done; s++)
+        {
+            await server.WaitRunTicks(server.Timing.TickRate);
+
+            await server.WaitPost(() =>
+            {
+                done = true;
+                foreach (var soldier in soldiers)
+                {
+                    if (server.EntMan.GetComponent<NpcSquadMemberComponent>(soldier).Order == NpcSquadOrder.Fortify)
+                        done = false;
+                }
+            });
+        }
+
+        await server.WaitAssertion(() =>
+        {
+            var entMan = server.EntMan;
+            var tactical = server.System<NpcTacticalSystem>();
+            var grid = map.Grid;
+            var missing = new List<(Vector2i Tile, Vector2i Facing)>();
+
+            for (var x = -1; x <= 1; x++)
+            {
+                for (var y = -1; y <= 1; y++)
+                {
+                    var tile = new Vector2i(x, y);
+
+                    if (y != 0 && !tactical.HasFortBarricade(grid.Owner, grid.Comp, tile, new Vector2i(0, y)))
+                        missing.Add((tile, new Vector2i(0, y)));
+
+                    if (x != 0 && !tactical.HasFortBarricade(grid.Owner, grid.Comp, tile, new Vector2i(x, 0)))
+                        missing.Add((tile, new Vector2i(x, 0)));
+                }
+            }
+
+            Assert.That(done, Is.True, "The squad was still at it after a minute.");
+            Assert.That(missing, Has.Count.EqualTo(1), $"Expected one way in, got {missing.Count} open edges.");
+
+            // The way in is the middle of a side, facing straight out from the centre.
+            var (gapTile, gapFacing) = missing[0];
+            Assert.That(gapTile, Is.EqualTo(gapFacing), "The way in isn't in the middle of a side.");
+
+            var inside = 0;
+            var xform = server.System<SharedTransformSystem>();
+            foreach (var soldier in soldiers)
+            {
+                Assert.That(entMan.GetComponent<NpcSquadMemberComponent>(soldier).Order, Is.EqualTo(NpcSquadOrder.Defend));
+
+                var local = xform.GetWorldPosition(soldier);
+                if (local.X > -1.1f && local.X < 2.1f && local.Y > -1.1f && local.Y < 2.1f)
+                    inside++;
+            }
+
+            Assert.That(inside, Is.GreaterThanOrEqualTo(4), "The squad didn't go and hold inside its ring.");
         });
 
         await pair.CleanReturnAsync();

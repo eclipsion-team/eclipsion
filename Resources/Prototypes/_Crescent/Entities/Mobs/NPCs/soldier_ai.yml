@@ -3,11 +3,11 @@
 # that any NPC holding a Hullrot gun needs.
 #
 # They fight from cover rather than charging (FactionSoldierCompound in NPCs/soldier_tactical.yml), never
-# shoot their own side (NpcIff) unless one of them shoots first (NpcFriendlyFireRetaliation), reload
-# from the magazines and ammo boxes they carry, treat their own wounds with dressings and medipens, and shout their faction's battle cries - the lines are looked up by faction,
-# see NpcTacticalSystem. Players of the same side can right-click one to recruit it into their squad
-# (NpcSquadRecruitable); squad soldiers look after a wounded leader and throw up barricades with the steel
-# they carry.
+# shoot their own side (NpcIff) unless one of them shoots first (NpcFriendlyFireRetaliation), reload from
+# the magazines and ammo boxes they carry, treat their own wounds with dressings and medipens, and shout
+# their faction's battle cries - the lines are looked up by faction, see NpcTacticalSystem. Players of the
+# same side can right-click one to recruit it into their squad (NpcSquadRecruitable); squad soldiers look
+# after a wounded leader and throw up barricades with the steel they carry.
 #
 # Roles differ in what they carry and in the range band they like to fight in (CombatRangeMin/Max): a
 # shotgunner gets into your face, a marksman hangs back at the edge of its vision. Gear lives in
@@ -731,19 +731,20 @@
     - SoldierAIGearINDGunner
 
 # Colonial Minutemen
+#
+# They speak Tradeband only, though they still understand American.
 
 - type: entity
   parent: BaseMobSoldierAI
   id: MobSoldierAICMMRifleman
   name: minuteman rifleman
-  description: A Colonial Minuteman in a Midshipman hardsuit, carrying a Carter.
+  description: A Colonial Minuteman in a Midshipman hardsuit, carrying a Nimrod.
   components:
   - type: NpcFactionMember
     factions:
     - CMM
   - type: LanguageKnowledge
     speaks:
-    - American
     - Tradeband
     understands:
     - American
@@ -764,7 +765,6 @@
     - CMM
   - type: LanguageKnowledge
     speaks:
-    - American
     - Tradeband
     understands:
     - American
@@ -785,7 +785,6 @@
     - CMM
   - type: LanguageKnowledge
     speaks:
-    - American
     - Tradeband
     understands:
     - American
@@ -806,7 +805,6 @@
     - CMM
   - type: LanguageKnowledge
     speaks:
-    - American
     - Tradeband
     understands:
     - American
@@ -816,26 +814,6 @@
     prototypes:
     - SoldierAIGearCMMMarksman
 
-- type: entity
-  parent: [ BaseMobSoldierAIGunner, MobSoldierAICMMRifleman ]
-  id: MobSoldierAICMMGunner
-  name: minuteman machinegunner
-  description: A Colonial Minuteman in a Midshipman hardsuit, carrying a Washington.
-  components:
-  - type: NpcFactionMember
-    factions:
-    - CMM
-  - type: LanguageKnowledge
-    speaks:
-    - American
-    - Tradeband
-    understands:
-    - American
-    - Tradeband
-    - TauCetiBasic
-  - type: Loadout
-    prototypes:
-    - SoldierAIGearCMMGunner
 
 # Saint's Militia
 #

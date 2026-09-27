@@ -253,7 +253,8 @@ public sealed partial class NpcPickBarricadeSpotOperator : HTNOperator
 }
 
 /// <summary>
-/// Crescent: puts up the barricade picked by <see cref="NpcPickBarricadeSpotOperator"/>.
+/// Crescent: puts up the barricade picked by <see cref="NpcPickBarricadeSpotOperator"/> or
+/// <see cref="NpcPickFortSlotOperator"/>.
 /// </summary>
 public sealed partial class NpcBuildBarricadeOperator : HTNOperator
 {
@@ -265,6 +266,12 @@ public sealed partial class NpcBuildBarricadeOperator : HTNOperator
 
     [DataField]
     public string RotationKey = "BarricadeRotation";
+
+    /// <summary>
+    /// Whether it is an edge of the squad's barricade ring, picked by <see cref="NpcPickFortSlotOperator"/>.
+    /// </summary>
+    [DataField]
+    public bool Fort;
 
     public override void Initialize(IEntitySystemManager sysManager)
     {
@@ -281,7 +288,7 @@ public sealed partial class NpcBuildBarricadeOperator : HTNOperator
         if (blackboard.TryGetValue<EntityCoordinates>(TargetKey, out var spot, _entManager) &&
             blackboard.TryGetValue<Angle>(RotationKey, out var rotation, _entManager))
         {
-            _tactical.TryStartBarricade(owner, spot, rotation);
+            _tactical.TryStartBarricade(owner, spot, rotation, Fort);
         }
     }
 

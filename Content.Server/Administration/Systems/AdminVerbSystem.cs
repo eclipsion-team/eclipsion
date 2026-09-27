@@ -118,13 +118,17 @@ namespace Content.Server.Administration.Systems
 
                 if (TryComp(args.Target, out ActorComponent? targetActor))
                 {
+                    // Capture the session now: the verbs and dialogs below run later, and if the target
+                    // ghosts or disconnects in between, the engine nulls ActorComponent.PlayerSession.
+                    var targetSession = targetActor.PlayerSession;
+
                     // AdminHelp
                     Verb verb = new();
                     verb.Text = Loc.GetString("ahelp-verb-get-data-text");
                     verb.Category = VerbCategory.Admin;
                     verb.Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/gavel.svg.192dpi.png"));
                     verb.Act = () =>
-                        _console.RemoteExecuteCommand(player, $"openahelp \"{targetActor.PlayerSession.UserId}\"");
+                        _console.RemoteExecuteCommand(player, $"openahelp \"{targetSession.UserId}\"");
                     verb.Impact = LogImpact.Low;
                     args.Verbs.Add(verb);
 
@@ -137,7 +141,7 @@ namespace Content.Server.Administration.Systems
                     {
                         _quickDialog.OpenDialog(player, "Subtle Message", "Message", "Popup Message", (string message, string popupMessage) =>
                         {
-                            _prayerSystem.SendSubtleMessage(targetActor.PlayerSession, player, message, popupMessage == "" ? Loc.GetString("prayer-popup-subtle-default") : popupMessage);
+                            _prayerSystem.SendSubtleMessage(targetSession, player, message, popupMessage == "" ? Loc.GetString("prayer-popup-subtle-default") : popupMessage);
                         });
                     };
                     prayerVerb.Impact = LogImpact.Low;
@@ -205,7 +209,7 @@ namespace Content.Server.Administration.Systems
                         Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/VerbIcons/delete_transparent.svg.192dpi.png")),
                         Act = () =>
                         {
-                            _adminSystem.Erase(targetActor.PlayerSession);
+                            _adminSystem.Erase(targetSession);
                         },
                         Impact = LogImpact.Extreme,
                         ConfirmationPopup = true
@@ -218,7 +222,7 @@ namespace Content.Server.Administration.Systems
                         Category = VerbCategory.Admin,
                         Act = () =>
                         {
-                            _console.ExecuteCommand(player, $"respawn {targetActor.PlayerSession.Name}");
+                            _console.ExecuteCommand(player, $"respawn {targetSession.Name}");
                         },
                         ConfirmationPopup = true,
                         // No logimpact as the command does it internally.
@@ -239,7 +243,7 @@ namespace Content.Server.Administration.Systems
 
                             var stationUid = _stations.GetOwningStation(args.Target);
 
-                            var profile = _ticker.GetPlayerProfile(targetActor.PlayerSession);
+                            var profile = _ticker.GetPlayerProfile(targetSession);
                             var mobUid = _spawning.SpawnPlayerMob(coords.Value, null, profile, stationUid);
                             var targetMind = _mindSystem.GetMind(args.Target);
 
@@ -267,7 +271,7 @@ namespace Content.Server.Administration.Systems
 
                             var stationUid = _stations.GetOwningStation(args.Target);
 
-                            var profile = _ticker.GetPlayerProfile(targetActor.PlayerSession);
+                            var profile = _ticker.GetPlayerProfile(targetSession);
                             _spawning.SpawnPlayerMob(coords.Value, null, profile, stationUid);
                         },
                         ConfirmationPopup = true,
@@ -279,16 +283,16 @@ namespace Content.Server.Administration.Systems
                     {
                         Text = Loc.GetString("admin-player-actions-player-panel"),
                         Category = VerbCategory.Admin,
-                        Act = () => _console.ExecuteCommand(player, $"playerpanel \"{targetActor.PlayerSession.UserId}\""),
+                        Act = () => _console.ExecuteCommand(player, $"playerpanel \"{targetSession.UserId}\""),
                         Impact = LogImpact.Low
                     });
 
                     // Crescent: Return to body - one click undo for players who ghosted by accident.
                     if (_adminManager.HasAdminFlag(player, PutPlayerInBodyEui.RequiredFlags)
-                        && TryGetReturnBody(targetActor.PlayerSession, out var returnBody))
+                        && TryGetReturnBody(targetSession, out var returnBody))
                     {
                         var body = returnBody.Value;
-                        var session = targetActor.PlayerSession;
+                        var session = targetSession;
 
                         args.Verbs.Add(new Verb
                         {

@@ -66,7 +66,8 @@ public sealed partial class LoadoutPreferenceSelector : Control
             _showUnusable = value;
             Visible = Valid && _wearable || _showUnusable;
             PreferenceButton.RemoveStyleClass(StyleBase.ButtonDanger);
-            PreferenceButton.AddStyleClass(Valid ? "" : StyleBase.ButtonDanger);
+            if (!Valid)
+                PreferenceButton.AddStyleClass(StyleBase.ButtonDanger);
         }
     }
 
@@ -79,7 +80,8 @@ public sealed partial class LoadoutPreferenceSelector : Control
             _wearable = value;
             Visible = Valid && _wearable || _showUnusable;
             PreferenceButton.RemoveStyleClass(StyleBase.ButtonCaution);
-            PreferenceButton.AddStyleClass(_wearable ? "" : StyleBase.ButtonCaution);
+            if (!_wearable)
+                PreferenceButton.AddStyleClass(StyleBase.ButtonCaution);
         }
     }
 

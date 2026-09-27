@@ -23,6 +23,10 @@ public sealed partial class NpcSquadWindow : FancyWindow
     /// </summary>
     public event Action<NetEntity?>? OnDismiss;
 
+    public event Action<NpcSquadFormation>? OnFormation;
+
+    public event Action? OnBuildFort;
+
     private static readonly NpcSquadOrder[] Orders =
     [
         NpcSquadOrder.Follow,
@@ -30,6 +34,8 @@ public sealed partial class NpcSquadWindow : FancyWindow
         NpcSquadOrder.Attack,
         NpcSquadOrder.HoldFire,
     ];
+
+    private readonly Dictionary<NpcSquadFormation, Button> _formationButtons = new();
 
     public NpcSquadWindow()
     {
@@ -40,6 +46,24 @@ public sealed partial class NpcSquadWindow : FancyWindow
         AttackAllButton.OnPressed += _ => OnOrder?.Invoke(null, NpcSquadOrder.Attack);
         HoldFireAllButton.OnPressed += _ => OnOrder?.Invoke(null, NpcSquadOrder.HoldFire);
         DismissAllButton.OnPressed += _ => OnDismiss?.Invoke(null);
+        BuildFortButton.OnPressed += _ => OnBuildFort?.Invoke();
+
+        foreach (var formation in Enum.GetValues<NpcSquadFormation>())
+        {
+            var name = formation.ToString().ToLowerInvariant();
+            var button = new Button
+            {
+                Text = Loc.GetString($"npc-squad-formation-{name}"),
+                ToolTip = Loc.GetString($"npc-squad-formation-{name}-desc"),
+                ToggleMode = true,
+                HorizontalExpand = true,
+                StyleClasses = { StyleBase.ButtonSquare },
+            };
+
+            button.OnPressed += _ => OnFormation?.Invoke(formation);
+            FormationContainer.AddChild(button);
+            _formationButtons[formation] = button;
+        }
     }
 
     public void UpdateState(NpcSquadBuiState state)
@@ -47,6 +71,12 @@ public sealed partial class NpcSquadWindow : FancyWindow
         CountLabel.Text = Loc.GetString("npc-squad-ui-count", ("count", state.Members.Count), ("max", state.MaxMembers));
         EmptyLabel.Visible = state.Members.Count == 0;
         DismissAllButton.Disabled = state.Members.Count == 0;
+        BuildFortButton.Disabled = state.Members.Count == 0;
+
+        foreach (var (formation, button) in _formationButtons)
+        {
+            button.Pressed = formation == state.Formation;
+        }
 
         MembersContainer.RemoveAllChildren();
 

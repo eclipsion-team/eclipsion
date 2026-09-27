@@ -1,3 +1,4 @@
+using System.Numerics;
 using Content.Shared._Crescent.NpcSquad;
 using Robust.Shared.Map;
 
@@ -77,6 +78,77 @@ public sealed partial class NpcSquadLeaderComponent : Component
     /// </summary>
     [ViewVariables]
     public TimeSpan NextMedipen;
+
+    [ViewVariables]
+    public NpcSquadFormation Formation = NpcSquadFormation.Loose;
+
+    /// <summary>
+    /// Which way the leader is heading, in world terms: the way they last walked, so the formation doesn't
+    /// swing round every time they turn to look at something.
+    /// </summary>
+    [ViewVariables]
+    public Vector2? Heading;
+
+    /// <summary>
+    /// Where the leader was when <see cref="Heading"/> was last worked out.
+    /// </summary>
+    [ViewVariables]
+    public MapCoordinates HeadingSample = MapCoordinates.Nullspace;
+
+    /// <summary>
+    /// The barricade ring the squad was last told to put up, if any.
+    /// </summary>
+    [ViewVariables]
+    public NpcSquadFort? Fort;
+}
+
+/// <summary>
+/// Crescent: a 3x3 square of floor round the leader for the squad to barricade in, see
+/// <see cref="NpcSquadSystem"/>. Each slot is one outer edge of the square: a barricade on a border tile,
+/// facing out. One edge in the middle of a side is left open as the way in.
+/// </summary>
+public sealed class NpcSquadFort
+{
+    public EntityUid Grid;
+
+    /// <summary>
+    /// The tile in the middle of the square.
+    /// </summary>
+    public Vector2i Centre;
+
+    /// <summary>
+    /// The side left open, as a unit grid offset from <see cref="Centre"/>.
+    /// </summary>
+    public Vector2i Entrance;
+
+    public readonly List<NpcSquadFortSlot> Slots = new();
+
+    /// <summary>
+    /// Whether the leader has been told how it went yet.
+    /// </summary>
+    public bool Reported;
+}
+
+public sealed class NpcSquadFortSlot
+{
+    public Vector2i Tile;
+
+    /// <summary>
+    /// Which way the barricade faces, as a unit grid offset. It goes on that edge of the tile.
+    /// </summary>
+    public Vector2i Facing;
+
+    /// <summary>
+    /// The squadmate on it right now, and until when that claim holds unless it is renewed.
+    /// </summary>
+    public EntityUid? Builder;
+    public TimeSpan ClaimedUntil;
+
+    /// <summary>
+    /// Tries that came to nothing - someone stood in the way, the NPC got pulled off it. The slot is given up
+    /// after a few.
+    /// </summary>
+    public int Failures;
 }
 
 /// <summary>
@@ -92,10 +164,18 @@ public sealed partial class NpcSquadMemberComponent : Component
     public NpcSquadOrder Order = NpcSquadOrder.Follow;
 
     /// <summary>
-    /// Where the NPC was told to hold, for <see cref="NpcSquadOrder.Defend"/>.
+    /// The spot the NPC holds, for <see cref="NpcSquadOrder.Defend"/> and <see cref="NpcSquadOrder.HoldFire"/>.
+    /// Grid-relative, so it stays put whoever walks off. The NPC only ever moves to get back onto it.
     /// </summary>
     [ViewVariables]
     public EntityCoordinates? DefendPoint;
+
+    /// <summary>
+    /// The post the NPC held before its leader went down and the squad closed in round them, given back with
+    /// <see cref="OrderBeforeLeaderDown"/>.
+    /// </summary>
+    [ViewVariables]
+    public EntityCoordinates? DefendPointBeforeLeaderDown;
 
     /// <summary>
     /// The order the NPC had before its leader went down and the squad closed in to hold around them. Given

@@ -235,6 +235,11 @@ namespace Content.Server.Pointing.EntitySystems
                 viewerMessage = Loc.GetString("pointing-system-other-point-at-tile", ("otherName", playerName), ("tileName", name));
 
                 _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(player):user} pointed at {name} {(position == null ? mapCoordsPointed : position)}");
+
+                // Crescent changes start
+                var tileEv = new AfterPointedAtTileEvent(coordsPointed);
+                RaiseLocalEvent(player, ref tileEv);
+                // Crescent changes end
             }
 
             _pointers[session] = _gameTiming.CurTime;

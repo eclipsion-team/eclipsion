@@ -19,6 +19,7 @@ using Content.Shared.Popups;
 using Content.Shared.Verbs;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
@@ -41,8 +42,13 @@ namespace Content.Server._Crescent.NpcSquad;
 /// servants, and FactionSoldierCompound branches on it. Where the soldier may go and what it may shoot while
 /// following or defending is enforced through <see cref="TryGetLeash"/> and <see cref="IsTargetAllowed"/>.
 /// </para>
+/// <para>
+/// Defending and holding pin the soldier to one spot, <see cref="NpcSquadMemberComponent.DefendPoint"/>: it
+/// moves only to get back onto it. Formations are in NpcSquadSystem.Formation, the barricade ring in
+/// NpcSquadSystem.Fort.
+/// </para>
 /// </remarks>
-public sealed class NpcSquadSystem : EntitySystem
+public sealed partial class NpcSquadSystem : EntitySystem
 {
     [Dependency] private readonly GunSystem _gun = default!;
     [Dependency] private readonly HTNSystem _htn = default!;
@@ -64,6 +70,11 @@ public sealed class NpcSquadSystem : EntitySystem
 
     public const int MaxMembers = 6;
 
+    /// <summary>
+    /// How far a holding soldier will go to a spot its leader points out.
+    /// </summary>
+    public const float HoldMoveRange = 10f;
+
     private static readonly TimeSpan MedicClaimTime = TimeSpan.FromSeconds(3);
 
     private const string ActionProto = "ActionNpcSquadCommand";
@@ -72,6 +83,26 @@ public sealed class NpcSquadSystem : EntitySystem
     // FollowCompound's own keys, which have defaults in NPCBlackboard but no constants.
     private const string FollowRangeKey = "FollowRange";
     private const string FollowCloseRangeKey = "FollowCloseRange";
+
+    // The post a defending or holding soldier keeps to, see soldier_tactical.yml.
+    private const string DefendCoordinatesKey = "DefendCoordinates";
+    private const string DefendRangeKey = "DefendRange";
+    private const string DefendLeaveRangeKey = "DefendLeaveRange";
+
+    /// <summary>
+    /// How close to its post a soldier gets when it walks back onto it.
+    /// </summary>
+    private const float DefendArriveRange = 0.4f;
+
+    /// <summary>
+    /// How far off its post a soldier may be pushed before it walks back onto it.
+    /// </summary>
+    private const float DefendLeaveRange = 0.9f;
+
+    /// <summary>
+    /// How far from a downed leader the squad takes up posts round them.
+    /// </summary>
+    private const float LeaderDownRingRadius = 1.5f;
 
     private static readonly SpriteSpecifier RecruitIcon =
         new SpriteSpecifier.Texture(new ResPath("/Textures/Interface/VerbIcons/sentient.svg.192dpi.png"));
@@ -99,18 +130,23 @@ public sealed class NpcSquadSystem : EntitySystem
         SubscribeLocalEvent<NpcSquadLeaderComponent, ComponentShutdown>(OnLeaderShutdown);
         SubscribeLocalEvent<NpcSquadLeaderComponent, NpcSquadMenuActionEvent>(OnMenuAction);
         SubscribeLocalEvent<NpcSquadLeaderComponent, AfterPointedAtEvent>(OnLeaderPointed);
+        SubscribeLocalEvent<NpcSquadLeaderComponent, AfterPointedAtTileEvent>(OnLeaderPointedAtTile);
 
         Subs.BuiEvents<NpcSquadLeaderComponent>(NpcSquadUiKey.Key, subs =>
         {
             subs.Event<BoundUIOpenedEvent>(OnUiOpened);
             subs.Event<NpcSquadOrderMessage>(OnOrderMessage);
             subs.Event<NpcSquadDismissMessage>(OnDismissMessage);
+            subs.Event<NpcSquadFormationMessage>(OnFormationMessage);
+            subs.Event<NpcSquadBuildFortMessage>(OnBuildFortMessage);
         });
     }
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        UpdateHeadings();
 
         var now = _timing.CurTime;
         if (now < _nextUpdate)
@@ -134,6 +170,8 @@ public sealed class NpcSquadSystem : EntitySystem
         var leaders = EntityQueryEnumerator<NpcSquadLeaderComponent>();
         while (leaders.MoveNext(out var uid, out var leader))
         {
+            UpdateFort(uid, leader);
+
             if (_ui.IsUiOpen(uid, NpcSquadUiKey.Key))
                 UpdateUi(uid, leader);
         }
@@ -275,6 +313,7 @@ public sealed class NpcSquadSystem : EntitySystem
         {
             htn.Blackboard.Remove<NpcSquadOrder>(NPCBlackboard.CurrentOrders);
             htn.Blackboard.Remove<EntityCoordinates>(NPCBlackboard.FollowTarget);
+            htn.Blackboard.Remove<EntityCoordinates>(DefendCoordinatesKey);
             htn.Blackboard.Remove<EntityUid>(NPCBlackboard.CurrentOrderedTarget);
             ForceReplan(npc, htn);
         }
@@ -286,6 +325,8 @@ public sealed class NpcSquadSystem : EntitySystem
 
         if (leader.Medic == npc)
             leader.Medic = null;
+
+        ReleaseFortClaim(leader, npc);
 
         if (leader.Members.Count == 0)
         {
@@ -321,15 +362,24 @@ public sealed class NpcSquadSystem : EntitySystem
         {
             case MobState.Critical:
             {
-                // The leader is down: everyone closes in around them and holds.
+                // The leader is down: everyone takes up a post in a ring round them and holds it.
                 var acknowledged = false;
-                foreach (var npc in ent.Comp.Members.ToArray())
+                var members = ent.Comp.Members.ToArray();
+                _takenTiles.Clear();
+
+                for (var i = 0; i < members.Length; i++)
                 {
+                    var npc = members[i];
                     if (!TryComp<NpcSquadMemberComponent>(npc, out var member))
                         continue;
 
-                    member.OrderBeforeLeaderDown ??= member.Order;
-                    SetOrder(npc, member, NpcSquadOrder.Defend);
+                    if (member.OrderBeforeLeaderDown == null)
+                    {
+                        member.OrderBeforeLeaderDown = member.Order;
+                        member.DefendPointBeforeLeaderDown = member.DefendPoint;
+                    }
+
+                    SetOrder(npc, member, NpcSquadOrder.Defend, GetRingPost(ent, i, members.Length));
 
                     if (!acknowledged)
                         acknowledged = _tactical.TryCallout(npc, NpcCalloutType.Acknowledge, force: true);
@@ -349,8 +399,10 @@ public sealed class NpcSquadSystem : EntitySystem
                         continue;
                     }
 
+                    var previousPost = member.DefendPointBeforeLeaderDown;
                     member.OrderBeforeLeaderDown = null;
-                    SetOrder(npc, member, previous);
+                    member.DefendPointBeforeLeaderDown = null;
+                    SetOrder(npc, member, previous, previousPost);
 
                     if (!acknowledged)
                         acknowledged = _tactical.TryCallout(npc, NpcCalloutType.Acknowledge, force: true);
@@ -403,8 +455,15 @@ public sealed class NpcSquadSystem : EntitySystem
     {
         var target = args.Pointed;
 
-        if (target == ent.Owner || !HasComp<MobStateComponent>(target) || !_mobState.IsAlive(target))
+        if (target == ent.Owner)
             return;
+
+        // Not someone to shoot: somewhere to go, for whoever is holding.
+        if (!HasComp<MobStateComponent>(target) || !_mobState.IsAlive(target))
+        {
+            MoveHoldersTo(ent, Transform(target).Coordinates);
+            return;
+        }
 
         // Pointing out one of its own squad turns the rest on them: it is out of the squad first, so it no
         // longer counts as their squadmate.
@@ -455,6 +514,88 @@ public sealed class NpcSquadSystem : EntitySystem
             _popup.PopupEntity(Loc.GetString("npc-squad-focus", ("target", target)), ent, ent, PopupType.Small);
     }
 
+    private void OnLeaderPointedAtTile(Entity<NpcSquadLeaderComponent> ent, ref AfterPointedAtTileEvent args)
+    {
+        MoveHoldersTo(ent, args.Coordinates);
+    }
+
+    /// <summary>
+    /// Sends every squadmate holding within <see cref="HoldMoveRange"/> of <paramref name="coords"/> over to it,
+    /// to hold there instead. The nearest gets the spot itself and the rest spread over the floor round it
+    /// rather than pile onto the one tile.
+    /// </summary>
+    /// <returns>How many went.</returns>
+    public int MoveHoldersTo(Entity<NpcSquadLeaderComponent> ent, EntityCoordinates coords)
+    {
+        if (!_mobState.IsAlive(ent) ||
+            _transform.GetGrid(coords) is not { } gridUid ||
+            !TryComp<MapGridComponent>(gridUid, out var grid))
+        {
+            return 0;
+        }
+
+        var target = _transform.ToMapCoordinates(coords);
+        var movers = new List<(float Distance, EntityUid Npc, NpcSquadMemberComponent Member)>();
+        var anyHolding = false;
+
+        _takenTiles.Clear();
+
+        foreach (var npc in ent.Comp.Members)
+        {
+            if (!TryComp<NpcSquadMemberComponent>(npc, out var member) || !_mobState.IsAlive(npc))
+                continue;
+
+            var holding = member.Order == NpcSquadOrder.HoldFire;
+            anyHolding |= holding;
+
+            var pos = _transform.GetMapCoordinates(npc);
+            var distance = pos.MapId == target.MapId ? (pos.Position - target.Position).Length() : float.MaxValue;
+
+            if (holding && distance <= HoldMoveRange)
+            {
+                movers.Add((distance, npc, member));
+                continue;
+            }
+
+            // Whoever stays put keeps their spot.
+            if (member.DefendPoint is { } post && _transform.GetGrid(post) == gridUid)
+                _takenTiles.Add(_map.TileIndicesFor(gridUid, grid, post));
+        }
+
+        if (movers.Count == 0)
+        {
+            if (anyHolding)
+                _popup.PopupEntity(Loc.GetString("npc-squad-hold-move-too-far", ("range", (int) HoldMoveRange)), ent, ent, PopupType.SmallCaution);
+
+            return 0;
+        }
+
+        movers.Sort((a, b) => a.Distance.CompareTo(b.Distance));
+
+        var moved = 0;
+        var acknowledged = false;
+
+        foreach (var (_, npc, member) in movers)
+        {
+            if (!_tactical.TryFindStandableNear(gridUid, target, 2, _takenTiles, out var spot, out var tile))
+                continue;
+
+            _takenTiles.Add(tile);
+            member.OrderBeforeLeaderDown = null;
+            member.DefendPointBeforeLeaderDown = null;
+            SetOrder(npc, member, NpcSquadOrder.HoldFire, spot);
+            moved++;
+
+            if (!acknowledged)
+                acknowledged = _tactical.TryCallout(npc, NpcCalloutType.Acknowledge, force: true);
+        }
+
+        if (moved > 0)
+            _popup.PopupEntity(Loc.GetString("npc-squad-hold-move"), ent, ent, PopupType.Small);
+
+        return moved;
+    }
+
     #endregion
 
     #region Orders
@@ -462,7 +603,11 @@ public sealed class NpcSquadSystem : EntitySystem
     /// <summary>
     /// Gives an order to one squad member.
     /// </summary>
-    public void SetOrder(EntityUid npc, NpcSquadMemberComponent member, NpcSquadOrder order)
+    /// <param name="post">
+    /// For <see cref="NpcSquadOrder.Defend"/> and <see cref="NpcSquadOrder.HoldFire"/>, the spot to hold.
+    /// Where the NPC stands now if not given.
+    /// </param>
+    public void SetOrder(EntityUid npc, NpcSquadMemberComponent member, NpcSquadOrder order, EntityCoordinates? post = null)
     {
         member.Order = order;
         member.DefendPoint = null;
@@ -472,15 +617,23 @@ public sealed class NpcSquadSystem : EntitySystem
 
         var blackboard = htn.Blackboard;
         blackboard.SetValue(NPCBlackboard.CurrentOrders, order);
+        blackboard.Remove<EntityCoordinates>(DefendCoordinatesKey);
 
         switch (order)
         {
             case NpcSquadOrder.Defend:
-                // Grid-relative, so the post stays put when the leader walks off.
-                member.DefendPoint = _transform.GetMoverCoordinates(member.Leader);
+            case NpcSquadOrder.HoldFire:
+                // Grid-relative, so the post stays put whoever walks off.
+                member.DefendPoint = post is { } given && given.IsValid(EntityManager)
+                    ? given
+                    : _transform.GetMoverCoordinates(npc);
+
+                blackboard.SetValue(DefendCoordinatesKey, member.DefendPoint.Value);
+                blackboard.SetValue(DefendRangeKey, DefendArriveRange);
+                blackboard.SetValue(DefendLeaveRangeKey, DefendLeaveRange);
                 blackboard.SetValue(NPCBlackboard.FollowTarget, member.DefendPoint.Value);
-                blackboard.SetValue(FollowRangeKey, 2.5f);
-                blackboard.SetValue(FollowCloseRangeKey, 1.5f);
+                blackboard.SetValue(FollowRangeKey, DefendLeaveRange);
+                blackboard.SetValue(FollowCloseRangeKey, DefendArriveRange);
                 break;
             default:
                 blackboard.SetValue(NPCBlackboard.FollowTarget, new EntityCoordinates(member.Leader, Vector2.Zero));
@@ -499,11 +652,8 @@ public sealed class NpcSquadSystem : EntitySystem
     }
 
     /// <summary>
-    /// Throws away whatever the NPC was doing so the new order takes effect now rather than whenever its
-    /// current task happens to end.
-    /// </summary>
-    /// <summary>
-    /// Drops whatever the NPC is doing and has it plan again from scratch.
+    /// Throws away whatever the NPC was doing so a new order - or a new target - takes effect now rather than
+    /// whenever its current task happens to end.
     /// </summary>
     public void ForceReplan(EntityUid npc, HTNComponent? htn = null)
     {
@@ -538,6 +688,7 @@ public sealed class NpcSquadSystem : EntitySystem
 
             // A fresh order from the leader replaces whatever the squad would have gone back to.
             member.OrderBeforeLeaderDown = null;
+            member.DefendPointBeforeLeaderDown = null;
             SetOrder(npc, member, args.Order);
 
             if (!acknowledged)
@@ -765,6 +916,16 @@ public sealed class NpcSquadSystem : EntitySystem
         return TryComp<NpcSquadMemberComponent>(npc, out var member) ? member.Order : null;
     }
 
+    /// <summary>
+    /// Whether this NPC is pinned to a post: defending or holding, so it fights from where it stands.
+    /// </summary>
+    public bool IsHoldingPost(EntityUid npc)
+    {
+        return TryComp<NpcSquadMemberComponent>(npc, out var member) &&
+               member.Order is NpcSquadOrder.Defend or NpcSquadOrder.HoldFire &&
+               member.DefendPoint != null;
+    }
+
     #endregion
 
     #region UI
@@ -813,7 +974,7 @@ public sealed class NpcSquadSystem : EntitySystem
             states.Add(state);
         }
 
-        _ui.SetUiState(leaderUid, NpcSquadUiKey.Key, new NpcSquadBuiState(states, MaxMembers));
+        _ui.SetUiState(leaderUid, NpcSquadUiKey.Key, new NpcSquadBuiState(states, MaxMembers, leader.Formation));
     }
 
     #endregion

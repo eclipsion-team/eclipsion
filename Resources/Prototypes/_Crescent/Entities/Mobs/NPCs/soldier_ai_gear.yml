@@ -282,12 +282,14 @@
   - WeaponLightMachineGunMG42
 
 # Colonial Minutemen
+#
+# Armed only with what their own rack issues: the Nimrod, the MP5 and a shotgun. No machinegunner.
 
 - type: startingGear
   id: SoldierAIGearCMM
   equipment:
     jumpsuit: ClothingUniformJumpsuitCMM
-    outerClothing: ClothingOuterHardsuitMidshipman
+    outerClothing: ClothingOuterHardsuitMidshipmanSoldierAI
     head: ClothingHeadHelmetHardsuitMidshipman
     mask: ClothingMaskGas
     gloves: ClothingHandsGlovesCombat
@@ -305,7 +307,7 @@
   subGear:
   - SoldierAIGearCMM
   inhand:
-  - WeaponRifleCarter
+  - WeaponRifleCMMNimrod
 
 - type: startingGear
   id: SoldierAIGearCMMShock
@@ -328,20 +330,13 @@
   inhand:
   - WeaponRifleCMMNimrod
 
-- type: startingGear
-  id: SoldierAIGearCMMGunner
-  subGear:
-  - SoldierAIGearCMM
-  inhand:
-  - WeaponLightMachineGunWashington
-
 # Saint's Militia
 
 - type: startingGear
   id: SoldierAIGearSRM
   equipment:
     jumpsuit: ClothingUniformJumpsuitHunter
-    outerClothing: ClothingOuterHardsuitHunter
+    outerClothing: ClothingOuterHardsuitHunterSoldierAI
     head: ClothingHeadHelmetHardsuitHunter
     mask: ClothingMaskImperialCombatGasmask
     gloves: ClothingHandsGlovesHunter
@@ -405,6 +400,28 @@
       moles:
       - 8.205516200 # oxygen
       temperature: 293.15
+
+# Every hardsuit off ClothingOuterHardsuitBase puts its wearer in IND unless it names a faction of its own, and
+# the Midshipman and the Hunter suits don't. That made the Minutemen and the Hunters share IND, and a shared
+# faction reads as friendly - so the hunt never fired on a Minuteman, and neither side fired on independents.
+# These suits name the wearer's own side instead, which it already has, so they add nothing. The player suits
+# are left alone: the Midshipman is also a militia and sektorpol suit.
+
+- type: entity
+  parent: ClothingOuterHardsuitMidshipman
+  id: ClothingOuterHardsuitMidshipmanSoldierAI
+  suffix: Soldier AI
+  components:
+  - type: ClothingAddFaction
+    faction: CMM
+
+- type: entity
+  parent: ClothingOuterHardsuitHunter
+  id: ClothingOuterHardsuitHunterSoldierAI
+  suffix: Soldier AI
+  components:
+  - type: ClothingAddFaction
+    faction: SRM
 
 # The rig is filled by the entity rather than listed as startingGear storage: the role gears pull the
 # faction gear in as subGear, and merging subGear storage into a gear that has none of its own throws.

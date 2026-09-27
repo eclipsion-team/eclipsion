@@ -274,6 +274,15 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
                 }
             }
 
+            // A track that ends on its own deletes its stream entity but leaves the uid in
+            // AudioStream. Networking that dead uid makes every PVS state send for this jukebox
+            // log a "Can't resolve MetaDataComponent" error with a full stack trace, so drop it.
+            if (comp.AudioStream != null && !Exists(comp.AudioStream))
+            {
+                comp.AudioStream = null;
+                Dirty(uid, comp);
+            }
+
             // The stream entity is removed once a track finishes playing. A paused
             // track still exists, so this only fires on a natural end (or stop, but
             // stopping clears QueueActive so we won't restart).

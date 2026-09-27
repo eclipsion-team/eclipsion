@@ -1776,7 +1776,8 @@ namespace Content.Client.Lobby.UI
 
             var borgNames = _prototypeManager.Index<DatasetPrototype>(CyborgNames);
             var randomName = _random.Pick(borgNames.Values);
-            CyborgNameEdit.PlaceHolder = Loc.GetString(randomName);
+            // Plain DatasetPrototype values are literal names, not locale ids.
+            CyborgNameEdit.PlaceHolder = randomName;
         }
 
         private void UpdateSpawnPriorityControls()

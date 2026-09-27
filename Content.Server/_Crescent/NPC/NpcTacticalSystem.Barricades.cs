@@ -1,10 +1,12 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using Content.Server._Crescent.NpcSquad;
 using Content.Server.Popups;
 using Content.Shared._Crescent.Barricades;
 using Content.Shared._Crescent.NpcSquad;
 using Content.Shared.DoAfter;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Physics;
 using Content.Shared.Stacks;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -70,7 +72,10 @@ public sealed partial class NpcTacticalSystem
                TryGetDamageFraction(leader, out var fraction) && fraction >= comp.LeaderFortifyThreshold;
     }
 
-    private bool TryGetNearestThreat(EntityUid npc, float vision, out EntityUid threat)
+    /// <summary>
+    /// The nearest living enemy this NPC would go after within <paramref name="vision"/>.
+    /// </summary>
+    public bool TryGetNearestThreat(EntityUid npc, float vision, out EntityUid threat)
     {
         threat = EntityUid.Invalid;
         var ownPos = _transform.GetMapCoordinates(npc).Position;
@@ -110,7 +115,9 @@ public sealed partial class NpcTacticalSystem
             return false;
         }
 
-        var ringLeader = IsLeaderInTrouble(leader, comp);
+        // Holding a post, it only leaves it to ring in a leader who is actually down.
+        var ringLeader = IsLeaderInTrouble(leader, comp) &&
+                         (_squad.GetOrder(npc) != NpcSquadOrder.Defend || _mobState.IsCritical(leader));
         var anchor = ringLeader ? leader : npc;
         var anchorXform = Transform(anchor);
 
@@ -243,7 +250,9 @@ public sealed partial class NpcTacticalSystem
     /// <summary>
     /// Starts putting up a barricade at <paramref name="spot"/>. The NPC has to stand still until it's done.
     /// </summary>
-    public bool TryStartBarricade(EntityUid npc, EntityCoordinates spot, Angle rotation, NpcTacticalComponent? comp = null)
+    /// <param name="fort">Whether it is one edge of the squad's barricade ring, see <see cref="NpcSquadSystem"/>.</param>
+    public bool TryStartBarricade(EntityUid npc, EntityCoordinates spot, Angle rotation, bool fort = false,
+        NpcTacticalComponent? comp = null)
     {
         if (!Resolve(npc, ref comp, false))
             return false;
@@ -253,6 +262,7 @@ public sealed partial class NpcTacticalSystem
 
         comp.PendingBarricade = spot;
         comp.PendingBarricadeRotation = rotation;
+        comp.PendingBarricadeFort = fort;
         comp.BarricadeFinished = false;
 
         var args = new DoAfterArgs(EntityManager, npc, comp.BarricadeBuildTime, new NpcBuildBarricadeDoAfterEvent(), npc)
@@ -281,9 +291,15 @@ public sealed partial class NpcTacticalSystem
 
         // Interrupted: back off for a bit rather than restarting on the very next plan.
         if (!comp.BarricadeFinished && comp.PendingBarricade != null)
+        {
             comp.NextBarricade = _timing.CurTime + TimeSpan.FromSeconds(5);
 
+            if (comp.PendingBarricadeFort)
+                _squad.ReportFortFailure(npc);
+        }
+
         comp.PendingBarricade = null;
+        comp.PendingBarricadeFort = false;
     }
 
     public bool IsBarricadeFinished(EntityUid npc, NpcTacticalComponent? comp = null)
@@ -303,13 +319,23 @@ public sealed partial class NpcTacticalSystem
 
         // Someone may have walked onto it, or built on it, while the NPC worked.
         var tile = _map.TileIndicesFor(gridUid, grid, spot);
-        if (!IsStandable(gridUid, grid, tile))
-            return;
 
-        foreach (var mob in _lookup.GetEntitiesInRange<MobStateComponent>(_transform.ToMapCoordinates(spot), 0.4f))
+        if (ent.Comp.PendingBarricadeFort)
         {
-            if (_mobState.IsAlive(mob))
+            if (!CanBuildFortBarricade(gridUid, grid, tile, ToGridDirection(ent.Comp.PendingBarricadeRotation), checkMobs: true))
                 return;
+        }
+        else
+        {
+            _layerCache.Clear();
+            if (!IsStandable(gridUid, grid, tile))
+                return;
+
+            foreach (var mob in _lookup.GetEntitiesInRange<MobStateComponent>(_transform.ToMapCoordinates(spot), 0.4f))
+            {
+                if (_mobState.IsAlive(mob))
+                    return;
+            }
         }
 
         if (!ConsumeMaterial(ent, ent.Comp.BarricadeStackType, ent.Comp.BarricadeCost))
@@ -323,6 +349,160 @@ public sealed partial class NpcTacticalSystem
 
         _popup.PopupEntity(Loc.GetString("npc-soldier-barricade-built", ("npc", ent.Owner)), barricade);
     }
+
+    #region Barricade ring
+
+    /// <summary>
+    /// How close to the edge a barricade goes on someone has to stand to be in the way of it.
+    /// </summary>
+    private const float FortEdgeClearance = 0.4f;
+
+    /// <summary>
+    /// Whether a ring barricade facing <paramref name="facing"/> can go on <paramref name="indices"/>: floor,
+    /// no wall or window on it, and not already one facing that way. The tile may hold a barricade facing
+    /// another way - the corners of the ring take two. With <paramref name="checkMobs"/>, also that nobody
+    /// stands on that edge of the tile.
+    /// </summary>
+    public bool CanBuildFortBarricade(EntityUid gridUid, MapGridComponent grid, Vector2i indices, Vector2i facing,
+        bool checkMobs = false)
+    {
+        if (!IsFloorClear(gridUid, grid, indices) || HasFortBarricade(gridUid, grid, indices, facing))
+            return false;
+
+        if (!checkMobs)
+            return true;
+
+        var edge = TileCentre(grid, indices) + new Vector2(facing.X, facing.Y) * 0.4f;
+        var edgeMap = _transform.ToMapCoordinates(new EntityCoordinates(gridUid, edge));
+
+        // By where they stand, not by their outline: whoever builds it stands right by it.
+        foreach (var mob in _lookup.GetEntitiesInRange<MobStateComponent>(edgeMap, FortEdgeClearance + 0.5f))
+        {
+            if (!_mobState.IsAlive(mob))
+                continue;
+
+            var at = _transform.GetMapCoordinates(mob);
+            if ((at.Position - edgeMap.Position).Length() <= FortEdgeClearance)
+                return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Whether there is a barricade on <paramref name="indices"/> facing <paramref name="facing"/> already.
+    /// </summary>
+    public bool HasFortBarricade(EntityUid gridUid, MapGridComponent grid, Vector2i indices, Vector2i facing)
+    {
+        var enumerator = _map.GetAnchoredEntitiesEnumerator(gridUid, grid, indices);
+        while (enumerator.MoveNext(out var anchored))
+        {
+            if (_barricadeQuery.HasComp(anchored.Value) && FacesExactly(anchored.Value, facing))
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool FacesExactly(EntityUid barricade, Vector2i facing)
+    {
+        var vec = Transform(barricade).LocalRotation.ToWorldVec();
+        return Vector2.Dot(vec, new Vector2(facing.X, facing.Y)) >= 0.9f;
+    }
+
+    private static Vector2i ToGridDirection(Angle rotation)
+    {
+        var vec = rotation.ToWorldVec();
+        return MathF.Abs(vec.X) >= MathF.Abs(vec.Y)
+            ? new Vector2i(MathF.Sign(vec.X), 0)
+            : new Vector2i(0, MathF.Sign(vec.Y));
+    }
+
+    /// <summary>
+    /// Whether a soldier could stand at <paramref name="coords"/> on <paramref name="gridUid"/>: floor with
+    /// nothing solid on it.
+    /// </summary>
+    public bool IsStandableAt(EntityUid gridUid, MapCoordinates coords)
+    {
+        if (!TryComp<MapGridComponent>(gridUid, out var grid))
+            return false;
+
+        _layerCache.Clear();
+        return IsStandable(gridUid, grid, WorldToTile(gridUid, grid, coords.Position));
+    }
+
+    /// <summary>
+    /// The standable tile nearest <paramref name="desired"/> within <paramref name="radius"/> tiles of it,
+    /// skipping <paramref name="taken"/>.
+    /// </summary>
+    public bool TryFindStandableNear(EntityUid gridUid, MapCoordinates desired, int radius, ICollection<Vector2i> taken,
+        [NotNullWhen(true)] out EntityCoordinates? spot, out Vector2i chosen)
+    {
+        spot = null;
+        chosen = default;
+
+        if (!TryComp<MapGridComponent>(gridUid, out var grid))
+            return false;
+
+        var local = Vector2.Transform(desired.Position, _transform.GetInvWorldMatrix(gridUid));
+        var origin = WorldToTile(gridUid, grid, desired.Position);
+        var best = float.MaxValue;
+
+        _layerCache.Clear();
+
+        for (var x = -radius; x <= radius; x++)
+        {
+            for (var y = -radius; y <= radius; y++)
+            {
+                var indices = origin + new Vector2i(x, y);
+                if (taken.Contains(indices) || !IsStandable(gridUid, grid, indices))
+                    continue;
+
+                var distance = (TileCentre(grid, indices) - local).LengthSquared();
+                if (distance >= best)
+                    continue;
+
+                best = distance;
+                chosen = indices;
+            }
+        }
+
+        if (best == float.MaxValue)
+            return false;
+
+        spot = _map.GridTileToLocal(gridUid, grid, chosen);
+        return true;
+    }
+
+    /// <summary>
+    /// Floor with no wall, window or shut door on it. Barricades and the like don't count, so this is the
+    /// test for somewhere to stand inside the ring.
+    /// </summary>
+    public bool IsFloorClear(EntityUid gridUid, MapGridComponent grid, Vector2i indices)
+    {
+        if (!_map.TryGetTileRef(gridUid, grid, indices, out var tile) || tile.Tile.IsEmpty)
+            return false;
+
+        var enumerator = _map.GetAnchoredEntitiesEnumerator(gridUid, grid, indices);
+        while (enumerator.MoveNext(out var anchored))
+        {
+            if (_physicsQuery.TryComp(anchored.Value, out var body) && body.CanCollide && body.Hard &&
+                (body.CollisionLayer & (int) CollisionGroup.Impassable) != 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private Vector2i WorldToTile(EntityUid gridUid, MapGridComponent grid, Vector2 world)
+    {
+        var local = Vector2.Transform(world, _transform.GetInvWorldMatrix(gridUid));
+        return new Vector2i((int) MathF.Floor(local.X / grid.TileSize), (int) MathF.Floor(local.Y / grid.TileSize));
+    }
+
+    #endregion
 
     /// <summary>
     /// How much of a stack type the NPC carries in total.

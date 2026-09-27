@@ -20,7 +20,7 @@ public enum NpcSquadOrder : byte
     Follow,
 
     /// <summary>
-    /// Dig in where the leader stood when the order was given and hold that ground.
+    /// Dig in on the spot it stands on when the order is given and fight from there, without moving off it.
     /// </summary>
     Defend,
 
@@ -33,6 +33,48 @@ public enum NpcSquadOrder : byte
     /// Stand still where it is and don't start anything.
     /// </summary>
     HoldFire,
+
+    /// <summary>
+    /// Put up a ring of barricades round the leader, see <see cref="NpcSquadBuildFortMessage"/>. Each soldier
+    /// goes over to defending inside it once there is nothing left for it to build.
+    /// </summary>
+    Fortify,
+}
+
+/// <summary>
+/// Crescent: how a squad lines up on its leader while following. Loose is the old behaviour - stay near the
+/// leader and mill about - the rest give every soldier a slot of its own relative to the way the leader is
+/// heading.
+/// </summary>
+[Serializable, NetSerializable]
+public enum NpcSquadFormation : byte
+{
+    Loose,
+
+    /// <summary>
+    /// Single file behind the leader.
+    /// </summary>
+    Column,
+
+    /// <summary>
+    /// Two files behind the leader, one each side.
+    /// </summary>
+    Staggered,
+
+    /// <summary>
+    /// Abreast of the leader, spreading out to both sides.
+    /// </summary>
+    Line,
+
+    /// <summary>
+    /// A V opening backwards from the leader at its tip.
+    /// </summary>
+    Wedge,
+
+    /// <summary>
+    /// A ring around the leader, every way covered.
+    /// </summary>
+    Circle,
 }
 
 [Serializable, NetSerializable]
@@ -86,13 +128,35 @@ public sealed class NpcSquadBuiState : BoundUserInterfaceState
 {
     public readonly List<NpcSquadMemberState> Members;
     public readonly int MaxMembers;
+    public readonly NpcSquadFormation Formation;
 
-    public NpcSquadBuiState(List<NpcSquadMemberState> members, int maxMembers)
+    public NpcSquadBuiState(List<NpcSquadMemberState> members, int maxMembers, NpcSquadFormation formation)
     {
         Members = members;
         MaxMembers = maxMembers;
+        Formation = formation;
     }
 }
+
+/// <summary>
+/// Changes the formation the squad keeps while following.
+/// </summary>
+[Serializable, NetSerializable]
+public sealed class NpcSquadFormationMessage : BoundUserInterfaceMessage
+{
+    public readonly NpcSquadFormation Formation;
+
+    public NpcSquadFormationMessage(NpcSquadFormation formation)
+    {
+        Formation = formation;
+    }
+}
+
+/// <summary>
+/// Has the whole squad barricade in a 3x3 square round the leader, leaving one way in.
+/// </summary>
+[Serializable, NetSerializable]
+public sealed class NpcSquadBuildFortMessage : BoundUserInterfaceMessage;
 
 /// <summary>
 /// Gives an order to one member, or to the whole squad when <see cref="Member"/> is null.

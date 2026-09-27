@@ -512,6 +512,10 @@ public sealed partial class NpcTacticalSystem : EntitySystem
             return true;
         }
 
+        // Holding a post: this is the spot, however long it has been here.
+        if (_squad.IsHoldingPost(uid))
+            return false;
+
         // Wandered too far from the squad while chasing a good angle.
         if (_squad.TryGetLeash(uid, out var centre, out var range))
         {
