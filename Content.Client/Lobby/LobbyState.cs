@@ -1,3 +1,4 @@
+using Content.Client._Crescent.Lobby;
 using Content.Client._NF.Latejoin;
 using Content.Client.Audio;
 using Content.Client.GameTicking.Managers;
@@ -34,6 +35,9 @@ namespace Content.Client.Lobby
         /// The late-join window, while one is open. Pressing join again focuses it instead of stacking another.
         private NFLateJoinGui? _lateJoin;
 
+        // Eclipsion - the lobby notes window, while one is open.
+        private LobbyNotesWindow? _notes;
+
         protected override Type? LinkedScreenType { get; } = typeof(LobbyGui);
         public LobbyGui? Lobby;
 
@@ -63,6 +67,7 @@ namespace Content.Client.Lobby
             Lobby.ManifestButton.OnPressed += OnManifestPressed;
             Lobby.ReadyButton.OnPressed += OnReadyPressed;
             Lobby.ReadyButton.OnToggled += OnReadyToggled;
+            Lobby.NotesButton.OnPressed += OnNotesPressed;
 
             _gameTicker.InfoBlobUpdated += UpdateLobbyUi;
             _gameTicker.LobbyStatusUpdated += LobbyStatusUpdated;
@@ -84,10 +89,15 @@ namespace Content.Client.Lobby
             Lobby!.ManifestButton.OnPressed -= OnManifestPressed;
             Lobby!.ReadyButton.OnPressed -= OnReadyPressed;
             Lobby!.ReadyButton.OnToggled -= OnReadyToggled;
+            Lobby!.NotesButton.OnPressed -= OnNotesPressed;
 
             // Leaving the lobby (joining or observing) should not leave the join window floating over the game.
             _lateJoin?.Close();
             _lateJoin = null;
+
+            // Closing saves, so nothing typed right before the round starts is lost.
+            _notes?.Close();
+            _notes = null;
 
             Lobby = null;
         }
@@ -120,6 +130,19 @@ namespace Content.Client.Lobby
             _lateJoin = new NFLateJoinGui();
             _lateJoin.OnClose += () => _lateJoin = null;
             _lateJoin.OpenCentered();
+        }
+
+        private void OnNotesPressed(BaseButton.ButtonEventArgs args)
+        {
+            if (_notes is { Disposed: false, IsOpen: true })
+            {
+                _notes.Close();
+                return;
+            }
+
+            _notes = new LobbyNotesWindow();
+            _notes.OnClose += () => _notes = null;
+            _notes.OpenCentered();
         }
 
         private void OnReadyToggled(BaseButton.ButtonToggledEventArgs args)
