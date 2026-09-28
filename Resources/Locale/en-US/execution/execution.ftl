@@ -16,6 +16,7 @@ execution-popup-gun-initial-external = {$attacker} readies {POSS-ADJ($attacker)}
 execution-popup-gun-complete-internal = You blow {$victim}'s brains out with {THE($weapon)}!
 execution-popup-gun-complete-external = {$attacker} blows {$victim}'s brains out with {POSS-ADJ($attacker)} {$weapon}!
 execution-popup-gun-empty = {CAPITALIZE(THE($weapon))} clicks empty.
+execution-popup-gun-cannot-fire = You can't fire {THE($weapon)} like this!
 
 execution-popup-self-initial-internal = You ready {THE($weapon)} against your own throat.
 execution-popup-self-initial-external = {$attacker} readies {POSS-ADJ($attacker)} {$weapon} against their own throat.

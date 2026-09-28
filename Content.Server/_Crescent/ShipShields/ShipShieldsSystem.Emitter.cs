@@ -34,6 +34,29 @@ public partial class ShipShieldsSystem
         SubscribeLocalEvent<ShipShieldEmitterComponent, ExaminedEvent>(OnExamined);
         SubscribeLocalEvent<ShipShieldEmitterComponent, ComponentShutdown>(OnEmitterShutdown);
 		SubscribeLocalEvent<ShipShieldEmitterComponent, ComponentStartup>(OnEmitterStartup); // Rat
+        SubscribeLocalEvent<ShipShieldComponent, ComponentShutdown>(OnShieldShutdown);
+    }
+
+    /// <summary>
+    /// Emitter.Shield is networked, so it must never outlive the shield entity: PVS would try to resolve the
+    /// deleted uid every time the emitter is dirtied. A shield can go without the emitter's involvement - most
+    /// often its grid being deleted after the emitter has ended up on another grid (split, moved) - so clear
+    /// the reference from the shield's side.
+    /// </summary>
+    private void OnShieldShutdown(Entity<ShipShieldComponent> shield, ref ComponentShutdown args)
+    {
+        if (shield.Comp.Source is not { } source
+            || !TryComp<ShipShieldEmitterComponent>(source, out var emitter)
+            || emitter.Shield != shield.Owner)
+        {
+            return;
+        }
+
+        emitter.Shield = null;
+        emitter.Shielded = null;
+
+        if (!TerminatingOrDeleted(source))
+            Dirty(source, emitter);
     }
 
     // Rat-start
@@ -183,12 +206,8 @@ public partial class ShipShieldsSystem
 
         emitter.ForcedDisabled = disabled;
 
-        if (disabled && emitter.Shielded is { } shielded)
-        {
-            UnshieldEntity(shielded);
-            emitter.Shield = null;
-            emitter.Shielded = null;
-        }
+        if (disabled)
+            RemoveEmitterShield(uid, emitter);
 
         Dirty(uid, emitter);
         return true;

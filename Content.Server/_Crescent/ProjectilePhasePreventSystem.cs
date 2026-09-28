@@ -323,7 +323,18 @@ public sealed class ProjectilePhasePreventerSystem : EntitySystem
         if (target == gridUid)
             DamageTargetedTile(uid, projectile, gridUid, grid, tile);
 
-        _projectile.ProjectileCollide((uid, projectile, physics), target);
+        // Breaking a debris chunk's last tile deletes the grid. Colliding with it then threw from every
+        // ProjectileHitEvent handler that reads the target's transform, aborting this whole update for the tick.
+        if (!TerminatingOrDeleted(target))
+        {
+            _projectile.ProjectileCollide((uid, projectile, physics), target);
+        }
+        else
+        {
+            projectile.DamagedEntity = true;
+            if (projectile.DeleteOnCollide)
+                QueueDel(uid);
+        }
         if (HasComp<TriggerOnCollideComponent>(uid))
             _triggers.Trigger(uid, projectile.Shooter);
 

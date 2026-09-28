@@ -830,8 +830,12 @@ internal sealed partial class PowerMonitoringConsoleSystem : SharedPowerMonitori
 
     private void UpdateCollectionChildMetaData(EntityUid child, EntityUid master)
     {
+        // A collection can still list a child deleted earlier in the same node group rebuild. Throwing here
+        // aborted NodeGroupSystem's whole update, leaving the remaining power networks unprocessed.
+        if (!TryComp(child, out TransformComponent? xform))
+            return;
+
         var netEntity = EntityManager.GetNetEntity(child);
-        var xform = Transform(child);
 
         var query = AllEntityQuery<PowerMonitoringConsoleComponent, TransformComponent>();
         while (query.MoveNext(out var ent, out var entConsole, out var entXform))

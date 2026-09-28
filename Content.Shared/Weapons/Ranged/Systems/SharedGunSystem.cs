@@ -1062,6 +1062,12 @@ public abstract partial class SharedGunSystem : EntitySystem
         if (_netManager.IsClient && HasComp<PredictedProjectileServerComponent>(projectile))
             return;
 
+        // The client's filtered PlayEntity has no prediction guard of its own. A predicted collision is re-run on
+        // every frame until the server confirms it, so each re-run started another sound - in a firefight that
+        // exhausts OpenAL's sources ("AL error: OutOfMemory") and freezes or kills the client.
+        if (_netManager.IsClient && !Timing.IsFirstTimePredicted)
+            return;
+
         filter ??= Filter.Pvs(otherEntity);
         var playedSound = false;
 

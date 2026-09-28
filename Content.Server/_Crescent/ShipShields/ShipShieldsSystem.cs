@@ -109,8 +109,13 @@ public sealed partial class ShipShieldsSystem : EntitySystem
             if (parent == null)
             {
                 RemoveEmitterShield(uid, emitter);
+                Dirty(uid, emitter);
                 continue;
             }
+
+            // The emitter ended up on another grid (split, moved) - its shield is still wrapped around the old one.
+            if (emitter.Shielded is { } shielded && shielded != parent.Value)
+                RemoveEmitterShield(uid, emitter);
 
             // filter is needed to play the power down / power up noise for ONLY those on the ship grid
             var filter = _station.GetInOwningStation(uid);
@@ -139,18 +144,14 @@ public sealed partial class ShipShieldsSystem : EntitySystem
             else if (emitter.OverloadAccumulator > 0 && emitter.Shield is not null)
             {
                 emitter.Recharging = true; //boost hp recharge when it's down
-                UnshieldEntity(parent.Value);
-                emitter.Shield = null;
-                emitter.Shielded = null;
+                RemoveEmitterShield(uid, emitter);
                 _audio.PlayGlobal(emitter.PowerDownSound, filter, true, emitter.PowerUpSound.Params);
             }
 
             if (!power.Powered && emitter.Shield is not null) // if shield is depowered then unshield the ship
             {
                 emitter.Recharging = true; //boost hp recharge when it's down
-                UnshieldEntity(parent.Value);
-                emitter.Shield = null;
-                emitter.Shielded = null;
+                RemoveEmitterShield(uid, emitter);
                 _audio.PlayGlobal(emitter.PowerDownSound, filter, true, emitter.PowerUpSound.Params);
             }
 

@@ -72,7 +72,9 @@ public sealed class KillTrackingSystem : EntitySystem
             if (largestSource is not KillEnvironmentSource)
             {
                 // you have to do at least 50% of largest source's damage to get the assist.
-                if (component.LifetimeDamage[largestSource] >= component.LifetimeDamage[killSource] / 2)
+                // The mob state changes from inside the same DamageChangedEvent this system records damage from,
+                // and that handler may not have run yet - the finishing blow's source can still be missing.
+                if (component.LifetimeDamage[largestSource] >= component.LifetimeDamage.GetValueOrDefault(killSource) / 2)
                 {
                     assistSource = largestSource;
                 }

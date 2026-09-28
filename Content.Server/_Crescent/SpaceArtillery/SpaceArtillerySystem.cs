@@ -442,8 +442,10 @@ public sealed partial class SpaceArtillerySystem : EntitySystem
 
     private void OnProjectileHit(EntityUid uid, ShipWeaponProjectileComponent component, ProjectileHitEvent hitEvent)
     {
+        if (!TryComp(hitEvent.Target, out TransformComponent? targetXform))
+            return;
 
-        var grid = Transform(hitEvent.Target).GridUid;
+        var grid = targetXform.GridUid;
         if (grid == null)
             return;
 

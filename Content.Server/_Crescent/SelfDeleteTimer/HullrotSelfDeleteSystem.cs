@@ -63,6 +63,11 @@ public sealed class HullrotSelfDeleteSystem : EntitySystem
     {
         if (uid == EntityUid.Invalid)
             return;
+        // Deleting an entity detaches it to nullspace, which lands here with no grid. Round restart and every
+        // destroyed ship queued a cleanup for each deleted item, and they all came due in the same frame two
+        // minutes later (tens of thousands of events, "safety limit" warnings and a server hitch).
+        if (component.CleanupPending || TerminatingOrDeleted(uid))
+            return;
         if (_gameTicker.RoundDuration() < _roundstartDelayBeforeSystemActivates) //salvage items spawn in space and are not parented to their grids for some reason
             return;         // this lets them spawn in and not get autodeleted instantly
         if (args.Transform.GridUid == null) //this returns null when we are in space
@@ -70,6 +75,7 @@ public sealed class HullrotSelfDeleteSystem : EntitySystem
             //_sawmill.Debug("item went into space: " + Name(uid) + " - deleting in " + _delayBetweenItemDeleteAttempts.ToString());
             var dEv = new HullrotAttemptCleanupItem();
             _eventScheduler.DelayEvent(uid, ref dEv, _delayBetweenItemDeleteAttempts);
+            component.CleanupPending = true;
         }
     }
 
@@ -84,6 +90,8 @@ public sealed class HullrotSelfDeleteSystem : EntitySystem
     // hopefully they fucked off somewhere else. MOST items will get cleaned up in 1 minute after being tossed into space.
     private void TryDeleteEntityInSpace(EntityUid uid, SelfDeleteInSpaceComponent component, HullrotAttemptCleanupItem args)
     {
+        component.CleanupPending = false;
+
         if (!TryComp<MetaDataComponent>(uid, out var _)) //was throwing errors because somehow entities with no metadata component were getting this called
             return;
 
@@ -105,6 +113,7 @@ public sealed class HullrotSelfDeleteSystem : EntitySystem
                 {
                     var dEv = new HullrotAttemptCleanupItem();
                     _eventScheduler.DelayEvent(uid, ref dEv, _delayBetweenItemDeleteAttempts);
+                    component.CleanupPending = true;
                     return;
                 }
             }

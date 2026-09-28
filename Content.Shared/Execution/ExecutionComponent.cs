@@ -76,6 +76,12 @@ public sealed partial class ExecutionComponent : Component
     public LocId EmptyGunExecutionMessage = "execution-popup-gun-empty";
 
     /// <summary>
+    /// Shown to the attacker when a loaded gun refuses to fire (safety, needs wielding, pacified...).
+    /// </summary>
+    [DataField]
+    public LocId CannotFireGunExecutionMessage = "execution-popup-gun-cannot-fire";
+
+    /// <summary>
     /// Shown to the person performing the self execution when starting one.
     /// </summary>
     [DataField]

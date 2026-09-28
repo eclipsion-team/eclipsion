@@ -15,6 +15,7 @@ using Content.Shared.Verbs;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.Weapons.Ranged.Components;
+using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Weapons.Ranged.Systems;
 using Content.Shared.Interaction.Events;
 using Robust.Shared.Network;
@@ -52,6 +53,15 @@ public sealed class SharedExecutionSystem : EntitySystem
         SubscribeLocalEvent<ExecutionComponent, GetMeleeDamageEvent>(OnGetMeleeDamage);
         SubscribeLocalEvent<ExecutionComponent, SuicideByEnvironmentEvent>(OnSuicideByEnvironment);
         SubscribeLocalEvent<ExecutionComponent, ExecutionDoAfterEvent>(OnExecutionDoAfter);
+        SubscribeLocalEvent<ExecutionComponent, ComponentShutdown>(OnShutdown);
+    }
+
+    private void OnShutdown(Entity<ExecutionComponent> entity, ref ComponentShutdown args)
+    {
+        // The looping track only stops from the do-after event, which never arrives if the weapon is deleted
+        // mid-channel - it would keep playing on the attacker forever.
+        if (_net.IsServer)
+            entity.Comp.ExecutionStream = _audio.Stop(entity.Comp.ExecutionStream);
     }
 
     private void OnGetInteractionsVerbs(EntityUid uid, ExecutionComponent comp, GetVerbsEvent<UtilityVerb> args)
@@ -110,6 +120,7 @@ public sealed class SharedExecutionSystem : EntitySystem
         {
             // Play the execution track for the whole channel. It is stopped in OnExecutionDoAfter,
             // which fires on both completion and interruption.
+            _audio.Stop(comp.ExecutionStream);
             comp.ExecutionStream = _audio.PlayPvs(comp.ExecutionSound, attacker, AudioParams.Default.WithLoop(true))?.Entity;
         }
     }
@@ -288,15 +299,37 @@ public sealed class SharedExecutionSystem : EntitySystem
         if (!_gun.CanShoot(gunComp))
             return false;
 
+        // Nothing loaded - no free kill. Checked up front so a gun that refuses to fire for another reason
+        // (safety, needs wielding, pacified) isn't reported as empty.
+        var ammoEv = new GetAmmoCountEvent();
+        RaiseLocalEvent(weapon, ref ammoEv);
+        if (ammoEv.Count <= 0)
+        {
+            ShowExecutionInternalPopup(gun.Comp.EmptyGunExecutionMessage, attacker, victim, weapon, false);
+            return false;
+        }
+
+        // A semi-auto gun only fires while its shot counter is 0, and the counter is normally reset by the
+        // client releasing the trigger - a stale one silently blocked the execution shot.
+        gunComp.ShotCounter = 0;
+
         var victimCoords = Transform(victim).Coordinates;
         var projectiles = _gun.AttemptShoot((weapon, gunComp), attacker, victimCoords);
 
-        // Nothing came out of the barrel (empty mag / no round chambered) - no free kill.
+        // A burst-fire gun would otherwise keep firing the rest of its burst as real rounds from the
+        // server's auto-fire loop once the execution is over.
+        if (gunComp.BurstActivated)
+        {
+            gunComp.BurstActivated = false;
+            gunComp.BurstShotsCount = 0;
+            Dirty(weapon, gunComp);
+        }
+
         // Crescent: hitscan shots never produce a projectile entity, so an empty list still means the laser fired.
         if (projectiles == null
             || projectiles.Count == 0 && !HasComp<HitscanBatteryAmmoProviderComponent>(weapon))
         {
-            ShowExecutionInternalPopup(gun.Comp.EmptyGunExecutionMessage, attacker, victim, weapon, false);
+            ShowExecutionInternalPopup(gun.Comp.CannotFireGunExecutionMessage, attacker, victim, weapon, false);
             return false;
         }
 
@@ -360,7 +393,9 @@ public sealed class SharedExecutionSystem : EntitySystem
     {
         const string fallback = "Piercing";
 
-        if (HasComp<BatteryAmmoProviderComponent>(weapon))
+        // BatteryAmmoProviderComponent is abstract and never registered, so HasComp on it hits a null trait
+        // dictionary and throws - that broke every gun execution after the round had already been fired.
+        if (HasComp<HitscanBatteryAmmoProviderComponent>(weapon) || HasComp<ProjectileBatteryAmmoProviderComponent>(weapon))
             return "Heat";
 
         if (projectiles == null)

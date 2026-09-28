@@ -25,6 +25,12 @@ public sealed class SpaceBiomeSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
 
     private Dictionary<Vector2, HashSet<EntityUid>> _chunks = new();
+
+    // The chunks each source was registered into. RemoveBiome used to recompute them from the source's position at
+    // shutdown, but sources ride on grids that move (and a deleted grid's children can already be detached), so it
+    // missed the original chunks and left the deleted uid behind. Update then threw on it every 15 seconds, which
+    // aborted biome updates for every player on the server.
+    private readonly Dictionary<EntityUid, List<Vector2>> _sourceChunks = new();
     private float _updTimer;
 
     //if false, biomes will only be selected by chunks and not by their actual distance to the player
@@ -72,10 +78,12 @@ public sealed class SpaceBiomeSystem : EntitySystem
             {
                 // Chunks are keyed by world position only; a source on another map shares
                 // coordinates but must not leak its biome (e.g. Gliess's planet on a loadgrid map).
-                if (Transform(sourceUid).MapID != playerXform.MapID)
+                if (!TryComp<SpaceBiomeSourceComponent>(sourceUid, out var source)
+                    || TerminatingOrDeleted(sourceUid)
+                    || Transform(sourceUid).MapID != playerXform.MapID)
+                {
                     continue;
-
-                SpaceBiomeSourceComponent source = Comp<SpaceBiomeSourceComponent>(sourceUid);
+                }
 
                 if (PreciseRange && (_formSys.GetWorldPosition(sourceUid) - playerPos).Length() > source.SwapDistance)
                     continue;
@@ -108,6 +116,7 @@ public sealed class SpaceBiomeSystem : EntitySystem
     private void OnRestart(RoundRestartCleanupEvent ev)
     {
         _chunks.Clear();
+        _sourceChunks.Clear();
     }
 
     private void OnSourceInit(Entity<SpaceBiomeSourceComponent> uid, ref ComponentInit args)
@@ -204,28 +213,32 @@ public sealed class SpaceBiomeSystem : EntitySystem
 
     public void AddBiome(EntityUid uid, SpaceBiomeSourceComponent source)
     {
-        foreach (Vector2 chunkPos in GetCoveredChunks(_formSys.GetWorldPosition(uid), source.SwapDistance))
+        RemoveBiome(uid, source);
+
+        var covered = GetCoveredChunks(_formSys.GetWorldPosition(uid), source.SwapDistance);
+        foreach (Vector2 chunkPos in covered)
         {
-            if (!_chunks.ContainsKey(chunkPos))
-                _chunks[chunkPos] = new();
-            _chunks[chunkPos].Add(uid);
+            if (!_chunks.TryGetValue(chunkPos, out var uids))
+                _chunks[chunkPos] = uids = new();
+            uids.Add(uid);
         }
+
+        _sourceChunks[uid] = covered;
     }
 
-    //works assuming that biome source position and range haven't changed
     public void RemoveBiome(EntityUid uid, SpaceBiomeSourceComponent source)
     {
-        foreach (Vector2 chunkPos in GetCoveredChunks(_formSys.GetWorldPosition(uid), source.SwapDistance))
+        if (!_sourceChunks.Remove(uid, out var covered))
+            return;
+
+        foreach (Vector2 chunkPos in covered)
         {
-            if (_chunks.ContainsKey(chunkPos))
-            {
-                if (_chunks[chunkPos].Count == 1)
-                {
-                    _chunks.Remove(chunkPos);
-                    continue;
-                }
-                _chunks[chunkPos].Remove(uid);
-            }
+            if (!_chunks.TryGetValue(chunkPos, out var uids))
+                continue;
+
+            uids.Remove(uid);
+            if (uids.Count == 0)
+                _chunks.Remove(chunkPos);
         }
     }
 
@@ -269,6 +282,7 @@ public sealed class SpaceBiomeSystem : EntitySystem
     public void RegenerateChunks()
     {
         _chunks.Clear();
+        _sourceChunks.Clear();
         var query = EntityQueryEnumerator<SpaceBiomeSourceComponent>();
 
         while (query.MoveNext(out var uid, out var source))
