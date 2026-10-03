@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using Content.Server._Crescent.Bank;
 using Content.Server.Administration.Logs;
@@ -20,6 +20,7 @@ using Robust.Shared.Enums;
 using Robust.Shared.Network; // Eclipsion - blocking
 using Robust.Shared.GameObjects;
 using Robust.Shared.Player;
+using Robust.Shared.Utility;
 
 namespace Content.Server._Crescent.CartridgeLoader.Cartridges;
 
@@ -230,13 +231,15 @@ public sealed class MoneyTransferCartridgeSystem : EntitySystem
             ("total", total),
             ("comment", commentUi));
 
+        // The wrapped line is markup; the names and above all the comment are player text and must not be
+        // able to inject tags into the recipient's chat.
         var wrapped = Loc.GetString("money-transfer-chat-transfer-wrapped",
             ("amount", amount),
-            ("sender", senderName),
-            ("recipient", recipientName),
+            ("sender", FormattedMessage.EscapeText(senderName)),
+            ("recipient", FormattedMessage.EscapeText(recipientName)),
             ("commission", commission),
             ("total", total),
-            ("comment", commentUi));
+            ("comment", FormattedMessage.EscapeText(commentUi)));
 
         SendTransferChatMessageToPlayer(sender, plain, wrapped);
         SendTransferChatMessageToPlayer(recipient, plain, wrapped);

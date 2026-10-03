@@ -325,6 +325,25 @@ public abstract class SharedDeviceLinkSystem : EntitySystem
     }
 
     /// <summary>
+    /// Returns true if the given source port is linked to the given sink port of the sink
+    /// </summary>
+    public bool IsLinked(DeviceLinkSourceComponent source, EntityUid sinkUid,
+        ProtoId<SourcePortPrototype> sourcePort, ProtoId<SinkPortPrototype> sinkPort)
+    {
+        return source.LinkedPorts.TryGetValue(sinkUid, out var ports) && ports.Contains((sourcePort, sinkPort));
+    }
+
+    public bool HasPort(DeviceLinkSourceComponent source, ProtoId<SourcePortPrototype> port)
+    {
+        return source.Ports?.Contains(port) == true;
+    }
+
+    public bool HasPort(DeviceLinkSinkComponent sink, ProtoId<SinkPortPrototype> port)
+    {
+        return sink.Ports?.Contains(port) == true;
+    }
+
+    /// <summary>
     /// Returns the default links for the given list of source port prototypes
     /// </summary>
     /// <param name="sources">The list of source port prototypes to get the default links for</param>

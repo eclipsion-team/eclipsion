@@ -128,7 +128,7 @@
   suffix: CMM
   components:
   - type: AccessReader
-    access: [["MinutemanMarshal"], ["MinutemanRankingOfficer"]]
+    access: [["MinutemanMarshal"], ["MinutemanRankingOfficer"], ["GliessSheriff", "GliessDockmaster"]]
   - type: FactionRoundEndComputer
     faction: CMM
     missions:

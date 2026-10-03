@@ -879,6 +879,11 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("INTEGER")
                         .HasColumnName("pref_unavailable");
 
+                    b.Property<string>("Religion")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("religion");
+
                     b.Property<string>("Sex")
                         .IsRequired()
                         .HasColumnType("TEXT")

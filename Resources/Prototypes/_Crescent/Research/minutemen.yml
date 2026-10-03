@@ -21,7 +21,22 @@
   - WeaponRifleCMMNimrod
   - M14IncendiaryHandgrenade
   - M18SmokeHandgrenade
+  - WeaponSubMachineGunCMMMP5
+  - WeaponPistolCMMLockwell
+  - WeaponRevolverCMMBulldog
   #- WeaponSubMachineGunWt550 - uncomment in case of SMG
+
+- type: technology
+  id: MinutemenMarksmanRifle
+  name: research-technology-minutemen-marksman-rifle
+  icon:
+    sprite: _Crescent/Objects/Weapons/Guns/hound_cmm.rsi
+    state: icon
+  discipline: Minutemen
+  tier: 1
+  cost: 3000
+  recipeUnlocks:
+  - WeaponRifleCMMHound
 
 - type: technology
   id: MinutemenHybridCorvette
@@ -77,6 +92,19 @@
   cost: 6000
   recipeUnlocks:
   - ClothingOuterHardsuitMinutemenEnsign
+
+- type: technology
+  id: MinutemenAutomaticWeapons
+  name: research-technology-minutemen-automatic-weapons
+  icon:
+    sprite: _Crescent/Objects/Weapons/Guns/lecter_cmm.rsi
+    state: icon
+  discipline: Minutemen
+  tier: 2
+  cost: 8000
+  recipeUnlocks:
+  - WeaponRifleCMMLecter
+  - WeaponLightMachineGunCMMStratos
 
 - type: technology
   id: MinutemenHeavyDestroyer

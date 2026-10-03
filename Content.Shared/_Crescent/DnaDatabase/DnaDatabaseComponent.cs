@@ -1,4 +1,4 @@
-using Robust.Shared.GameStates;
+﻿using Robust.Shared.GameStates;
 
 namespace Content.Shared._Crescent.DnaDatabase;
 
@@ -19,4 +19,14 @@ public sealed partial class DnaDatabaseComponent : Component
 
     [DataField]
     public Dictionary<string, uint?> SavedJobSlots = new();
+
+    /// <summary>
+    /// Minimum time between toggles from the console. Every toggle is announced to the whole sector, and
+    /// anyone on the grid may use the console, so without this it is a free announcement spammer.
+    /// </summary>
+    [DataField]
+    public TimeSpan ToggleCooldown = TimeSpan.FromSeconds(30);
+
+    [ViewVariables]
+    public TimeSpan NextToggle;
 }

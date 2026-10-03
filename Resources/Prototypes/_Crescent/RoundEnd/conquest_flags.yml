@@ -102,14 +102,14 @@
 - type: entity
   parent: ConquestFlag
   id: ConquestFlagGS
-  suffix: GS
+  suffix: Gliess / CMM
   name: Gliess Santo conquest banner
   components:
     - type: Sprite
       sprite: _Crescent/Structures/medieval_pole_banners.rsi
       state: navy-white
     - type: ConquestFlag
-      homeFaction: GS
+      homeFaction: CMM
 
 # The Minutemen's own colours, distinct from the Gliess Santo banner their survivors now serve under.
 # CMM is the ID Minutemen jobs stamp on a mob (it replaced the legacy TSP id).

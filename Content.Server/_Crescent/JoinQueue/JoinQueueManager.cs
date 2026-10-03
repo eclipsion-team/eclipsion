@@ -78,6 +78,10 @@ public sealed class JoinQueueManager
 
     private async void OnPlayerVerified(object? sender, ICommonSession session)
     {
+        // Verification can be raised more than once for a session; only one still at the gate is placed.
+        if (session.Status != SessionStatus.Connected || _queue.Contains(session))
+            return;
+
         if (!_isEnabled)
         {
             SendToGame(session);

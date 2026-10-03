@@ -3,6 +3,7 @@
   name: job-name-marshal
   description: job-description-marshal
   playTimeTracker: JobMarshalCMM
+  requiredReligion: LastWatch
   ranks:
     RatRankCMMMarshalHigh:
     - !type:CharacterPlaytimeRequirement

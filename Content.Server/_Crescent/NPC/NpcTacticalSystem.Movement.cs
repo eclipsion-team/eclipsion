@@ -99,7 +99,7 @@ public sealed partial class NpcTacticalSystem
             seen = true;
         }
 
-        if (target is { } enemy && !TerminatingOrDeleted(enemy) && _mobState.IsAlive(enemy))
+        if (target is { } enemy && !TerminatingOrDeleted(enemy) && _mechTargeting.IsActiveTarget(enemy))
         {
             if (seen)
                 comp.LastSawTarget = now;
@@ -244,7 +244,7 @@ public sealed partial class NpcTacticalSystem
         }
 
         // Whoever it was is down already; nothing to go looking for.
-        if (comp.LeadTarget is { } leadTarget && (TerminatingOrDeleted(leadTarget) || !_mobState.IsAlive(leadTarget)))
+        if (comp.LeadTarget is { } leadTarget && (TerminatingOrDeleted(leadTarget) || !_mechTargeting.IsActiveTarget(leadTarget)))
         {
             ClearLead(comp);
             return false;

@@ -12,6 +12,9 @@ using Content.Server.Traitor.Uplink;
 using Content.Shared.Access.Components;
 using Content.Shared.CartridgeLoader;
 using Content.Shared.Chat;
+using Content.Shared.Light;
+using Content.Shared.Light.Components;
+using Content.Shared.Light.EntitySystems;
 using Content.Shared.PDA;
 using Content.Shared.Store.Components;
 using Robust.Server.Containers;
@@ -31,15 +34,19 @@ namespace Content.Server.PDA
         [Dependency] private readonly StoreSystem _store = default!;
         [Dependency] private readonly IChatManager _chatManager = default!;
         [Dependency] private readonly UserInterfaceSystem _ui = default!;
+        [Dependency] private readonly UnpoweredFlashlightSystem _unpoweredFlashlight = default!;
         [Dependency] private readonly ContainerSystem _containerSystem = default!;
 
         public override void Initialize()
         {
             base.Initialize();
 
+            SubscribeLocalEvent<PdaComponent, LightToggleEvent>(OnLightToggle);
+
             // UI Events:
             SubscribeLocalEvent<PdaComponent, BoundUIOpenedEvent>(OnPdaOpen);
             SubscribeLocalEvent<PdaComponent, PdaRequestUpdateInterfaceMessage>(OnUiMessage);
+            SubscribeLocalEvent<PdaComponent, PdaToggleFlashlightMessage>(OnUiMessage);
             SubscribeLocalEvent<PdaComponent, PdaShowRingtoneMessage>(OnUiMessage);
             SubscribeLocalEvent<PdaComponent, PdaShowMusicMessage>(OnUiMessage);
             SubscribeLocalEvent<PdaComponent, PdaShowUplinkMessage>(OnUiMessage);
@@ -78,6 +85,12 @@ namespace Content.Server.PDA
                 return;
 
             base.OnItemRemoved(uid, pda, args);
+            UpdatePdaUi(uid, pda);
+        }
+
+        private void OnLightToggle(EntityUid uid, PdaComponent pda, LightToggleEvent args)
+        {
+            pda.FlashlightOn = args.IsOn;
             UpdatePdaUi(uid, pda);
         }
 
@@ -161,6 +174,7 @@ namespace Content.Server.PDA
             var state = new PdaUpdateState(
                 programs,
                 GetNetEntity(loader.ActiveProgram),
+                pda.FlashlightOn,
                 pda.PenSlot.HasItem,
                 pda.PaiSlot.HasItem,
                 new PdaIdInfoText
@@ -194,6 +208,16 @@ namespace Content.Server.PDA
                 return;
 
             UpdatePdaUi(uid, pda);
+        }
+
+        private void OnUiMessage(EntityUid uid, PdaComponent pda, PdaToggleFlashlightMessage msg)
+        {
+            if (!PdaUiKey.Key.Equals(msg.UiKey))
+                return;
+
+            // TODO PREDICTION
+            // When moving this to shared, fill in the user field
+            _unpoweredFlashlight.TryToggleLight(uid, user: null);
         }
 
         private void OnUiMessage(EntityUid uid, PdaComponent pda, PdaShowRingtoneMessage msg)

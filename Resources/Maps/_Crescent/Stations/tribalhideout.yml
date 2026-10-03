@@ -17248,18 +17248,9 @@ entities:
     - type: Transform
       parent: 1
       pos: -2.5,-6.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Closing
-      secondsUntilStateChange: -33.060383
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
 - proto: AirlockCommandFamilies
   entities:
   - uid: 26
@@ -17327,7 +17318,7 @@ entities:
     - type: Transform
       parent: 1
       pos: 12.5,-26.5
-- proto: AltarConvertYellow
+- proto: AltarVeiledMother
   entities:
   - uid: 37
     components:

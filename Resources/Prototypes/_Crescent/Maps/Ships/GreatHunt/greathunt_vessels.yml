@@ -1,0 +1,108 @@
+# Great Hunt versions of the hunt yards' hulls (see GameRules/greathunt.yml and the RatSRM/RatTAP GreatHunt mothership
+# computers). Same maps as the regular hulls, but GreatHuntCloakedVessel gives every IFF console aboard a cloak that
+# never overheats and the ship leaves the yard already cloaked. Only the hunt yards list these.
+
+# SRM
+
+- type: vessel
+  id: SpiderGreatHunt
+  name: SRM Spider
+  description: |
+    A repurposed civilian hull, converted into a fragile EWAR shuttle. Refitted for the Great Hunt: its cloak never overheats and is already engaged on launch.
+    LOADOUT: Armless
+    SHIELD: Absent
+    SPEED: 20 m/s
+  price: 100000
+  category: Small
+  group: None
+  path: /Maps/_Crescent/Shuttles/SRM/spider.yml
+
+- type: gameMap
+  id: SpiderGreatHunt
+  mapName: 'SRM Spider'
+  mapPath: /Maps/_Crescent/Shuttles/SRM/spider.yml
+  minPlayers: 0
+  stations:
+    SpiderGreatHunt:
+      stationProto: FlagshipCrescentVessel
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Spider {1}'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '14'
+        - type: VesselDesignation
+          designation: vessel-designation-expeditions
+        - type: GreatHuntCloakedVessel
+
+# TAP
+
+- type: vessel
+  id: FadeemGreatHunt
+  name: TAP Fadeem
+  description: |
+    Old Thukker 'SPINE' carrier platform refit into an Izdari configuration. Refitted for the Great Hunt: its cloak never overheats and is already engaged on launch.
+    LOADOUT: Armless
+    SHIELD: Absent
+    SPEED: 20 m/s
+  price: 60000
+  category: Large
+  group: None
+  path: /Maps/_Crescent/Shuttles/TAP/fadeem.yml
+
+- type: gameMap
+  id: FadeemGreatHunt
+  mapName: 'TAP Fadeem'
+  mapPath: /Maps/_Crescent/Shuttles/TAP/fadeem.yml
+  minPlayers: 0
+  stations:
+    FadeemGreatHunt:
+      stationProto: StandardCrescentVessel
+      components:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: cruiser
+        - type: StationNameSetup
+          mapNameTemplate: 'TAP Fadeem {1}'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '14'
+        - type: VesselDesignation
+          designation: vessel-designation-cruiser
+        - type: GreatHuntCloakedVessel
+
+- type: vessel
+  id: LuciferGreatHunt
+  name: TAP Lucifer
+  description: |
+    A smuggling and boarding pod. Refitted for the Great Hunt: its cloak never overheats and is already engaged on launch.
+    LOADOUT: Armless
+    SHIELD: Absent
+    SPEED: 30 m/s
+  price: 40000
+  category: Small
+  group: None
+  path: /Maps/_Crescent/Shuttles/TAP/lucifer.yml
+
+- type: gameMap
+  id: LuciferGreatHunt
+  mapName: 'TAP Lucifer'
+  mapPath: /Maps/_Crescent/Shuttles/TAP/lucifer.yml
+  minPlayers: 0
+  stations:
+    LuciferGreatHunt:
+      stationProto: StandardCrescentVessel
+      components:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: corvette
+        - type: StationNameSetup
+          mapNameTemplate: 'TAP Lucifer {1}'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '14'
+        - type: VesselDesignation
+          designation: vessel-designation-fighter
+        - type: GreatHuntCloakedVessel

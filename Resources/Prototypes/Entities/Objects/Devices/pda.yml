@@ -85,6 +85,13 @@
     slots:
     - idcard
     - Belt
+  - type: UnpoweredFlashlight
+    showAction: false
+  - type: PointLight
+    enabled: false
+    radius: 1.5
+    softness: 5
+    autoRot: true
   - type: Ringer
   - type: DeviceNetwork
     deviceNetId: Wireless
@@ -142,7 +149,7 @@
     flavorKind: station-event-random-sentience-flavor-mechanical
     weight: 0.001 # 1,000 PDAs = as likely to be picked as 1 regular animal
   - type: BlockMovement
-    blockInteraction: false
+    blockInteraction: false # lets the PDA toggle its own flashlight
   - type: TypingIndicator
     proto: robot
   - type: Speech

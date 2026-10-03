@@ -3112,12 +3112,9 @@ entities:
     - type: Transform
       pos: 12.5,8.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -4911.212
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 11
     components:
     - type: Transform

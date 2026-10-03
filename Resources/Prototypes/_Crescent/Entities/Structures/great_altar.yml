@@ -1,0 +1,83 @@
+# Great Hunt objective. Map it on the Great Hunt station; TAP or SRM claims it by clicking it and holding still for
+# captureTime seconds. The GreatHunt game rule ends the round once one side has held it for its holdTime.
+# Indestructible on purpose (no Damageable / Destructible) so the objective cannot be removed from the round.
+- type: entity
+  id: GreatAltar
+  parent: BaseStructure
+  name: Great Altar
+  description: An ancient altar at the heart of the Great Hunt. Whoever holds it long enough claims the hunt.
+  components:
+  - type: Sprite
+    sprite: Structures/Furniture/Altars/Cults/heaven.rsi
+    snapCardinals: true
+    scale: 1.5, 1.5
+    layers:
+    - state: full
+      map: [ "base" ]
+    - state: blood
+      shader: unshaded
+      map: [ "glow" ]
+  # Unclaimed it stays the heaven altar; once taken it becomes the holder's faith altar (TAP Veiled Mother, SRM
+  # Unbroken Pattern). Keys are faction IDs, set by GreatAltarSystem on every capture.
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.GreatAltarVisuals.Holder:
+        base:
+          TAP: { sprite: _Crescent/Structures/Furniture/Altars/veiled_mother.rsi, state: icon }
+          SRM: { sprite: _Crescent/Structures/Furniture/Altars/unbroken_pattern.rsi, state: icon }
+        glow:
+          TAP: { visible: false }
+          SRM: { visible: false }
+  - type: Icon
+    sprite: Structures/Furniture/Altars/Cults/heaven.rsi
+    state: full
+  - type: InteractionOutline
+  - type: PointLight
+    radius: 3
+    energy: 2
+    color: "#FFFFFF"
+  - type: GreatAltar
+    allowedFactions:
+    - TAP
+    - SRM
+    captureTime: 20
+    captureRange: 2
+    gracePeriod: 0
+    neutralColor: "#FFFFFF"
+    factionColors:
+      TAP: "#9FED58"
+      SRM: "#3A7BFF"
+    # Spoken aloud, one line every chantInterval seconds, by whoever performs the claim rite.
+    chantInterval: 4
+    chantLines:
+      TAP:
+      - great-altar-chant-tap-1
+      - great-altar-chant-tap-2
+      - great-altar-chant-tap-3
+      - great-altar-chant-tap-4
+      - great-altar-chant-tap-5
+      SRM:
+      - great-altar-chant-srm-1
+      - great-altar-chant-srm-2
+      - great-altar-chant-srm-3
+      - great-altar-chant-srm-4
+      - great-altar-chant-srm-5
+
+# A possible Great Altar location. Map several on the Hall of Prays: each round exactly one of them is picked
+# (weighted by `weight`, equal by default) and the altar spawns there with the marker's rotation; the rest vanish.
+# Override `weight` on a mapped marker to make that spot more or less likely.
+- type: entity
+  id: GreatAltarSpawnPoint
+  parent: MarkerBase
+  name: Great Altar spawn point
+  suffix: Random, one per grid
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Structures/Furniture/Altars/Cults/heaven.rsi
+      state: full
+  - type: GreatAltarSpawnPoint
+    prototype: GreatAltar
+    weight: 1

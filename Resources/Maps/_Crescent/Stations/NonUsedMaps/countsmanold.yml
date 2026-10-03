@@ -31334,10 +31334,7 @@ entities:
       parent: 1
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
-    - type: Door
-      secondsUntilStateChange: -10471.733
-      state: Opening
+        DoorStatus: False
   - uid: 1420
     components:
     - type: Transform

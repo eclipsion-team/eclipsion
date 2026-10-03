@@ -80318,9 +80318,6 @@ entities:
     - type: Transform
       pos: 13.5,-17.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -41186.027
-      state: Closing
   - uid: 3808
     components:
     - type: Transform
@@ -80421,9 +80418,6 @@ entities:
     - type: Transform
       pos: 8.5,15.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -53054.07
-      state: Closing
   - uid: 3828
     components:
     - type: Transform
@@ -80507,9 +80501,6 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -5.5,-4.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -4634.402
-      state: Closing
   - uid: 3842
     components:
     - type: Transform

@@ -65,6 +65,7 @@ id-card-access-level-authoritat-cargo = Crown Expeditionary Supply
 id-card-access-level-antiquarian = Antiquarian
 id-card-access-level-gliess-admin = Gliessian Dockmaster
 id-card-access-level-gliess-sheriff = Gliessian Sheriff
+id-card-access-level-gliess-sheriff-command = Gliessian Sheriff's Office
 
 # tap
 

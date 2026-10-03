@@ -25,6 +25,13 @@ public sealed partial class UnpoweredFlashlightComponent : Component
     public EntityUid? ToggleActionEntity;
 
     /// <summary>
+    /// Whether the toggle action is given to whoever holds/wears this item.
+    /// When false, the light can only be toggled via verb or other means (e.g. the PDA UI).
+    /// </summary>
+    [DataField]
+    public bool ShowAction = true;
+
+    /// <summary>
     ///  <see cref="ColorPalettePrototype"/> ID that determines the list
     /// of colors to select from when we get emagged
     /// </summary>

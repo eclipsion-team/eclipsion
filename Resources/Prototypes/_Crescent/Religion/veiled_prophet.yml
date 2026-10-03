@@ -1,0 +1,55 @@
+# The TAP Prophet's tools for the Covenant of the Veiled Mother.
+
+- type: entity
+  id: ActionDrawVeiledEye
+  name: Draw the Veiled Eye
+  description: Trace an eye of the Mother upon the floor. Whoever stands on it can have the Binding forced upon them.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: WorldTargetAction
+    icon:
+      sprite: _Crescent/Religion/veiled_eye.rsi
+      state: action_eye
+    itemIconStyle: NoItem
+    event: !type:DrawVeiledEyeActionEvent
+    checkCanAccess: true
+    range: 2
+    useDelay: 10
+    priority: -20
+
+- type: entity
+  id: ActionVeiledHost
+  name: Host of the Mother
+  description: Sense everyone you have brought into the Covenant, and chastise the bound who stray from you.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    icon:
+      sprite: _Crescent/Religion/veiled_eye.rsi
+      state: action_host
+    itemIconStyle: BigAction
+    event: !type:OpenVeiledHostActionEvent
+    priority: -19
+
+- type: entity
+  id: VeiledEyeRune
+  name: Veiled Eye
+  description: An eye traced in violet ash, its pupil wet and watching. The Prophet can bind to the Veiled Mother whoever stands within its gaze.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Sprite
+    sprite: _Crescent/Religion/veiled_eye_rune.rsi
+    state: eye
+    drawdepth: FloorObjects
+  - type: Clickable
+  - type: InteractionOutline
+  - type: PointLight
+    color: "#B57BFF"
+    radius: 3
+    energy: 1
+    softness: 1
+  - type: VeiledEye

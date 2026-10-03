@@ -670,7 +670,7 @@
     capacity: 4
   - type: Wieldable
   - type: Gun
-    fireRate: 3.2 #nerf because shotguns are stronger now
+    fireRate: 1.5 #nerf because shotguns are stronger now
     projectileSpeed: 45
     shotgunSpreadMultiplier: 0.15
     soundGunshot:

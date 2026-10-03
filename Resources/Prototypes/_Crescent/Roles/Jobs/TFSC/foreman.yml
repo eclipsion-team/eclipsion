@@ -3,6 +3,7 @@
   name: job-name-foreman
   description: job-description-foreman
   playTimeTracker: JobForemanTFSC
+  requiredReligion: InfernalExchange
   weight: 2
   startingGear: ForemanGear
   alwaysUseSpawner: true

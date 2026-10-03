@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Content.Server._Crescent.Overwatch;
 using Content.Server.Chat.Managers;
 using Content.Server.Crescent.Dispenser;
@@ -143,9 +143,10 @@ public sealed class ShipPurchaseApprovalSystem : EntitySystem
     }
 
     /// <summary>Signs off a request. The buyer still has to go back to the shipyard and buy the ship.</summary>
-    public bool Approve(uint id, string approver)
+    public bool Approve(uint id, string faction, string approver)
     {
-        if (!_pending.TryGetValue(id, out var request) || request.Approved)
+        // Ids are sequential, so the faction is checked too: otherwise any vault could answer for any other.
+        if (!_pending.TryGetValue(id, out var request) || request.Approved || request.Faction != faction)
             return false;
 
         request.Approved = true;
@@ -160,10 +161,12 @@ public sealed class ShipPurchaseApprovalSystem : EntitySystem
     }
 
     /// <summary>Refuses a request outright and drops it off the list.</summary>
-    public bool Deny(uint id, string denier)
+    public bool Deny(uint id, string faction, string denier)
     {
-        if (!_pending.Remove(id, out var request))
+        if (!_pending.TryGetValue(id, out var request) || request.Faction != faction)
             return false;
+
+        _pending.Remove(id);
 
         NotifyBuyer(request,
             Loc.GetString("shipyard-approval-buyer-denied",

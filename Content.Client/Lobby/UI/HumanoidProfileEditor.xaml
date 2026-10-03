@@ -153,6 +153,15 @@
                     <BoxContainer HorizontalExpand="False">
                         <RichTextLabel Name="NationalityDescriptionLabel" Text="" HorizontalExpand="False" MaxWidth="600"/>
                     </BoxContainer>
+                    <!-- Religion -->
+                    <BoxContainer HorizontalExpand="True">
+                        <Label Text="{Loc 'humanoid-profile-editor-religion-label'}" />
+                        <Control HorizontalExpand="True"/>
+                        <OptionButton Name="ReligionButton" HorizontalAlignment="Right" />
+                    </BoxContainer>
+                    <BoxContainer HorizontalExpand="False">
+                        <RichTextLabel Name="ReligionDescriptionLabel" Text="" HorizontalExpand="False" MaxWidth="600"/>
+                    </BoxContainer>
                     <!-- Employer -->
                     <BoxContainer HorizontalExpand="True">
                         <Label Text="{Loc 'humanoid-profile-editor-employer-label'}" />

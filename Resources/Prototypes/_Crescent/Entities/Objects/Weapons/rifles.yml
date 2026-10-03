@@ -61,7 +61,7 @@
   name: IRM DA-1R Muster 5.56x45mm
   parent: [BaseWeaponSniper, BaseGunWieldable, StreeCredRedeemable]
   id: WeaponRifleDSMMuster
-  description: A simple and cheap semi-auto rifle with a internal magazine, issued to rearline and reserve units. Chambered in 5.56x45mm Imperial.
+  description: A simple and cheap semi-auto rifle with a internal magazine, issued to rearline and reserve units. Chambered in 5.56x45mm.
   components:
   - type: Sprite
     sprite: _Crescent/Objects/Weapons/Guns/muster.rsi
@@ -1291,7 +1291,7 @@
     availableModes:
       - SemiAuto
       - FullAuto
-    fireRate: 5.5
+    fireRate: 5
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -1347,7 +1347,7 @@
     availableModes:
       - SemiAuto
       - FullAuto
-    fireRate: 5.5
+    fireRate: 5
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -1403,10 +1403,10 @@
     availableModes:
       - SemiAuto
       - Burst
-    fireRate: 5.5
+    fireRate: 3.5
     shotsPerBurst: 3
-    burstFireRate: 7
-    burstCooldown: 0.5
+    burstFireRate: 5.5
+    burstCooldown: 0.75
   - type: ItemSlots
     slots:
       gun_magazine:

@@ -3,6 +3,7 @@
   name: job-name-coordinator
   description: job-description-coordinator
   playTimeTracker: JobCoordinatorTFSC
+  requiredReligion: InfernalExchange
   ranks:
     RatRankTFSCCoordinatorHigh:
     - !type:CharacterPlaytimeRequirement

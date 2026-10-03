@@ -3074,9 +3074,6 @@ entities:
       parent: 1
       rot: 3.141592653589793 rad
       pos: 15.5,-18.5
-    - type: Door
-      state: Closing
-      secondsUntilStateChange: -487.80807
     - type: DeviceNetwork
       deviceLists:
       - 17

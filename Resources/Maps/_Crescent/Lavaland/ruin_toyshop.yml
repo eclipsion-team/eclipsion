@@ -3640,9 +3640,6 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 10.5,15.5
       parent: 2
-    - type: Door
-      secondsUntilStateChange: -41896.145
-      state: Opening
   - uid: 508
     components:
     - type: Transform

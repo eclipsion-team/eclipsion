@@ -3,6 +3,7 @@
   name: job-name-ncwl-kommissar
   description: job-description-ncwl-kommissar
   playTimeTracker: JobHomeguardLeaderNCWL
+  requiredReligion: CommonHands
   ranks:
     RatRankKommissarLead:
     - !type:CharacterPlaytimeRequirement

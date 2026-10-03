@@ -1,0 +1,264 @@
+### GREAT HUNT ###
+# TAP vs SRM, King of the Hill. A GreatAltar is mapped on the Hall of Prays; whichever side holds it unbroken
+# for holdTime (10 minutes) wins, the round ends and restarts after restartDelay. Losing the altar to the other side
+# resets the clock — the new holder starts from zero.
+#
+# Layout: the Hall of Prays sits at the centre with no jobs of its own. Each side spawns at its home base on
+# opposite flanks — the SRM at the Refuge (Hunter's Den), the TAP at the Tribal Hideout — and has to cross to it.
+# Both bases are Great Hunt copies of the regular maps (refuge_greathunt / tribalhideout_greathunt, gameMaps below);
+# the originals stay untouched for the other modes. The copies drop the civilian and scrap yards and sell ships only
+# from a faction yard limited to unarmed hulls with an IFF cloak.
+#
+# Preparation: for the first gracePeriod (10 minutes) both bases sit inside a ring of the same indestructible wall
+# Unionfall's grace barrier uses, barrierMargin tiles out so the ships bought meanwhile fit inside, and the altar
+# cannot be claimed. Announcements count it down; when it runs out the walls are deleted and the hunt is on.
+# Admins can end it early with `greathunt_skipgrace`.
+
+- type: gamePreset
+  id: GreatHunt
+  alias:
+  - greathunt
+  name: Great Hunt | TAP vs SRM
+  showInVote: true
+  description: The Saint's Militia and the Taypani-Atyrian Pact fight over the Great Altar in the Hall of Prays. Hold it for 10 minutes to win the hunt.
+  excludedJobs:
+  - UnionfallCadetDSM
+  - UnionfallRiflemanDSM
+  - UnionfallDoctorDSM
+  - UnionfallOfficerDSM
+  - UnionfallLeaderDSM
+  - UnionfallShipCaptainDSM
+  - UnionfallShipCrewDSM
+  - UnionfallCadetNCWL
+  - UnionfallRiflemanNCWL
+  - UnionfallDoctorNCWL
+  - UnionfallOfficerNCWL
+  - UnionfallLeaderNCWL
+  - UnionfallShipCaptainNCWL
+  - UnionfallShipCrewNCWL
+  - planetfall_worker
+  - planetfall_partisan
+  - planetfall_mvdofficer
+  - planetfall_mvdgrunt
+  - planetfall_kapitan
+  - planetfall_doctor
+  - planetfall_courtier
+  - planetfall_advocatus
+  - planetfall_governor
+  - planetfall_freeholder
+  - planetfall_oathbound
+  - planetfall_levyman
+  - planetfall_surgeon
+  rules:
+  - GreatHunt
+  - GreatHuntObjective
+  - HullrotRoundTimeLimit
+
+# Great Hunt: Blades. The same hunt on the same maps, but the armories and the Militia's statues are swapped for
+# versions that hand out no guns, ammunition or explosives (GreatHuntMeleeArmories below), so it is fought with blades.
+# Keep excludedJobs in step with GreatHunt above.
+- type: gamePreset
+  id: GreatHuntMelee
+  alias:
+  - greathuntmelee
+  - greathuntblades
+  name: Great Hunt Blades | TAP vs SRM
+  showInVote: true
+  description: The Great Hunt with blades only. The armories and shrines hold no guns; hold the Great Altar for 10 minutes to win.
+  excludedJobs:
+  - UnionfallCadetDSM
+  - UnionfallRiflemanDSM
+  - UnionfallDoctorDSM
+  - UnionfallOfficerDSM
+  - UnionfallLeaderDSM
+  - UnionfallShipCaptainDSM
+  - UnionfallShipCrewDSM
+  - UnionfallCadetNCWL
+  - UnionfallRiflemanNCWL
+  - UnionfallDoctorNCWL
+  - UnionfallOfficerNCWL
+  - UnionfallLeaderNCWL
+  - UnionfallShipCaptainNCWL
+  - UnionfallShipCrewNCWL
+  - planetfall_worker
+  - planetfall_partisan
+  - planetfall_mvdofficer
+  - planetfall_mvdgrunt
+  - planetfall_kapitan
+  - planetfall_doctor
+  - planetfall_courtier
+  - planetfall_advocatus
+  - planetfall_governor
+  - planetfall_freeholder
+  - planetfall_oathbound
+  - planetfall_levyman
+  - planetfall_surgeon
+  rules:
+  - GreatHunt
+  - GreatHuntObjective
+  - GreatHuntMeleeArmories
+  - HullrotRoundTimeLimit
+
+- type: entity
+  id: GreatHuntMeleeArmories
+  parent: BaseGameRule
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: GreatHuntReplaceEntitiesRule
+    replacements:
+      GreatHuntSRMArmoryVendor: GreatHuntSRMArmoryVendorMelee
+      GreatHuntTAPArmoryVendor: GreatHuntTAPArmoryVendorMelee
+      GreatHuntSRMDogtagStoreR: GreatHuntSRMDogtagStoreRMelee
+      GreatHuntSRMDogtagStoreS: GreatHuntSRMDogtagStoreSMelee
+
+- type: entity
+  id: GreatHunt
+  parent: BaseGameRule
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: GamemodeRespawnTime
+    respawnTimeMinutes: 1
+  - type: AdventureRule
+    gameMapsByID:
+      HallOfPrays:
+        gameMapID: HallOfPrays
+        posX: 0
+        posY: 0
+        IFFColor: "#FFD700"
+        pinned: true
+      RefugeGreatHunt:
+        gameMapID: RefugeGreatHunt
+        posX: -3000
+        posY: 0
+        IFFColor: "#C0392B"
+        IFFFaction: SRM
+        pinned: true
+      TribalHideoutGreatHunt:
+        gameMapID: TribalHideoutGreatHunt
+        posX: 3000
+        posY: 0
+        IFFColor: "#9FED58"
+        IFFFaction: TAP
+        pinned: true
+
+- type: entity
+  id: GreatHuntObjective
+  parent: BaseGameRule
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: GreatHuntRule
+    gracePeriod: 600 # 10 minutes walled in at home before the hunt opens
+    graceWarnings:
+    - 300
+    - 60
+    graceCountdown: 10
+    barrierStations: # BecomesStation ids of the home bases to wall in
+    - RefugeGreatHunt
+    - TribalHideoutGreatHunt
+    barrierMargin: 160
+    holdTime: 600 # 10 minutes of unbroken hold wins the hunt
+    restartDelay: 60
+    warnings:
+    - 300
+    - 60
+    victoryAnnouncements:
+      TAP: great-hunt-victory-tap
+      SRM: great-hunt-victory-srm
+
+# The contested centre. No jobs: both sides spawn at their own bases and fight their way in.
+- type: gameMap
+  id: HallOfPrays
+  mapName: 'Hall of Prays'
+  mapPath: /Maps/_Crescent/Stations/hallofprays.yml
+  minPlayers: 0
+  stations:
+    HallOfPrays:
+      stationProto: StandardCrescentStation
+      gridComponents:
+        - type: PreventPilot
+        - type: MapIcon
+          iconType: Station
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Hall of Prays'
+        - type: Grammar
+          attributes:
+            proper: true
+        - type: StationJobs
+          overflowJobs: []
+          availableJobs: {}
+
+# Great Hunt copies of the two home bases. Same jobs and station setup as Refuge (Prototypes/_Crescent/Maps/Stations/
+# gliess.yml) and TribalHideout (tribalhideout.yml); keep them in step when those change.
+- type: gameMap
+  id: RefugeGreatHunt
+  mapName: 'The Refuge'
+  mapPath: /Maps/_Crescent/Stations/refuge_greathunt.yml
+  minPlayers: 0
+  stations:
+    RefugeGreatHunt:
+      stationProto: StandardCrescentStation
+      gridComponents:
+        - type: BlockShipWeaponProjectileGrid
+        - type: PreventPilot
+        - type: MapIcon
+          iconType: Station
+      components:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: outpost
+        - type: StationNameSetup
+          mapNameTemplate: 'OCP Hunter''s Den'
+        - type: VesselDesignation
+          designation: vessel-designation-headquarters
+        - type: Grammar
+          attributes:
+            proper: true
+        - type: StationJobs
+          overflowJobs: []
+          availableJobs:
+            # Command stays single-slot; everyone else can keep joining, so a side is never locked out.
+            OverseerSRM: [ 1, 1 ]
+            MontagneSRM: [ 1, 1 ]
+            HunterSRM: [ -1, -1 ]
+            TenderSRM: [ -1, -1 ]
+            AcolyteSRM: [ -1, -1 ]
+
+- type: gameMap
+  id: TribalHideoutGreatHunt
+  mapName: 'TAP Tribe'
+  mapPath: /Maps/_Crescent/Stations/tribalhideout_greathunt.yml
+  minPlayers: 0
+  stations:
+    TribalHideoutGreatHunt:
+      stationProto: StandardCrescentStation
+      gridComponents:
+        - type: FactionStation # conquest win condition
+          faction: TAP
+          fallAnnouncement: faction-station-fall-tribal-hideout
+          stationName: TAP Tribal Hideout
+        - type: BlockShipWeaponProjectileGrid
+        - type: PreventPilot
+        - type: MapIcon
+          iconType: Station
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'TAP Tribe'
+        - type: Grammar
+          attributes:
+            proper: true
+        - type: VesselDesignation
+          designation: vessel-designation-headquarters
+        - type: StationJobs
+          overflowJobs: []
+          availableJobs:
+            # Command, Techminer, Draugr and Servile stay single-slot; everyone else can keep joining, so a side is
+            # never locked out.
+            ProphetTAP: [ 1, 1 ]
+            TinkererTAP: [ -1, -1 ]
+            TechminerTAP: [ 1, 1 ]
+            DraugrTAP: [ 1, 1 ]
+            ServileTAP: [ 1, 1 ]
+            BeltrunnerTAP: [ -1, -1 ]
+            Antiquarian: [ -1, -1 ]

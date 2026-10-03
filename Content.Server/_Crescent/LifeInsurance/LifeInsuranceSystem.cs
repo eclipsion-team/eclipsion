@@ -11,6 +11,7 @@ using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Standing;
 using Content.Server.Station.Systems;
+using Content.Shared._Crescent.GameRules.Components;
 using Content.Shared._Crescent.LifeInsurance;
 using Content.Shared.Access.Systems;
 using Content.Shared.Administration.Logs;
@@ -29,6 +30,7 @@ using Content.Shared.Roles;
 using Content.Shared.Roles.Jobs;
 using Content.Shared.Database;
 using Content.Shared.GameTicking;
+using Content.Shared.GameTicking.Components;
 using Content.Shared.Inventory;
 using Content.Shared.PDA;
 using Content.Shared.CartridgeLoader;
@@ -157,17 +159,21 @@ public sealed class LifeInsuranceSystem : EntitySystem
 
         var life = EnsureComp<LifeInsuranceComponent>(targetMindId);
 
+        // Only bound once the policy is actually issued: a refused or unpaid policy must not move the
+        // target's clone outlet, least of all for someone already waiting on a respawn.
+        EntityUid? requestedSpawn = null;
         if (args.SpawnMachine.Valid)
         {
             var spawnEnt = GetEntity(args.SpawnMachine);
-            if (spawnEnt == EntityUid.Invalid || !HasComp<LifeInsuranceSpawnMachineComponent>(spawnEnt))
+            if (spawnEnt == EntityUid.Invalid
+                || TerminatingOrDeleted(spawnEnt)
+                || !HasComp<LifeInsuranceSpawnMachineComponent>(spawnEnt))
             {
                 _popup.PopupEntity(Loc.GetString("life-insurance-popup-invalid-spawn-machine"), uid, user, PopupType.Small);
                 return;
             }
 
-            life.PreferredSpawnMachine = spawnEnt;
-            Dirty(targetMindId, life);
+            requestedSpawn = spawnEnt;
         }
 
         if (TryComp<MobStateComponent>(target, out var targetMob))
@@ -191,7 +197,7 @@ public sealed class LifeInsuranceSystem : EntitySystem
             return;
         }
 
-        if (!MindSpawnMachineReady(targetMindId))
+        if (requestedSpawn == null && !MindSpawnMachineReady(targetMindId))
         {
             _popup.PopupEntity(Loc.GetString("life-insurance-popup-no-spawn-machine-policy"), uid, user, PopupType.Small);
             return;
@@ -223,6 +229,8 @@ public sealed class LifeInsuranceSystem : EntitySystem
 
         life.IsInsured = true;
         life.InsuredJobSnapshot = TryGetCurrentJob(targetMindId);
+        if (requestedSpawn != null)
+            life.PreferredSpawnMachine = requestedSpawn;
         Dirty(targetMindId, life);
 
         // Notify the insured living client.
@@ -501,6 +509,23 @@ public sealed class LifeInsuranceSystem : EntitySystem
     }
 
     /// <summary>
+    /// How long a payout waits before the respawn. Follows the active gamemode's <see cref="GamemodeRespawnTimeComponent"/>
+    /// so a fast mode such as the Great Hunt does not hold insured players back longer than ghosts; five minutes
+    /// otherwise.
+    /// </summary>
+    private TimeSpan GetPayoutRespawnDelay()
+    {
+        var query = EntityQueryEnumerator<GamemodeRespawnTimeComponent, GameRuleComponent>();
+        while (query.MoveNext(out var uid, out var respawn, out var rule))
+        {
+            if (_ticker.IsGameRuleActive(uid, rule))
+                return TimeSpan.FromMinutes(respawn.RespawnTimeMinutes);
+        }
+
+        return TimeSpan.FromMinutes(5);
+    }
+
+    /// <summary>
     /// Life insurance data lives on the <see cref="MindComponent"/> entity (see <see cref="LifeInsuranceComponent"/>).
     /// </summary>
     private void TryActivateInsurancePayout(EntityUid mindId, EntityUid? stationSourceEntity)
@@ -515,7 +540,7 @@ public sealed class LifeInsuranceSystem : EntitySystem
 
         life.IsInsured = false;
         life.InsuredJobSnapshot = null;
-        life.PendingRespawnAt = _timing.CurTime + TimeSpan.FromMinutes(5);
+        life.PendingRespawnAt = _timing.CurTime + GetPayoutRespawnDelay();
         life.PendingRespawnJob = job;
         life.PendingRespawnStation = stationSourceEntity != null
             ? _station.GetOwningStation(stationSourceEntity.Value)

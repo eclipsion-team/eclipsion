@@ -8,6 +8,7 @@ using Content.Shared.StatusIcon;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 using Content.Shared._Crescent.Ranks;
+using Content.Shared._Crescent.Religion;
 
 namespace Content.Shared.Roles
 {
@@ -73,6 +74,13 @@ namespace Content.Shared.Roles
         /// </summary>
         [DataField("canHavePassport")]
         public bool CanHavePassport { get; private set; } = true;
+
+        /// <summary>
+        ///     Crescent - the faith this job has to hold. Command roles lead their faction's faith, so whoever takes
+        ///     one spawns into it whatever their profile says, and cannot renounce it at an altar.
+        /// </summary>
+        [DataField]
+        public ProtoId<ReligionPrototype>? RequiredReligion { get; private set; }
 
         /// <summary>
         /// Nyano/DV: For e.g. prisoners, they'll never use their latejoin spawner.

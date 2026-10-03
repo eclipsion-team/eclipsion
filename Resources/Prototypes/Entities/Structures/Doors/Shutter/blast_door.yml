@@ -27,7 +27,7 @@
     resistance: 10
   - type: Damageable
     damageContainer: StructuralInorganic
-    damageModifierSet: StrongMetallic
+    damageModifierSet: StructuralMetallicStrong # Eclipsion - wall-grade, matches BaseShutter
   - type: ContainerFill
     containers:
       board: [ DoorElectronics ]

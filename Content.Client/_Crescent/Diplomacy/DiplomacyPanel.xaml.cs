@@ -22,6 +22,7 @@ public sealed partial class DiplomacyPanel : BoxContainer
     private static readonly (string A, string B)[] PermanentEnemyPairs =
     {
         ("DSM", "NCWL"),
+        ("SRM", "TAP"),
     };
 
     private static bool IsPermanentEnemyPair(string f1, string f2)

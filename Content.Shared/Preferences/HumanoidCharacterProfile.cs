@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using Content.Shared._Crescent.Contractors.Prototypes;
+using Content.Shared._Crescent.Religion;
 using Content.Shared.CCVar;
 using Content.Shared.Clothing.Loadouts.Prototypes;
 using Content.Shared.Clothing.Loadouts.Systems;
@@ -77,6 +78,14 @@ public sealed partial class HumanoidCharacterProfile : ICharacterProfile
     [DataField]
     public string Lifepath { get; set; } = SharedHumanoidAppearanceSystem.DefaultLifepath;
     // EE -- Contractors Change End
+
+    /// <summary>
+    ///     The <see cref="ReligionPrototype"/> the character starts the round with. Which faiths a character may
+    ///     hold depends on their faction, but that is only enforced when they spawn: job priorities can change
+    ///     what is allowed without the profile ever being edited.
+    /// </summary>
+    [DataField]
+    public string Religion { get; set; } = ReligionPrototype.Default;
 
     [DataField]
     public string Customspeciename { get; set; } = "";
@@ -158,6 +167,7 @@ public sealed partial class HumanoidCharacterProfile : ICharacterProfile
         string employer,
         string lifepath,
         // EE -- Contractors Change End
+        string religion,
         float height,
         float width,
         int age,
@@ -188,6 +198,7 @@ public sealed partial class HumanoidCharacterProfile : ICharacterProfile
         Employer = employer;
         Lifepath = lifepath;
         // EE -- Contractors Change End
+        Religion = religion;
         Height = height;
         Width = width;
         Age = age;
@@ -221,6 +232,7 @@ public sealed partial class HumanoidCharacterProfile : ICharacterProfile
             other.Employer,
             other.Lifepath,
             // EE -- Contractors Change End
+            other.Religion,
             other.Height,
             other.Width,
             other.Age,
@@ -367,6 +379,7 @@ public sealed partial class HumanoidCharacterProfile : ICharacterProfile
     public HumanoidCharacterProfile WithLifepath(string lifepath) => new(this) { Lifepath = lifepath };
 
     // EE - Contractors Change End
+    public HumanoidCharacterProfile WithReligion(string religion) => new(this) { Religion = religion };
     public HumanoidCharacterProfile WithSex(Sex sex) => new(this) { Sex = sex };
 
     public HumanoidCharacterProfile WithGender(Gender gender) => new(this) { Gender = gender };
@@ -479,6 +492,7 @@ public string Summary =>
             && Employer == other.Employer
             && Lifepath == other.Lifepath
             // EE - Contractors Change End
+            && Religion == other.Religion
             && PreferenceUnavailable == other.PreferenceUnavailable
             && SpawnPriority == other.SpawnPriority
             && _jobPriorities.SequenceEqual(other._jobPriorities)
@@ -554,6 +568,9 @@ public string Summary =>
 
         if (!prototypeManager.HasIndex<LifepathPrototype>(Lifepath))
             Lifepath = SharedHumanoidAppearanceSystem.DefaultLifepath;
+
+        if (!prototypeManager.HasIndex<ReligionPrototype>(Religion))
+            Religion = ReligionPrototype.Default;
 
         var sex = Sex switch
         {
@@ -738,6 +755,7 @@ public string Summary =>
         hashCode.Add(Employer);
         hashCode.Add(Nationality);
         hashCode.Add(Lifepath);
+        hashCode.Add(Religion);
         hashCode.Add(Age);
         hashCode.Add((int) Sex);
         hashCode.Add((int) Gender);

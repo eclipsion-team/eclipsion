@@ -1,16 +1,32 @@
-using System.Linq;
+﻿using System.Linq;
 using Content.Server.StationRecords;
 using Content.Shared._NF.BountyContracts;
 using Content.Shared.Access.Components;
 using Content.Shared.CartridgeLoader;
 using Content.Shared.PDA;
 using Content.Shared.StationRecords;
+using Content.Shared.GameTicking;
+using Robust.Shared.Network;
+using Robust.Shared.Player;
+using Robust.Shared.Timing;
 
 namespace Content.Server._NF.BountyContracts;
 
 public sealed partial class BountyContractSystem
 {
     [Dependency] private readonly EntityManager _entManager = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
+
+    // Crescent: the program is on every PDA with no access reader, and every new contract is a sector-wide
+    // announcement, so creation is rate limited and its text capped, and only its creator may take it down.
+    private const int MaxNameLength = 64;
+    private const int MaxDescriptionLength = 512;
+    private const int MaxReward = 10_000_000;
+    private static readonly TimeSpan CreateCooldown = TimeSpan.FromSeconds(60);
+
+    private readonly Dictionary<NetUserId, TimeSpan> _nextCreate = new();
+    private readonly Dictionary<uint, NetUserId> _contractCreators = new();
+
     private void InitializeUi()
     {
         SubscribeLocalEvent<BountyContractsCartridgeComponent, CartridgeUiReadyEvent>(OnUiReady);
@@ -19,6 +35,11 @@ public sealed partial class BountyContractSystem
         SubscribeLocalEvent<CartridgeLoaderComponent, BountyContractTryCreateMsg>(OnTryCreateContract);
         SubscribeLocalEvent<CartridgeLoaderComponent, BountyContractRefreshListUiMsg>(OnRefreshContracts);
         SubscribeLocalEvent<CartridgeLoaderComponent, BountyContractTryRemoveUiMsg>(OnRemoveContract);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(_ =>
+        {
+            _nextCreate.Clear();
+            _contractCreators.Clear();
+        });
     }
 
     /// <summary>
@@ -131,9 +152,32 @@ public sealed partial class BountyContractSystem
         if (!IsAllowedCreateBounties(_entManager.GetEntity(args.Entity)))
             return;
 
+        if (!TryComp<ActorComponent>(args.Actor, out var actor))
+            return;
+
+        var user = actor.PlayerSession.UserId;
+        var now = _timing.CurTime;
+        if (_nextCreate.TryGetValue(user, out var next) && now < next)
+            return;
+
         var c = args.Contract;
+        var name = Clamp(c.Name, MaxNameLength);
+        if (string.IsNullOrWhiteSpace(name) || !Enum.IsDefined(c.Category))
+            return;
+
+        _nextCreate[user] = now + CreateCooldown;
+
         var author = GetContractAuthor(_entManager.GetEntity(args.Entity));
-        CreateBountyContract(c.Category, c.Name, c.Reward, c.Description, c.Vessel, c.DNA, author);
+        var contract = CreateBountyContract(c.Category,
+            name,
+            Math.Clamp(c.Reward, 0, MaxReward),
+            Clamp(c.Description, MaxDescriptionLength),
+            Clamp(c.Vessel, MaxNameLength),
+            Clamp(c.DNA, MaxNameLength),
+            author);
+
+        if (contract != null)
+            _contractCreators[contract.ContractId] = user;
 
         CartridgeOpenListUi(_entManager.GetEntity(args.Entity));
     }
@@ -148,7 +192,22 @@ public sealed partial class BountyContractSystem
         if (!IsAllowedDeleteBounties(_entManager.GetEntity(args.Entity)))
             return;
 
-        RemoveBountyContract(args.ContractId);
+        if (!TryComp<ActorComponent>(args.Actor, out var actor)
+            || !_contractCreators.TryGetValue(args.ContractId, out var creator)
+            || creator != actor.PlayerSession.UserId)
+            return;
+
+        if (RemoveBountyContract(args.ContractId))
+            _contractCreators.Remove(args.ContractId);
         CartridgeRefreshListUi(_entManager.GetEntity(args.Entity));
+    }
+
+    private static string Clamp(string? text, int max)
+    {
+        if (string.IsNullOrEmpty(text))
+            return string.Empty;
+
+        text = text.Trim();
+        return text.Length > max ? text[..max] : text;
     }
 }

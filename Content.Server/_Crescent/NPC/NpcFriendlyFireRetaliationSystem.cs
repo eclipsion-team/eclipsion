@@ -15,7 +15,6 @@ public sealed class NpcFriendlyFireRetaliationSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly NpcFactionSystem _npcFaction = default!;
-    [Dependency] private readonly NpcIffSystem _iff = default!;
     [Dependency] private readonly NpcSquadSystem _squad = default!;
     [Dependency] private readonly NpcTacticalSystem _tactical = default!;
 
@@ -57,8 +56,10 @@ public sealed class NpcFriendlyFireRetaliationSystem : EntitySystem
             return;
         }
 
-        // An enemy shooting it is just the fight it is already in.
-        if (!_iff.IsFriendly(ent.Owner, attacker))
+        // An enemy shooting it is just the fight it is already in. Anyone else - its own side, an ally, or a third
+        // party it had no quarrel with - has just started one. Before, only its own side counted, so a neutral
+        // could shoot a whole garrison dead while it stood and watched.
+        if (_squad.IsEnemy(ent.Owner, attacker))
             return;
 
         ent.Comp.Grudges[attacker] = now;

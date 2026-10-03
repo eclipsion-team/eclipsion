@@ -246,12 +246,19 @@
   id: GliessSheriff
   name: id-card-access-level-gliess-sheriff
 
+# Held by the Gliess Sheriff alone. GliessSheriff itself is carried by every deputy, the dockmaster and every
+# CMM job, so anything meant for the sheriff personally (payroll, the Gliess recruitment terminal) gates on this.
+- type: accessLevel
+  id: GliessSheriffCommand
+  name: id-card-access-level-gliess-sheriff-command
+
 - type: accessGroup
   id: miscAA
   tags:
   - Antiquarian
   - GliessDockmaster
   - GliessSheriff
+  - GliessSheriffCommand
 
 #4families
 

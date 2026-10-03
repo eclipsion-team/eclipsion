@@ -26,14 +26,16 @@
       - type: ChatRank
         rank: crescent-rank-ind-gliess-dockmaster
       - type: HullrotFaction
-        faction: GS
+        faction: CMM
       - type: LanguageAdder
         addSpoken:
           - Tradeband
         addUnderstood:
           - Tradeband
+  # Gliess and the Minutemen run the station as partners: the dockmaster holds the full CMM access set too.
   accessGroups:
   - GeneralAccess
+  - cmmAA
   access:
   - GliessSheriff
   - GliessDockmaster

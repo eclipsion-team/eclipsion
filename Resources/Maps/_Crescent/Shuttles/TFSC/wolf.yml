@@ -2242,33 +2242,17 @@ entities:
     - type: Transform
       parent: 1
       pos: 2.5,-12.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 28
     components:
     - type: Transform
       parent: 1
       pos: 6.5,-12.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 29
     components:
     - type: Transform

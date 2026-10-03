@@ -66,6 +66,7 @@
     name: faction-mission-item-charter-league
 
 # Only completable while the Analiesse wreck is in play, which happens solely through the admin-run event.
+# Turning it in brings the Analiesse herself back as the CMM's end-game ship (see Events/analiesse.yml).
 - type: factionMission
   id: MissionAnaliesseKey
   name: faction-mission-cmm-name
@@ -78,3 +79,5 @@
       tags: [ AnaliesseAuthKey ]
     amount: 1
     name: faction-mission-item-authkey
+  rewardGameRules:
+  - AnaliesseArrival

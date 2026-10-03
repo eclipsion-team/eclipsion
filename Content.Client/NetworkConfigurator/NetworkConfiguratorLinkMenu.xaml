@@ -1,46 +1,83 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
                 xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-                xmlns:networkConfigurator="clr-namespace:Content.Client.NetworkConfigurator"
-                Title="Network Configurator" MinSize="620 400" RectClipContent="True">
+                Title="{Loc network-configurator-link-title}" MinSize="900 600" SetSize="980 680" RectClipContent="True">
     <BoxContainer Orientation="Vertical" VerticalExpand="True">
-        <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-            <Label Margin="12 0" Text="{Loc signal-port-selector-help}"/>
-        </BoxContainer>
-        <Control VerticalExpand="True" HorizontalExpand="True" Margin="12 6 12 0">
-            <PanelContainer Name="MainPanel" HorizontalExpand="False" VerticalExpand="True" />
-            <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="True">
-                <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True" Margin="6">
-                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" SizeFlagsStretchRatio="0.3">
-                        <RichTextLabel Name="HeaderLeft"/>
-                        <BoxContainer Name="ButtonContainerLeft" Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True"/>
-                    </BoxContainer>
-                    <BoxContainer Name="MiddleContainer" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SizeFlagsStretchRatio="0.2"/>
-                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" SizeFlagsStretchRatio="0.3">
-                        <RichTextLabel Name="HeaderRight"/>
-                        <BoxContainer Name="ButtonContainerRight" Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True"/>
-                    </BoxContainer>
+        <Label Margin="12 4" Text="{Loc network-configurator-link-help}" StyleClasses="LabelSubText"/>
+
+        <!-- Devices and ports -->
+        <BoxContainer Orientation="Horizontal" VerticalExpand="True" SizeFlagsStretchRatio="0.6" Margin="12 4 12 0">
+            <!-- Sources -->
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SizeFlagsStretchRatio="0.24">
+                <BoxContainer Orientation="Horizontal">
+                    <Label Name="SourcesHeader" StyleClasses="LabelHeading" HorizontalExpand="True" ClipText="True"/>
+                    <Button Name="SelectAllSources" StyleClasses="OpenBoth" Text="{Loc network-configurator-link-select-all}"/>
                 </BoxContainer>
-            </ScrollContainer>
-        </Control>
-        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="12 4">
-            <BoxContainer Orientation="Horizontal">
-                <Button Name="ButtonClear" SetHeight="32" StyleClasses="OpenRight" Text="{Loc signal-port-selector-menu-clear}"/>
-                <Button Name="ButtonLinkDefault" SetHeight="32" StyleClasses="OpenLeft" Text="{Loc signal-port-selector-menu-link-defaults}"/>
+                <PanelContainer Name="SourcesPanel" VerticalExpand="True" Margin="0 4 0 0">
+                    <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+                        <BoxContainer Name="SourceDevices" Orientation="Vertical" HorizontalExpand="True" Margin="4"/>
+                    </ScrollContainer>
+                </PanelContainer>
             </BoxContainer>
-            <Control HorizontalExpand="True"/>
-            <Control>
-                <Button Name="ButtonOk" MinHeight="26" StyleClasses="ButtonColorGreen" Text="{Loc signal-port-selector-menu-done}"></Button>
-            </Control>
+
+            <!-- Ports -->
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SizeFlagsStretchRatio="0.52" Margin="8 0">
+                <Label Name="PortsHeader" StyleClasses="LabelHeading" Align="Center"/>
+                <Control VerticalExpand="True" HorizontalExpand="True" Margin="0 4 0 0">
+                    <PanelContainer Name="MainPanel" VerticalExpand="True"/>
+                    <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+                        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True" Margin="6">
+                            <BoxContainer Name="ButtonContainerLeft" Orientation="Vertical" HorizontalExpand="True" SizeFlagsStretchRatio="0.36"/>
+                            <BoxContainer Name="MiddleContainer" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SizeFlagsStretchRatio="0.28"/>
+                            <BoxContainer Name="ButtonContainerRight" Orientation="Vertical" HorizontalExpand="True" SizeFlagsStretchRatio="0.36"/>
+                        </BoxContainer>
+                    </ScrollContainer>
+                    <Label Name="PortsEmptyLabel" Align="Center" VAlign="Center" HorizontalExpand="True" VerticalExpand="True"
+                           StyleClasses="LabelSubText" Text="{Loc network-configurator-link-select-hint}"/>
+                </Control>
+            </BoxContainer>
+
+            <!-- Sinks -->
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SizeFlagsStretchRatio="0.24">
+                <BoxContainer Orientation="Horizontal">
+                    <Label Name="SinksHeader" StyleClasses="LabelHeading" HorizontalExpand="True" ClipText="True"/>
+                    <Button Name="SelectAllSinks" StyleClasses="OpenBoth" Text="{Loc network-configurator-link-select-all}"/>
+                </BoxContainer>
+                <PanelContainer Name="SinksPanel" VerticalExpand="True" Margin="0 4 0 0">
+                    <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+                        <BoxContainer Name="SinkDevices" Orientation="Vertical" HorizontalExpand="True" Margin="4"/>
+                    </ScrollContainer>
+                </PanelContainer>
+            </BoxContainer>
         </BoxContainer>
+
+        <!-- Existing links -->
+        <BoxContainer Orientation="Horizontal" Margin="12 8 12 0">
+            <Label Name="LinksHeader" StyleClasses="LabelHeading" HorizontalExpand="True"/>
+            <CheckBox Name="OnlySelectedCheck" Text="{Loc network-configurator-link-only-selected}"/>
+        </BoxContainer>
+        <PanelContainer Name="LinksPanel" VerticalExpand="True" SizeFlagsStretchRatio="0.4" Margin="12 4 12 0">
+            <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+                <BoxContainer Name="ExistingLinks" Orientation="Vertical" HorizontalExpand="True" Margin="4"/>
+            </ScrollContainer>
+        </PanelContainer>
+
+        <!-- Actions -->
+        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="12 6">
+            <Button Name="ButtonClear" SetHeight="32" StyleClasses="OpenRight" Text="{Loc network-configurator-link-clear-selected}"
+                    ToolTip="{Loc network-configurator-link-clear-selected-tooltip}"/>
+            <Button Name="ButtonLinkDefault" SetHeight="32" StyleClasses="OpenLeft" Text="{Loc signal-port-selector-menu-link-defaults}"
+                    ToolTip="{Loc network-configurator-link-defaults-tooltip}"/>
+            <Control HorizontalExpand="True"/>
+            <Button Name="ButtonClearBuffer" SetHeight="32" StyleClasses="OpenRight" Text="{Loc network-configurator-link-buffer-clear}"/>
+            <Button Name="ButtonOk" SetHeight="32" StyleClasses="ButtonColorGreen" Text="{Loc signal-port-selector-menu-done}"/>
+        </BoxContainer>
+
         <Control SetHeight="28" Margin="1 0 2 1">
-            <PanelContainer Name="FooterPanel"></PanelContainer>
-            <BoxContainer Name="ContentFooter" HorizontalExpand="True" SetHeight="28">
+            <PanelContainer Name="FooterPanel"/>
+            <BoxContainer HorizontalExpand="True" SetHeight="28">
                 <Label Text="Net#Link ™" VerticalAlignment="Center" Margin="6 0" StyleClasses="PdaContentFooterText"/>
-                <Label Name="AddressLabel" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6 0" StyleClasses="PdaContentFooterText"/>
                 <Control HorizontalExpand="True"/>
-                <Label Name="FromAddressLabel" Margin="6 0" StyleClasses="PdaContentFooterText"/>
-                <Label SetWidth="25" StyleClasses="PdaContentFooterText" Align="Center" Text="➝"/><!--Turn this into an arrow texture-->
-                <Label Name="ToAddressLabel" Margin="6 0" StyleClasses="PdaContentFooterText"/>
+                <Label Name="SelectionLabel" VerticalAlignment="Center" Margin="6 0" StyleClasses="PdaContentFooterText"/>
             </BoxContainer>
         </Control>
     </BoxContainer>

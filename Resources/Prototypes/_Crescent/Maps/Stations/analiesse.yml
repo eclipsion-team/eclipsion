@@ -1,16 +1,20 @@
+# The Analiesse — the Colonial Minutemen's mobile headquarters, lost when Imperial forces destroyed her.
+# Not part of any preset's round-start layout: she only enters play as the CMM finale, when the Minutemen turn in
+# the Analiesse auth key at their directive terminal (see _Crescent/RoundEnd/missions.yml, MissionAnaliesseKey,
+# and the AnaliesseArrival rule in _Crescent/Events/analiesse.yml). Her jobs open for latejoin once she arrives.
 - type: gameMap
-  id: Precinct9
-  mapName: 'CMM Proctor Annalise'
-  mapPath: /Maps/_Crescent/Stations/precinct9.yml
+  id: Analiesse
+  mapName: 'CMM Analiesse'
+  mapPath: /Maps/_Crescent/Stations/analiesse.yml
   minPlayers: 0
   stations:
-    Precinct9:
+    Analiesse:
       stationProto: StandardCrescentStation
       gridComponents:
         - type: BlockShipWeaponProjectileGrid
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'CMM Proctor Annalise'
+          mapNameTemplate: 'CMM Analiesse'
         - type: Grammar
           attributes:
             proper: true

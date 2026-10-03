@@ -250420,12 +250420,9 @@ entities:
       links:
       - 7668
       - 7677
-    - type: Door
-      secondsUntilStateChange: -34585.336
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 164
     components:
     - type: Transform
@@ -250473,15 +250470,12 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -7.5,-8.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -7591.6675
-      state: Opening
     - type: DeviceLinkSink
       links:
       - 7640
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
 - proto: AirlockCommandLockedNCWLCommand
   entities:
   - uid: 170
@@ -250527,12 +250521,9 @@ entities:
     - type: DeviceLinkSink
       links:
       - 7663
-    - type: Door
-      secondsUntilStateChange: -20235.322
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 176
     components:
     - type: Transform
@@ -250741,12 +250732,9 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -14.5,-17.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -43996.633
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
 - proto: AirlockCommandLockedNCWLKommissar
   entities:
   - uid: 204

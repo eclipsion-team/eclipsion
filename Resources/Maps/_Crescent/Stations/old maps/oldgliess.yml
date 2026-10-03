@@ -54575,12 +54575,9 @@ entities:
       rot: 3.141592653589793 rad
       pos: -2.5,-22.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -882.86176
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
 - proto: AirlockCommandGliessSheriff
   entities:
   - uid: 38
@@ -54634,12 +54631,9 @@ entities:
     - type: Transform
       pos: -8.5,2.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -20077.803
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 43
     components:
     - type: Transform
@@ -54686,12 +54680,9 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 2.5,-20.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -14357.055
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
 - proto: AirlockHorizontal
   entities:
   - uid: 53
@@ -77478,10 +77469,7 @@ entities:
       parent: 1
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
-    - type: Door
-      secondsUntilStateChange: -188.29999
-      state: Opening
+        DoorStatus: False
   - uid: 3946
     components:
     - type: Transform

@@ -219,10 +219,7 @@ entities:
       parent: 1
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
-    - type: Door
-      secondsUntilStateChange: -593.3719
-      state: Opening
+        DoorStatus: False
 - proto: APCBasic
   entities:
   - uid: 5

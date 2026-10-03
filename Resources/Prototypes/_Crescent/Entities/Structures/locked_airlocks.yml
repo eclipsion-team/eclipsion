@@ -1105,6 +1105,17 @@
     containers:
       board: [ DoorElectronicsCMMMarshal ]
 
+#cmm windoors
+
+- type: entity
+  parent: WindoorSecure
+  id: WindoorSecureCMM
+  suffix: Minutemen, Windoor
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCMM ]
+
 #4fam
 
 - type: entity

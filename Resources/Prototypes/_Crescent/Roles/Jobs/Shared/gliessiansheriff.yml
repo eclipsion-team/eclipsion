@@ -3,6 +3,7 @@
   name: job-name-gliess-sheriff
   description: job-description-gliess-sheriff
   playTimeTracker: JobGliessSheriff
+  requiredReligion: LastWatch
   weight: 40
   startingGear: GliessSheriffGear
   icon: "JobIconMarshal"
@@ -26,16 +27,22 @@
       - type: ChatRank
         rank: crescent-rank-ind-gliess-sheriff
       - type: HullrotFaction
-        faction: GS
+        faction: CMM
+      - type: ReligiousCaller
+        action: ActionReligiousCallLastWatch
       - type: LanguageAdder
         addSpoken:
           - Tradeband
         addUnderstood:
           - Tradeband
+  # The sheriff is the Minutemen's officer on Gliess: full CMM access (Marshal tier and CMM funds) on top of the
+  # Gliess credentials.
   accessGroups:
   - GeneralAccess
+  - cmmAA
   access:
   - GliessSheriff
+  - GliessSheriffCommand
   - GliessDockmaster
 
 - type: startingGear
@@ -45,7 +52,7 @@
     shoes: ClothingShoesBootsCombat
     head: ClothingHeadHatCMMMarshal
     gloves: ClothingHandsGlovesCombat
-    pocket1: WeaponRevolverSnubnose
+    pocket1: WeaponRevolverCMMBulldog
     id: GliessSheriffPDA
     ears: ClothingHeadsetCMM
     outerClothing: ClothingOuterArmorCMMCarapace

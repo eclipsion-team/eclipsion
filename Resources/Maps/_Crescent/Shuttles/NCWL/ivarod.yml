@@ -1950,129 +1950,65 @@ entities:
     - type: Transform
       parent: 1
       pos: 0.5,-7.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 17
     components:
     - type: Transform
       parent: 1
       pos: 1.5,3.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 18
     components:
     - type: Transform
       parent: 1
       pos: -3.5,7.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 19
     components:
     - type: Transform
       parent: 1
       pos: 4.5,7.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 20
     components:
     - type: Transform
       parent: 1
       pos: -3.5,3.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 21
     components:
     - type: Transform
       parent: 1
       pos: 4.5,3.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 22
     components:
     - type: Transform
       parent: 1
       pos: 5.5,-1.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 23
     components:
     - type: Transform
       parent: 1
       pos: -4.5,-1.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
 - proto: AirlockCommandHorizontal
   entities:
   - uid: 24
@@ -2080,97 +2016,49 @@ entities:
     - type: Transform
       parent: 1
       pos: -3.5,-5.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 25
     components:
     - type: Transform
       parent: 1
       pos: 4.5,-5.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 26
     components:
     - type: Transform
       parent: 1
       pos: 3.5,4.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 27
     components:
     - type: Transform
       parent: 1
       pos: -2.5,4.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 28
     components:
     - type: Transform
       parent: 1
       pos: 3.5,8.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 29
     components:
     - type: Transform
       parent: 1
       pos: -2.5,8.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
 - proto: AirlockShuttle
   entities:
   - uid: 30
@@ -2178,33 +2066,17 @@ entities:
     - type: Transform
       parent: 1
       pos: -0.5,-11.5
-    - type: Airtight
-      airBlocked: False
-    - type: Physics
-      canCollide: False
-    - type: Occluder
-      enabled: False
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
-    - type: Door
-      state: Open
+        DoorStatus: False
   - uid: 31
     components:
     - type: Transform
       parent: 1
       pos: 1.5,-11.5
-    - type: Airtight
-      airBlocked: False
-    - type: Physics
-      canCollide: False
-    - type: Occluder
-      enabled: False
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
-    - type: Door
-      state: Open
+        DoorStatus: False
 - proto: AmeController
   entities:
   - uid: 32

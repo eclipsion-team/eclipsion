@@ -1,3 +1,4 @@
+using Content.Server._Crescent.NPC; // Crescent
 using Content.Server._Crescent.NPC.Queries; // Crescent
 using Content.Server._Crescent.NpcSquad; // Crescent
 using Content.Server._Crescent.Diplomacy; // Eclipsion
@@ -54,7 +55,6 @@ public sealed class NPCUtilitySystem : EntitySystem
     [Dependency] private readonly ContainerSystem _container = default!;
     [Dependency] private readonly DiplomacySystem _diplomacy = default!; // Eclipsion
     [Dependency] private readonly FactionIdCardSystem _factionIds = default!; // Eclipsion
-    [Dependency] private readonly RatDiplomacySystem _factionDiplomacy = default!; // Eclipsion
     [Dependency] private readonly DrinkSystem _drink = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly FoodSystem _food = default!;
@@ -70,6 +70,7 @@ public sealed class NPCUtilitySystem : EntitySystem
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
     [Dependency] private readonly TurretTargetSettingsSystem _turretTargetSettings = default!;
     [Dependency] private readonly NpcSquadSystem _npcSquad = default!; // Crescent
+    [Dependency] private readonly NpcMechTargetingSystem _mechTargeting = default!; // Crescent
 
     // Eclipsion - inventory slot an anti-boarder gun inspects for a sealed suit.
     private const string OuterClothingSlot = "outerClothing";
@@ -388,6 +389,11 @@ public sealed class NPCUtilitySystem : EntitySystem
             {
                 return _npcSquad.IsTargetAllowed(owner, targetUid) ? 1f : 0f;
             }
+            // Crescent - alive, or a mech still in the fight.
+            case NpcTargetActiveCon:
+            {
+                return _mechTargeting.IsActiveTarget(targetUid) ? 1f : 0f;
+            }
             case TurretTargetingCon:
             {
                 if (!TryComp<TurretTargetSettingsComponent>(owner, out var turretTargetSettings) ||
@@ -448,25 +454,19 @@ public sealed class NPCUtilitySystem : EntitySystem
         if (HasComp<AntiBoarderIgnoredComponent>(target) && !HasComp<EmaggedComponent>(target))
             return;
 
-        // Anti-boarder guns trust the faction credential in the wearer's ID slot. An allied card grants safe
-        // passage, while a card belonging to a faction at war identifies its wearer as a boarder even without
-        // a pressure suit. Cards held in a hand are not accepted.
-        var hasHostileCredential = false;
-        if (_factionIds.TryGetWornFaction(target, out var idFaction) &&
-            TryComp<NpcFactionMemberComponent>(owner, out var ownerFactions))
-        {
-            foreach (var ownerFaction in ownerFactions.Factions)
-            {
-                var relation = _factionDiplomacy.GetRelation(ownerFaction, idFaction);
-                if (relation == FactionRelation.Alliance)
-                    return;
+        // Anti-boarder guns trust the faction credential in the wearer's ID slot, read against live diplomacy.
+        // An allied card grants safe passage. A card of a faction at war, a spacer's card (IND has no seat at the
+        // diplomacy table, so only Gliess's guns, which count IND as their own, let it by) or no card at all
+        // marks its wearer as a boarder even without a pressure suit - otherwise taking the ID off was all it
+        // took to walk past every gun in the sector. Cards held in a hand are not accepted.
+        var credential = _factionIds.ReadCredential(owner, target);
+        if (credential == FactionCredentialStanding.Allied)
+            return;
 
-                hasHostileCredential |= relation == FactionRelation.War;
-            }
-        }
+        var hasHostileCredential = credential is FactionCredentialStanding.Hostile or FactionCredentialStanding.Unknown;
 
-        // Hardsuitless people normally get the benefit of the doubt as crew. A hostile credential overrides
-        // that assumption, and being inside an ordinary mech still counts as boarding protection by itself.
+        // Hardsuitless visitors carrying a neutral faction's card get the benefit of the doubt. A hostile or
+        // missing credential overrides that, and being inside an ordinary mech counts as boarding protection.
         if (!inOrdinaryMech && !hasHostileCredential && !IsSealedBoarder(target))
             return;
 
@@ -478,7 +478,8 @@ public sealed class NPCUtilitySystem : EntitySystem
 
         // HullrotFaction is the authoritative player allegiance. Check it directly as well as the mirrored
         // NPC faction so a crew member cannot become a target while their job/recruitment faction is waiting
-        // to synchronize (or if that mirror was removed by another system).
+        // to synchronize (or if that mirror was removed by another system). This is also what keeps the ship's
+        // own crew safe when they have lost their ID.
         if (TryComp<HullrotFactionComponent>(target, out var hullrotFaction)
             && !string.IsNullOrWhiteSpace(hullrotFaction.Faction)
             && _npcFaction.IsMember(owner, hullrotFaction.Faction.Trim()))
@@ -606,6 +607,18 @@ public sealed class NPCUtilitySystem : EntitySystem
                 {
                     entities.Add(ent);
                 }
+                break;
+            }
+            // Crescent - mechs with an enemy in the cockpit, found by scanning the pilot and their ID.
+            case NearbyHostileMechsQuery:
+            {
+                _mechTargeting.AddNearbyHostileMechs(owner, vision, entities);
+                break;
+            }
+            // Crescent - under kill-all rules of engagement, anyone neither of its side nor allied.
+            case NearbyKillAllTargetsQuery:
+            {
+                _npcSquad.AddKillAllTargets(owner, vision, entities);
                 break;
             }
             // Eclipsion - an explicitly ordered target, with no faction or vision filter of its own.

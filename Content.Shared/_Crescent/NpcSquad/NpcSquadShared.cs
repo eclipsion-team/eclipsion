@@ -129,12 +129,28 @@ public sealed class NpcSquadBuiState : BoundUserInterfaceState
     public readonly List<NpcSquadMemberState> Members;
     public readonly int MaxMembers;
     public readonly NpcSquadFormation Formation;
+    public readonly bool KillAll;
 
-    public NpcSquadBuiState(List<NpcSquadMemberState> members, int maxMembers, NpcSquadFormation formation)
+    public NpcSquadBuiState(List<NpcSquadMemberState> members, int maxMembers, NpcSquadFormation formation, bool killAll)
     {
         Members = members;
         MaxMembers = maxMembers;
         Formation = formation;
+        KillAll = killAll;
+    }
+}
+
+/// <summary>
+/// Sets the squad's rules of engagement: anyone neither of its side nor allied, or only its faction's enemies.
+/// </summary>
+[Serializable, NetSerializable]
+public sealed class NpcSquadKillAllMessage : BoundUserInterfaceMessage
+{
+    public readonly bool Enabled;
+
+    public NpcSquadKillAllMessage(bool enabled)
+    {
+        Enabled = enabled;
     }
 }
 

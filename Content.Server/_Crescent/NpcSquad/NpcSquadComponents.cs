@@ -83,6 +83,13 @@ public sealed partial class NpcSquadLeaderComponent : Component
     public NpcSquadFormation Formation = NpcSquadFormation.Loose;
 
     /// <summary>
+    /// Whether the squad is under kill-all rules of engagement, see <see cref="NpcKillAllComponent"/>. This
+    /// stands in for each member's own setting for as long as they follow.
+    /// </summary>
+    [ViewVariables]
+    public bool KillAll = true;
+
+    /// <summary>
     /// Which way the leader is heading, in world terms: the way they last walked, so the formation doesn't
     /// swing round every time they turn to look at something.
     /// </summary>

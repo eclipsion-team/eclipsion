@@ -1,6 +1,6 @@
 - type: entity
   id: BaseCartridgeMagnum
-  name: cartridge (.327 Imperial magnum)
+  name: cartridge (.327)
   parent: BaseCartridge
   abstract: true
   components:
@@ -28,7 +28,7 @@
 
 - type: entity
   id: CartridgeMagnum
-  name: cartridge (.327 Imperial magnum)
+  name: cartridge (.327)
   parent: BaseCartridgeMagnum
   components:
   - type: CartridgeAmmo
@@ -36,7 +36,7 @@
 
 - type: entity
   id: CartridgeMagnumPractice
-  name: cartridge (.327 Imperial practice)
+  name: cartridge (.327 practice)
   parent: BaseCartridgeMagnum
   components:
   - type: CartridgeAmmo
@@ -51,7 +51,7 @@
 
 - type: entity
   id: CartridgeMagnumRubber
-  name: cartridge (.327 Imperial rubber)
+  name: cartridge (.327 rubber)
   parent: BaseCartridgeMagnum
   components:
   - type: CartridgeAmmo
@@ -66,7 +66,7 @@
 
 - type: entity
   id: CartridgeMagnumIncendiary
-  name: cartridge (.327 Imperial incendiary)
+  name: cartridge (.327 incendiary)
   parent: BaseCartridgeMagnum
   components:
   - type: CartridgeAmmo
@@ -81,7 +81,7 @@
 
 - type: entity
   id: CartridgeMagnumAP
-  name: cartridge (.327 Imperial armor-piercing)
+  name: cartridge (.327 armor-piercing)
   parent: BaseCartridgeMagnum
   components:
   - type: CartridgeAmmo
@@ -96,7 +96,7 @@
 
 - type: entity
   id: CartridgeMagnumUranium
-  name: cartridge (.327 Imperial uranium)
+  name: cartridge (.327 uranium)
   parent: BaseCartridgeMagnum
   components:
   - type: CartridgeAmmo
@@ -111,7 +111,7 @@
 
 - type: entity
   id: CartridgeMagnumShrapnel
-  name: cartridge (.327 Imperial shrapnel)
+  name: cartridge (.327 shrapnel)
   parent: BaseCartridgeMagnum
   components:
   - type: CartridgeAmmo

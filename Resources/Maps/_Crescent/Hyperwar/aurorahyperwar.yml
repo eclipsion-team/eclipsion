@@ -87282,15 +87282,12 @@ entities:
     - type: Transform
       pos: -31.5,2.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -41883.316
-      state: Opening
     - type: DeviceLinkSink
       links:
       - 13692
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 249
     components:
     - type: Transform
@@ -87462,12 +87459,9 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 34.5,-5.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -36373.934
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 277
     components:
     - type: Transform
@@ -87527,12 +87521,9 @@ entities:
     - type: Transform
       pos: -12.5,28.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -98535.71
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
 - proto: AirlockCommandLockedDSMHorizontalArchmaester
   entities:
   - uid: 286

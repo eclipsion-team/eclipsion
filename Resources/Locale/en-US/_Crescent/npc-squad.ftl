@@ -32,6 +32,9 @@ npc-squad-fort-no-floor = There's no floor here to barricade.
 npc-squad-fort-short = Your squad only has steel for {$have} of the {$need} barricades.
 npc-squad-fort-done = Barricades up: {$built}/{$total}.
 
+npc-squad-killall-given-on = Squad: weapons free - anyone not ours or allied is fair game!
+npc-squad-killall-given-off = Squad: known enemies only!
+
 npc-squad-hold-move = Squad: move up and hold there!
 npc-squad-hold-move-too-far = Nobody holding is within {$range} tiles of that spot.
 
@@ -48,6 +51,16 @@ npc-squad-order-defend-desc = Each of you, dig in right where you stand and figh
 npc-squad-order-attack-desc = Engage every enemy in sight and push onto them.
 npc-squad-order-holdfire-desc = Stay exactly where you are and don't start anything. Point at a spot within 10 tiles to move there and hold.
 npc-squad-order-fortify-desc = Barricade in the 3x3 square around me, leaving one way in, then hold inside it. Uses the squad's steel.
+
+## Rules of engagement
+
+npc-squad-ui-engagement = Rules of engagement:
+
+npc-squad-killall-on = Kill all
+npc-squad-killall-off = Enemies only
+
+npc-squad-killall-on-desc = Engage anyone who is neither one of us nor wearing an allied faction's ID: neutrals, unaligned boarders, people without an ID.
+npc-squad-killall-off-desc = Engage only the factions we are hostile to, and anyone who shoots at us.
 
 ## Formations
 

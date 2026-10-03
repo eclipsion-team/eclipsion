@@ -3,6 +3,7 @@
   name: job-name-prophet
   description: job-description-prophet
   playTimeTracker: JobProphetTAP
+  requiredReligion: VeiledMother
   weight: 100
   startingGear: ProphetGear
   alwaysUseSpawner: true
@@ -32,7 +33,31 @@
         rank: crescent-rank-prophet
       - type: HullrotFaction
         faction: TAP
+      - type: ReligiousCaller
+        action: ActionReligiousCallVeiledMother
       - type: Telepathic
+      # The one who accepts converts into the Covenant. requiredReligion keeps the Prophet in it.
+      - type: ReligiousLeader
+        religion: VeiledMother
+      - type: VeiledProphet
+        drawLines:
+        - religion-veiled-draw-1
+        - religion-veiled-draw-2
+        - religion-veiled-draw-3
+        bindingLines:
+        - religion-veiled-binding-1
+        - religion-veiled-binding-2
+        - religion-veiled-binding-3
+        - religion-veiled-binding-4
+        chastiseLines:
+        - religion-veiled-chastise-line-1
+        - religion-veiled-chastise-line-2
+        - religion-veiled-chastise-line-3
+      # Starts at the top of the psionic tree: level four is where the last capstones open.
+      - type: Psionic
+        skillTree: PsionicGeneralTree
+        psionicLevel: 4
+        skillPoints: 4
       - type: LanguageAdder
         addSpoken:
           - Tradeband

@@ -69,6 +69,8 @@ research-technology-minutemen-light-missile-destroyer = minutemen missile destro
 research-technology-minutemen-hardsuit = minutemen combat EVA
 research-technology-minutemen-light-nt-corvette = minutemen high tech NT corvette
 research-technology-minutemen-light-guns = minutemen light firearms
+research-technology-minutemen-marksman-rifle = minutemen marksman rifle
+research-technology-minutemen-automatic-weapons = minutemen automatic weapons
 research-technology-minutemen-ion-destroyer = minutemen hybrid brawler destroyer
 research-technology-minutemen-shotgun = minutemen kammer shotgun
 

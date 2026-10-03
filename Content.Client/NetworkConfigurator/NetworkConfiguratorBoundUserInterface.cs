@@ -53,20 +53,18 @@ public sealed class NetworkConfiguratorBoundUserInterface : BoundUserInterface
                 break;
             case NetworkConfiguratorUiKey.Link:
                 _linkMenu = this.CreateWindow<NetworkConfiguratorLinkMenu>();
-                _linkMenu.OnLinkDefaults += args =>
-                {
-                    SendMessage(new NetworkConfiguratorLinksSaveMessage(args));
-                };
-
-                _linkMenu.OnToggleLink += (left, right) =>
-                {
-                    SendMessage(new NetworkConfiguratorToggleLinkMessage(left, right));
-                };
-
-                _linkMenu.OnClearLinks += () =>
-                {
-                    SendMessage(new NetworkConfiguratorClearLinksMessage());
-                };
+                _linkMenu.OnLinkPorts += (sources, sinks, source, sink) =>
+                    SendMessage(new NetworkConfiguratorLinkPortsMessage(sources, sinks, source, sink));
+                _linkMenu.OnLinkDefaults += (sources, sinks) =>
+                    SendMessage(new NetworkConfiguratorLinkDefaultsMessage(sources, sinks));
+                _linkMenu.OnClearLinks += (sources, sinks) =>
+                    SendMessage(new NetworkConfiguratorClearLinksMessage(sources, sinks));
+                _linkMenu.OnRemoveLink += link =>
+                    SendMessage(new NetworkConfiguratorRemoveLinkMessage(link.Source, link.Sink, link.SourcePort, link.SinkPort));
+                _linkMenu.OnForgetDevice += device =>
+                    SendMessage(new NetworkConfiguratorRemoveBufferedDeviceMessage(device));
+                _linkMenu.OnClearBuffer += () =>
+                    SendMessage(new NetworkConfiguratorClearLinkBufferMessage());
                 break;
         }
     }

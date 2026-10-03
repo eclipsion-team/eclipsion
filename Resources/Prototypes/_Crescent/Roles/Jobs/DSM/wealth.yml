@@ -4,6 +4,7 @@
   description: job-description-wealth
   setPreference: false # hidden from job selection, kept for spawners/admin use
   playTimeTracker: JobWealthDSM
+  requiredReligion: FourSaints
   ranks:
     RatRankKnightLead:
     - !type:CharacterPlaytimeRequirement

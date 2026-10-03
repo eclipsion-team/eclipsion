@@ -255,6 +255,7 @@ namespace Content.Server.Database
                 profile.Nationality,
                 profile.Employer,
                 profile.Lifepath,
+                profile.Religion,
                 profile.Height,
                 profile.Width,
                 profile.Age,
@@ -307,6 +308,7 @@ namespace Content.Server.Database
             profile.Nationality = humanoid.Nationality;
             profile.Employer = humanoid.Employer;
             profile.Lifepath = humanoid.Lifepath;
+            profile.Religion = humanoid.Religion;
             profile.Age = humanoid.Age;
             profile.Sex = humanoid.Sex.ToString();
             profile.Gender = humanoid.Gender.ToString();

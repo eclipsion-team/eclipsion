@@ -71,6 +71,6 @@
     back: ClothingBackpackMinuteman
     id: OrdnancemanPDA
     ears: ClothingHeadsetCMM
-    pocket1: WeaponPistolHKUSP
+    pocket1: WeaponPistolCMMLockwell
     neck: ClothingNeckScarfCMMCloak
     outerClothing: ClothingOuterArmorCMM

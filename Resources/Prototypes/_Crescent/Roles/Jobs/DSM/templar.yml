@@ -3,6 +3,7 @@
   name: job-name-advocatustemplar
   description: job-description-advocatustemplar
   playTimeTracker: JobTemplarDSM
+  requiredReligion: FourSaints
   ranks:
     RatRankTemplarSenior:
     - !type:CharacterPlaytimeRequirement
@@ -43,6 +44,8 @@
     components:
       - type: HullrotFaction
         faction: DSM
+      - type: ReligiousCaller
+        action: ActionReligiousCallFourSaints
       - type: BibleUser
       - type: LanguageAdder
         addSpoken:

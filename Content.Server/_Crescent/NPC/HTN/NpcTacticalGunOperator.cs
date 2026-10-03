@@ -21,6 +21,7 @@ public sealed partial class NpcTacticalGunOperator : HTNOperator, IHtnConditiona
 {
     [Dependency] private readonly IEntityManager _entManager = default!;
     private NpcTacticalSystem _tactical = default!;
+    private NpcMechTargetingSystem _mechTargeting = default!;
 
     [DataField]
     public HTNPlanState ShutdownState { get; private set; } = HTNPlanState.TaskFinished;
@@ -51,6 +52,7 @@ public sealed partial class NpcTacticalGunOperator : HTNOperator, IHtnConditiona
     {
         base.Initialize(sysManager);
         _tactical = sysManager.GetEntitySystem<NpcTacticalSystem>();
+        _mechTargeting = sysManager.GetEntitySystem<NpcMechTargetingSystem>();
     }
 
     public override async Task<(bool Valid, Dictionary<string, object>? Effects)> Plan(NPCBlackboard blackboard,
@@ -64,6 +66,10 @@ public sealed partial class NpcTacticalGunOperator : HTNOperator, IHtnConditiona
         {
             return (false, null);
         }
+
+        // A mech has no mob state to go down with: it is done once wrecked or left without a pilot.
+        if (_mechTargeting.IsMechOutOfAction(target))
+            return (false, null);
 
         return (true, null);
     }
@@ -109,6 +115,9 @@ public sealed partial class NpcTacticalGunOperator : HTNOperator, IHtnConditiona
         {
             return HTNOperatorStatus.Finished;
         }
+
+        if (_mechTargeting.IsMechOutOfAction(target))
+            return HTNOperatorStatus.Finished;
 
         switch (combat.Status)
         {

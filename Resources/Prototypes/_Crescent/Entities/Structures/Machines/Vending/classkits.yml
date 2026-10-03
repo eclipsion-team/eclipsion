@@ -225,20 +225,20 @@
     - name: Primary Weapon
       choices: { CMWeapon: 1 }
       entries:
-      - id: WeaponShotgunSHIDoubleBarreled4g
-        name: SHI M135 Double-Barrel 12g
+      - id: WeaponShotgunCMMDoubleBarreled
+        name: CMM M135 Double-Barrel 12g
       - id: WeaponRifleCMMNimrod
         name: CMM M32 Nimrod 7.62x51mm
         recommended: true
-      - id: WeaponSubMachineGunMP5
-        name: NT MP5 9x19mm
+      - id: WeaponSubMachineGunCMMMP5
+        name: CMM MP5 9x19mm
     - name: Secondary Weapon
       choices: { CMPistol: 1 }
       entries:
-      - id: WeaponRevolverSnubnose
-        name: NT-6R Bulldog .327
-      - id: WeaponPistolHKUSP
-        name: NT MX-32 Lockwell 9x19mm
+      - id: WeaponRevolverCMMBulldog
+        name: CMM-6R Bulldog .327
+      - id: WeaponPistolCMMLockwell
+        name: CMM MX-32 Lockwell 9x19mm
         recommended: true
     - name: Utilities
       choices: { CMUtilities: 2 }
@@ -300,20 +300,20 @@
     - name: Primary Weapon
       choices: { CMWeapon: 1 }
       entries:
-      - id: WeaponShotgunSHIDoubleBarreled4g
-        name: SHI M135 Double-Barrel 12g
+      - id: WeaponShotgunCMMDoubleBarreled
+        name: CMM M135 Double-Barrel 12g
       - id: WeaponRifleCMMNimrod
         name: CMM M32 Nimrod 7.62x51mm
         recommended: true
-      - id: WeaponSubMachineGunMP5
-        name: NT MP5 9x19mm
+      - id: WeaponSubMachineGunCMMMP5
+        name: CMM MP5 9x19mm
     - name: Secondary Weapon
       choices: { CMPistol: 1 }
       entries:
-      - id: WeaponRevolverSnubnose
-        name: NT-6R Bulldog .327
-      - id: WeaponPistolHKUSP
-        name: NT MX-32 Lockwell 9x19mm
+      - id: WeaponRevolverCMMBulldog
+        name: CMM-6R Bulldog .327
+      - id: WeaponPistolCMMLockwell
+        name: CMM MX-32 Lockwell 9x19mm
         recommended: true
     - name: Utilities
       choices: { CMUtilities: 2 }
@@ -412,7 +412,7 @@
       - id: MagazinePistolSubMachineGun
         name: 35-round SMG magazine (9x19mm PSTF auto)
       - id: MagazineLightRifle
-        name: 30-round magazine (5.56x45mm Imperial)
+        name: 30-round magazine (5.56x45mm)
       - id: MagazinePistol
         name: 18-round pistol magazine (9x19mm PSTF auto)
 

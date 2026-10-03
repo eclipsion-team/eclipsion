@@ -60,6 +60,7 @@ public sealed partial class NpcTacticalSystem : EntitySystem
     [Dependency] private readonly MobThresholdSystem _thresholds = default!;
     [Dependency] private readonly NpcFactionSystem _npcFaction = default!;
     [Dependency] private readonly NpcIffSystem _iff = default!;
+    [Dependency] private readonly NpcMechTargetingSystem _mechTargeting = default!;
     [Dependency] private readonly NpcPassiveTargetSystem _passiveTarget = default!;
     [Dependency] private readonly NpcSquadSystem _squad = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
@@ -113,6 +114,8 @@ public sealed partial class NpcTacticalSystem : EntitySystem
     private readonly Dictionary<Vector2i, int> _layerCache = new();
     private readonly List<RayCastResults> _hits = new();
     private readonly List<EntityUid> _threats = new();
+    // Threats that aren't on the NPC faction's hostile list: mechs with an enemy aboard, kill-all targets.
+    private readonly List<EntityUid> _extraThreats = new();
 
     private TimeSpan _nextUpdate;
 
@@ -710,6 +713,9 @@ public sealed partial class NpcTacticalSystem : EntitySystem
             if (_mobState.IsAlive(hostile) && !_passiveTarget.IsLeftAlone(owner, hostile))
                 _threats.Add(hostile);
         }
+
+        _mechTargeting.AddNearbyHostileMechs(owner, vision, _threats);
+        _squad.AddKillAllTargets(owner, vision, _threats);
 
         if (_threats.Count == 0)
             return xform.Coordinates;

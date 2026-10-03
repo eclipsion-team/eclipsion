@@ -10975,15 +10975,9 @@ entities:
       parent: 1
       rot: -1.5707963267948966 rad
       pos: 2.5,3.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
-    - type: Door
-      state: Open
+        DoorStatus: False
 - proto: WindoorSecurePlasma
   entities:
   - uid: 1293

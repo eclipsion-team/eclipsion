@@ -236,12 +236,8 @@
   - type: Sprite
     sprite: _Crescent/Structures/nanoforge.rsi
     layers:
-    - state: fab-active
+    - state: fab-idle
       map: ["enum.LatheVisualLayers.IsRunning"]
-    - state: fab-idle
-    - state: fab-idle
-      shader: unshaded
-      map: ["enum.PowerDeviceVisualLayers.Powered"]
     - state: fab-load
       map: ["enum.MaterialStorageVisualLayers.Inserting"]
     - state: fab-o
@@ -381,6 +377,12 @@
       - ClothingOuterHardsuitMinutemenEnsign
       - WeaponRifleCMMNimrod
       - WeaponShotgunKammerer
+      - WeaponRifleCMMHound
+      - WeaponRifleCMMLecter
+      - WeaponLightMachineGunCMMStratos
+      - WeaponSubMachineGunCMMMP5
+      - WeaponPistolCMMLockwell
+      - WeaponRevolverCMMBulldog
       #MinutemenEnd
       - CreoleTranslator
       - LowImperialTranslator
@@ -2177,12 +2179,8 @@
   - type: Sprite
     sprite: _Crescent/Structures/nanoforge.rsi
     layers:
-    - state: fab-active
+    - state: fab-idle
       map: ["enum.LatheVisualLayers.IsRunning"]
-    - state: fab-idle
-    - state: fab-idle
-      shader: unshaded
-      map: ["enum.PowerDeviceVisualLayers.Powered"]
     - state: fab-load
       map: ["enum.MaterialStorageVisualLayers.Inserting"]
     - state: fab-o
@@ -2434,12 +2432,8 @@
   - type: Sprite
     sprite: _Crescent/Structures/nanoforge.rsi
     layers:
-    - state: fab-active
+    - state: fab-idle
       map: ["enum.LatheVisualLayers.IsRunning"]
-    - state: fab-idle
-    - state: fab-idle
-      shader: unshaded
-      map: ["enum.PowerDeviceVisualLayers.Powered"]
     - state: fab-load
       map: ["enum.MaterialStorageVisualLayers.Inserting"]
     - state: fab-o

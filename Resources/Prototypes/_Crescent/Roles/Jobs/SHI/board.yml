@@ -3,6 +3,7 @@
   name: job-name-board
   description: job-description-board
   playTimeTracker: JobBoardSHI
+  requiredReligion: GoldenLedger
   ranks:
     RatRankSHIBoardTop:
     - !type:CharacterPlaytimeRequirement
@@ -50,6 +51,8 @@
     components:
       - type: HullrotFaction
         faction: SHI
+      - type: ReligiousCaller
+        action: ActionReligiousCallGoldenLedger
       - type: LanguageAdder
         addSpoken:
           - Kaishago

@@ -1,7 +1,7 @@
 # Empty mags
 - type: entity
   id: BaseMagazineLightRifle
-  name: "30-round magazine (5.56x45mm Imperial)"
+  name: "30-round magazine (5.56x45mm)"
   parent: BaseItem
   abstract: true
   components:
@@ -40,7 +40,7 @@
 # Magazines
 - type: entity
   id: MagazineLightRifleBox
-  name: "100-round box magazine (5.56x45mm Imperial)"
+  name: "100-round box magazine (5.56x45mm)"
   parent: BaseMagazineLightRifle
   components:
   - type: Tag
@@ -65,7 +65,7 @@
 
 - type: entity
   id: MagazineLightRifleBoxPractice
-  name: "100-round box magazine (5.56x45mm Imperial practice)"
+  name: "100-round box magazine (5.56x45mm practice)"
   parent: MagazineLightRifleBox
   components:
   - type: BallisticAmmoProvider
@@ -73,7 +73,7 @@
 
 - type: entity
   id: MagazineLightRifleBoxRubber
-  name: "100-round box magazine (5.56x45mm Imperial rubber)"
+  name: "100-round box magazine (5.56x45mm rubber)"
   parent: MagazineLightRifleBox
   components:
   - type: BallisticAmmoProvider
@@ -81,7 +81,7 @@
 
 - type: entity
   id: MagazineLightRifleBoxIncendiary
-  name: "100-round box magazine (5.56x45mm Imperial incendiary)"
+  name: "100-round box magazine (5.56x45mm incendiary)"
   parent: MagazineLightRifleBox
   components:
   - type: BallisticAmmoProvider
@@ -89,7 +89,7 @@
 
 - type: entity
   id: MagazineLightRifleBoxUranium
-  name: "100-round box magazine (5.56x45mm Imperial black-tip)"
+  name: "100-round box magazine (5.56x45mm black-tip)"
   parent: MagazineLightRifleBox
   components:
   - type: BallisticAmmoProvider
@@ -97,7 +97,7 @@
 
 - type: entity
   id: MagazineLightRifleBoxShrapnel
-  name: "100-round  magazine box (5.56x45mm Imperial shrapnel)"
+  name: "100-round  magazine box (5.56x45mm shrapnel)"
   parent: MagazineLightRifleBox
   components:
   - type: BallisticAmmoProvider
@@ -105,7 +105,7 @@
 
 - type: entity
   id: MagazineLightRifle
-  name: "30-round magazine (5.56x45mm Imperial)"
+  name: "30-round magazine (5.56x45mm)"
   parent: BaseMagazineLightRifle
   components:
   - type: BallisticAmmoProvider
@@ -115,7 +115,7 @@
 
 - type: entity
   id: MagazineLightRifleEmpty
-  name: "30-round magazine (5.56x45mm Imperial any)"
+  name: "30-round magazine (5.56x45mm any)"
   suffix: empty
   parent: MagazineLightRifle
   components:
@@ -124,7 +124,7 @@
 
 - type: entity
   id: MagazineLightRiflePractice
-  name: "30-round magazine (5.56x45mm Imperial practice)"
+  name: "30-round magazine (5.56x45mm practice)"
   parent: BaseMagazineLightRifle
   components:
   - type: BallisticAmmoProvider
@@ -132,7 +132,7 @@
 
 - type: entity
   id: MagazineLightRifleRubber
-  name: "30-round magazine (5.56x45mm Imperial rubber)"
+  name: "30-round magazine (5.56x45mm rubber)"
   parent: BaseMagazineLightRifle
   components:
   - type: BallisticAmmoProvider
@@ -140,7 +140,7 @@
 
 - type: entity
   id: MagazineLightRifleUranium
-  name: "30-round magazine (5.56x45mm Imperial uranium)"
+  name: "30-round magazine (5.56x45mm uranium)"
   parent: BaseMagazineLightRifle
   components:
   - type: BallisticAmmoProvider
@@ -148,7 +148,7 @@
 
 - type: entity
   id: MagazineLightRifleIncendiary
-  name: "30-round magazine (5.56x45mm Imperial incendiary)"
+  name: "30-round magazine (5.56x45mm incendiary)"
   parent: MagazineLightRifle
   components:
   - type: BallisticAmmoProvider
@@ -156,7 +156,7 @@
 
 - type: entity
   id: MagazineLightRifleShrapnel
-  name: "30-round magazine (5.56x45mm Imperial shrapnel)"
+  name: "30-round magazine (5.56x45mm shrapnel)"
   parent: BaseMagazineLightRifle
   components:
   - type: BallisticAmmoProvider

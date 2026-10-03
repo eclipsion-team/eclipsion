@@ -121,13 +121,15 @@
 
 - type: entity
   parent: ComputerPaymentBase
-  id: ComputerPaymentGS
-  name: payroll console GS
+  id: ComputerPaymentCMM
+  name: payroll console CMM
   components:
   - type: PaymentConsole
-    faction: GS
+    faction: CMM
   - type: AccessReader
-    access: [["GliessSheriff", "GliessDockmaster"]]
+    # The Gliess Sheriff alone. CMMFunds is shared by the Marshal, Deputy Marshal and the Gliess dockmaster, and the
+    # Gliess credentials by every deputy, so neither is narrow enough.
+    access: [["GliessSheriffCommand"]]
 
 - type: entity
   parent: ComputerPaymentBase

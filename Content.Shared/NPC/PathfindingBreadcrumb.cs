@@ -120,4 +120,10 @@ public enum PathfindingBreadcrumbFlag : ushort
     /// Is there climbing involved
     /// </summary>
     Climb = 1 << 4,
+
+    /// <summary>
+    /// Crescent: the door here can't be worked by hand - neither bumped nor clicked open, like shutters and
+    /// blast doors that only a button or signal moves.
+    /// </summary>
+    RemoteDoor = 1 << 5,
 }

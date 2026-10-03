@@ -424,6 +424,11 @@
   components:
   - type: ShipyardScreen
     faction: CMM
+  # Bills the CMM treasury once Gliess binds to it. Gliess Santo also hosts neutral Spacers, who must not be
+  # able to buy hulls on the Minutemen's money; they use the civilian yards beside this one.
+  - type: FactionMachine
+    faction: CMM
+    restrictAccess: true
   - type: ShipyardListing
     iffColor: "#36B500"
     shuttles:
@@ -488,6 +493,42 @@
     - Fadeem
     - Qasr
     - Yanbue # those 2 are modular shuttles which means the shipguns are placed there manually
+
+# Great Hunt home-base yards, mapped only on tribalhideout_greathunt / refuge_greathunt. Those copies carry no
+# civilian or scrap yard, so these are the only way to buy a hull there, and they only list the Great Hunt versions
+# of unarmed hulls (Maps/Ships/GreatHunt): their cloak never overheats and is on when they launch. The hunt is
+# decided at the altar, not in a ship fight. Faction-locked so a raider can't spend the other side's treasury.
+- type: entity
+  id: RatTAPGreatHuntMothershipComputer
+  parent: BaseMothershipComputer
+  name: tribal hunt shipyard
+  components:
+  - type: ShipyardScreen
+    faction: TAP
+  - type: FactionMachine
+    faction: TAP
+    restrictAccess: true
+    normalizeFaction: false # TAP would otherwise fold into TFSC and lock out the TAP players it is for
+  - type: ShipyardListing
+    iffColor: "#9FED58"
+    shuttles:
+    - FadeemGreatHunt
+    - LuciferGreatHunt
+
+- type: entity
+  id: RatSRMGreatHuntMothershipComputer
+  parent: BaseMothershipComputer
+  name: militia hunt shipyard
+  components:
+  - type: ShipyardScreen
+    faction: SRM
+  - type: FactionMachine
+    faction: SRM
+    restrictAccess: true
+  - type: ShipyardListing
+    iffColor: "#C0392B"
+    shuttles:
+    - SpiderGreatHunt
 
 - type: entity
   id: RatOuroborosMothershipComputer

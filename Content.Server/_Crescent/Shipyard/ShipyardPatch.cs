@@ -1,4 +1,4 @@
-using Content.Server.Shuttles.Components;
+﻿using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
@@ -223,7 +223,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     /// </summary>
     /// <param name="stationUid">The ID of the station that the shuttle is docked to</param>
     /// <param name="shuttleUid">The grid ID of the shuttle to be appraised and sold</param>
-    public bool TrySellShuttle(EntityUid stationUid, EntityUid shuttleUid, out int bill)
+    public bool TrySellShuttle(EntityUid stationUid, EntityUid shuttleUid, out int bill, ShipyardConsoleUiKey? uiKey = null)
     {
         bill = 0;
 
@@ -275,7 +275,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             _station.DeleteStation(shuttleStationUid);
         }
 
-        bill = ComputeSellValue(shuttleUid);
+        // Same key as the quote, so the black market / syndicate cut is actually taken on the sale.
+        bill = ComputeSellValue(shuttleUid, uiKey);
 
 
         EntityManager.DeleteEntity(shuttleUid);
@@ -324,6 +325,10 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         // Apply resale multiplier (devaluation)
         if (TryComp<ShipPriceMultiplierComponent>(shuttleUid, out var mult))
         {
+            // A bought hull never resells for more than was paid for it, whatever it appraises at.
+            if (mult.PurchasePrice is { } paid)
+                value = Math.Min(value, paid);
+
             value *= mult.priceMultiplier;
         }
 
@@ -535,6 +540,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         // Apply resale depreciation to purchased ships
         var priceMult = EnsureComp<ShipPriceMultiplierComponent>(shuttle.Owner);
         priceMult.priceMultiplier = 0.9f;
+        priceMult.PurchasePrice = vesselPrice;
 
         var sellValue = ComputeSellValue(shuttle.Owner, (ShipyardConsoleUiKey)args.UiKey);
 
@@ -675,7 +681,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         var channel = component.ShipyardChannel;
 
-        if (!TrySellShuttle(stationUid, shuttleUid, out var bill))
+        if (!TrySellShuttle(stationUid, shuttleUid, out var bill, (ShipyardConsoleUiKey) args.UiKey))
         {
             ConsolePopup(args.Actor, Loc.GetString("shipyard-console-sale-reqs"));
             PlayDenySound(uid, component);
@@ -728,12 +734,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         if (deed?.ShuttleUid != null)
             sellValue = ComputeSellValue((EntityUid)deed.ShuttleUid, (ShipyardConsoleUiKey)args.UiKey);
 
-
-        if (ShipyardConsoleUiKey.BlackMarket == (ShipyardConsoleUiKey) args.UiKey || ShipyardConsoleUiKey.Syndicate == (ShipyardConsoleUiKey) args.UiKey) // Unhardcode this please
-        {
-            var tax = (int) (sellValue * 0.30f);
-            sellValue -= tax;
-        }
+        // ComputeSellValue already takes the black market / syndicate cut; it used to be taken a second time here.
 
         var fullName = deed != null ? GetFullName(deed) : null;
         RefreshState(uid, GetDisplayBalance(uid, player), true, fullName, sellValue, targetId.HasValue, (ShipyardConsoleUiKey) args.UiKey);

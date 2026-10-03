@@ -225,13 +225,14 @@
 
 - type: entity
   parent: BaseComputerOverwatch
-  id: GSOverwatchComputer
-  name: overwatch console GS
+  id: CMMOverwatchComputer
+  name: overwatch console CMM
   components:
   - type: OverwatchConsole
-    faction: GS
+    faction: CMM
   - type: AccessReader
-    access: [["GliessSheriff", "GliessDockmaster"]]
+    # CMM only. The Gliess sheriff and deputies carry the Minuteman tag; the dockmaster and spacers do not.
+    access: [["Minuteman"]]
 
 # One shared Federation console. Interdyne, Shipbreaker, GSC and Cyberdawn retain their own leadership,
 # but their jobs expose the shared TFCF gameplay faction; a console watching only "faction: CD" would show

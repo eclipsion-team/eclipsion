@@ -415,6 +415,7 @@ namespace Content.Server.Database
         public string Nationality { get; set; } = null!;
         public string Employer { get; set; } = null!;
         public string Lifepath { get; set; } = null!;
+        public string Religion { get; set; } = "";
         public int Age { get; set; }
         public string Sex { get; set; } = null!;
         // Deprecated: TTS was removed. Column is retained (default "") to avoid a schema migration; nothing reads it.

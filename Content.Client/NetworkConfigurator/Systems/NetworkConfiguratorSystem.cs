@@ -107,6 +107,7 @@ public sealed class NetworkConfiguratorSystem : SharedNetworkConfiguratorSystem
         private readonly string _keyBindingName;
 
         private bool? _linkModeActive = null;
+        private int _bufferCount = -1;
 
         public StatusControl(NetworkConfiguratorComponent configurator, string keyBindingName)
         {
@@ -121,10 +122,13 @@ public sealed class NetworkConfiguratorSystem : SharedNetworkConfiguratorSystem
         {
             base.FrameUpdate(args);
 
-            if (_linkModeActive != null && _linkModeActive == _configurator.LinkModeActive)
+            if (_linkModeActive != null
+                && _linkModeActive == _configurator.LinkModeActive
+                && _bufferCount == _configurator.LinkBuffer.Count)
                 return;
 
             _linkModeActive = _configurator.LinkModeActive;
+            _bufferCount = _configurator.LinkBuffer.Count;
 
             if (!_configurator.ShowLabel) // Shitmed - Starlight Abductors: Allow hiding the label on multitools that dont need List mode.
                 return;
@@ -133,9 +137,17 @@ public sealed class NetworkConfiguratorSystem : SharedNetworkConfiguratorSystem
                 ? "network-configurator-examine-mode-link"
                 : "network-configurator-examine-mode-list";
 
-            _label.SetMarkup(Robust.Shared.Localization.Loc.GetString("network-configurator-item-status-label",
+            var markup = Robust.Shared.Localization.Loc.GetString("network-configurator-item-status-label",
                 ("mode", Robust.Shared.Localization.Loc.GetString(modeLocString)),
-                ("keybinding", _keyBindingName)));
+                ("keybinding", _keyBindingName));
+
+            if (_bufferCount > 0)
+            {
+                markup += "\n" + Robust.Shared.Localization.Loc.GetString("network-configurator-item-status-buffer",
+                    ("count", _bufferCount));
+            }
+
+            _label.SetMarkup(markup);
         }
     }
 }

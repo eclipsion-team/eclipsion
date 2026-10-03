@@ -31,6 +31,10 @@ public sealed partial class DiscordAuthManager : IPostInjectInit
     private string _apiUrl = string.Empty;
     private string _apiKey = string.Empty;
     private string _discordGuild = String.Empty;
+
+    // Crescent: every check is a round trip to the auth API, and the client can send them at will.
+    private static readonly TimeSpan AuthCheckCooldown = TimeSpan.FromSeconds(10);
+    private readonly Dictionary<NetUserId, DateTime> _nextAuthCheck = new();
     public event EventHandler<ICommonSession>? PlayerVerified;
 
     public void PostInject()
@@ -61,6 +65,7 @@ public sealed partial class DiscordAuthManager : IPostInjectInit
     private void OnDisconnect(object? sender, NetDisconnectedArgs e)
     {
         _sponsors.Sponsors.Remove(e.Channel.UserId);
+        _nextAuthCheck.Remove(e.Channel.UserId);
     }
     private void OnAuthSkip(MsgDiscordAuthSkip msg)
     {
@@ -70,12 +75,36 @@ public sealed partial class DiscordAuthManager : IPostInjectInit
 
     private async void OnAuthCheck(MsgDiscordAuthCheck msg)
     {
-        var data = await IsVerified(msg.MsgChannel.UserId);
-        if (!data.Status)
+        var userId = msg.MsgChannel.UserId;
+
+        // Only a session still waiting at the gate may ask. Without this a player already in game, or already
+        // queued, could re-run verification at will and be pushed through the join queue a second time.
+        if (!_playerMgr.TryGetSessionById(userId, out var waiting) || waiting.Status != SessionStatus.Connected)
             return;
 
-        var session = _playerMgr.GetSessionById(msg.MsgChannel.UserId);
-        PlayerVerified?.Invoke(this, session);
+        var now = DateTime.UtcNow;
+        if (_nextAuthCheck.TryGetValue(userId, out var next) && now < next)
+            return;
+
+        _nextAuthCheck[userId] = now + AuthCheckCooldown;
+
+        try
+        {
+            var data = await IsVerified(userId);
+            if (!data.Status)
+                return;
+
+            // They may have dropped or got in some other way while the API was answering.
+            if (!_playerMgr.TryGetSessionById(userId, out var session) || session.Status != SessionStatus.Connected)
+                return;
+
+            PlayerVerified?.Invoke(this, session);
+        }
+        catch (Exception e)
+        {
+            // async void: anything escaping here would take the server down with it.
+            _sawmill.Error($"Discord auth check for {userId} failed: {e}");
+        }
     }
 
     private async void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs args)
@@ -90,22 +119,32 @@ public sealed partial class DiscordAuthManager : IPostInjectInit
         }
 
 
-        var data = await IsVerified(args.Session.UserId);
-        if (data.Status && data.UserData is not null)
+        try
         {
-            PlayerVerified?.Invoke(this, args.Session);
-            return;
-        }
+            var data = await IsVerified(args.Session.UserId);
+            if (data.Status && data.UserData is not null)
+            {
+                PlayerVerified?.Invoke(this, args.Session);
+                return;
+            }
 
-        var link = await GenerateLink(args.Session.UserId);
-        var qrCode = await GenerateQrCode(link ?? "");
-        var message = new MsgDiscordAuthRequired
+            var link = await GenerateLink(args.Session.UserId);
+            var qrCode = await GenerateQrCode(link ?? "");
+            var message = new MsgDiscordAuthRequired
+            {
+                Link = link ?? "",
+                ErrorMessage = data.ErrorMessage ?? "",
+                QrCodeBytes = qrCode
+            };
+
+            if (args.Session.Status == SessionStatus.Connected)
+                args.Session.Channel.SendMessage(message);
+        }
+        catch (Exception e)
         {
-            Link = link ?? "",
-            ErrorMessage = data.ErrorMessage ?? "",
-            QrCodeBytes = qrCode
-        };
-        args.Session.Channel.SendMessage(message);
+            // async void: anything escaping here would take the server down with it.
+            _sawmill.Error($"Discord auth for {args.Session.UserId} failed: {e}");
+        }
     }
 
     private async Task<DiscordData> IsVerified(NetUserId userId, CancellationToken cancel = default)
@@ -135,7 +174,8 @@ public sealed partial class DiscordAuthManager : IPostInjectInit
             var level = SponsorData.ParseRoles(roles);
             if (level != SponsorLevel.None)
             {
-                _sponsors.Sponsors.Add(userId, level);
+                // Indexer, not Add: a player can be verified more than once per connection.
+                _sponsors.Sponsors[userId] = level;
                 var session = _playerMgr.GetSessionById(userId);
                 var message = new MsgSyncSponsorData
                 {

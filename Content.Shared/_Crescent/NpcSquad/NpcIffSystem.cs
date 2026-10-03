@@ -1,4 +1,5 @@
 using Content.Shared._Crescent.HullrotFaction;
+using Content.Shared.Mech.Components;
 using Content.Shared.Mobs.Components;
 using Content.Shared.NPC.Components;
 using Content.Shared.NPC.Systems;
@@ -12,6 +13,8 @@ public sealed class NpcIffSystem : EntitySystem
 
     private EntityQuery<NpcIffComponent> _iffQuery;
     private EntityQuery<MobStateComponent> _mobQuery;
+    private EntityQuery<MechComponent> _mechQuery;
+    private EntityQuery<NpcFactionMemberComponent> _factionQuery;
     private EntityQuery<HullrotFactionComponent> _hullrotQuery;
     private EntityQuery<FactionExceptionComponent> _exceptionQuery;
 
@@ -21,6 +24,8 @@ public sealed class NpcIffSystem : EntitySystem
 
         _iffQuery = GetEntityQuery<NpcIffComponent>();
         _mobQuery = GetEntityQuery<MobStateComponent>();
+        _mechQuery = GetEntityQuery<MechComponent>();
+        _factionQuery = GetEntityQuery<NpcFactionMemberComponent>();
         _hullrotQuery = GetEntityQuery<HullrotFactionComponent>();
         _exceptionQuery = GetEntityQuery<FactionExceptionComponent>();
     }
@@ -29,15 +34,15 @@ public sealed class NpcIffSystem : EntitySystem
     /// Whether a round fired by <paramref name="shooter"/> should fly through <paramref name="other"/>.
     /// </summary>
     /// <remarks>
-    /// Called for every projectile contact, so it bails out on the cheap checks first. Only mobs are ever
-    /// let through: walls, windows and cover still stop a friendly round exactly as they would anyone's.
+    /// Called for every projectile contact, so it bails out on the cheap checks first. Only mobs and mechs
+    /// are ever let through: walls, windows and cover still stop a friendly round exactly as they would anyone's.
     /// </remarks>
     public bool ShouldPassThrough(EntityUid? shooter, EntityUid other)
     {
         if (shooter is not { } npc || npc == other)
             return false;
 
-        if (!_iffQuery.TryComp(npc, out var iff) || !_mobQuery.HasComp(other))
+        if (!_iffQuery.TryComp(npc, out var iff) || !_mobQuery.HasComp(other) && !_mechQuery.HasComp(other))
             return false;
 
         return IsFriendly((npc, iff), other);
@@ -58,6 +63,11 @@ public sealed class NpcIffSystem : EntitySystem
         {
             return false;
         }
+
+        // An ordinary mech is only a vehicle: it is on whichever side its pilot is, and on nobody's when empty.
+        // Faction combat mechs carry an NPC faction of their own and are judged on that like anyone else.
+        if (_mechQuery.TryComp(other, out var mech) && !_factionQuery.HasComp(other))
+            return mech.PilotSlot?.ContainedEntity is { } pilot && IsFriendly(npc, pilot);
 
         if (_iffQuery.Resolve(npc, ref npc.Comp, false) && npc.Comp.SquadLeader is { } leader)
         {

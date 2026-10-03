@@ -4,6 +4,7 @@
   description: job-description-archmaester
   setPreference: false # hidden from job selection, kept for spawners/admin use
   playTimeTracker: JobArchmaesterDSM
+  requiredReligion: FourSaints
   ranks:
     RatRankNobleDuke:
     - !type:CharacterPlaytimeRequirement

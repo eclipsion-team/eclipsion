@@ -316,7 +316,9 @@
             - !type:MappingTemplatePrototype
               id: FactionRecruitmentConsoleTFSC
             - !type:MappingTemplatePrototype
-              id: FactionRecruitmentConsoleGS
+              id: FactionRecruitmentConsoleCMM
+            - !type:MappingTemplatePrototype
+              id: FactionRecruitmentConsoleGliess
             - !type:MappingTemplatePrototype
               id: FactionRecruitmentConsoleTAP
             - !type:MappingTemplatePrototype
@@ -342,7 +344,7 @@
             - !type:MappingTemplatePrototype
               id: SRMMainframeConsole
             - !type:MappingTemplatePrototype
-              id: GSMainframeConsole
+              id: CMMMainframeConsole
             - !type:MappingTemplatePrototype
               id: ComputerPaymentDSM
             - !type:MappingTemplatePrototype
@@ -352,7 +354,7 @@
             - !type:MappingTemplatePrototype
               id: ComputerPaymentTFSC
             - !type:MappingTemplatePrototype
-              id: ComputerPaymentGS
+              id: ComputerPaymentCMM
             - !type:MappingTemplatePrototype
               id: ComputerPaymentTAP
             - !type:MappingTemplatePrototype
@@ -364,6 +366,8 @@
             - !type:MappingTemplatePrototype
               id: ComputerFactionTaxationTFSC
             - !type:MappingTemplatePrototype
+              id: ComputerFactionTaxationCMM
+            - !type:MappingTemplatePrototype
               id: ComputerFactionTreasuryShinohara
             - !type:MappingTemplatePrototype
               id: ComputerFactionTreasuryNCWL
@@ -372,7 +376,7 @@
             - !type:MappingTemplatePrototype
               id: ComputerFactionTreasuryTFSC
             - !type:MappingTemplatePrototype
-              id: ComputerFactionTreasuryGS
+              id: ComputerFactionTreasuryCMM
             - !type:MappingTemplatePrototype
               id: ComputerFactionTreasuryTAP
 
@@ -386,7 +390,7 @@
             - !type:MappingTemplatePrototype
               id: TAPOverwatchComputer
             - !type:MappingTemplatePrototype
-              id: GSOverwatchComputer
+              id: CMMOverwatchComputer
             - !type:MappingTemplatePrototype
               id: TFSCOverwatchComputer
             - !type:MappingTemplatePrototype
@@ -543,7 +547,9 @@
             - !type:MappingTemplatePrototype
               id: ComputerTabletopFactionRecruitmentTFSC
             - !type:MappingTemplatePrototype
-              id: ComputerTabletopFactionRecruitmentGS
+              id: ComputerTabletopFactionRecruitmentCMM
+            - !type:MappingTemplatePrototype
+              id: ComputerTabletopFactionRecruitmentGliess
             - !type:MappingTemplatePrototype
               id: ComputerTabletopFactionRecruitmentTAP
             - !type:MappingTemplatePrototype
@@ -569,7 +575,7 @@
             - !type:MappingTemplatePrototype
               id: ComputerTabletopMainframeSRM
             - !type:MappingTemplatePrototype
-              id: ComputerTabletopMainframeGS
+              id: ComputerTabletopMainframeCMM
             - !type:MappingTemplatePrototype
               id: ComputerTabletopPaymentDSM
             - !type:MappingTemplatePrototype
@@ -579,7 +585,7 @@
             - !type:MappingTemplatePrototype
               id: ComputerTabletopPaymentTFSC
             - !type:MappingTemplatePrototype
-              id: ComputerTabletopPaymentGS
+              id: ComputerTabletopPaymentCMM
             - !type:MappingTemplatePrototype
               id: ComputerTabletopPaymentTAP
             - !type:MappingTemplatePrototype
@@ -591,6 +597,8 @@
             - !type:MappingTemplatePrototype
               id: ComputerTabletopFactionTaxationTFSC
             - !type:MappingTemplatePrototype
+              id: ComputerTabletopFactionTaxationCMM
+            - !type:MappingTemplatePrototype
               id: ComputerTabletopFactionTreasuryShinohara
             - !type:MappingTemplatePrototype
               id: ComputerTabletopFactionTreasuryNCWL
@@ -599,7 +607,7 @@
             - !type:MappingTemplatePrototype
               id: ComputerTabletopFactionTreasuryTFSC
             - !type:MappingTemplatePrototype
-              id: ComputerTabletopFactionTreasuryGS
+              id: ComputerTabletopFactionTreasuryCMM
             - !type:MappingTemplatePrototype
               id: ComputerTabletopFactionTreasuryTAP
 
@@ -613,7 +621,7 @@
             - !type:MappingTemplatePrototype
               id: ComputerTabletopOverwatchTAP
             - !type:MappingTemplatePrototype
-              id: ComputerTabletopOverwatchGS
+              id: ComputerTabletopOverwatchCMM
             - !type:MappingTemplatePrototype
               id: ComputerTabletopOverwatchTFSC
             - !type:MappingTemplatePrototype

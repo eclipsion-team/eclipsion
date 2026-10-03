@@ -3,6 +3,7 @@
   name: job-name-ncwl-fleetkapitan
   description: job-description-ncwl-fleetkapitan
   playTimeTracker: JobHomeguardSquadCaptainNCWL
+  requiredReligion: CommonHands
   ranks:
     RatRankNCWLOfficerTop:
     - !type:CharacterPlaytimeRequirement

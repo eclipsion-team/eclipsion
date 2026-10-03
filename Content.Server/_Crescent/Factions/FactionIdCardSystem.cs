@@ -1,13 +1,37 @@
 using Content.Server.Access.Systems;
 using Content.Server.Jobs;
+using Content.Server._Crescent.Diplomacy;
 using Content.Shared.Access.Components;
 using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
+using Content.Shared.NPC.Components;
 using Content.Shared.Roles;
+using Content.Shared._Crescent.Diplomacy;
 using Content.Shared._Crescent.Factions;
 using Content.Shared._Crescent.HullrotFaction;
 
 namespace Content.Server._Crescent.Factions;
+
+/// <summary>
+///     What a faction's guard - an anti-boarder gun, a soldier NPC - makes of the credential someone is wearing.
+/// </summary>
+public enum FactionCredentialStanding : byte
+{
+    /// <summary>No faction card in the ID slot: lost, taken off, or never had one.</summary>
+    Unknown,
+
+    /// <summary>The card of a faction the guard's side is neither at war nor allied with.</summary>
+    Neutral,
+
+    /// <summary>
+    ///     The card of a faction at war with the guard's side, or of one with no seat at the diplomacy table to
+    ///     vouch for its bearer.
+    /// </summary>
+    Hostile,
+
+    /// <summary>The card of the guard's own faction or of an ally.</summary>
+    Allied,
+}
 
 /// <summary>
 ///     Assigns faction identity to preset ID cards and resolves the credential worn in a mob's ID slot.
@@ -16,6 +40,7 @@ public sealed partial class FactionIdCardSystem : EntitySystem
 {
     [Dependency] private readonly IdCardSystem _idCards = default!;
     [Dependency] private readonly InventorySystem _inventory = default!;
+    [Dependency] private readonly RatDiplomacySystem _diplomacy = default!;
 
     public override void Initialize()
     {
@@ -140,5 +165,37 @@ public sealed partial class FactionIdCardSystem : EntitySystem
         TrackCredential(wearer, id, factionId);
         faction = factionId.Faction;
         return true;
+    }
+
+    /// <summary>
+    ///     Reads the card in <paramref name="wearer"/>'s ID slot against the live diplomacy of every NPC faction
+    ///     <paramref name="reader"/> belongs to.
+    /// </summary>
+    /// <remarks>
+    ///     A card from a faction with no seat at the diplomacy table - the spacers' IND - has no treaty behind it and
+    ///     reads as hostile, exactly as if its faction were at war. A reader that counts that faction among its own,
+    ///     as Gliess's guns count IND, still reads it as allied.
+    /// </remarks>
+    public FactionCredentialStanding ReadCredential(EntityUid reader, EntityUid wearer)
+    {
+        if (!TryGetWornFaction(wearer, out var faction))
+            return FactionCredentialStanding.Unknown;
+
+        var atWar = false;
+        if (TryComp<NpcFactionMemberComponent>(reader, out var member))
+        {
+            foreach (var own in member.Factions)
+            {
+                var relation = _diplomacy.GetRelation(own, faction);
+                if (relation == FactionRelation.Alliance)
+                    return FactionCredentialStanding.Allied;
+
+                atWar |= relation == FactionRelation.War;
+            }
+        }
+
+        return atWar || !_diplomacy.IsDiplomaticFaction(faction)
+            ? FactionCredentialStanding.Hostile
+            : FactionCredentialStanding.Neutral;
     }
 }

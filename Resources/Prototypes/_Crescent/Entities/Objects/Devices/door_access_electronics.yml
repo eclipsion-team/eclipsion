@@ -351,4 +351,5 @@
   suffix: Gliessian Sheriff
   components:
   - type: AccessReader
-    access: [["GliessSheriff"]]
+    # The Gliess sheriff's office is a Minutemen post: CMM personnel open it as well.
+    access: [["GliessSheriff"], ["Minuteman"]]

@@ -1,9 +1,9 @@
 namespace Content.Server._Crescent.NPC;
 
 /// <summary>
-/// Crescent: a faction soldier that is shot or hit by someone on its own side fights back - until it has put
-/// them down. Once the attacker is critical (or dead) the grudge is dropped and they are a friend again, until
-/// the next time they hurt it.
+/// Crescent: a faction soldier that is shot or hit by someone it wasn't already fighting - its own side, an ally,
+/// a neutral - fights back until it has put them down. Once the attacker is critical (or dead) the grudge is
+/// dropped and they are what they were before, until the next time they hurt it.
 /// </summary>
 /// <remarks>
 /// The grudge goes into the NPC's FactionException hostiles, which is what both the target queries and

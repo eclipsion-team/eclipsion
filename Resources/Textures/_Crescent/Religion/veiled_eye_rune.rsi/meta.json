@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "license": "CC0-1.0",
+  "copyright": "Procedurally drawn for Sector Crescent's Covenant of the Veiled Mother.",
+  "size": {
+    "x": 64,
+    "y": 64
+  },
+  "states": [
+    {
+      "name": "eye",
+      "delays": [
+        [
+          0.4,
+          0.4,
+          0.4,
+          0.4
+        ]
+      ]
+    }
+  ]
+}

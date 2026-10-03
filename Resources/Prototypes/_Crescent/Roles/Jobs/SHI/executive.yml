@@ -3,6 +3,7 @@
   name: job-name-executive
   description: job-description-executive
   playTimeTracker: JobExecutiveSHI
+  requiredReligion: GoldenLedger
   ranks:
     RatRankSHIExecutiveTop:
     - !type:CharacterPlaytimeRequirement
@@ -59,6 +60,8 @@
     components:
       - type: HullrotFaction
         faction: SHI
+      - type: ReligiousCaller
+        action: ActionReligiousCallGoldenLedger
       - type: LanguageAdder
         addSpoken:
           - Kaishago

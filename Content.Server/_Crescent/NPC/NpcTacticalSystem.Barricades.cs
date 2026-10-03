@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Numerics;
 using Content.Server._Crescent.NpcSquad;
 using Content.Server.Popups;
@@ -81,9 +82,13 @@ public sealed partial class NpcTacticalSystem
         var ownPos = _transform.GetMapCoordinates(npc).Position;
         var best = float.MaxValue;
 
-        foreach (var hostile in _npcFaction.GetNearbyHostiles(npc, vision))
+        _extraThreats.Clear();
+        _mechTargeting.AddNearbyHostileMechs(npc, vision, _extraThreats);
+        _squad.AddKillAllTargets(npc, vision, _extraThreats);
+
+        foreach (var hostile in _npcFaction.GetNearbyHostiles(npc, vision).Concat(_extraThreats))
         {
-            if (!_mobState.IsAlive(hostile) || _passiveTarget.IsLeftAlone(npc, hostile))
+            if (!_mechTargeting.IsActiveTarget(hostile) || _passiveTarget.IsLeftAlone(npc, hostile))
                 continue;
 
             var distance = (_transform.GetMapCoordinates(hostile).Position - ownPos).LengthSquared();

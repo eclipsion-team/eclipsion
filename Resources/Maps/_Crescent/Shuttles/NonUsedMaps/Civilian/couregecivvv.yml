@@ -1124,12 +1124,9 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 3.5,-20.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -962.7292
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
 - proto: AirlockEngineeringHorizontal
   entities:
   - uid: 23
@@ -1138,24 +1135,18 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -3.5,-19.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -961.5958
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 24
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: 7.5,-19.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -963.79584
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
 - proto: AirlockExternalLocked
   entities:
   - uid: 25
@@ -1170,12 +1161,9 @@ entities:
     - type: Transform
       pos: 5.5,-9.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -1652.1619
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 27
     components:
     - type: Transform
@@ -1186,23 +1174,17 @@ entities:
     - type: Transform
       pos: -3.5,-5.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -1648.9619
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 29
     components:
     - type: Transform
       pos: -4.5,-10.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -1649.8286
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 30
     components:
     - type: Transform
@@ -1214,23 +1196,17 @@ entities:
     - type: Transform
       pos: -4.5,-8.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -1649.4619
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 32
     components:
     - type: Transform
       pos: 5.5,-6.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -1651.3953
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
 - proto: AirlockMedicalHorizontal
   entities:
   - uid: 33

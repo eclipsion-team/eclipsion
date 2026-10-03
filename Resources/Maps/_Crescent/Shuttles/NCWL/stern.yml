@@ -4433,17 +4433,9 @@ entities:
     - type: Transform
       parent: 1
       pos: 0.5,-6.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 20
     components:
     - type: Transform
@@ -4577,17 +4569,9 @@ entities:
     - type: Transform
       parent: 1
       pos: -4.5,-8.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 45
     components:
     - type: Transform

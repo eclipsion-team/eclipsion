@@ -1,0 +1,103 @@
+# Religious call actions for each faction's faith figure. The faith called is set on the event, and the
+# believers around the caller answer it (see religions.yml).
+
+- type: entity
+  id: ActionReligiousCallBase
+  abstract: true
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    itemIconStyle: BigAction
+    useDelay: 90
+    priority: -18
+
+- type: entity
+  parent: ActionReligiousCallBase
+  id: ActionReligiousCallFourSaints
+  name: Call upon the Four Saints
+  description: Call out to the Saintsworn around you. Every true believer will answer.
+  components:
+  - type: InstantAction
+    icon:
+      sprite: _Crescent/Structures/Furniture/Altars/four_saints.rsi
+      state: icon
+    event: !type:ReligiousCallActionEvent
+      religion: FourSaints
+
+- type: entity
+  parent: ActionReligiousCallBase
+  id: ActionReligiousCallCommonHands
+  name: Call to Common Hands
+  description: Call out to the comrades around you. Every true believer will answer.
+  components:
+  - type: InstantAction
+    icon:
+      sprite: _Crescent/Structures/Furniture/Altars/common_hands.rsi
+      state: icon
+    event: !type:ReligiousCallActionEvent
+      religion: CommonHands
+
+- type: entity
+  parent: ActionReligiousCallBase
+  id: ActionReligiousCallGoldenLedger
+  name: Invoke the Golden Ledger
+  description: Call out to the signatories around you. Every true believer will answer.
+  components:
+  - type: InstantAction
+    icon:
+      sprite: _Crescent/Structures/Furniture/Altars/golden_ledger.rsi
+      state: icon
+    event: !type:ReligiousCallActionEvent
+      religion: GoldenLedger
+
+- type: entity
+  parent: ActionReligiousCallBase
+  id: ActionReligiousCallInfernalExchange
+  name: Invoke the Infernal Exchange
+  description: Call out to the bargainers around you. Every true believer will answer.
+  components:
+  - type: InstantAction
+    icon:
+      sprite: _Crescent/Structures/Furniture/Altars/infernal_exchange.rsi
+      state: icon
+    event: !type:ReligiousCallActionEvent
+      religion: InfernalExchange
+
+- type: entity
+  parent: ActionReligiousCallBase
+  id: ActionReligiousCallVeiledMother
+  name: Call the Mother's family
+  description: Call out to the children of the Mother around you. Every true believer will answer.
+  components:
+  - type: InstantAction
+    icon:
+      sprite: _Crescent/Structures/Furniture/Altars/veiled_mother.rsi
+      state: icon
+    event: !type:ReligiousCallActionEvent
+      religion: VeiledMother
+
+- type: entity
+  parent: ActionReligiousCallBase
+  id: ActionReligiousCallUnbrokenPattern
+  name: Declare the Hunt
+  description: Call out to the Hunters around you. Every true believer will answer.
+  components:
+  - type: InstantAction
+    icon:
+      sprite: _Crescent/Structures/Furniture/Altars/unbroken_pattern.rsi
+      state: icon
+    event: !type:ReligiousCallActionEvent
+      religion: UnbrokenPattern
+
+- type: entity
+  parent: ActionReligiousCallBase
+  id: ActionReligiousCallLastWatch
+  name: Call the Last Watch
+  description: Call out to the lawmen around you. Every true believer will answer.
+  components:
+  - type: InstantAction
+    icon:
+      sprite: _Crescent/Structures/Furniture/Altars/last_watch.rsi
+      state: icon
+    event: !type:ReligiousCallActionEvent
+      religion: LastWatch

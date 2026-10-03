@@ -48,6 +48,13 @@ public sealed partial class FactionMissionPrototype : IPrototype
     /// </summary>
     [DataField]
     public List<EntProtoId> RewardSpawns = new();
+
+    /// <summary>
+    /// Game rules started on completion, for rewards that act on the whole sector rather than the console's tile
+    /// (e.g. the CMM finale bringing the Analiesse back into play).
+    /// </summary>
+    [DataField]
+    public List<EntProtoId> RewardGameRules = new();
 }
 
 /// <summary>One required item of a <see cref="FactionMissionPrototype"/>. Mirrors the cargo bounty entry.</summary>

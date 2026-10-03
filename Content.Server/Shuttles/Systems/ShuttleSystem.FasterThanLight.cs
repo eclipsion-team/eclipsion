@@ -76,6 +76,7 @@ public sealed partial class ShuttleSystem
     private EntityQuery<BodyComponent> _bodyQuery;
     private EntityQuery<FTLSmashImmuneComponent> _immuneQuery;
     private EntityQuery<StatusEffectsComponent> _statusQuery;
+    private EntityQuery<FTLProximityIgnoreComponent> _proximityIgnoreQuery; // Crescent
 
     private void InitializeFTL()
     {
@@ -85,6 +86,7 @@ public sealed partial class ShuttleSystem
         _bodyQuery = GetEntityQuery<BodyComponent>();
         _immuneQuery = GetEntityQuery<FTLSmashImmuneComponent>();
         _statusQuery = GetEntityQuery<StatusEffectsComponent>();
+        _proximityIgnoreQuery = GetEntityQuery<FTLProximityIgnoreComponent>(); // Crescent
 
         _cfg.OnValueChanged(CCVars.FTLStartupTime, time => DefaultStartupTime = time, true);
         _cfg.OnValueChanged(CCVars.FTLTravelTime, time => DefaultTravelTime = time, true);
@@ -824,6 +826,10 @@ public sealed partial class ShuttleSystem
 
             foreach (var grid in grids)
             {
+                // Crescent: see FTLProximityIgnoreComponent.
+                if (_proximityIgnoreQuery.HasComp(grid))
+                    continue;
+
                 if (!nearbyGrids.Add(grid))
                     continue;
 
@@ -850,7 +856,7 @@ public sealed partial class ShuttleSystem
             while (query.MoveNext(out var uid, out var grid))
             {
                 // Don't add anymore as it is irrelevant, but that doesn't mean we need to re-do existing work.
-                if (nearbyGrids.Contains(uid))
+                if (nearbyGrids.Contains(uid) || _proximityIgnoreQuery.HasComp(uid)) // Crescent: ignore check
                     continue;
 
                 targetAABB = targetAABB.Union(

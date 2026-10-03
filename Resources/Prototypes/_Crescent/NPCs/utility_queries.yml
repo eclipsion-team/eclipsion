@@ -3,7 +3,9 @@
 # unaligned boarder walked past these guns untouched. This one takes anyone not of the turret's own
 # faction, and leans on the sealed-suit requirement instead of a declared war to tell a boarder from
 # the crew. TryAddBoarder also restores the old alive/critical and accessibility guards in a form that
-# still permits faction mechs and ordinary-mech pilots, and recognizes worn IDs against live diplomacy.
+# still permits faction mechs and ordinary-mech pilots, and recognizes worn IDs against live diplomacy:
+# an allied card is waved through, while a card of a faction at war, a spacer's IND card or no card at all
+# is shot even without a suit. The gun's own crew is still recognized without their ID.
 - type: utilityQuery
   id: NearbyPDTTargets
   query:

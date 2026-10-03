@@ -71,7 +71,7 @@ public sealed partial class BankSystem
         }
 
         // check for sufficient funds
-        if (stationBank.Balance < args.Amount || args.Amount < 0)
+        if (stationBank.Balance < args.Amount || args.Amount <= 0)
         {
             ConsolePopup(args.Actor, Loc.GetString("bank-insufficient-funds"));
             PlayDenySound(uid, component);

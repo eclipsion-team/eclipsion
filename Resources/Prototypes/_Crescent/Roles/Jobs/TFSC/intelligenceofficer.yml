@@ -3,6 +3,7 @@
   name: job-name-intelligenceofficer
   description: job-description-intelligenceofficer
   playTimeTracker: JobIntelligenceOfficerTFSC
+  requiredReligion: InfernalExchange
   ranks:
     RatRankTFSCPatriarchSenior:
     - !type:CharacterPlaytimeRequirement

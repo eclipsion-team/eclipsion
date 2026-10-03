@@ -35,6 +35,7 @@ public static class HullrotHelpListing
         {
             "roundtimer",
             "unionfall_skipgrace",
+            "greathunt_skipgrace",
             "planetfall_releasebarrier",
         }),
         ("Diplomacy & factions", new Entry[]

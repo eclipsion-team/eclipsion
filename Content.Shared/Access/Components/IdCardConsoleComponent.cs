@@ -81,6 +81,7 @@ public sealed partial class IdCardConsoleComponent : Component
         "Antiquarian",
         "GliessDockmaster",
         "GliessSheriff",
+        "GliessSheriffCommand",
         "Arabet",
         "Thukker",
         "Alseik",

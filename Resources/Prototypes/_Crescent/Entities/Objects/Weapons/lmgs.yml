@@ -339,7 +339,7 @@
   name: IRM DA-12S Dominion 5.56x45mm
   id: WeaponLightMachineGunDSMDominion
   parent: [BaseWeaponLightMachineGun, StreeCredRedeemable]
-  description: An Imperial LMG with a quick 6 shot burst, chambered in 5.56x45mm Imperial.
+  description: An Imperial LMG with a quick 6 shot burst, chambered in 5.56x45mm.
   components:
   - type: Sprite
     sprite: _Crescent/Objects/Weapons/Guns/dominion.rsi

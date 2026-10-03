@@ -18,11 +18,22 @@ public sealed class TargetingSystem : SharedTargetingSystem
 
     private void OnTargetChange(TargetChangeEvent message, EntitySessionEventArgs args)
     {
-        if (!TryComp<TargetingComponent>(GetEntity(message.Uid), out var target))
+        // A client may only change its own aim, and only to a single body part; anything else is a forged message.
+        var uid = GetEntity(message.Uid);
+        if (args.SenderSession.AttachedEntity != uid || !IsSinglePart(message.BodyPart))
+            return;
+
+        if (!TryComp<TargetingComponent>(uid, out var target))
             return;
 
         target.Target = message.BodyPart;
-        Dirty(GetEntity(message.Uid), target);
+        Dirty(uid, target);
+    }
+
+    private static bool IsSinglePart(TargetBodyPart part)
+    {
+        var value = (ushort) part;
+        return value != 0 && (value & (value - 1)) == 0 && part <= TargetBodyPart.RightFoot;
     }
 
     private void OnMobStateChange(EntityUid uid, TargetingComponent component, MobStateChangedEvent args)

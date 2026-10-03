@@ -97,6 +97,11 @@ public sealed partial class NPCSteeringSystem
                     if (door.State is DoorState.Opening or DoorState.Open)
                         return SteeringObstacleStatus.Continuing;
 
+                    // TryOpen doesn't care how a door is worked, so without this an NPC opened shutters and
+                    // blast doors that nobody can open by hand.
+                    if (!door.BumpOpen && !door.ClickOpen)
+                        continue;
+
                     if (door.State == DoorState.Closed && _doors.TryOpen(ent, door, uid, quiet: true))
                         return SteeringObstacleStatus.Continuing;
                 }
@@ -111,6 +116,11 @@ public sealed partial class NPCSteeringSystem
                 foreach (var ent in obstacleEnts)
                 {
                     if (!doorQuery.TryGetComponent(ent, out var door))
+                        continue;
+
+                    // Crescent: clicking a shutter or blast door does nothing, so activating it here would hold the
+                    // NPC in place forever instead of letting it pry or smash its way through below.
+                    if (!door.BumpOpen && !door.ClickOpen)
                         continue;
 
                     if (!door.BumpOpen && (component.Flags & PathFlags.Interact) != 0x0)

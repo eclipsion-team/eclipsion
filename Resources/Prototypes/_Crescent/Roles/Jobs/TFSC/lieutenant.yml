@@ -3,6 +3,7 @@
   name: job-name-lieutenant
   description: job-description-lieutenant
   playTimeTracker: JobLieutenantTFSC
+  requiredReligion: InfernalExchange
   weight: 11
   startingGear: LieutenantGear
   alwaysUseSpawner: true
@@ -38,6 +39,8 @@
         rank: crescent-rank-boss
       - type: HullrotFaction
         faction: TFSC
+      - type: ReligiousCaller
+        action: ActionReligiousCallInfernalExchange
       - type: LanguageAdder
         addSpoken:
           - Freespeak

@@ -25,6 +25,9 @@
     sprite: Objects/Fun/figurines.rsi
     layers:
       - state: fig_box
+  - type: Tag # the bulk box (MysteryFigureBoxBulk) whitelists on this tag; without it its StorageFill always fails
+    tags:
+    - MysteryFigureBox
   - type: SpawnItemsOnUse
     items:
       - id: MysteryFigureBoxTrash

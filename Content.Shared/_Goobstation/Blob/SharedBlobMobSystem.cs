@@ -6,6 +6,7 @@ using Content.Shared.Radio;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
+using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Goobstation.Blob;
@@ -14,6 +15,7 @@ public abstract class SharedBlobMobSystem : EntitySystem
 {
     [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
     [Dependency] private readonly SharedAudioSystem _audioSystem = default!;
+    [Dependency] private readonly INetManager _net = default!;
     private EntityQuery<BlobTileComponent> _tileQuery;
     private EntityQuery<BlobMobComponent> _mobQuery;
 
@@ -22,7 +24,9 @@ public abstract class SharedBlobMobSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<BlobMobComponent, AttackAttemptEvent>(OnBlobAttackAttempt);
-        SubscribeNetworkEvent<BlobMobGetPulseEvent>(OnPulse);
+        // Server -> client visual only. On the server this would let any client spawn effects on any entity.
+        if (_net.IsClient)
+            SubscribeNetworkEvent<BlobMobGetPulseEvent>(OnPulse);
         _tileQuery = GetEntityQuery<BlobTileComponent>();
         _mobQuery = GetEntityQuery<BlobMobComponent>();
 

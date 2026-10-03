@@ -295,7 +295,13 @@ public sealed class FactionConquestRuleSystem : GameRuleSystem<FactionConquestRu
             _chat.DispatchServerAnnouncement(Loc.GetString(conquest.MinorVictoryAnnouncement));
 
         GameTicker.EndRound($"{string.Join(", ", winners.Select(FactionDisplay.Abbreviation))} won the war for Taypan.");
-        Timer.Spawn(conquest.RestartDelay, () => GameTicker.RestartRound());
+        // An admin may restart by hand during the countdown; the timer must not then restart the next round too.
+        var roundId = GameTicker.RoundId;
+        Timer.Spawn(conquest.RestartDelay, () =>
+        {
+            if (GameTicker.RoundId == roundId && GameTicker.RunLevel == GameRunLevel.PostRound)
+                GameTicker.RestartRound();
+        });
     }
 
     /// <summary>

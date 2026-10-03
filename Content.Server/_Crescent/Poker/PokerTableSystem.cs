@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Content.Shared._Crescent.Poker;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
@@ -62,7 +62,11 @@ public sealed class PokerTableSystem : EntitySystem
         var buyIn = Math.Min(balance, comp.StartingBuyIn);
         if (comp.Players.Sum(p => (long) p.Stack + p.TotalBet) + buyIn > int.MaxValue)
             return;
-        TakeCash(msg.Actor, buyIn);
+        // Seat them with what was actually taken, never with what the scan promised: if the two ever disagree
+        // the difference would otherwise be minted out of nothing.
+        buyIn = TakeCash(msg.Actor, buyIn);
+        if (buyIn <= 0)
+            return;
 
         var name = Name(msg.Actor);
         var player = new PokerPlayer
@@ -627,9 +631,11 @@ public sealed class PokerTableSystem : EntitySystem
         return total;
     }
 
-    private void TakeCash(EntityUid player, int amount)
+    /// <returns>How much was actually taken.</returns>
+    private int TakeCash(EntityUid player, int amount)
     {
-        if (amount <= 0) return;
+        if (amount <= 0)
+            return 0;
 
         var remaining = amount;
         foreach (var item in CashRoots(player))
@@ -638,6 +644,8 @@ public sealed class PokerTableSystem : EntitySystem
             if (remaining <= 0)
                 break;
         }
+
+        return amount - Math.Max(0, remaining);
     }
 
     private int TakeCashFromEntity(EntityUid entity, int remaining)

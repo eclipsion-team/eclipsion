@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Content.Server.Announcements.Systems;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
@@ -8,6 +8,7 @@ using Content.Shared.Roles;
 using Robust.Server.GameObjects;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
 namespace Content.Server._Crescent.DnaDatabase;
@@ -19,6 +20,7 @@ public sealed class DnaDatabaseSystem : EntitySystem
     [Dependency] private readonly StationJobsSystem _stationJobs = default!;
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
 
     public override void Initialize()
     {
@@ -61,6 +63,11 @@ public sealed class DnaDatabaseSystem : EntitySystem
         if (args.Actor is not { Valid: true })
             return;
 
+        var now = _timing.CurTime;
+        if (now < ent.Comp.NextToggle)
+            return;
+
+        ent.Comp.NextToggle = now + ent.Comp.ToggleCooldown;
         ApplyToggle(ent);
     }
 

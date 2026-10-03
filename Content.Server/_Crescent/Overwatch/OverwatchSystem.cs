@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Numerics;
 using Content.Server.Administration.Logs;
 using Content.Server.Chat.Managers;
@@ -28,6 +28,7 @@ using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Maths;
 using Robust.Shared.Timing;
+using Robust.Shared.Utility;
 
 namespace Content.Server._Crescent.Overwatch;
 
@@ -503,7 +504,8 @@ public sealed class OverwatchSystem : EntitySystem
         if (recipients.Count == 0)
             return;
 
-        var wrappedMessage = $"{overwatchTitle}: {message}";
+        // The body is player text (or carries player names); escape it so it cannot inject chat markup.
+        var wrappedMessage = $"{overwatchTitle}: {FormattedMessage.EscapeText(message)}";
 
         var filter = Robust.Shared.Player.Filter.Empty();
         foreach (var recipient in recipients)
@@ -554,7 +556,8 @@ public sealed class OverwatchSystem : EntitySystem
         if (recipients.Count == 0)
             return;
 
-        var wrappedMessage = $"{overwatchTitle}: {message}";
+        // The body is player text (or carries player names); escape it so it cannot inject chat markup.
+        var wrappedMessage = $"{overwatchTitle}: {FormattedMessage.EscapeText(message)}";
         var filter = Robust.Shared.Player.Filter.Empty();
         foreach (var recipient in recipients)
             filter.AddPlayer(recipient);

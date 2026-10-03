@@ -2,7 +2,7 @@
   abstract: true
   parent: BaseMagazineBox
   id: BaseMagazineBoxLightRifle
-  name: ammunition box (5.56x45mm Imperial)
+  name: ammunition box (5.56x45mm)
   components:
   - type: BallisticAmmoProvider
     mayTransfer: true
@@ -30,7 +30,7 @@
 - type: entity
   parent: BaseMagazineBoxLightRifle
   id: MagazineBoxLightRifleBig
-  name: bulk ammunition box (5.56x45mm Imperial)
+  name: bulk ammunition box (5.56x45mm)
   components:
   - type: BallisticAmmoProvider
     capacity: 200
@@ -50,7 +50,7 @@
 - type: entity
   parent: MagazineBoxLightRifleBig
   id: MagazineBoxLightRifleBigPractice
-  name: bulk ammunition box (5.56x45mm Imperial practice)
+  name: bulk ammunition box (5.56x45mm practice)
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeLightRiflePractice
@@ -58,7 +58,7 @@
 - type: entity
   parent: MagazineBoxLightRifleBig
   id: MagazineBoxLightRifleBigRubber
-  name: bulk ammunition box (5.56x45mm Imperial rubber)
+  name: bulk ammunition box (5.56x45mm rubber)
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeLightRifleRubber
@@ -66,7 +66,7 @@
 - type: entity
   parent: MagazineBoxLightRifleBig
   id: MagazineBoxLightRifleBigIncendiary
-  name: bulk ammunition box (5.56x45mm Imperial incendiary)
+  name: bulk ammunition box (5.56x45mm incendiary)
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeLightRifleIncendiary
@@ -74,7 +74,7 @@
 - type: entity
   parent: MagazineBoxLightRifleBig
   id: MagazineBoxLightRifleBigUranium
-  name: bulk ammunition box (5.56x45mm Imperial black-tip)
+  name: bulk ammunition box (5.56x45mm black-tip)
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeLightRifleUranium
@@ -82,7 +82,7 @@
 - type: entity
   parent: MagazineBoxLightRifleBig
   id: MagazineBoxLightRifleBigShrapnel
-  name: bulk ammunition box (5.56x45mm Imperial shrapnel)
+  name: bulk ammunition box (5.56x45mm shrapnel)
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeLightRifleShrapnel
@@ -90,7 +90,7 @@
 - type: entity
   parent: BaseMagazineBoxLightRifle
   id: MagazineBoxLightRifleSurplus
-  name: surplus ammunition box (5.56x45mm Imperial)
+  name: surplus ammunition box (5.56x45mm)
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeLightRifle
@@ -105,7 +105,7 @@
 - type: entity
   parent: BaseMagazineBoxLightRifle
   id: MagazineBoxLightRifle
-  name: ammunition box (5.56x45mm Imperial)
+  name: ammunition box (5.56x45mm)
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeLightRifle
@@ -121,7 +121,7 @@
 - type: entity
   parent: BaseMagazineBoxLightRifle
   id: MagazineBoxLightRiflePractice
-  name: ammunition box (5.56x45mm Imperial practice)
+  name: ammunition box (5.56x45mm practice)
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeLightRiflePractice
@@ -136,7 +136,7 @@
 - type: entity
   parent: BaseMagazineBoxLightRifle
   id: MagazineBoxLightRifleRubber
-  name: ammunition box (5.56x45mm Imperial rubber)
+  name: ammunition box (5.56x45mm rubber)
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeLightRifleRubber
@@ -151,7 +151,7 @@
 - type: entity
   id: MagazineBoxLightRifleIncendiary
   parent: BaseMagazineBoxLightRifle
-  name: ammunition box (5.56x45mm Imperial incendiary)
+  name: ammunition box (5.56x45mm incendiary)
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeLightRifleIncendiary
@@ -166,7 +166,7 @@
 - type: entity
   parent: BaseMagazineBoxLightRifle
   id: MagazineBoxLightRifleUranium
-  name: ammunition box (5.56x45mm Imperial black-tip)
+  name: ammunition box (5.56x45mm black-tip)
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeLightRifleUranium
@@ -181,7 +181,7 @@
 - type: entity
   parent: MagazineBoxLightRifle
   id: MagazineBoxLightRifleShrapnel
-  name: ammunition box (5.56x45mm Imperial shrapnel)
+  name: ammunition box (5.56x45mm shrapnel)
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeLightRifleShrapnel

@@ -31,6 +31,7 @@ public sealed partial class RatDiplomacySystem : EntitySystem
     private static readonly (string A, string B)[] PermanentEnemyPairs =
     {
         ("DSM", "NCWL"),
+        ("SRM", "TAP"),
     };
 
     private static bool IsPermanentEnemyPair(string f1, string f2)
@@ -393,6 +394,15 @@ public sealed partial class RatDiplomacySystem : EntitySystem
             var ev = new FactionsWentToWarEvent(f1, f2);
             RaiseLocalEvent(ref ev);
         }
+    }
+
+    /// <summary>
+    /// Whether <paramref name="faction"/> has a seat at the diplomacy table at all. The spacers' IND does not, so
+    /// no treaty ever speaks for them.
+    /// </summary>
+    public bool IsDiplomaticFaction(string faction)
+    {
+        return AllFactions.Contains(faction);
     }
 
     /// <summary>The relation currently in force between two factions.</summary>

@@ -139,6 +139,7 @@ public sealed partial class NpcSquadSystem : EntitySystem
             subs.Event<NpcSquadDismissMessage>(OnDismissMessage);
             subs.Event<NpcSquadFormationMessage>(OnFormationMessage);
             subs.Event<NpcSquadBuildFortMessage>(OnBuildFortMessage);
+            subs.Event<NpcSquadKillAllMessage>(OnKillAllMessage);
         });
     }
 
@@ -745,18 +746,25 @@ public sealed partial class NpcSquadSystem : EntitySystem
     /// <summary>
     /// Whether this NPC should be shooting at <paramref name="target"/>: never at its own side, never at all
     /// under a hold-fire order, and only near its anchor while following or defending - except back at
-    /// whoever just shot it. Anti-boarder guns are left be until they shoot one of its side.
+    /// whoever just shot it. Anti-boarder guns are left be until they shoot one of its side, and so is anyone
+    /// wearing an ally's ID unless the NPC has been set on them.
     /// </summary>
     public bool IsTargetAllowed(EntityUid npc, EntityUid target)
     {
         if (_iff.IsFriendly(npc, target))
             return false;
 
-        // Someone on its own side who shot it gets shot back, whatever the orders.
+        // Someone who shot it without being an enemy - its own side, an ally, a neutral - gets shot back,
+        // whatever the orders.
         if (_retaliation.HasGrudge(npc, target))
             return true;
 
         TryComp<NpcSquadMemberComponent>(npc, out var member);
+
+        // NPC factions know nothing of diplomacy, so the hostile list still names a faction its side has since
+        // allied with. The ally's ID settles it - unless the leader pointed them out, or their faction is hated.
+        if (member?.FocusTarget != target && IsAllied(npc, target) && !_npcFaction.GetHostiles(npc).Contains(target))
+            return false;
 
         // Anti-boarder guns and the like are left be until they shoot one of its side, unless pointed out.
         if (member?.FocusTarget != target && _passiveTarget.IsLeftAlone(npc, target))
@@ -974,7 +982,7 @@ public sealed partial class NpcSquadSystem : EntitySystem
             states.Add(state);
         }
 
-        _ui.SetUiState(leaderUid, NpcSquadUiKey.Key, new NpcSquadBuiState(states, MaxMembers, leader.Formation));
+        _ui.SetUiState(leaderUid, NpcSquadUiKey.Key, new NpcSquadBuiState(states, MaxMembers, leader.Formation, leader.KillAll));
     }
 
     #endregion

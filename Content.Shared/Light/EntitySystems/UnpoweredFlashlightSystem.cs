@@ -52,6 +52,9 @@ public sealed class UnpoweredFlashlightSystem : EntitySystem
 
     private void OnGetActions(EntityUid uid, UnpoweredFlashlightComponent component, GetItemActionsEvent args)
     {
+        if (!component.ShowAction)
+            return;
+
         args.AddAction(component.ToggleActionEntity);
     }
 

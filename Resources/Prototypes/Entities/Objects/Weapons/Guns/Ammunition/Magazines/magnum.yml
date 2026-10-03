@@ -1,6 +1,6 @@
 - type: entity
   id: BaseMagazineMagnum
-  name: 7-round pistol magazine (.327 Imperial magnum)
+  name: 7-round pistol magazine (.327)
   parent: BaseMagazinePistol
   abstract: true
   components:
@@ -28,7 +28,7 @@
 
 - type: entity
   id: BaseMagazineMagnumSubMachineGun
-  name: "25-round SMG magazine (.327 Imperial magnum)"
+  name: "25-round SMG magazine (.327)"
   parent: BaseItem
   abstract: true
   components:
@@ -61,7 +61,7 @@
 
 - type: entity
   id: MagazineMagnumEmpty
-  name: 7-round pistol magazine (.327 Imperial magnum any)
+  name: 7-round pistol magazine (.327 any)
   suffix: empty
   parent: BaseMagazineMagnum
   components:
@@ -70,7 +70,7 @@
 
 - type: entity
   id: MagazineMagnum
-  name: 7-round pistol magazine (.327 Imperial magnum)
+  name: 7-round pistol magazine (.327)
   parent: BaseMagazineMagnum
   components:
   - type: BallisticAmmoProvider
@@ -78,7 +78,7 @@
 
 - type: entity
   id: MagazineMagnumPractice
-  name: 7-round pistol magazine (.327 Imperial magnum practice)
+  name: 7-round pistol magazine (.327 practice)
   parent: BaseMagazineMagnum
   components:
   - type: BallisticAmmoProvider
@@ -86,7 +86,7 @@
 
 - type: entity
   id: MagazineMagnumRubber
-  name: 7-round pistol magazine (.327 Imperial magnum rubber)
+  name: 7-round pistol magazine (.327 rubber)
   parent: BaseMagazineMagnum
   components:
   - type: BallisticAmmoProvider
@@ -94,7 +94,7 @@
 
 - type: entity
   id: MagazineMagnumIncendiary
-  name: 7-round pistol magazine (.327 Imperial magnum incendiary)
+  name: 7-round pistol magazine (.327 incendiary)
   parent: BaseMagazineMagnum
   components:
   - type: BallisticAmmoProvider
@@ -102,7 +102,7 @@
 
 - type: entity
   id: MagazineMagnumUranium
-  name: 7-round pistol magazine (.327 Imperial magnum uranium)
+  name: 7-round pistol magazine (.327 uranium)
   parent: BaseMagazineMagnum
   components:
   - type: BallisticAmmoProvider
@@ -110,7 +110,7 @@
 
 - type: entity
   id: MagazineMagnumAP
-  name: 7-round pistol magazine (.327 Imperial magnum black-tip)
+  name: 7-round pistol magazine (.327 black-tip)
   parent: BaseMagazineMagnum
   components:
   - type: BallisticAmmoProvider
@@ -118,7 +118,7 @@
 
 - type: entity
   id: MagazineMagnumShrapnel
-  name: 7-round pistol magazine (.327 Imperial magnum shrapnel)
+  name: 7-round pistol magazine (.327 shrapnel)
   parent: BaseMagazineMagnum
   components:
   - type: BallisticAmmoProvider
@@ -126,7 +126,7 @@
 
 - type: entity
   id: MagazineMagnumSubMachineGunEmpty
-  name: "25-round SMG magazine (.327 Imperial magnum any)"
+  name: "25-round SMG magazine (.327 any)"
   suffix: empty
   parent: BaseMagazineMagnumSubMachineGun
   components:
@@ -139,7 +139,7 @@
 
 - type: entity
   id: MagazineMagnumSubMachineGun
-  name: "25-round SMG magazine (.327 Imperial magnum)"
+  name: "25-round SMG magazine (.327)"
   parent: BaseMagazineMagnumSubMachineGun
   components:
   - type: BallisticAmmoProvider
@@ -153,7 +153,7 @@
 
 - type: entity
   id: MagazineMagnumSubMachineGunPractice
-  name: "25-round SMG magazine (.327 Imperial magnum practice)"
+  name: "25-round SMG magazine (.327 practice)"
   parent: BaseMagazineMagnumSubMachineGun
   components:
   - type: BallisticAmmoProvider
@@ -167,7 +167,7 @@
 
 - type: entity
   id: MagazineMagnumSubMachineGunRubber
-  name: "25-round SMG magazine (.327 Imperial magnum rubber)"
+  name: "25-round SMG magazine (.327 rubber)"
   parent: BaseMagazineMagnumSubMachineGun
   components:
   - type: BallisticAmmoProvider
@@ -181,7 +181,7 @@
 
 - type: entity
   id: MagazineMagnumSubMachineGunUranium
-  name: "25-round SMG magazine (.327 Imperial magnum uranium)"
+  name: "25-round SMG magazine (.327 uranium)"
   parent: BaseMagazineMagnumSubMachineGun
   components:
   - type: BallisticAmmoProvider
@@ -195,7 +195,7 @@
 
 - type: entity
   id: MagazineMagnumSubMachineGunPiercing
-  name: "25-round SMG magazine (.327 Imperial magnum black-tip)"
+  name: "25-round SMG magazine (.327 black-tip)"
   parent: BaseMagazineMagnumSubMachineGun
   components:
   - type: BallisticAmmoProvider

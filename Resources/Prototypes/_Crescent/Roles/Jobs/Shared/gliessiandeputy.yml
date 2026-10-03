@@ -25,7 +25,7 @@
       - type: ChatRank
         rank: crescent-rank-ind-gliess-deputy
       - type: HullrotFaction
-        faction: GS
+        faction: CMM
       - type: LanguageAdder
         addSpoken:
           - Tradeband
@@ -34,6 +34,7 @@
   accessGroups:
   - GeneralAccess
   access:
+  - Minuteman
   - GliessSheriff
   - GliessDockmaster
 
@@ -44,7 +45,7 @@
     shoes: ClothingShoesBootsCombat
     head: ClothingHeadHatCMMDeputyMarshal
     gloves: ClothingHandsGlovesCombat
-    pocket1: WeaponPistolHKUSP
+    pocket1: WeaponPistolCMMLockwell
     id: GliessDeputyPDA
     ears: ClothingHeadsetCMM
     neck: ClothingNeckScarfCMMCloak

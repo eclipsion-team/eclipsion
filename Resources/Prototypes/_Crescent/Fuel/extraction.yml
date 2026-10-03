@@ -28,14 +28,14 @@
   description: Sour orange vapour rises from a crack in the rock. There may be fuel below.
   components:
   - type: Sprite
-    sprite: _Crescent/Structures/Machines/fuel_extractor.rsi
+    sprite: _Crescent/Structures/Automining/fuel_seep.rsi
     drawdepth: FloorObjects
     layers:
-    - state: idle
+    - state: boriatic
       map: [ "enum.FuelSeepVisualLayers.Base" ]
   - type: Icon
-    sprite: _Crescent/Structures/Machines/fuel_extractor.rsi
-    state: idle
+    sprite: _Crescent/Structures/Automining/fuel_seep.rsi
+    state: boriatic
   - type: PointLight
     radius: 1.8
     energy: 1.2
@@ -52,14 +52,14 @@
   description: A violet shimmer leaks through a crack in the chromite. Something volatile is trapped below.
   components:
   - type: Sprite
-    sprite: _Crescent/Structures/Machines/fuel_extractor.rsi
+    sprite: _Crescent/Structures/Automining/fuel_seep.rsi
     drawdepth: FloorObjects
     layers:
-    - state: idle
+    - state: ame
       map: [ "enum.FuelSeepVisualLayers.Base" ]
   - type: Icon
-    sprite: _Crescent/Structures/Machines/fuel_extractor.rsi
-    state: idle
+    sprite: _Crescent/Structures/Automining/fuel_seep.rsi
+    state: ame
   - type: PointLight
     radius: 1.8
     energy: 1.4

@@ -68,7 +68,7 @@ public sealed partial class ShuttleSystem
 
         if (!args.Show)
         {
-            if (component.HeatCapacity - component.CurrentHeat < component.HeatGeneration)
+            if (!component.UnlimitedCloak && component.HeatCapacity - component.CurrentHeat < component.HeatGeneration)
                 return;
             AddIFFFlag(xform.GridUid.Value, IFFFlags.Hide);
             component.active = true;
@@ -122,6 +122,28 @@ public sealed partial class ShuttleSystem
 
         SetIFFColor(gridUid, args.Color);
         UpdateIFFInterface(uid, component);
+    }
+
+    /// <summary>
+    /// Crescent: gives the console a cloak that never overheats and, when <paramref name="cloak"/> is set, switches it
+    /// on for the console's grid straight away.
+    /// </summary>
+    public void SetUnlimitedCloak(EntityUid console, IFFConsoleComponent comp, bool cloak)
+    {
+        comp.UnlimitedCloak = true;
+        comp.AllowedFlags |= IFFFlags.Hide;
+        comp.CurrentHeat = 0f;
+
+        if (cloak && Transform(console).GridUid is { } grid)
+        {
+            AddIFFFlag(grid, IFFFlags.Hide);
+            comp.active = true;
+
+            if (TryComp(grid, out MassCloakedByComponent? cloakedBy))
+                cloakedBy.HideFlagSetByMassCloak = false;
+        }
+
+        UpdateIFFInterface(console, comp);
     }
 
     public void UpdateIFFInterface(EntityUid console, IFFConsoleComponent comp)

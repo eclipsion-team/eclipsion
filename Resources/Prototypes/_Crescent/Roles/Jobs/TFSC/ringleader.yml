@@ -3,6 +3,7 @@
   name: job-name-ringleader
   description: job-description-ringleader
   playTimeTracker: JobRingleaderTFSC
+  requiredReligion: InfernalExchange
   weight: 12
   startingGear: RingleaderGear
   alwaysUseSpawner: true
@@ -39,6 +40,8 @@
         rank: crescent-rank-synadmin
       - type: HullrotFaction
         faction: TFSC
+      - type: ReligiousCaller
+        action: ActionReligiousCallInfernalExchange
       - type: LanguageAdder
         addSpoken:
           - Freespeak

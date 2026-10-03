@@ -1,0 +1,409 @@
+# Sector Crescent faiths (Sector_Crescent_Religion_Update.pdf).
+#
+# `factions` is matched against both the profile faction and the in-round HullrotFaction, so IND covers spacers in
+# round, and `jobs` covers them in the character editor, where the profile faction is never IND.
+# A faith with no factions is open to everyone.
+#
+# callLines are said by a faction's faith figure through the hotbar action (religious_calls.yml);
+# every believer of that faith in callRange answers with one of the responseLines on their own. Whoever stays
+# silent does not hold the faith.
+#
+# prayerLines are whispered by a believer who touches their own faith's altar, prayerSteps of them per prayer,
+# shuffled per believer so none repeats before the rest are said.
+#
+# Who may hold what:
+#   DSM   - Four Saints, Returning Tide
+#   NCWL  - Common Hands, Returning Tide
+#   SHI   - Golden Ledger, Four Saints, Returning Tide
+#   TFSC  - Infernal Exchange, Four Saints, Returning Tide
+#   TAP   - Veiled Mother, Returning Tide
+#   SRM   - Unbroken Pattern, Returning Tide
+#   CMM   - Last Watch, Returning Tide (Gliessian jobs included)
+#   Spacers (IND / Spacer, Vagrant) - everything
+
+- type: religion
+  id: Unaffiliated
+  name: religion-name-unaffiliated
+  description: religion-description-unaffiliated
+  color: "#A0A0A0"
+  weight: 100
+
+- type: religion
+  id: ReturningTide
+  name: religion-name-returning-tide
+  description: religion-description-returning-tide
+  color: "#6FB7C9"
+  weight: 90
+  joinVerb: religion-verb-join-returning-tide
+  joinedMessage: religion-joined-returning-tide
+  prayerLines:
+  - religion-prayer-returning-tide-1
+  - religion-prayer-returning-tide-2
+  - religion-prayer-returning-tide-3
+  - religion-prayer-returning-tide-4
+  - religion-prayer-returning-tide-5
+  - religion-prayer-returning-tide-6
+  - religion-prayer-returning-tide-7
+  - religion-prayer-returning-tide-8
+  - religion-prayer-returning-tide-9
+  - religion-prayer-returning-tide-10
+  - religion-prayer-returning-tide-11
+  - religion-prayer-returning-tide-12
+  - religion-prayer-returning-tide-13
+  - religion-prayer-returning-tide-14
+  - religion-prayer-returning-tide-15
+  - religion-prayer-returning-tide-16
+  - religion-prayer-returning-tide-17
+  - religion-prayer-returning-tide-18
+  - religion-prayer-returning-tide-19
+  - religion-prayer-returning-tide-20
+  rite:
+  - line: religion-rite-returning-tide-1
+  - line: religion-rite-returning-tide-2
+  - line: religion-rite-returning-tide-3
+
+- type: religion
+  id: FourSaints
+  name: religion-name-four-saints
+  description: religion-description-four-saints
+  color: "#E8C872"
+  weight: 80
+  factions: [ DSM, SHI, TFSC, IND ]
+  jobs: [ Spacer, Vagrant ]
+  joinVerb: religion-verb-join-four-saints
+  joinedMessage: religion-joined-four-saints
+  callLines:
+  - religion-call-four-saints-1
+  - religion-call-four-saints-2
+  - religion-call-four-saints-3
+  - religion-call-four-saints-4
+  responseLines:
+  - religion-response-four-saints-1
+  - religion-response-four-saints-2
+  - religion-response-four-saints-3
+  - religion-response-four-saints-4
+  - religion-response-four-saints-5
+  - religion-response-four-saints-6
+  - religion-response-four-saints-7
+  - religion-response-four-saints-8
+  prayerLines:
+  - religion-prayer-four-saints-1
+  - religion-prayer-four-saints-2
+  - religion-prayer-four-saints-3
+  - religion-prayer-four-saints-4
+  - religion-prayer-four-saints-5
+  - religion-prayer-four-saints-6
+  - religion-prayer-four-saints-7
+  - religion-prayer-four-saints-8
+  - religion-prayer-four-saints-9
+  - religion-prayer-four-saints-10
+  - religion-prayer-four-saints-11
+  - religion-prayer-four-saints-12
+  - religion-prayer-four-saints-13
+  - religion-prayer-four-saints-14
+  - religion-prayer-four-saints-15
+  - religion-prayer-four-saints-16
+  - religion-prayer-four-saints-17
+  - religion-prayer-four-saints-18
+  - religion-prayer-four-saints-19
+  - religion-prayer-four-saints-20
+  rite:
+  - line: religion-rite-four-saints-1
+  - line: religion-rite-four-saints-2
+  - line: religion-rite-four-saints-3
+  - line: religion-rite-four-saints-4
+
+- type: religion
+  id: CommonHands
+  name: religion-name-common-hands
+  description: religion-description-common-hands
+  color: "#D9962B"
+  weight: 70
+  factions: [ NCWL, IND ]
+  jobs: [ Spacer, Vagrant ]
+  joinVerb: religion-verb-join-common-hands
+  joinedMessage: religion-joined-common-hands
+  callLines:
+  - religion-call-common-hands-1
+  - religion-call-common-hands-2
+  - religion-call-common-hands-3
+  responseLines:
+  - religion-response-common-hands-1
+  - religion-response-common-hands-2
+  - religion-response-common-hands-3
+  - religion-response-common-hands-4
+  - religion-response-common-hands-5
+  - religion-response-common-hands-6
+  - religion-response-common-hands-7
+  prayerLines:
+  - religion-prayer-common-hands-1
+  - religion-prayer-common-hands-2
+  - religion-prayer-common-hands-3
+  - religion-prayer-common-hands-4
+  - religion-prayer-common-hands-5
+  - religion-prayer-common-hands-6
+  - religion-prayer-common-hands-7
+  - religion-prayer-common-hands-8
+  - religion-prayer-common-hands-9
+  - religion-prayer-common-hands-10
+  - religion-prayer-common-hands-11
+  - religion-prayer-common-hands-12
+  - religion-prayer-common-hands-13
+  - religion-prayer-common-hands-14
+  - religion-prayer-common-hands-15
+  - religion-prayer-common-hands-16
+  - religion-prayer-common-hands-17
+  - religion-prayer-common-hands-18
+  - religion-prayer-common-hands-19
+  - religion-prayer-common-hands-20
+  rite:
+  - line: religion-rite-common-hands-1
+  - line: religion-rite-common-hands-2
+  - line: religion-rite-common-hands-3
+
+- type: religion
+  id: GoldenLedger
+  name: religion-name-golden-ledger
+  description: religion-description-golden-ledger
+  color: "#E6B422"
+  weight: 60
+  factions: [ SHI, IND ]
+  jobs: [ Spacer, Vagrant ]
+  joinVerb: religion-verb-join-golden-ledger
+  joinedMessage: religion-joined-golden-ledger
+  callLines:
+  - religion-call-golden-ledger-1
+  - religion-call-golden-ledger-2
+  - religion-call-golden-ledger-3
+  responseLines:
+  - religion-response-golden-ledger-1
+  - religion-response-golden-ledger-2
+  - religion-response-golden-ledger-3
+  - religion-response-golden-ledger-4
+  - religion-response-golden-ledger-5
+  - religion-response-golden-ledger-6
+  - religion-response-golden-ledger-7
+  prayerLines:
+  - religion-prayer-golden-ledger-1
+  - religion-prayer-golden-ledger-2
+  - religion-prayer-golden-ledger-3
+  - religion-prayer-golden-ledger-4
+  - religion-prayer-golden-ledger-5
+  - religion-prayer-golden-ledger-6
+  - religion-prayer-golden-ledger-7
+  - religion-prayer-golden-ledger-8
+  - religion-prayer-golden-ledger-9
+  - religion-prayer-golden-ledger-10
+  - religion-prayer-golden-ledger-11
+  - religion-prayer-golden-ledger-12
+  - religion-prayer-golden-ledger-13
+  - religion-prayer-golden-ledger-14
+  - religion-prayer-golden-ledger-15
+  - religion-prayer-golden-ledger-16
+  - religion-prayer-golden-ledger-17
+  - religion-prayer-golden-ledger-18
+  - religion-prayer-golden-ledger-19
+  - religion-prayer-golden-ledger-20
+  rite:
+  - line: religion-rite-golden-ledger-1
+  - line: religion-rite-golden-ledger-2
+  - line: religion-rite-golden-ledger-3
+
+- type: religion
+  id: InfernalExchange
+  name: religion-name-infernal-exchange
+  description: religion-description-infernal-exchange
+  color: "#D0463F"
+  weight: 50
+  factions: [ TFSC, IND ]
+  jobs: [ Spacer, Vagrant ]
+  joinVerb: religion-verb-join-infernal-exchange
+  joinedMessage: religion-joined-infernal-exchange
+  callLines:
+  - religion-call-infernal-exchange-1
+  - religion-call-infernal-exchange-2
+  - religion-call-infernal-exchange-3
+  responseLines:
+  - religion-response-infernal-exchange-1
+  - religion-response-infernal-exchange-2
+  - religion-response-infernal-exchange-3
+  - religion-response-infernal-exchange-4
+  - religion-response-infernal-exchange-5
+  - religion-response-infernal-exchange-6
+  prayerLines:
+  - religion-prayer-infernal-exchange-1
+  - religion-prayer-infernal-exchange-2
+  - religion-prayer-infernal-exchange-3
+  - religion-prayer-infernal-exchange-4
+  - religion-prayer-infernal-exchange-5
+  - religion-prayer-infernal-exchange-6
+  - religion-prayer-infernal-exchange-7
+  - religion-prayer-infernal-exchange-8
+  - religion-prayer-infernal-exchange-9
+  - religion-prayer-infernal-exchange-10
+  - religion-prayer-infernal-exchange-11
+  - religion-prayer-infernal-exchange-12
+  - religion-prayer-infernal-exchange-13
+  - religion-prayer-infernal-exchange-14
+  - religion-prayer-infernal-exchange-15
+  - religion-prayer-infernal-exchange-16
+  - religion-prayer-infernal-exchange-17
+  - religion-prayer-infernal-exchange-18
+  - religion-prayer-infernal-exchange-19
+  - religion-prayer-infernal-exchange-20
+  rite:
+  - line: religion-rite-infernal-exchange-1
+  - line: religion-rite-infernal-exchange-2
+  - line: religion-rite-infernal-exchange-3
+
+# Nobody enters the Covenant at an altar without the Prophet there to accept them.
+- type: religion
+  id: VeiledMother
+  name: religion-name-veiled-mother
+  description: religion-description-veiled-mother
+  color: "#B57BFF"
+  weight: 40
+  factions: [ TAP, IND ]
+  jobs: [ Spacer, Vagrant ]
+  requiresLeader: true
+  joinVerb: religion-verb-join-veiled-mother
+  joinedMessage: religion-joined-veiled-mother
+  callLines:
+  - religion-call-veiled-mother-1
+  - religion-call-veiled-mother-2
+  - religion-call-veiled-mother-3
+  responseLines:
+  - religion-response-veiled-mother-1
+  - religion-response-veiled-mother-2
+  - religion-response-veiled-mother-3
+  - religion-response-veiled-mother-4
+  - religion-response-veiled-mother-5
+  - religion-response-veiled-mother-6
+  prayerLines:
+  - religion-prayer-veiled-mother-1
+  - religion-prayer-veiled-mother-2
+  - religion-prayer-veiled-mother-3
+  - religion-prayer-veiled-mother-4
+  - religion-prayer-veiled-mother-5
+  - religion-prayer-veiled-mother-6
+  - religion-prayer-veiled-mother-7
+  - religion-prayer-veiled-mother-8
+  - religion-prayer-veiled-mother-9
+  - religion-prayer-veiled-mother-10
+  - religion-prayer-veiled-mother-11
+  - religion-prayer-veiled-mother-12
+  - religion-prayer-veiled-mother-13
+  - religion-prayer-veiled-mother-14
+  - religion-prayer-veiled-mother-15
+  - religion-prayer-veiled-mother-16
+  - religion-prayer-veiled-mother-17
+  - religion-prayer-veiled-mother-18
+  - religion-prayer-veiled-mother-19
+  - religion-prayer-veiled-mother-20
+  rite:
+  - line: religion-rite-veiled-mother-1
+    speaker: Officiant
+  - line: religion-rite-veiled-mother-2
+  - line: religion-rite-veiled-mother-3
+    speaker: Officiant
+  - line: religion-rite-veiled-mother-4
+
+- type: religion
+  id: UnbrokenPattern
+  name: religion-name-unbroken-pattern
+  description: religion-description-unbroken-pattern
+  color: "#B8A97A"
+  weight: 30
+  factions: [ SRM, IND ]
+  jobs: [ Spacer, Vagrant ]
+  joinVerb: religion-verb-join-unbroken-pattern
+  joinedMessage: religion-joined-unbroken-pattern
+  callLines:
+  - religion-call-unbroken-pattern-1
+  - religion-call-unbroken-pattern-2
+  - religion-call-unbroken-pattern-3
+  responseLines:
+  - religion-response-unbroken-pattern-1
+  - religion-response-unbroken-pattern-2
+  - religion-response-unbroken-pattern-3
+  - religion-response-unbroken-pattern-4
+  - religion-response-unbroken-pattern-5
+  - religion-response-unbroken-pattern-6
+  prayerLines:
+  - religion-prayer-unbroken-pattern-1
+  - religion-prayer-unbroken-pattern-2
+  - religion-prayer-unbroken-pattern-3
+  - religion-prayer-unbroken-pattern-4
+  - religion-prayer-unbroken-pattern-5
+  - religion-prayer-unbroken-pattern-6
+  - religion-prayer-unbroken-pattern-7
+  - religion-prayer-unbroken-pattern-8
+  - religion-prayer-unbroken-pattern-9
+  - religion-prayer-unbroken-pattern-10
+  - religion-prayer-unbroken-pattern-11
+  - religion-prayer-unbroken-pattern-12
+  - religion-prayer-unbroken-pattern-13
+  - religion-prayer-unbroken-pattern-14
+  - religion-prayer-unbroken-pattern-15
+  - religion-prayer-unbroken-pattern-16
+  - religion-prayer-unbroken-pattern-17
+  - religion-prayer-unbroken-pattern-18
+  - religion-prayer-unbroken-pattern-19
+  - religion-prayer-unbroken-pattern-20
+  rite:
+  - line: religion-rite-unbroken-pattern-1
+  - line: religion-rite-unbroken-pattern-2
+  - line: religion-rite-unbroken-pattern-3
+
+- type: religion
+  id: LastWatch
+  name: religion-name-last-watch
+  description: religion-description-last-watch
+  color: "#4E8FD6"
+  weight: 20
+  factions: [ CMM, IND ]
+  jobs:
+  - Spacer
+  - Vagrant
+  - GliessianSheriff
+  - GliessianDeputy
+  - GliessianDockmaster
+  - GliessianDockhand
+  joinVerb: religion-verb-join-last-watch
+  joinedMessage: religion-joined-last-watch
+  callLines:
+  - religion-call-last-watch-1
+  - religion-call-last-watch-2
+  - religion-call-last-watch-3
+  responseLines:
+  - religion-response-last-watch-1
+  - religion-response-last-watch-2
+  - religion-response-last-watch-3
+  - religion-response-last-watch-4
+  - religion-response-last-watch-5
+  - religion-response-last-watch-6
+  prayerLines:
+  - religion-prayer-last-watch-1
+  - religion-prayer-last-watch-2
+  - religion-prayer-last-watch-3
+  - religion-prayer-last-watch-4
+  - religion-prayer-last-watch-5
+  - religion-prayer-last-watch-6
+  - religion-prayer-last-watch-7
+  - religion-prayer-last-watch-8
+  - religion-prayer-last-watch-9
+  - religion-prayer-last-watch-10
+  - religion-prayer-last-watch-11
+  - religion-prayer-last-watch-12
+  - religion-prayer-last-watch-13
+  - religion-prayer-last-watch-14
+  - religion-prayer-last-watch-15
+  - religion-prayer-last-watch-16
+  - religion-prayer-last-watch-17
+  - religion-prayer-last-watch-18
+  - religion-prayer-last-watch-19
+  - religion-prayer-last-watch-20
+  rite:
+  - line: religion-rite-last-watch-1
+  - line: religion-rite-last-watch-2
+  - line: religion-rite-last-watch-3

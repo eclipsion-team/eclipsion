@@ -95,7 +95,7 @@
   name: SHI L6SAW Stratos 5.56x45mm
   id: WeaponLightMachineGunL6
   parent: BaseWeaponLightMachineGun
-  description: A light machinegun developed by a Shinohara subsidiary. Chambered in 5.56x45mm Imperial.
+  description: A light machinegun developed by a Shinohara subsidiary. Chambered in 5.56x45mm.
   components:
   - type: Gun
     minAngle: 20

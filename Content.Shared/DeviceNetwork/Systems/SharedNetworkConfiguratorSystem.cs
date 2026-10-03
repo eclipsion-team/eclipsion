@@ -15,8 +15,18 @@ public abstract class SharedNetworkConfiguratorSystem : EntitySystem
 
     private void OnUiOpenAttempt(EntityUid uid, NetworkConfiguratorComponent configurator, ActivatableUIOpenAttemptEvent args)
     {
-        if (configurator.LinkModeActive)
-            args.Cancel();
+        if (!configurator.LinkModeActive)
+            return;
+
+        args.Cancel();
+        OnLinkModeActivated((uid, configurator), args.User);
+    }
+
+    /// <summary>
+    /// Called when the configurator is used in hand while in link mode
+    /// </summary>
+    protected virtual void OnLinkModeActivated(Entity<NetworkConfiguratorComponent> configurator, EntityUid user)
+    {
     }
 }
 

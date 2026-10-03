@@ -1,4 +1,4 @@
-using Content.Server.Access.Systems;
+﻿using Content.Server.Access.Systems;
 using Content.Server.Administration.Logs;
 using Content.Server.Bank;
 using Content.Server.Cargo.Components;
@@ -153,7 +153,9 @@ public sealed class StockMarketSystem : EntitySystem
         var company = stockMarket.Companies[companyIndex];
 
         // Kept in double until it is known to fit, so that an extreme price cannot wrap the cast either.
-        var value = Math.Round(company.CurrentPrice * (double) amount);
+        // Crescent: buying rounds up and selling (negative amount) rounds down, so splitting an order into
+        // single shares can't farm the rounding the way Math.Round's banker's rounding allowed.
+        var value = Math.Ceiling(company.CurrentPrice * (double) amount);
         if (double.IsNaN(value) || value < int.MinValue || value > int.MaxValue)
             return false;
 

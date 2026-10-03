@@ -73,7 +73,6 @@ public sealed class PassportTest
             component.Nationality = "Test Nation";
             component.Employer = "Test Employer";
             component.Lifepath = "Test Lifepath";
-            component.Religion = "None";
             component.PassportId = "ABCDE-FGHIJ-KLMNO";
             component.IssueYear = 2450;
             component.ExpirationYear = 2455;
@@ -108,7 +107,6 @@ public sealed class PassportTest
                 component.Nationality,
                 "Changed Employer",
                 "Changed Lifepath",
-                component.Religion,
                 "ZZZZZ-YYYYY-XXXXX",
                 component.IssueYear,
                 component.ExpirationYear)
@@ -148,7 +146,6 @@ public sealed class PassportTest
             component.Nationality,
             component.Employer,
             component.Lifepath,
-            component.Religion,
             component.PassportId,
             component.IssueYear,
             component.ExpirationYear)

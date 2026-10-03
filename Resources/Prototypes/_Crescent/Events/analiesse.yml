@@ -20,3 +20,16 @@
     minY: -2000
     maxX: 2000
     maxY: 2000
+
+# The CMM finale: the Analiesse herself (not the wreck above) jumps back into the sector as a crewable station
+# beside Gliess Santo, opening her CMM jobs for latejoin. Started by the CMM directive terminal when the auth key is
+# turned in (MissionAnaliesseKey's rewardGameRules); admins can also start it by hand. Only one per round.
+- type: entity
+  id: AnaliesseArrival
+  parent: BaseGameRule
+  name: Analiesse Arrival
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: AnaliesseArrivalRule
+    gameMap: Analiesse
+    nearFaction: CMM

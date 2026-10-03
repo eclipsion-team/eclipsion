@@ -63,8 +63,6 @@ public class SharedPassportSystem : EntitySystem
         if (!args.IsInDetailsRange || component.IsClosed)
             return;
 
-        var religion = DisplayOrUnspecified(component.Religion);
-
         args.PushMarkup(Loc.GetString("passport-registered-to", ("name", DisplayOrUnspecified(component.FullName))), 60);
         args.PushMarkup(Loc.GetString("passport-age", ("age", component.Age)), 59);
         args.PushMarkup(Loc.GetString("passport-species", ("species", DisplayOrUnspecified(component.Species))), 58);
@@ -73,7 +71,6 @@ public class SharedPassportSystem : EntitySystem
         args.PushMarkup(Loc.GetString("passport-nationality", ("nationality", DisplayOrUnspecified(component.Nationality))), 53);
         args.PushMarkup(Loc.GetString("passport-employer", ("employer", DisplayOrUnspecified(component.Employer))), 52);
         args.PushMarkup(Loc.GetString("passport-lifepath", ("lifepath", DisplayOrUnspecified(component.Lifepath))), 51);
-        args.PushMarkup(Loc.GetString("passport-religion", ("religion", religion)), 50);
         args.PushMarkup(Loc.GetString("passport-year-of-birth", ("year", CurrentYear - component.Age)), 49);
         args.PushMarkup(Loc.GetString("passport-issued", ("year", component.IssueYear)), 48);
         args.PushMarkup(Loc.GetString("passport-expires", ("year", component.ExpirationYear)), 47);
@@ -175,7 +172,6 @@ public class SharedPassportSystem : EntitySystem
         passport.Comp.Nationality = nationality;
         passport.Comp.Employer = employer;
         passport.Comp.Lifepath = lifepath;
-        passport.Comp.Religion = string.Empty;
         passport.Comp.IssueYear = CurrentYear;
         passport.Comp.ExpirationYear = CurrentYear + PassportLifetimeYears;
         passport.Comp.IsClosed = true;
@@ -189,8 +185,6 @@ public class SharedPassportSystem : EntitySystem
         // The registry copy is taken here, once, from the data the issuer put on the document.
         // Everything after this point is the holder's business: the editor can rewrite every
         // printed field but has no path to this snapshot, which is what makes a forgery findable.
-        // Religion is left out on purpose — the issuer never fills it, so a holder writing their
-        // own religion in must not read as a discrepancy.
         passport.Comp.Record = passport.Comp.Authentic
             ? new PassportRecord
             {
@@ -227,7 +221,6 @@ public class SharedPassportSystem : EntitySystem
         var nationality = Clean(args.Nationality);
         var employer = Clean(args.Employer);
         var lifepath = Clean(args.Lifepath);
-        var religion = Clean(args.Religion);
         var passportId = Clean(args.PassportId, 32).ToUpperInvariant();
         var issueYear = Math.Clamp(args.IssueYear, 0, 9999);
         var expirationYear = Math.Clamp(args.ExpirationYear, 0, 9999);
@@ -257,7 +250,6 @@ public class SharedPassportSystem : EntitySystem
             || passport.Comp.Nationality != nationality
             || passport.Comp.Employer != employer
             || passport.Comp.Lifepath != lifepath
-            || passport.Comp.Religion != religion
             || passport.Comp.PassportId != passportId
             || passport.Comp.IssueYear != issueYear
             || passport.Comp.ExpirationYear != expirationYear;
@@ -273,7 +265,6 @@ public class SharedPassportSystem : EntitySystem
             passport.Comp.Nationality = nationality;
             passport.Comp.Employer = employer;
             passport.Comp.Lifepath = lifepath;
-            passport.Comp.Religion = religion;
             passport.Comp.PassportId = passportId;
             passport.Comp.IssueYear = issueYear;
             passport.Comp.ExpirationYear = expirationYear;
@@ -323,7 +314,6 @@ public class SharedPassportSystem : EntitySystem
             component.Nationality,
             component.Employer,
             component.Lifepath,
-            component.Religion,
             component.PassportId,
             component.IssueYear,
             component.ExpirationYear));

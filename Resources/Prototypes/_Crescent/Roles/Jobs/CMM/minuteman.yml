@@ -73,7 +73,7 @@
     gloves: ClothingHandsGlovesCombat
     belt: ClothingBeltMinutemanPouches
     back: ClothingBackpackMinuteman
-    pocket1: WeaponPistolHKUSP
+    pocket1: WeaponPistolCMMLockwell
     id: MinutemanPDA
     ears: ClothingHeadsetCMM
     neck: ClothingNeckScarfCMMCloak

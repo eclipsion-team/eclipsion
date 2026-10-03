@@ -212,7 +212,7 @@
 - type: entity
   id: MagazineMagnumSub
   suffix: Submachinegun
-  name: 25-round extended pistol magazine (.327 Imperial magnum)
+  name: 25-round extended pistol magazine (.327)
   parent: BaseMagazineMagnumSubMachineGun
   components:
   - type: BallisticAmmoProvider

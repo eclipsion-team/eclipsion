@@ -627,8 +627,12 @@
   id: SoldierGunTargets
   query:
   - !type:NearbyHostilesQuery
+  # Under kill-all, everyone else who is neither of its side nor allied as well.
+  - !type:NearbyKillAllTargetsQuery
+  # The pilot in a mech is in a container and the chassis is no mob, so scan the cockpit instead.
+  - !type:NearbyHostileMechsQuery
   considerations:
-  - !type:TargetIsAliveCon
+  - !type:NpcTargetActiveCon
     curve: !type:BoolCurve
   - !type:TargetIsCritCon
     curve: !type:InverseBoolCurve
@@ -648,7 +652,7 @@
   query:
   - !type:OrderedTargetQuery
   considerations:
-  - !type:TargetIsAliveCon
+  - !type:NpcTargetActiveCon
     curve: !type:BoolCurve
   - !type:NpcSquadTargetCon
     curve: !type:BoolCurve
@@ -659,8 +663,11 @@
   id: SoldierMeleeTargets
   query:
   - !type:NearbyHostilesQuery
+  # Under kill-all, everyone else who is neither of its side nor allied as well.
+  - !type:NearbyKillAllTargetsQuery
+  - !type:NearbyHostileMechsQuery
   considerations:
-  - !type:TargetIsAliveCon
+  - !type:NpcTargetActiveCon
     curve: !type:BoolCurve
   - !type:NpcSquadTargetCon
     curve: !type:BoolCurve

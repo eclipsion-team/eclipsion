@@ -38,8 +38,13 @@
     - EmergencyMedipen
     - CombatMedipen
   - type: NpcIff
-  # Someone of its own side who shoots it gets shot back until they drop, then is forgiven.
+  # Anyone it wasn't already fighting who shoots it - its own side, an ally, a neutral - gets shot back until
+  # they drop, then is forgiven.
   - type: NpcFriendlyFireRetaliation
+  # Kill-all rules of engagement: goes for anyone who is neither of its side nor wearing an allied faction's ID,
+  # not just its NPC faction's enemies, so a garrison doesn't stand and watch a third party board the station. A
+  # squad leader can switch their squad back to enemies only from the squad window.
+  - type: NpcKillAll
   - type: NpcSquadRecruitable
   # Never walks off the grid it was put on - see the spawners in Markers/Spawners/soldier_ai.yml.
   - type: NpcGridBound

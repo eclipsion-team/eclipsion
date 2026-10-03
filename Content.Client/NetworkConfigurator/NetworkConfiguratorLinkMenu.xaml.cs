@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+using System.Linq;
+using System.Numerics;
 using Content.Client.UserInterface.Controls;
 using Content.Shared.DeviceLinking;
 using Content.Shared.DeviceNetwork;
@@ -8,145 +9,447 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Utility;
 
 namespace Content.Client.NetworkConfigurator;
 
+/// <summary>
+/// Shows every device in the configurators link buffer.
+/// Ports clicked here get linked between every selected source and every selected sink at once.
+/// </summary>
 [GenerateTypedNameReferences]
 public sealed partial class NetworkConfiguratorLinkMenu : FancyWindow
 {
+    [Dependency] private readonly IPrototypeManager _prototype = default!;
+
     private const string PanelBgColor = "#202023";
+    private const string RowBgColor = "#2A2A2E";
+    private static readonly Color FullLinkColor = Color.Cyan;
+    private static readonly Color PartialLinkColor = Color.FromHex("#E8A33D");
 
-    private readonly LinksRender _links;
+    private readonly LinksRender _linksRender;
 
-    private readonly List<SourcePortPrototype> _sources = new();
+    private readonly Dictionary<NetEntity, DeviceLinkBufferEntry> _devices = new();
+    private List<DeviceLinkBufferEntry> _deviceOrder = new();
+    private List<DeviceLinkEntry> _links = new();
 
-    private readonly List<SinkPortPrototype> _sinks = new();
+    private readonly HashSet<NetEntity> _knownDevices = new();
+    private readonly HashSet<NetEntity> _selectedSources = new();
+    private readonly HashSet<NetEntity> _selectedSinks = new();
 
-    private (ButtonPosition position, string id, int index)? _selectedButton;
+    private (ButtonPosition Position, string Id, Button Button)? _selectedPort;
 
-    private List<(string left, string right)>? _defaults;
-
-    public event Action? OnClearLinks;
-    public event Action<string, string>? OnToggleLink;
-    public event Action<List<(string left, string right)>>? OnLinkDefaults;
+    public event Action<List<NetEntity>, List<NetEntity>, string, string>? OnLinkPorts;
+    public event Action<List<NetEntity>, List<NetEntity>>? OnLinkDefaults;
+    public event Action<List<NetEntity>, List<NetEntity>>? OnClearLinks;
+    public event Action<DeviceLinkEntry>? OnRemoveLink;
+    public event Action<NetEntity>? OnForgetDevice;
+    public event Action? OnClearBuffer;
 
     public NetworkConfiguratorLinkMenu()
     {
         RobustXamlLoader.Load(this);
+        IoCManager.InjectDependencies(this);
 
-        var footerStyleBox = new StyleBoxFlat()
+        FooterPanel.PanelOverride = new StyleBoxFlat
         {
             BorderThickness = new Thickness(0, 2, 0, 0),
             BorderColor = Color.FromHex("#5A5A5A")
         };
 
-        FooterPanel.PanelOverride = footerStyleBox;
-        MainPanel.PanelOverride = new StyleBoxFlat(Color.FromHex(PanelBgColor));
+        var panelStyle = new StyleBoxFlat(Color.FromHex(PanelBgColor));
+        MainPanel.PanelOverride = panelStyle;
+        SourcesPanel.PanelOverride = panelStyle;
+        SinksPanel.PanelOverride = panelStyle;
+        LinksPanel.PanelOverride = panelStyle;
 
         ButtonClear.AddStyleClass("ButtonColorRed");
-        ButtonLinkDefault.Disabled = true;
+        ButtonClearBuffer.AddStyleClass("ButtonColorRed");
 
-        _links = new LinksRender(ButtonContainerLeft, ButtonContainerRight);
-        _links.VerticalExpand = true;
-        MiddleContainer.AddChild(_links);
+        _linksRender = new LinksRender(ButtonContainerLeft, ButtonContainerRight) { VerticalExpand = true };
+        MiddleContainer.AddChild(_linksRender);
 
         ButtonOk.OnPressed += _ => Close();
-        ButtonLinkDefault.OnPressed += _ => LinkDefaults();
-        ButtonClear.OnPressed += _ => OnClearLinks?.Invoke();
+        ButtonLinkDefault.OnPressed += _ => OnLinkDefaults?.Invoke(_selectedSources.ToList(), _selectedSinks.ToList());
+        ButtonClear.OnPressed += _ => OnClearLinks?.Invoke(_selectedSources.ToList(), _selectedSinks.ToList());
+        ButtonClearBuffer.OnPressed += _ => OnClearBuffer?.Invoke();
+        SelectAllSources.OnPressed += _ => ToggleSelectAll(_selectedSources, true);
+        SelectAllSinks.OnPressed += _ => ToggleSelectAll(_selectedSinks, false);
+        OnlySelectedCheck.OnToggled += _ => RebuildLinks();
+
+        Rebuild();
     }
 
-    public void UpdateState(DeviceLinkUserInterfaceState linkState)
+    public void UpdateState(DeviceLinkUserInterfaceState state)
+    {
+        _deviceOrder = state.Devices;
+        _links = state.Links;
+        _devices.Clear();
+
+        foreach (var device in state.Devices)
+        {
+            _devices[device.Entity] = device;
+
+            // Newly buffered devices start out selected so they can be linked right away
+            if (_knownDevices.Contains(device.Entity))
+                continue;
+
+            if (device.SourcePorts != null)
+                _selectedSources.Add(device.Entity);
+
+            if (device.SinkPorts != null)
+                _selectedSinks.Add(device.Entity);
+        }
+
+        _knownDevices.Clear();
+        _knownDevices.UnionWith(_devices.Keys);
+        _selectedSources.RemoveWhere(ent => !_devices.TryGetValue(ent, out var dev) || dev.SourcePorts == null);
+        _selectedSinks.RemoveWhere(ent => !_devices.TryGetValue(ent, out var dev) || dev.SinkPorts == null);
+
+        Rebuild();
+    }
+
+    private void Rebuild()
+    {
+        RebuildDevices();
+        RebuildSelectionDependent();
+    }
+
+    /// <summary>
+    /// Rebuilds everything that changes when the selected devices change
+    /// </summary>
+    private void RebuildSelectionDependent()
+    {
+        RebuildPorts();
+        RebuildLinks();
+        UpdateFooter();
+    }
+
+    #region Devices
+
+    private void RebuildDevices()
+    {
+        SourceDevices.RemoveAllChildren();
+        SinkDevices.RemoveAllChildren();
+
+        var sourceCount = 0;
+        var sinkCount = 0;
+        foreach (var device in _deviceOrder)
+        {
+            if (device.SourcePorts != null)
+            {
+                SourceDevices.AddChild(CreateDeviceRow(device, _selectedSources));
+                sourceCount++;
+            }
+
+            if (device.SinkPorts != null)
+            {
+                SinkDevices.AddChild(CreateDeviceRow(device, _selectedSinks));
+                sinkCount++;
+            }
+        }
+
+        if (sourceCount == 0)
+            SourceDevices.AddChild(CreateHintLabel(Loc.GetString("network-configurator-link-no-sources")));
+
+        if (sinkCount == 0)
+            SinkDevices.AddChild(CreateHintLabel(Loc.GetString("network-configurator-link-no-sinks")));
+
+        SourcesHeader.Text = Loc.GetString("network-configurator-link-sources", ("count", sourceCount));
+        SinksHeader.Text = Loc.GetString("network-configurator-link-sinks", ("count", sinkCount));
+        SelectAllSources.Disabled = sourceCount == 0;
+        SelectAllSinks.Disabled = sinkCount == 0;
+        ButtonClearBuffer.Disabled = _deviceOrder.Count == 0;
+    }
+
+    private Control CreateDeviceRow(DeviceLinkBufferEntry device, HashSet<NetEntity> selection)
+    {
+        var linkCount = _links.Count(link => link.Source == device.Entity || link.Sink == device.Entity);
+        var tooltip = Loc.GetString("network-configurator-link-device-tooltip",
+            ("address", string.IsNullOrEmpty(device.Address) ? "-" : device.Address),
+            ("links", linkCount));
+
+        var select = new Button
+        {
+            Text = device.Name,
+            ToggleMode = true,
+            Pressed = selection.Contains(device.Entity),
+            HorizontalExpand = true,
+            ClipText = true,
+            ToolTip = tooltip,
+        };
+        select.AddStyleClass("OpenRight");
+        select.OnToggled += args =>
+        {
+            if (args.Pressed)
+                selection.Add(device.Entity);
+            else
+                selection.Remove(device.Entity);
+
+            RebuildSelectionDependent();
+        };
+
+        var forget = new Button
+        {
+            Text = "✕",
+            ToolTip = Loc.GetString("network-configurator-link-forget-device"),
+        };
+        forget.AddStyleClass("OpenLeft");
+        forget.AddStyleClass("ButtonColorRed");
+        forget.OnPressed += _ => OnForgetDevice?.Invoke(device.Entity);
+
+        var row = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Horizontal,
+            HorizontalExpand = true,
+            Margin = new Thickness(0, 0, 0, 2),
+        };
+        row.AddChild(select);
+        row.AddChild(forget);
+        return row;
+    }
+
+    private void ToggleSelectAll(HashSet<NetEntity> selection, bool sources)
+    {
+        var all = _deviceOrder
+            .Where(dev => sources ? dev.SourcePorts != null : dev.SinkPorts != null)
+            .Select(dev => dev.Entity)
+            .ToList();
+
+        if (all.All(selection.Contains))
+            selection.Clear();
+        else
+            selection.UnionWith(all);
+
+        Rebuild();
+    }
+
+    private static Label CreateHintLabel(string text)
+    {
+        return new Label
+        {
+            Text = text,
+            StyleClasses = { "LabelSubText" },
+            Margin = new Thickness(4),
+        };
+    }
+
+    #endregion
+
+    #region Ports
+
+    private void RebuildPorts()
     {
         ButtonContainerLeft.RemoveAllChildren();
         ButtonContainerRight.RemoveAllChildren();
+        _linksRender.SourceButtons.Clear();
+        _linksRender.SinkButtons.Clear();
+        _linksRender.Links.Clear();
+        _selectedPort = null;
 
-        _sources.Clear();
-        _sources.AddRange(linkState.Sources);
-        _links.SourceButtons.Clear();
-        var i = 0;
-        foreach (var source in _sources)
+        var sourcePorts = new List<ProtoId<SourcePortPrototype>>();
+        var sinkPorts = new List<ProtoId<SinkPortPrototype>>();
+        foreach (var device in _deviceOrder)
         {
-            var button = CreateButton(ButtonPosition.Left, source.Name, source.Description, source.ID, i);
-            ButtonContainerLeft.AddChild(button);
-            _links.SourceButtons.Add(source.ID, button);
-            i++;
+            if (device.SourcePorts != null && _selectedSources.Contains(device.Entity))
+            {
+                foreach (var port in device.SourcePorts)
+                {
+                    if (!sourcePorts.Contains(port))
+                        sourcePorts.Add(port);
+                }
+            }
+
+            if (device.SinkPorts != null && _selectedSinks.Contains(device.Entity))
+            {
+                foreach (var port in device.SinkPorts)
+                {
+                    if (!sinkPorts.Contains(port))
+                        sinkPorts.Add(port);
+                }
+            }
         }
 
-        _sinks.Clear();
-        _sinks.AddRange(linkState.Sinks);
-        _links.SinkButtons.Clear();
-        i = 0;
-        foreach (var sink in _sinks)
-        {
-            var button = CreateButton(ButtonPosition.Right, sink.Name, sink.Description, sink.ID, i);
-            ButtonContainerRight.AddChild(button);
-            _links.SinkButtons.Add(sink.ID, button);
-            i++;
-        }
-
-        _links.Links.Clear();
-        _links.Links.AddRange(linkState.Links);
-        _defaults = linkState.Defaults;
-
-        ButtonLinkDefault.Disabled = _defaults == default;
-        FromAddressLabel.Text = linkState.SourceAddress;
-        ToAddressLabel.Text = linkState.SinkAddress;
-    }
-
-    private void LinkDefaults()
-    {
-        if (_defaults == default)
+        var hasPairs = CountPairs() > 0;
+        PortsEmptyLabel.Visible = !hasPairs;
+        PortsHeader.Text = Loc.GetString("network-configurator-link-ports");
+        if (!hasPairs)
             return;
 
-        OnLinkDefaults?.Invoke(_defaults);
+        foreach (var port in sourcePorts)
+        {
+            var proto = _prototype.Index(port);
+            var button = CreatePortButton(ButtonPosition.Left, proto.ID, proto.Name, proto.Description);
+            ButtonContainerLeft.AddChild(button);
+            _linksRender.SourceButtons[proto.ID] = button;
+        }
+
+        foreach (var port in sinkPorts)
+        {
+            var proto = _prototype.Index(port);
+            var button = CreatePortButton(ButtonPosition.Right, proto.ID, proto.Name, proto.Description);
+            ButtonContainerRight.AddChild(button);
+            _linksRender.SinkButtons[proto.ID] = button;
+        }
+
+        // Count how many of the selected pairs have each port link
+        var linkCounts = new Dictionary<(string, string), int>();
+        foreach (var link in _links)
+        {
+            if (link.Source == link.Sink
+                || !_selectedSources.Contains(link.Source)
+                || !_selectedSinks.Contains(link.Sink))
+                continue;
+
+            var key = ((string) link.SourcePort, (string) link.SinkPort);
+            linkCounts[key] = linkCounts.GetValueOrDefault(key) + 1;
+        }
+
+        foreach (var ((sourcePort, sinkPort), count) in linkCounts)
+        {
+            var total = CountPairs(sourcePort, sinkPort);
+            _linksRender.Links.Add((sourcePort, sinkPort, count < total));
+        }
     }
 
-    private Button CreateButton(ButtonPosition position, string name, string description, string id, int index)
+    /// <summary>
+    /// Counts the selected source and sink pairs, optionally only the ones having the given ports
+    /// </summary>
+    private int CountPairs(string? sourcePort = null, string? sinkPort = null)
     {
-        var button = new Button();
+        var sources = _selectedSources
+            .Where(ent => sourcePort == null || _devices[ent].SourcePorts!.Contains(sourcePort))
+            .ToHashSet();
+        var sinks = _selectedSinks
+            .Where(ent => sinkPort == null || _devices[ent].SinkPorts!.Contains(sinkPort))
+            .ToHashSet();
+
+        // A device that is both a source and a sink can't be linked to itself
+        return sources.Count * sinks.Count - sources.Count(sinks.Contains);
+    }
+
+    private Button CreatePortButton(ButtonPosition position, string id, string name, string description)
+    {
+        var button = new Button
+        {
+            Text = Loc.GetString(name),
+            ToolTip = Loc.GetString(description),
+            ToggleMode = true,
+        };
         button.AddStyleClass("OpenBoth");
-        button.Text = Loc.GetString(name);
-        button.ToolTip = Loc.GetString(description);
-        button.ToggleMode = true;
-        button.OnPressed += args => OnButtonPressed(args, position, id, index);
+        button.OnPressed += args => OnPortPressed(args.Button, position, id);
         return button;
     }
 
-    private void OnButtonPressed(BaseButton.ButtonEventArgs args, ButtonPosition position, string id, int index)
+    private void OnPortPressed(BaseButton pressed, ButtonPosition position, string id)
     {
-        var key = (position, id, index);
-        if (_selectedButton == key)
+        if (pressed is not Button button)
+            return;
+
+        if (_selectedPort == null)
         {
-            args.Button.Pressed = false;
-            _selectedButton = null;
+            button.Pressed = true;
+            _selectedPort = (position, id, button);
             return;
         }
 
-        if (!_selectedButton.HasValue)
+        var selected = _selectedPort.Value;
+        if (selected.Button == button)
         {
-            args.Button.Pressed = true;
-            _selectedButton = key;
-            return;
-        }
-
-        if (_selectedButton.Value.position == position)
-        {
-            args.Button.Pressed = false;
-            return;
-        }
-
-        var left = _selectedButton.Value.position == ButtonPosition.Left ? _selectedButton.Value.id : id;
-        var right = _selectedButton.Value.position == ButtonPosition.Left ? id : _selectedButton.Value.id;
-
-        OnToggleLink?.Invoke(left, right);
-
-        args.Button.Pressed = false;
-
-        var container = _selectedButton.Value.position == ButtonPosition.Left ? ButtonContainerLeft : ButtonContainerRight;
-        if (container.GetChild(_selectedButton.Value.index) is Button button)
             button.Pressed = false;
+            _selectedPort = null;
+            return;
+        }
 
-        _selectedButton = null;
+        // Clicked another port on the same side, select that one instead
+        if (selected.Position == position)
+        {
+            selected.Button.Pressed = false;
+            button.Pressed = true;
+            _selectedPort = (position, id, button);
+            return;
+        }
+
+        var source = selected.Position == ButtonPosition.Left ? selected.Id : id;
+        var sink = selected.Position == ButtonPosition.Left ? id : selected.Id;
+
+        button.Pressed = false;
+        selected.Button.Pressed = false;
+        _selectedPort = null;
+
+        OnLinkPorts?.Invoke(_selectedSources.ToList(), _selectedSinks.ToList(), source, sink);
+    }
+
+    #endregion
+
+    #region Existing links
+
+    private void RebuildLinks()
+    {
+        ExistingLinks.RemoveAllChildren();
+
+        var onlySelected = OnlySelectedCheck.Pressed;
+        var links = _links
+            .Where(link => !onlySelected || _selectedSources.Contains(link.Source) || _selectedSinks.Contains(link.Sink))
+            .OrderBy(link => link.SourceName)
+            .ThenBy(link => link.SinkName)
+            .ToList();
+
+        LinksHeader.Text = Loc.GetString("network-configurator-link-existing", ("count", links.Count));
+
+        if (links.Count == 0)
+        {
+            ExistingLinks.AddChild(CreateHintLabel(Loc.GetString("network-configurator-link-no-links")));
+            return;
+        }
+
+        var rowStyle = new StyleBoxFlat(Color.FromHex(RowBgColor));
+        for (var i = 0; i < links.Count; i++)
+        {
+            ExistingLinks.AddChild(CreateLinkRow(links[i], i % 2 == 0 ? rowStyle : null));
+        }
+    }
+
+    private Control CreateLinkRow(DeviceLinkEntry link, StyleBox? background)
+    {
+        var sourcePort = _prototype.TryIndex(link.SourcePort, out var sourceProto) ? Loc.GetString(sourceProto.Name) : link.SourcePort.Id;
+        var sinkPort = _prototype.TryIndex(link.SinkPort, out var sinkProto) ? Loc.GetString(sinkProto.Name) : link.SinkPort.Id;
+
+        var label = new RichTextLabel { HorizontalExpand = true, VerticalAlignment = VAlignment.Center };
+        label.SetMessage(FormattedMessage.FromMarkupOrThrow(Loc.GetString("network-configurator-link-row",
+            ("source", FormattedMessage.EscapeText(link.SourceName)),
+            ("sourcePort", FormattedMessage.EscapeText(sourcePort)),
+            ("sink", FormattedMessage.EscapeText(link.SinkName)),
+            ("sinkPort", FormattedMessage.EscapeText(sinkPort)))));
+
+        var unlink = new Button { Text = Loc.GetString("network-configurator-link-unlink") };
+        unlink.AddStyleClass("ButtonColorRed");
+        unlink.OnPressed += _ => OnRemoveLink?.Invoke(link);
+
+        var row = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Horizontal,
+            HorizontalExpand = true,
+            Margin = new Thickness(4, 2),
+        };
+        row.AddChild(label);
+        row.AddChild(unlink);
+
+        var panel = new PanelContainer { HorizontalExpand = true, PanelOverride = background };
+        panel.AddChild(row);
+        return panel;
+    }
+
+    #endregion
+
+    private void UpdateFooter()
+    {
+        var pairs = CountPairs();
+        SelectionLabel.Text = Loc.GetString("network-configurator-link-selection",
+            ("sources", _selectedSources.Count), ("sinks", _selectedSinks.Count), ("pairs", pairs));
+
+        ButtonClear.Disabled = pairs == 0;
+        ButtonLinkDefault.Disabled = pairs == 0;
     }
 
     private enum ButtonPosition
@@ -156,12 +459,13 @@ public sealed partial class NetworkConfiguratorLinkMenu : FancyWindow
     }
 
     /// <summary>
-    ///  Draws lines between linked ports using bezier curve calculated with polynomial coefficients
+    ///  Draws lines between linked ports using bezier curve calculated with polynomial coefficients.
+    ///  Links that only exist on some of the selected device pairs are drawn in a different color.
     ///  See: https://youtu.be/jvPPXbo87ds?t=351
     /// </summary>
     private sealed class LinksRender : Control
     {
-        public readonly List<(ProtoId<SourcePortPrototype>, ProtoId<SinkPortPrototype>)> Links = new();
+        public readonly List<(string Source, string Sink, bool Partial)> Links = new();
         public readonly Dictionary<string, Button> SourceButtons = new();
         public readonly Dictionary<string, Button> SinkButtons = new();
         private readonly BoxContainer _leftButtonContainer;
@@ -175,47 +479,44 @@ public sealed partial class NetworkConfiguratorLinkMenu : FancyWindow
 
         protected override void Draw(DrawingHandleScreen handle)
         {
-            foreach (var (left, right) in Links)
+            foreach (var (left, right, partial) in Links)
             {
                 if (!SourceButtons.TryGetValue(left, out var leftChild) || !SinkButtons.TryGetValue(right, out var rightChild))
                     continue;
 
+                var color = partial ? PartialLinkColor : FullLinkColor;
                 var leftOffset = _leftButtonContainer.PixelPosition.Y;
                 var rightOffset = _rightButtonContainer.PixelPosition.Y;
 
                 var y1 = leftChild.PixelPosition.Y + leftChild.PixelHeight / 2 + leftOffset;
                 var y2 = rightChild.PixelPosition.Y + rightChild.PixelHeight / 2 + rightOffset;
 
-                if (left == right)
+                if (Math.Abs(y1 - y2) < 1)
                 {
-                    handle.DrawLine(new Vector2(0, y1), new Vector2(PixelWidth, y2), Color.Cyan);
+                    handle.DrawLine(new Vector2(0, y1), new Vector2(PixelWidth, y2), color);
                     continue;
                 }
 
-                var controls = new List<Vector2>
-                {
-                    new(0, y1),
-                    new(30, y1),
-                    new(PixelWidth - 30, y2),
-                    new(PixelWidth, y2),
-                };
+                var p0 = new Vector2(0, y1);
+                var p1 = new Vector2(30, y1);
+                var p2 = new Vector2(PixelWidth - 30, y2);
+                var p3 = new Vector2(PixelWidth, y2);
 
                 //Calculate coefficients
-                var c0 = controls[0];
-                var c1 = controls[0] * -3 + controls[1] * 3;
-                var c2 = controls[0] * 3 + controls[1] * -6 + controls[2] * 3;
-                var c3 = controls[0] * -1 + controls[1] * 3 + controls[2] * -3 + controls[3];
+                var c0 = p0;
+                var c1 = p0 * -3 + p1 * 3;
+                var c2 = p0 * 3 + p1 * -6 + p2 * 3;
+                var c3 = p0 * -1 + p1 * 3 + p2 * -3 + p3;
 
-                var points = new List<Vector2>();
-
-                //Calculate points using coefficients
-                for (float t = 0; t <= 1; t += 0.0001f)
+                const int segments = 48;
+                var points = new Vector2[segments + 1];
+                for (var i = 0; i <= segments; i++)
                 {
-                    var point = c0 + c1 * t + c2 * (t * t) + c3 * (t * t * t);
-                    points.Add(point);
+                    var t = i / (float) segments;
+                    points[i] = c0 + c1 * t + c2 * (t * t) + c3 * (t * t * t);
                 }
 
-                handle.DrawPrimitives(DrawPrimitiveTopology.LineStrip, points.ToArray(), Color.Cyan);
+                handle.DrawPrimitives(DrawPrimitiveTopology.LineStrip, points, color);
             }
         }
     }

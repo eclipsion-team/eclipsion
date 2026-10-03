@@ -1,5 +1,6 @@
 using Content.Server.Administration.Logs;
 using Content.Server.Chat.Managers;
+using Content.Server.GameTicking;
 using Content.Server.Popups;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
@@ -30,6 +31,7 @@ public sealed class FactionRoundEndComputerSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly IChatManager _chat = default!;
     [Dependency] private readonly IAdminLogManager _adminLogger = default!;
+    [Dependency] private readonly GameTicker _gameTicker = default!;
 
     private EntityQuery<StackComponent> _stackQuery;
 
@@ -124,6 +126,9 @@ public sealed class FactionRoundEndComputerSystem : EntitySystem
         var coords = Transform(uid).Coordinates;
         foreach (var spawn in mission.RewardSpawns)
             Spawn(spawn, coords);
+
+        foreach (var rule in mission.RewardGameRules)
+            _gameTicker.StartGameRule(rule);
 
         var ev = new FactionMissionCompletedEvent(uid, actor, comp.Faction, mission);
         RaiseLocalEvent(uid, ref ev);

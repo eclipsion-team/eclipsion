@@ -30,6 +30,7 @@ using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Doors.Components;
+using Content.Shared.Doors.Systems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Gravity;
 using Content.Shared.Inventory;
@@ -1319,6 +1320,73 @@ public sealed class NpcSoldierTacticsTest
                 }
             });
         });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// A shutter in the way is one nobody opens by hand - it only answers its button - so the soldier leaves it
+    /// shut instead of working it like an airlock.
+    /// </summary>
+    [Test]
+    public async Task SoldierDoesntOpenShutter()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitPost(() => server.CfgMan.SetCVar(CCVars.NPCPauseWhenNoPlayersInRange, false));
+
+        EntityUid soldier = default, shooter = default, shutter = default;
+
+        await server.WaitPost(() =>
+        {
+            var entMan = server.EntMan;
+            var mapSys = server.System<SharedMapSystem>();
+            GiveGravity(entMan, map.Grid);
+
+            for (var x = -4; x <= 16; x++)
+            {
+                for (var y = -4; y <= 4; y++)
+                {
+                    mapSys.SetTile(map.Grid.Owner, map.Grid.Comp, new Vector2i(x, y), map.Tile.Tile);
+                }
+            }
+
+            for (var y = -4; y <= 4; y++)
+            {
+                var uid = entMan.SpawnEntity(y == 0 ? "ShuttersNormal" : "WallSolid",
+                    new EntityCoordinates(map.Grid, new Vector2(6.5f, y + 0.5f)));
+
+                if (y == 0)
+                    shutter = uid;
+            }
+
+            soldier = entMan.SpawnEntity(DsmSoldier, new EntityCoordinates(map.Grid, new Vector2(1.5f, 0.5f)));
+            shooter = entMan.SpawnEntity(NcwlSoldier, new EntityCoordinates(map.Grid, new Vector2(12.5f, 2.5f)));
+            server.System<NPCSystem>().SleepNPC(shooter);
+        });
+        await server.WaitRunTicks(server.Timing.TickRate);
+
+        await server.WaitPost(() =>
+        {
+            Assert.That(server.System<SharedDoorSystem>().CanOpen(shutter, null, soldier, quiet: true), Is.True,
+                "The soldier couldn't open the shutter anyway, so the test proves nothing.");
+
+            var damage = new DamageSpecifier(server.ProtoMan.Index<DamageTypePrototype>("Piercing"), 5);
+            server.System<DamageableSystem>().TryChangeDamage(soldier, damage, true, origin: shooter);
+        });
+
+        var doorOpened = false;
+
+        for (var second = 0; second < 10; second++)
+        {
+            await server.WaitRunTicks(server.Timing.TickRate);
+            await server.WaitPost(() =>
+                doorOpened |= server.EntMan.GetComponent<DoorComponent>(shutter).State is DoorState.Opening or DoorState.Open);
+        }
+
+        Assert.That(doorOpened, Is.False, "The soldier opened a shutter by hand.");
 
         await pair.CleanReturnAsync();
     }

@@ -8,6 +8,7 @@ namespace Content.Shared.PDA
         // TODO purge this shit
         //AAAAAAAAAAAAAAAA
     {
+        public bool FlashlightEnabled;
         public bool HasPen;
         public bool HasPai;
         public PdaIdInfoText PdaOwnerInfo;
@@ -20,6 +21,7 @@ namespace Content.Shared.PDA
         public PdaUpdateState(
             List<NetEntity> programs,
             NetEntity? activeUI,
+            bool flashlightEnabled,
             bool hasPen,
             bool hasPai,
             PdaIdInfoText pdaOwnerInfo,
@@ -30,6 +32,7 @@ namespace Content.Shared.PDA
             string? address = null)
             : base(programs, activeUI)
         {
+            FlashlightEnabled = flashlightEnabled;
             HasPen = hasPen;
             HasPai = hasPai;
             PdaOwnerInfo = pdaOwnerInfo;

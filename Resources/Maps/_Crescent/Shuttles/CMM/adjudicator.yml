@@ -430,10 +430,7 @@ entities:
       - 64
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
-    - type: Door
-      secondsUntilStateChange: -1813.5056
-      state: Opening
+        DoorStatus: False
 - proto: APCBasic
   entities:
   - uid: 9

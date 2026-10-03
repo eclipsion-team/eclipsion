@@ -26,7 +26,7 @@
       - type: ChatRank
         rank: crescent-rank-ind-dockhand
       - type: HullrotFaction
-        faction: GS
+        faction: CMM
       - type: LanguageAdder
         addSpoken:
           - Tradeband

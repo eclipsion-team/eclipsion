@@ -8,6 +8,9 @@
   id: BaseMobSpecies
   abstract: true
   components:
+  # Crescent - every humanoid holds a faith, so admin-spawned and ghost-role bodies can be bound, converted and answer
+  # religious calls too. Players get theirs from their profile when they spawn.
+  - type: Believer
   - type: Sprite
     layers:
     - map: [ "enum.HumanoidVisualLayers.Chest" ]

@@ -3,6 +3,7 @@
   name: job-name-ministerlabor
   description: job-description-labor
   playTimeTracker: JobLaborDSM
+  requiredReligion: FourSaints
   ranks:
     RatRankNobleDuke:
     - !type:CharacterPlaytimeRequirement

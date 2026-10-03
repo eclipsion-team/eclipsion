@@ -27,6 +27,11 @@ public sealed partial class NpcSquadWindow : FancyWindow
 
     public event Action? OnBuildFort;
 
+    /// <summary>
+    /// Kill-all rules of engagement on, or back to only the faction's enemies.
+    /// </summary>
+    public event Action<bool>? OnKillAll;
+
     private static readonly NpcSquadOrder[] Orders =
     [
         NpcSquadOrder.Follow,
@@ -47,6 +52,8 @@ public sealed partial class NpcSquadWindow : FancyWindow
         HoldFireAllButton.OnPressed += _ => OnOrder?.Invoke(null, NpcSquadOrder.HoldFire);
         DismissAllButton.OnPressed += _ => OnDismiss?.Invoke(null);
         BuildFortButton.OnPressed += _ => OnBuildFort?.Invoke();
+        KillAllButton.OnPressed += _ => OnKillAll?.Invoke(true);
+        EnemiesOnlyButton.OnPressed += _ => OnKillAll?.Invoke(false);
 
         foreach (var formation in Enum.GetValues<NpcSquadFormation>())
         {
@@ -77,6 +84,9 @@ public sealed partial class NpcSquadWindow : FancyWindow
         {
             button.Pressed = formation == state.Formation;
         }
+
+        KillAllButton.Pressed = state.KillAll;
+        EnemiesOnlyButton.Pressed = !state.KillAll;
 
         MembersContainer.RemoveAllChildren();
 

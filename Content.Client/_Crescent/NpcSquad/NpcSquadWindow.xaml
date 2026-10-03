@@ -23,6 +23,14 @@
                     ToolTip="{Loc 'npc-squad-order-fortify-desc'}"/>
         </BoxContainer>
 
+        <Label Text="{Loc 'npc-squad-ui-engagement'}" StyleClasses="LabelSecondaryColor"/>
+        <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+            <Button Name="KillAllButton" Text="{Loc 'npc-squad-killall-on'}" HorizontalExpand="True"
+                    ToggleMode="True" ToolTip="{Loc 'npc-squad-killall-on-desc'}"/>
+            <Button Name="EnemiesOnlyButton" Text="{Loc 'npc-squad-killall-off'}" HorizontalExpand="True"
+                    ToggleMode="True" ToolTip="{Loc 'npc-squad-killall-off-desc'}"/>
+        </BoxContainer>
+
         <Label Text="{Loc 'npc-squad-ui-formation'}" StyleClasses="LabelSecondaryColor"/>
         <BoxContainer Name="FormationContainer" Orientation="Horizontal" SeparationOverride="4"/>
         <Label Text="{Loc 'npc-squad-ui-point-hint'}" StyleClasses="LabelSecondaryColor"/>

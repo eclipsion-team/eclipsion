@@ -17133,12 +17133,9 @@ entities:
     - type: Transform
       pos: 3.5,9.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -4151.2803
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 4
     components:
     - type: Transform
@@ -17159,12 +17156,9 @@ entities:
     - type: Transform
       pos: -0.5,-6.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -28314.94
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 8
     components:
     - type: Transform
@@ -17175,12 +17169,9 @@ entities:
     - type: Transform
       pos: -1.5,9.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -28824.44
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
 - proto: AirlockCommandLockedFamiliesHorizontalFamilies
   entities:
   - uid: 10
@@ -17189,24 +17180,18 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -3.5,-1.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -22198.63
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 11
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: 0.5,-1.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -23359.197
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 12
     components:
     - type: Transform

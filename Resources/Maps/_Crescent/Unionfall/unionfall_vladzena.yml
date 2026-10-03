@@ -19987,12 +19987,9 @@ entities:
     - type: Transform
       pos: 14.5,-22.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -8589.235
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 92
     components:
     - type: Transform
@@ -20008,12 +20005,9 @@ entities:
     - type: Transform
       pos: 2.5,-4.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -8559.103
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 95
     components:
     - type: Transform
@@ -45924,9 +45918,6 @@ entities:
     - type: Transform
       pos: 4.5,-64.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -9657.513
-      state: Opening
 - proto: N14JunkArcade
   entities:
   - uid: 4238

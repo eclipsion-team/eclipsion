@@ -63,6 +63,9 @@ namespace Content.Client._Crescent
         private readonly Dictionary<string, Button> _factionButtons = new();
         private Button? _confirmButton;
 
+        private const string LimitedAvailabilityWarning =
+            "WARNING: This faction is only available through midround spawns or specific gamemodes.";
+
         public void SetProfile(HumanoidCharacterProfile? profile, int? slot)
         {
             Profile = profile?.Clone();
@@ -122,6 +125,11 @@ namespace Content.Client._Crescent
                 factionButton.ToggleMode = true;
 
                 factionButton.ModulateSelfOverride = faction.FactionButtonColor;
+                if (faction.LimitedAvailability)
+                {
+                    factionButton.Text += " *";
+                    factionButton.ToolTip = LimitedAvailabilityWarning;
+                }
 
                 factionButton.OnPressed += _ =>
                 {
@@ -210,6 +218,17 @@ namespace Content.Client._Crescent
                 HorizontalAlignment = HAlignment.Center,
                 Align = Label.AlignMode.Center,
             });
+
+            if (faction.LimitedAvailability)
+            {
+                FactionInfo.AddChild(new Label
+                {
+                    Text = LimitedAvailabilityWarning,
+                    FontColorOverride = Color.Gold,
+                    HorizontalAlignment = HAlignment.Center,
+                    Align = Label.AlignMode.Center,
+                });
+            }
 
             // Eclipsion - wraps to the available width. The prototype text is hard-wrapped at ~120 columns,
             //   so fold those breaks back into paragraphs first or it wraps twice.

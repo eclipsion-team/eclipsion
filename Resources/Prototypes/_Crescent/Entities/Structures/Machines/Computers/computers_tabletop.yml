@@ -139,9 +139,9 @@
   suffix: Tabletop, TAP
 
 - type: entity
-  parent: [BaseComputerTabletopOverwatch, GSOverwatchComputer]
-  id: ComputerTabletopOverwatchGS
-  suffix: Tabletop, GS
+  parent: [BaseComputerTabletopOverwatch, CMMOverwatchComputer]
+  id: ComputerTabletopOverwatchCMM
+  suffix: Tabletop, Gliess / CMM
 
 - type: entity
   parent: [BaseComputerTabletopOverwatch, TFSCOverwatchComputer]
@@ -194,9 +194,9 @@
   suffix: Tabletop, TFCF
 
 - type: entity
-  parent: [BaseComputerTabletopFactionTreasury, ComputerFactionTreasuryGS]
-  id: ComputerTabletopFactionTreasuryGS
-  suffix: Tabletop, GS
+  parent: [BaseComputerTabletopFactionTreasury, ComputerFactionTreasuryCMM]
+  id: ComputerTabletopFactionTreasuryCMM
+  suffix: Tabletop, Gliess / CMM
 
 - type: entity
   parent: [BaseComputerTabletopFactionTreasury, ComputerFactionTreasuryTAP]
@@ -395,9 +395,14 @@
   suffix: Tabletop, TFCF
 
 - type: entity
-  parent: [BaseComputerTabletopFactionRecruitment, FactionRecruitmentConsoleGS]
-  id: ComputerTabletopFactionRecruitmentGS
-  suffix: Tabletop, GS
+  parent: [BaseComputerTabletopFactionRecruitment, FactionRecruitmentConsoleCMM]
+  id: ComputerTabletopFactionRecruitmentCMM
+  suffix: Tabletop, CMM
+
+- type: entity
+  parent: [BaseComputerTabletopFactionRecruitment, FactionRecruitmentConsoleGliess]
+  id: ComputerTabletopFactionRecruitmentGliess
+  suffix: Tabletop, Gliess Sheriff
 
 - type: entity
   parent: [BaseComputerTabletopFactionRecruitment, FactionRecruitmentConsoleTAP]
@@ -480,9 +485,9 @@
   suffix: Tabletop, SRM
 
 - type: entity
-  parent: [BaseComputerTabletopHullrotMainframe, GSMainframeConsole]
-  id: ComputerTabletopMainframeGS
-  suffix: Tabletop, GS
+  parent: [BaseComputerTabletopHullrotMainframe, CMMMainframeConsole]
+  id: ComputerTabletopMainframeCMM
+  suffix: Tabletop, Gliess / CMM
 
 # Payroll and taxation consoles
 
@@ -527,9 +532,9 @@
   suffix: Tabletop, TFCF
 
 - type: entity
-  parent: [BaseComputerTabletopHullrotPayroll, ComputerPaymentGS]
-  id: ComputerTabletopPaymentGS
-  suffix: Tabletop, GS
+  parent: [BaseComputerTabletopHullrotPayroll, ComputerPaymentCMM]
+  id: ComputerTabletopPaymentCMM
+  suffix: Tabletop, Gliess / CMM
 
 - type: entity
   parent: [BaseComputerTabletopHullrotPayroll, ComputerPaymentTAP]
@@ -575,6 +580,11 @@
   parent: [BaseComputerTabletopHullrotTaxation, ComputerFactionTaxationTFSC]
   id: ComputerTabletopFactionTaxationTFSC
   suffix: Tabletop, TFCF
+
+- type: entity
+  parent: [BaseComputerTabletopHullrotTaxation, ComputerFactionTaxationCMM]
+  id: ComputerTabletopFactionTaxationCMM
+  suffix: Tabletop, Gliess / CMM
 
 # Special-purpose consoles
 

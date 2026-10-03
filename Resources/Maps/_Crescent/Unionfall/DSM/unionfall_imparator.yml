@@ -948,17 +948,9 @@ entities:
       parent: 1
       rot: 1.5707963267948966 rad
       pos: -1.5,-7.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
 - proto: AirlockShuttle
   entities:
   - uid: 16

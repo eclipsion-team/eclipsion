@@ -83,6 +83,7 @@
         mask:
         - Impassable
         - BulletImpassable
+        density: 0.01 # Crescent: barely any mass, so a hard round does not shove whoever it hits
         hard: true
       fly-by: &flybyfixture
         shape: !type:PhysShapeCircle
@@ -92,6 +93,7 @@
         - MidImpassable
         - HighImpassable
         - LowImpassable
+        density: 0 # Crescent: the near-miss sensor is 7 m² and would otherwise give every round ~7 kg of mass
         hard: False
 
 
@@ -309,6 +311,7 @@
         mask:
         - Impassable
         - BulletImpassable
+        density: 0.01 # Crescent: barely any mass, so a hard round does not shove whoever it hits
         hard: true
       fly-by: *flybyfixture
   - type: Damageable
@@ -381,6 +384,7 @@
         mask:
         - Impassable
         - BulletImpassable
+        density: 0.01 # Crescent: barely any mass, so a hard round does not shove whoever it hits
         hard: true
       fly-by: *flybyfixture
   - type: Damageable
@@ -459,6 +463,7 @@
         mask:
         - Impassable
         - BulletImpassable
+        density: 0.01 # Crescent: barely any mass, so a hard round does not shove whoever it hits
         hard: true
       fly-by: *flybyfixture
   - type: Damageable
@@ -533,6 +538,7 @@
         mask:
         - Impassable
         - BulletImpassable
+        density: 0.01 # Crescent: barely any mass, so a hard round does not shove whoever it hits
         hard: true
       fly-by: *flybyfixture
   - type: Damageable
@@ -1023,6 +1029,7 @@
         mask:
         - Impassable
         - BulletImpassable
+        density: 0.01 # Crescent: barely any mass, so a hard round does not shove whoever it hits
         hard: true
       fly-by: *flybyfixture
   - type: Damageable
@@ -1092,6 +1099,7 @@
         mask:
         - Impassable
         - BulletImpassable
+        density: 0.01 # Crescent: barely any mass, so a hard round does not shove whoever it hits
         hard: true
       fly-by: *flybyfixture
   - type: Damageable
@@ -1330,6 +1338,7 @@
         mask:
         - Impassable
         - BulletImpassable
+        density: 0.01 # Crescent: barely any mass, so a hard round does not shove whoever it hits
         hard: true
       fly-by: *flybyfixture
   - type: Sprite
@@ -1656,6 +1665,7 @@
         mask:
         - Impassable
         - BulletImpassable
+        density: 0.01 # Crescent: barely any mass, so a hard round does not shove whoever it hits
         hard: true
       fly-by: *flybyfixture
   - type: Damageable
@@ -1703,6 +1713,7 @@
         mask:
         - Impassable
         - BulletImpassable
+        density: 0.01 # Crescent: barely any mass, so a hard round does not shove whoever it hits
         hard: true
       fly-by: *flybyfixture
   - type: Damageable

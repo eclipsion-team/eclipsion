@@ -1,4 +1,4 @@
-using Content.Server.Crescent.Dispenser;
+﻿using Content.Server.Crescent.Dispenser;
 using Content.Server._Crescent.Economy;
 using Content.Server._Crescent.Overwatch;
 using Content.Server._Crescent.Shipyard; // Eclipsion - high-value purchase approval
@@ -355,11 +355,14 @@ public sealed class FactionTreasuryConsoleSystem : EntitySystem
             return;
 
         var approver = Name(args.Actor);
+        var faction = GetConsoleFaction(uid, comp);
+        if (string.IsNullOrEmpty(faction))
+            return;
 
         if (args.Approve)
-            _approvals.Approve(args.Id, approver);
+            _approvals.Approve(args.Id, faction, approver);
         else
-            _approvals.Deny(args.Id, approver);
+            _approvals.Deny(args.Id, faction, approver);
 
         UpdateUi(uid);
     }

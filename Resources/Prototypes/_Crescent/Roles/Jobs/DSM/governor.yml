@@ -3,6 +3,7 @@
   name: job-name-governor
   description: job-description-governor
   playTimeTracker: JobGovernorDSM
+  requiredReligion: FourSaints
   ranks:
     RatRankNobleEmperor:
     - !type:CharacterPlaytimeRequirement
@@ -47,6 +48,8 @@
     components:
       - type: HullrotFaction
         faction: DSM
+      - type: ReligiousCaller
+        action: ActionReligiousCallFourSaints
       - type: LanguageAdder
         addSpoken:
           - HighImperial

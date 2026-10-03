@@ -121,12 +121,13 @@
           3.141
         SoundTargetInLOS: !type:SoundPathSpecifier
           path: /Audio/Effects/double_beep.ogg
+        # 30 tiles of reach for every anti-boarder turret.
         VisionRadius: !type:Single
-          64 # its 32 actually for some fucking reason
+          30
         RangedRange: !type:Single
-          64
+          30
         AggroVisionRadius: !type:Single
-          64 #
+          30
 
 
 - type: entity
@@ -177,4 +178,20 @@
   components:
     - type: NpcFactionMember
       factions:
+        - IND
+
+# Gliess Santo's guns answer to the Minutemen: CMM members (Gliess sheriff, deputies and dockhands included,
+# they carry CMM) and the station's neutral spacers (IND) walk past them; everyone else in a sealed suit,
+# wearing the card of a faction at war with either, or wearing no card at all, gets shot. These are the only
+# guns that read a spacer's card as friendly: IND has no seat at the diplomacy table, so every other faction's
+# guns treat it like the card of a faction at war.
+- type: entity
+  parent: BaseWeaponTurretAutoPD
+  name: CMM 7.62x51mm 'Minuteman' anti-boarder turret
+  id: WeaponTurretAutoPDCMM
+  suffix: CMM PDT, Gliess
+  components:
+    - type: NpcFactionMember
+      factions:
+        - CMM
         - IND

@@ -1804,12 +1804,9 @@ entities:
     - type: Transform
       pos: 0.5,-5.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -1414.6328
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 25
     components:
     - type: Transform
@@ -4394,9 +4391,6 @@ entities:
       rot: 3.141592653589793 rad
       pos: 5.5,-1.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -4731.733
-      state: Closing
   - uid: 479
     components:
     - type: Transform

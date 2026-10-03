@@ -3,6 +3,7 @@
   name: job-name-deputymarshal
   description: job-description-deputymarshal
   playTimeTracker: JobDeputyMarshalCMM
+  requiredReligion: LastWatch
   ranks:
     RatRankCMMMarshalMiddle:
     - !type:CharacterPlaytimeRequirement
@@ -70,7 +71,7 @@
     gloves: ClothingHandsGlovesCombat
     belt: ClothingBeltMinutemanPouches
     back: ClothingBackpackMinuteman
-    pocket1: WeaponRevolverSnubnose
+    pocket1: WeaponRevolverCMMBulldog
     pocket2: RatRubberStampCMM
     id: DeputyMarshalPDA
     ears: ClothingHeadsetCMM

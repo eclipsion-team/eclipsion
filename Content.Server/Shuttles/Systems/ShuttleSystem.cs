@@ -125,6 +125,17 @@ public sealed partial class ShuttleSystem : SharedShuttleSystem
             var query = EntityQueryEnumerator<IFFConsoleComponent>();
             while (query.MoveNext(out var uid, out var comp))
             {
+                // Crescent: an unlimited cloak never builds heat, cloaked or not.
+                if (comp.UnlimitedCloak)
+                {
+                    if (comp.CurrentHeat != 0f)
+                    {
+                        comp.CurrentHeat = 0f;
+                        UpdateIFFInterface(uid, comp);
+                    }
+                    continue;
+                }
+
                 if (!comp.active || comp.dissipateAlways)
                 {
                     comp.CurrentHeat = float.Clamp(comp.CurrentHeat - comp.HeatDissipation, 0f, comp.HeatCapacity);

@@ -121,6 +121,75 @@ public sealed class AutoPDTurretTargetingTest
         await pair.CleanReturnAsync();
     }
 
+    /// <summary>
+    /// A spacer's card is no safe-conduct: IND has no seat at the diplomacy table, so every gun but Gliess's,
+    /// which counts IND as its own, shoots its wearer even out of a suit.
+    /// </summary>
+    [TestCase("WeaponTurretAutoPDDSM", true)]
+    [TestCase("WeaponTurretAutoPDCMM", false)]
+    public async Task SpacerIdIsOnlyTrustedAtGliess(string turretProto, bool targeted)
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var entMan = server.EntMan;
+            var turret = entMan.SpawnEntity(turretProto, map.GridCoords);
+            var spacer = entMan.SpawnEntity("MobHuman", new EntityCoordinates(map.Grid, new Vector2(1f, 0f)));
+            var id = entMan.SpawnEntity("SpacerIDCard", MapCoordinates.Nullspace);
+
+            Assert.That(server.System<InventorySystem>().TryEquip(spacer, id, "id", silent: true, force: true),
+                Is.True);
+            Assert.That(entMan.GetComponent<FactionIdCardComponent>(id).Faction, Is.EqualTo("IND"));
+
+            var htn = entMan.GetComponent<HTNComponent>(turret);
+            var result = server.System<NPCUtilitySystem>().GetEntities(htn.Blackboard, "NearbyPDTTargets");
+
+            Assert.That(result.GetHighest(), Is.EqualTo(targeted ? spacer : EntityUid.Invalid),
+                targeted
+                    ? "The anti-boarder turret let a hardsuitless spacer walk past."
+                    : "Gliess's anti-boarder turret shot a spacer.");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// Taking the ID off no longer slips anyone past the guns - except the ship's own crew, who are still known
+    /// by their allegiance.
+    /// </summary>
+    [Test]
+    public async Task MissingIdTargetsOutsidersButNotOwnCrew()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var entMan = server.EntMan;
+            var turret = entMan.SpawnEntity("WeaponTurretAutoPDDSM", map.GridCoords);
+            var crew = entMan.SpawnEntity("MobHuman", new EntityCoordinates(map.Grid, new Vector2(1f, 0f)));
+            entMan.EnsureComponent<HullrotFactionComponent>(crew).Faction = "DSM";
+            var outsider = entMan.SpawnEntity("MobHuman", new EntityCoordinates(map.Grid, new Vector2(-1f, 0f)));
+
+            var htn = entMan.GetComponent<HTNComponent>(turret);
+            var targets = server.System<NPCUtilitySystem>().GetEntities(htn.Blackboard, "NearbyPDTTargets").Entities.Keys;
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(targets, Does.Contain(outsider),
+                    "The anti-boarder turret let a hardsuitless outsider with no ID walk past.");
+                Assert.That(targets, Does.Not.Contain(crew),
+                    "The anti-boarder turret shot its own crew for not wearing an ID.");
+            });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
     [Test]
     public async Task OrdinaryMechTargetsPilot()
     {

@@ -21,6 +21,7 @@ public sealed class NpcSquadBoundUserInterface : BoundUserInterface
         _window.OnDismiss += member => SendMessage(new NpcSquadDismissMessage(member));
         _window.OnFormation += formation => SendMessage(new NpcSquadFormationMessage(formation));
         _window.OnBuildFort += () => SendMessage(new NpcSquadBuildFortMessage());
+        _window.OnKillAll += enabled => SendMessage(new NpcSquadKillAllMessage(enabled));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

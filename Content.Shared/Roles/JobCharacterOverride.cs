@@ -1,3 +1,4 @@
+using Content.Shared._Crescent.Religion;
 using Content.Shared.Humanoid;
 using Content.Shared.Preferences;
 using Robust.Shared.Enums;
@@ -67,6 +68,9 @@ public sealed partial class JobCharacterOverride
     public string Lifepath { get; private set; } = SharedHumanoidAppearanceSystem.DefaultLifepath;
 
     [DataField]
+    public string Religion { get; private set; } = ReligionPrototype.Default;
+
+    [DataField]
     public string Faction { get; private set; } = string.Empty;
 
     [DataField]
@@ -100,6 +104,7 @@ public sealed partial class JobCharacterOverride
             .WithNationality(Nationality)
             .WithEmployer(Employer)
             .WithLifepath(Lifepath)
+            .WithReligion(Religion)
             .WithFaction(Faction)
             .WithSubfaction(Subfaction);
     }

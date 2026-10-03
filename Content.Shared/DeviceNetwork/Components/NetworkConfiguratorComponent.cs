@@ -25,17 +25,23 @@ public sealed partial class NetworkConfiguratorComponent : Component
     public EntityUid? ActiveDeviceList { get; set; }
 
     /// <summary>
-    /// The entity containing a <see cref="DeviceLinkSourceComponent"/> or <see cref="DeviceLinkSinkComponent"/> this configurator is currently interacting with.<br/>
-    /// If this is set the configurator is in linking mode.
+    /// Devices with a <see cref="DeviceLinkSourceComponent"/> or <see cref="DeviceLinkSinkComponent"/> buffered for linking.
+    /// Every selected source can be linked to every selected sink at once through the link menu.
     /// </summary>
-    // TODO handle device deletion
-    public EntityUid? ActiveDeviceLink;
+    [AutoNetworkedField]
+    public List<EntityUid> LinkBuffer = new();
 
     /// <summary>
-    /// The target device this configurator is currently linking with the <see cref="ActiveDeviceLink"/>
+    /// Maximum amount of devices the link buffer can hold
     /// </summary>
-    // TODO handle device deletion
-    public EntityUid? DeviceLinkTarget;
+    [DataField]
+    public int MaxLinkBuffer = 32;
+
+    /// <summary>
+    /// Whether the link menu was already opened automatically for the current buffer.
+    /// Reset when the buffer is emptied.
+    /// </summary>
+    public bool LinkMenuAutoOpened;
 
     /// <summary>
     /// The list of devices stored in the configurator

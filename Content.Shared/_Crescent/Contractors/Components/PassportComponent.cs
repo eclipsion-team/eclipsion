@@ -55,13 +55,6 @@ public sealed partial class PassportComponent : Component
     [DataField, AutoNetworkedField]
     public string Lifepath = string.Empty;
 
-    /// <summary>
-    /// Reserved now so a future religion system can populate it without another passport data
-    /// migration. Until then players may fill the printed field themselves.
-    /// </summary>
-    [DataField, AutoNetworkedField]
-    public string Religion = string.Empty;
-
     [DataField, AutoNetworkedField]
     public string PassportId = string.Empty;
 
@@ -164,7 +157,6 @@ public sealed class PassportBoundUserInterfaceState(
     string nationality,
     string employer,
     string lifepath,
-    string religion,
     string passportId,
     int issueYear,
     int expirationYear) : BoundUserInterfaceState
@@ -178,7 +170,6 @@ public sealed class PassportBoundUserInterfaceState(
     public string Nationality { get; } = nationality;
     public string Employer { get; } = employer;
     public string Lifepath { get; } = lifepath;
-    public string Religion { get; } = religion;
     public string PassportId { get; } = passportId;
     public int IssueYear { get; } = issueYear;
     public int ExpirationYear { get; } = expirationYear;
@@ -195,7 +186,6 @@ public sealed class PassportSaveMessage(
     string nationality,
     string employer,
     string lifepath,
-    string religion,
     string passportId,
     int issueYear,
     int expirationYear) : BoundUserInterfaceMessage
@@ -209,7 +199,6 @@ public sealed class PassportSaveMessage(
     public string Nationality { get; } = nationality;
     public string Employer { get; } = employer;
     public string Lifepath { get; } = lifepath;
-    public string Religion { get; } = religion;
     public string PassportId { get; } = passportId;
     public int IssueYear { get; } = issueYear;
     public int ExpirationYear { get; } = expirationYear;

@@ -523,9 +523,13 @@ public sealed partial class PathfindingSystem
                                 flags |= PathfindingBreadcrumbFlag.Access;
                             }
 
-                            if (_doorQuery.HasComponent(ent))
+                            if (_doorQuery.TryGetComponent(ent, out var door))
                             {
                                 flags |= PathfindingBreadcrumbFlag.Door;
+
+                                // Crescent - shutters and blast doors only open from their button.
+                                if (!door.BumpOpen && !door.ClickOpen)
+                                    flags |= PathfindingBreadcrumbFlag.RemoteDoor;
                             }
 
                             if (_climbableQuery.HasComponent(ent))

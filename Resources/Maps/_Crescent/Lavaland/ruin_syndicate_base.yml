@@ -2144,12 +2144,9 @@ entities:
     - type: Transform
       pos: 25.5,0.5
       parent: 2
-    - type: Door
-      secondsUntilStateChange: -9718.281
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 111
     components:
     - type: Transform
@@ -2237,12 +2234,9 @@ entities:
     - type: Transform
       pos: 18.5,-3.5
       parent: 2
-    - type: Door
-      secondsUntilStateChange: -23550.703
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 128
     components:
     - type: Transform
@@ -7294,9 +7288,6 @@ entities:
     - type: Transform
       pos: 16.5,-11.5
       parent: 2
-    - type: Door
-      secondsUntilStateChange: -29754.447
-      state: Closing
     - type: DeviceNetwork
       deviceLists:
       - 86

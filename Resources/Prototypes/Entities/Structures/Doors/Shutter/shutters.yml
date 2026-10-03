@@ -62,14 +62,15 @@
   - type: Airtight
   - type: RadiationBlocker
     resistance: 1
+  # Eclipsion - shutters hold like a plastitanium wall (same modifier set and health), not a weak spot in the hull.
   - type: Damageable
     damageContainer: StructuralInorganic
-    damageModifierSet: StrongMetallic
+    damageModifierSet: StructuralMetallicStrong
   - type: Destructible
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 500
+        damage: 1100
       behaviors:
       - !type:DoActsBehavior
         acts: ["Destruction"]

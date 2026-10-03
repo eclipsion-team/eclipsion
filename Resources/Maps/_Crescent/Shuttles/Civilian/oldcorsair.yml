@@ -1087,12 +1087,9 @@ entities:
       rot: 3.141592653589793 rad
       pos: 2.5,4.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -12335.267
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
 - proto: AirlockMaint
   entities:
   - uid: 33

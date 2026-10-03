@@ -9,6 +9,7 @@ using Content.Client.Stylesheets;
 using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.Guidebook;
 using Content.Shared._Crescent.Contractors.Prototypes;
+using Content.Shared._Crescent.Religion;
 using Content.Shared.CCVar;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Clothing.Loadouts.Prototypes;
@@ -89,6 +90,7 @@ namespace Content.Client.Lobby.UI
         private List<EmployerPrototype> _employers = new();
         private List<LifepathPrototype> _lifepaths = new();
         // EE - Contractor System Changes End
+        private List<ReligionPrototype> _religions = new();
         private List<(string, RequirementsSelector)> _jobPriorities = new();
         private readonly Dictionary<string, AlternatingBGContainer> _jobCategories;
 
@@ -275,6 +277,7 @@ namespace Content.Client.Lobby.UI
                 CTabContainer.AddTab(Background, Loc.GetString("humanoid-profile-editor-background-tab"));
 
                 RefreshNationalities();
+                RefreshReligions();
                 RefreshEmployers();
                 RefreshLifepaths();
 
@@ -282,6 +285,12 @@ namespace Content.Client.Lobby.UI
                 {
                     NationalityButton.SelectId(args.Id);
                     SetNationality(_nationalies[args.Id].ID);
+                };
+
+                ReligionButton.OnItemSelected += args =>
+                {
+                    ReligionButton.SelectId(args.Id);
+                    SetReligion(_religions[args.Id].ID);
                 };
 
                 EmployerButton.OnItemSelected += args =>
@@ -717,6 +726,52 @@ namespace Content.Client.Lobby.UI
                 UpdateNationalityDescription(Profile.Nationality);
         }
 
+        /// <summary>
+        ///     Lists the faiths open to the character's faction or to the job they would spawn as. A command role that
+        ///     leads its faction's faith only offers that one. The server checks again at spawn against the job they
+        ///     actually got, since priorities can change after this.
+        /// </summary>
+        public void RefreshReligions()
+        {
+            ReligionButton.Clear();
+            _religions.Clear();
+
+            var profile = Profile ?? HumanoidCharacterProfile.DefaultWithSpecies();
+            var job = _controller.GetPreferredJob(profile);
+
+            if (job.RequiredReligion is { } required && _prototypeManager.TryIndex(required, out var office))
+            {
+                _religions.Add(office);
+            }
+            else
+            {
+                _religions.AddRange(_prototypeManager.EnumeratePrototypes<ReligionPrototype>()
+                    .Where(o => o.IsOpenTo(profile.Faction, job.ID))
+                    .OrderByDescending(o => o.Weight)
+                    .ThenBy(o => Loc.GetString(o.Name)));
+            }
+
+            ReligionButton.Disabled = _religions.Count <= 1;
+
+            for (var i = 0; i < _religions.Count; i++)
+            {
+                ReligionButton.AddItem(Loc.GetString(_religions[i].Name), i);
+
+                if (Profile?.Religion == _religions[i].ID)
+                    ReligionButton.SelectId(i);
+            }
+
+            if (Profile != null && _religions.Count > 0 && _religions.All(o => o.ID != Profile.Religion))
+            {
+                SetReligion(_religions.Any(o => o.ID == ReligionPrototype.Default)
+                    ? ReligionPrototype.Default
+                    : _religions[0].ID);
+            }
+
+            if (Profile != null)
+                UpdateReligionDescription(Profile.Religion);
+        }
+
         public void RefreshEmployers()
         {
             EmployerButton.Clear();
@@ -789,6 +844,27 @@ namespace Content.Client.Lobby.UI
         {
             var prototype = _prototypeManager.Index<NationalityPrototype>(nationality);
             NationalityDescriptionLabel.SetMessage(Loc.GetString(prototype.DescriptionKey));
+        }
+
+        private void UpdateReligionDescription(string religion)
+        {
+            if (!_prototypeManager.TryIndex<ReligionPrototype>(religion, out var prototype))
+            {
+                ReligionDescriptionLabel.SetMessage(string.Empty);
+                return;
+            }
+
+            var description = Loc.GetString(prototype.Description);
+
+            var job = _controller.GetPreferredJob(Profile ?? HumanoidCharacterProfile.DefaultWithSpecies());
+            if (job.RequiredReligion == prototype.ID)
+            {
+                description = Loc.GetString("humanoid-profile-editor-religion-required",
+                    ("job", job.LocalizedName),
+                    ("description", description));
+            }
+
+            ReligionDescriptionLabel.SetMarkup(description);
         }
 
         private void UpdateLifepathDescription(string lifepath)
@@ -954,6 +1030,7 @@ namespace Content.Client.Lobby.UI
             RefreshJobs();
             RefreshSpecies();
             RefreshNationalities();
+            RefreshReligions();
             RefreshEmployers();
             RefreshLifepaths();
             RefreshFlavorText();
@@ -1115,6 +1192,8 @@ namespace Content.Client.Lobby.UI
 
                     ReloadPreview();
                     UpdateJobPriorities();
+                    // Spacers may hold any faith, so the preferred job changes what the dropdown offers.
+                    RefreshReligions();
                     SetDirty();
                 };
 
@@ -1493,6 +1572,18 @@ namespace Content.Client.Lobby.UI
             ReloadProfilePreview();
             ReloadClothes(); // Nationalities may have specific gear, reload the clothes
             UpdateNationalityDescription(newNationality);
+        }
+
+        private void SetReligion(string newReligion)
+        {
+            Profile = Profile?.WithReligion(newReligion);
+            IsDirty = true;
+
+            var index = _religions.FindIndex(o => o.ID == newReligion);
+            if (index >= 0)
+                ReligionButton.SelectId(index);
+
+            UpdateReligionDescription(newReligion);
         }
 
         private void SetEmployer(string newEmployer)
@@ -2803,6 +2894,7 @@ namespace Content.Client.Lobby.UI
         private void UpdateCharacterRequired()
         {
             RefreshNationalities();
+            RefreshReligions();
             RefreshEmployers();
             RefreshLifepaths();
             RefreshJobs();

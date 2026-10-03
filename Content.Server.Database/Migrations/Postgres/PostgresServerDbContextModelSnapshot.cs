@@ -930,6 +930,11 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("integer")
                         .HasColumnName("pref_unavailable");
 
+                    b.Property<string>("Religion")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("religion");
+
                     b.Property<string>("Sex")
                         .IsRequired()
                         .HasColumnType("text")

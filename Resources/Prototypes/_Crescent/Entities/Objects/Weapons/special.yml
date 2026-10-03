@@ -342,20 +342,26 @@
   - type: MeleeWeapon
     wideAnimationRotation: -155 #onehanded stance allows for wider swing
     range: 1.25
-    attackRate: 0.75
+    attackRate: 0.5 # slower than the halberd, but hits harder when wielded
     damage:
       types:
         Blunt: 25
         Heat: 30
         Structural: 50
     heavyDamageBaseModifier: 1
-    heavyStaminaCost: 10
+    heavyStaminaCost: 14
     heavyRateModifier: 1.15
     clickPartDamageMultiplier: 1.5
     lightRangeModifier: 1.2
     maxTargets: 3
     soundHit:
       collection: MetalThud
+  - type: Wieldable
+    wieldedInhandPrefix: null # no wielded inhand sprites
+  - type: IncreaseDamageOnWield
+    damage:
+      types:
+        Blunt: 35
   - type: Item
     size: Normal
   - type: DisarmMalus #harder to shake firm grip

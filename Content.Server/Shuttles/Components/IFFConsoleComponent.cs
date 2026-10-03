@@ -44,4 +44,10 @@ public sealed partial class IFFConsoleComponent : Component
     public bool dissipateAlways = false; //keep this off unless you know what youre doing, this is for moving cloaks
 
     // end
+
+    /// <summary>
+    /// Crescent: the cloak never heats up, so it can stay on for as long as the crew likes.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite), DataField("unlimitedCloak")]
+    public bool UnlimitedCloak = false;
 }

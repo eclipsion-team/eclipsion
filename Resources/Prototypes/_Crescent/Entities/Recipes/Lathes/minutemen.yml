@@ -174,5 +174,63 @@
     Plasteel: 250
     AdvancedMechatronics: 500
 
+- type: latheRecipe
+  id: WeaponRifleCMMHound
+  category: Weapons
+  result: WeaponRifleCMMHound
+  completetime: 2
+  materials:
+    Steel: 4000
+    Plastic: 1500
+    Silver: 1000
+    AdvancedMechatronics: 500
+
+- type: latheRecipe
+  id: WeaponRifleCMMLecter
+  category: Weapons
+  result: WeaponRifleCMMLecter
+  completetime: 2
+  materials:
+    Steel: 4000
+    Plastic: 1500
+    Silver: 1000
+    AdvancedMechatronics: 500
+
+- type: latheRecipe
+  id: WeaponLightMachineGunCMMStratos
+  category: Weapons
+  result: WeaponLightMachineGunCMMStratos
+  completetime: 2
+  materials:
+    Steel: 8000
+    Plastic: 1500
+    Silver: 1000
+    AdvancedMechatronics: 1500
+
+- type: latheRecipe
+  id: WeaponSubMachineGunCMMMP5
+  category: Weapons
+  result: WeaponSubMachineGunCMMMP5
+  completetime: 5
+  materials:
+    Steel: 2250
+    Plastic: 650
+
+- type: latheRecipe
+  id: WeaponPistolCMMLockwell
+  category: Weapons
+  result: WeaponPistolCMMLockwell
+  completetime: 5
+  materials:
+    Steel: 750
+
+- type: latheRecipe
+  id: WeaponRevolverCMMBulldog
+  category: Weapons
+  result: WeaponRevolverCMMBulldog
+  completetime: 5
+  materials:
+    Steel: 625
+
 #MISC
 

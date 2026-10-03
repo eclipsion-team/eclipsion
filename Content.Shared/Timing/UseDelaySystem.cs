@@ -125,13 +125,14 @@ public sealed class UseDelaySystem : EntitySystem
     /// </summary>
     public UseDelayInfo GetLastEndingDelay(Entity<UseDelayComponent> ent)
     {
-        var last = ent.Comp.Delays[DefaultId];
-        foreach (var entry in ent.Comp.Delays)
+        // The default delay is only added on MapInit, so entities on maps loaded without map init won't have it.
+        ent.Comp.Delays.TryGetValue(DefaultId, out var last);
+        foreach (var entry in ent.Comp.Delays.Values)
         {
-            if (entry.Value.EndTime > last.EndTime)
-                last = entry.Value;
+            if (last == null || entry.EndTime > last.EndTime)
+                last = entry;
         }
-        return last;
+        return last ?? new UseDelayInfo(TimeSpan.Zero);
     }
 
     /// <summary>

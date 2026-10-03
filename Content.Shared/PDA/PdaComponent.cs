@@ -48,6 +48,8 @@ namespace Content.Shared.PDA
         public EntProtoId? IdCard;
 
         [ViewVariables] public EntityUid? ContainedId;
+        [ViewVariables] public bool FlashlightOn;
+
         [ViewVariables(VVAccess.ReadWrite)] public string? OwnerName;
         [ViewVariables] public string? StationName;
         [ViewVariables] public string? StationAlertLevel;

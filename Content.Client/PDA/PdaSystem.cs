@@ -1,4 +1,5 @@
 using Content.Shared.PDA;
+using Content.Shared.Light;
 using Robust.Client.GameObjects;
 
 namespace Content.Client.PDA;
@@ -17,6 +18,9 @@ public sealed class PdaSystem : SharedPdaSystem
         if (args.Sprite == null)
             return;
 
+        if (Appearance.TryGetData<bool>(uid, UnpoweredFlashlightVisuals.LightOn, out var isFlashlightOn, args.Component))
+            args.Sprite.LayerSetVisible(PdaVisualLayers.Flashlight, isFlashlightOn);
+
         if (Appearance.TryGetData<bool>(uid, PdaVisuals.IdCardInserted, out var isCardInserted, args.Component))
             args.Sprite.LayerSetVisible(PdaVisualLayers.IdLight, isCardInserted);
     }
@@ -31,6 +35,7 @@ public sealed class PdaSystem : SharedPdaSystem
         if (component.State != null)
             sprite.LayerSetState(PdaVisualLayers.Base, component.State);
 
+        sprite.LayerSetVisible(PdaVisualLayers.Flashlight, component.FlashlightOn);
         sprite.LayerSetVisible(PdaVisualLayers.IdLight, component.IdSlot.StartingItem != null);
     }
 

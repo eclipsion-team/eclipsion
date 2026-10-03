@@ -119,6 +119,15 @@
     # The Federation command tier: Administrator plus the recognized leaders coordinating each member organization.
     access: [["SyndicateCommand"], ["SyndicateRingleader"], ["SyndicateFunds"]]
 
+- type: entity
+  parent: ComputerFactionTaxationBase
+  id: ComputerFactionTaxationCMM
+  suffix: Gliess / CMM
+  components:
+  - type: AccessReader
+    # Minutemen funds holders (Marshal, Deputy Marshal) or the Gliess command credentials.
+    access: [["CMMFunds"], ["GliessSheriff", "GliessDockmaster"]]
+
 # ---------------------------------------------------------------------------
 # Faction treasury console
 # ---------------------------------------------------------------------------
@@ -230,13 +239,14 @@
 
 - type: entity
   parent: ComputerFactionTreasuryBase
-  id: ComputerFactionTreasuryGS
-  suffix: Gliess / GS
+  id: ComputerFactionTreasuryCMM
+  suffix: Gliess / CMM
   components:
   - type: FactionTreasuryConsole
-    faction: GS
+    faction: CMM
   - type: AccessReader
-    access: [["GliessSheriff", "GliessDockmaster"]]
+    # Minutemen funds holders (Marshal, Deputy Marshal) or the Gliess command credentials.
+    access: [["CMMFunds"], ["GliessSheriff", "GliessDockmaster"]]
 
 - type: entity
   parent: ComputerFactionTreasuryBase

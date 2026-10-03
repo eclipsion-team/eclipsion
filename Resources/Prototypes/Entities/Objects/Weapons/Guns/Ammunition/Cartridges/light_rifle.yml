@@ -1,6 +1,6 @@
 - type: entity
   id: BaseCartridgeLightRifle
-  name: cartridge (5.56x45mm Imperial)
+  name: cartridge (5.56x45mm)
   parent: BaseCartridge
   abstract: true
   components:
@@ -28,7 +28,7 @@
 
 - type: entity
   id: CartridgeLightRifle
-  name: cartridge (5.56x45mm Imperial)
+  name: cartridge (5.56x45mm)
   parent: BaseCartridgeLightRifle
   components:
   - type: CartridgeAmmo
@@ -36,7 +36,7 @@
 
 - type: entity
   id: CartridgeLightRiflePractice
-  name: cartridge (5.56x45mm Imperial rubber-tip)
+  name: cartridge (5.56x45mm rubber-tip)
   parent: BaseCartridgeLightRifle
   components:
   - type: CartridgeAmmo
@@ -51,7 +51,7 @@
 
 - type: entity
   id: CartridgeLightRifleIncendiary
-  name: cartridge (5.56x45mm Imperial dragonsbreath)
+  name: cartridge (5.56x45mm dragonsbreath)
   parent: BaseCartridgeLightRifle
   components:
   - type: CartridgeAmmo
@@ -66,7 +66,7 @@
 
 - type: entity
   id: CartridgeLightRifleUranium
-  name: cartridge (5.56x45mm Imperial nucleode-tip)
+  name: cartridge (5.56x45mm nucleode-tip)
   parent: BaseCartridgeLightRifle
   components:
   - type: CartridgeAmmo
@@ -81,7 +81,7 @@
 
 - type: entity
   id: CartridgeLightRifleShrapnel
-  name: cartridge (5.56x45mm Imperial shrapnel)
+  name: cartridge (5.56x45mm shrapnel)
   parent: BaseCartridgeLightRifle
   components:
   - type: CartridgeAmmo

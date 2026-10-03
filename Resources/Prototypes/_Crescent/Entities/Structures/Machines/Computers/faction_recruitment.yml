@@ -189,9 +189,9 @@
 
 - type: entity
   parent: BaseFactionRecruitmentConsole
-  id: FactionRecruitmentConsoleGS
-  name: Gliess recruitment terminal
-  suffix: GS
+  id: FactionRecruitmentConsoleCMM
+  name: Minutemen recruitment terminal
+  suffix: CMM
   components:
   - type: GenericVisualizer
     visuals:
@@ -209,13 +209,33 @@
   - type: PointLight
     color: "#78b7ff"
   - type: AccessReader
-    access: [["GliessSheriff", "GliessDockmaster"]]
+    # Minutemen command. The Gliess posts (sheriff, deputy) are filled from the sheriff's own terminal below.
+    access: [["MinutemanMarshal"], ["MinutemanRankingOfficer"]]
   - type: FactionRecruitmentConsole
-    faction: GS
-    # The sheriff, deputy and dockmaster share the command credentials used here. The two senior
-    # jobs are intentionally unavailable as assignments, leaving only the civilian and deputy roles.
+    faction: CMM
+    # Minutemen roles only (the Analiesse's terminal). High command (Marshal, Deputy Marshal, Watchmaster) is
+    # intentionally omitted: leadership roles must never be assignable from a console. Gliess roles live on
+    # FactionRecruitmentConsoleGliess.
     roles:
-    - GliessianDockhand
+    - MinutemanCMM
+    - MachinistCMM
+    - OrdnancemanCMM
+    - PhysicianCMM
+
+# Gliess Santo's terminal, run by the Gliess Sheriff alone. Recruits into the CMM (the Gliess posts are CMM), but
+# only to the sheriff's office: Sheriff and Deputy. Minutemen roles stay on the Minutemen terminal above.
+- type: entity
+  parent: FactionRecruitmentConsoleCMM
+  id: FactionRecruitmentConsoleGliess
+  name: Gliess recruitment terminal
+  suffix: Gliess Sheriff
+  components:
+  - type: AccessReader
+    access: [["GliessSheriffCommand"]]
+  - type: FactionRecruitmentConsole
+    faction: CMM
+    roles:
+    - GliessianSheriff
     - GliessianDeputy
 
 - type: entity

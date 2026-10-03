@@ -259,11 +259,11 @@
 
 - type: entity
   parent: BaseMainframeConsole
-  id: GSMainframeConsole
+  id: CMMMainframeConsole
   name: Gliess Command Console
   components:
   - type: OverwatchConsole
-    faction: GS
+    faction: CMM
   - type: GenericVisualizer
     visuals:
       enum.ComputerVisuals.Powered:
@@ -280,5 +280,6 @@
   - type: PointLight
     color: "#78b7ff"
   - type: AccessReader
-    # Gliess has no shared base access tag; its sheriff, deputy, and dockmaster share these credentials.
-    access: [["GliessSheriff", "GliessDockmaster"]]
+    # CMM only. Minutemen, the Gliess sheriff and the deputies carry the `Minuteman` tag; the dockmaster and
+    # spacers do not and stay locked out.
+    access: [["Minuteman"]]

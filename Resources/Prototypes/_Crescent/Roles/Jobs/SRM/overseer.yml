@@ -3,6 +3,7 @@
   name: job-name-overseer
   description: job-description-overseer
   playTimeTracker: JobOverseerSRM
+  requiredReligion: UnbrokenPattern
   ranks:
     RatRankSRMOverseerSenior:
     - !type:CharacterPlaytimeRequirement
@@ -55,6 +56,8 @@
     components:
       - type: HullrotFaction
         faction: SRM
+      - type: ReligiousCaller
+        action: ActionReligiousCallUnbrokenPattern
       - type: LanguageAdder
         addSpoken:
           - Saintspact

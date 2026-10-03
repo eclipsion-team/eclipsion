@@ -132,6 +132,7 @@
   uiAccent: "#5DBB5A"
   weight: 4
   enabled: true
+  limitedAvailability: true
   icon:
     sprite: /Textures/_Crescent/faction_icons.rsi
     state: fourfamilies
@@ -155,7 +156,8 @@
   color: "#9FED58"
   uiAccent: "#B8A97A"
   weight: 3
-  enabled: false
+  enabled: true
+  limitedAvailability: true
   icon:
     sprite: /Textures/_Crescent/faction_icons.rsi
     state: srm

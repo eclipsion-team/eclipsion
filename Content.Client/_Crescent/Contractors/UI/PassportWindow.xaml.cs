@@ -44,7 +44,6 @@ public sealed partial class PassportWindow : DefaultWindow
         NationalityEdit.Text = state.Nationality;
         EmployerEdit.Text = state.Employer;
         LifepathEdit.Text = state.Lifepath;
-        ReligionEdit.Text = state.Religion;
         PassportIdEdit.Text = state.PassportId;
         IssueYearEdit.Text = state.IssueYear.ToString();
         ExpirationYearEdit.Text = state.ExpirationYear.ToString();
@@ -108,7 +107,6 @@ public sealed partial class PassportWindow : DefaultWindow
             NationalityEdit.Text,
             EmployerEdit.Text,
             LifepathEdit.Text,
-            ReligionEdit.Text,
             PassportIdEdit.Text,
             issueYear,
             expirationYear));

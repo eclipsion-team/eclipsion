@@ -3,6 +3,7 @@
   name: job-name-advocatus
   description: job-description-advocatus
   playTimeTracker: JobAdvocatusDSM
+  requiredReligion: FourSaints
   ranks:
     RatRankNobleDuke:
     - !type:CharacterPlaytimeRequirement
@@ -54,6 +55,8 @@
     components:
       - type: HullrotFaction
         faction: DSM
+      - type: ReligiousCaller
+        action: ActionReligiousCallFourSaints
       - type: LanguageAdder
         addSpoken:
           - HighImperial

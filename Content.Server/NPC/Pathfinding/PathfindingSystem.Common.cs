@@ -56,17 +56,19 @@ public sealed partial class PathfindingSystem
             var isDoor = (end.Data.Flags & PathfindingBreadcrumbFlag.Door) != 0x0;
             var isAccess = (end.Data.Flags & PathfindingBreadcrumbFlag.Access) != 0x0;
             var isClimb = (end.Data.Flags & PathfindingBreadcrumbFlag.Climb) != 0x0;
+            // Crescent: no NPC works a shutter or blast door by hand, so it is not a way through for Interact.
+            var isRemote = (end.Data.Flags & PathfindingBreadcrumbFlag.RemoteDoor) != 0x0;
 
             // TODO: Handling power + door prying
             // Door we should be able to open
-            if (isDoor && !isAccess && (request.Flags & PathFlags.Interact) != 0x0)
+            if (isDoor && !isAccess && !isRemote && (request.Flags & PathFlags.Interact) != 0x0)
             {
                 modifier += 0.5f;
             }
             // Crescent: a door that wants access, for an NPC that works doors. Its ID card may well open it -
             // steering tries, and breaks it down or gives up if it doesn't. Without this a soldier would rather
             // smash through a wall than use an airlock its own card opens.
-            else if (isDoor && isAccess && (request.Flags & PathFlags.Interact) != 0x0)
+            else if (isDoor && isAccess && !isRemote && (request.Flags & PathFlags.Interact) != 0x0)
             {
                 modifier += 2f;
             }

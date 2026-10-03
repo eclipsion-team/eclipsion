@@ -3,6 +3,7 @@
   name: job-name-adjutant
   description: job-description-adjutant
   playTimeTracker: JobAdjutantDSM
+  requiredReligion: FourSaints
   ranks:
     RatRankNobleDuke:
     - !type:CharacterPlaytimeRequirement

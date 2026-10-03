@@ -122,7 +122,7 @@
   name: SHI M003 Inspector .327
   parent: BaseWeaponRevolver
   id: WeaponRevolverInspector
-  description: A detective's best friend. Uses .327 Imperial ammo.
+  description: A detective's best friend. Uses .327 ammo.
   components:
   - type: Sprite
     sprite: _Crescent/Objects/Weapons/Guns/inspector.rsi

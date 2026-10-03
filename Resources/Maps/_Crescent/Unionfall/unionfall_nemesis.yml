@@ -7020,17 +7020,9 @@ entities:
     - type: Transform
       parent: 1
       pos: 0.5,-10.5
-    - type: Physics
-      canCollide: False
-    - type: Airtight
-      airBlocked: False
-    - type: Occluder
-      enabled: False
-    - type: Door
-      state: Open
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 44
     components:
     - type: Transform
@@ -7131,17 +7123,9 @@ entities:
       parent: 1
       rot: 1.5707963267948966 rad
       pos: 2.5,-11.5
-    - type: Airtight
-      airBlocked: False
-    - type: Physics
-      canCollide: False
-    - type: Occluder
-      enabled: False
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
-    - type: Door
-      state: Open
+        DoorStatus: False
   - uid: 60
     components:
     - type: Transform

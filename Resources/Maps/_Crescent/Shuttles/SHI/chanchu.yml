@@ -2950,12 +2950,9 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 0.5,-4.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -5888.485
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
     - type: DeviceLinkSink
       links:
       - 835
@@ -2965,23 +2962,17 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 0.5,5.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -36677.28
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 8
     components:
     - type: Transform
       pos: 0.5,2.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -36679.547
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
   - uid: 9
     components:
     - type: Transform
@@ -7650,7 +7641,7 @@ entities:
 
         [bold]M215 Hound (Marksman rifle) - ¥5,000*[/bold]
 
-        5.56x44mm Imperial, 30-round mag, 300 rpm semi-auto, accurate.
+        5.56x44mm, 30-round mag, 300 rpm semi-auto, accurate.
 
         [bold]M335 Barghest (Heavy CQC rifle) - ¥37,500*[/bold]
 

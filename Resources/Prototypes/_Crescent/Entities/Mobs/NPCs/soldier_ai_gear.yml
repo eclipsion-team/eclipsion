@@ -314,7 +314,7 @@
   subGear:
   - SoldierAIGearCMM
   inhand:
-  - WeaponSubMachineGunMP5
+  - WeaponSubMachineGunCMMMP5
 
 - type: startingGear
   id: SoldierAIGearCMMShotgunner

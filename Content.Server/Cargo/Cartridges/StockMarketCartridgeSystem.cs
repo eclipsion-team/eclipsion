@@ -1,4 +1,4 @@
-using Content.Server.Bank;
+﻿using Content.Server.Bank;
 using Content.Server._Crescent.Economy;
 using Content.Server.Cargo.Systems;
 using Content.Server.CartridgeLoader;
@@ -99,8 +99,14 @@ public sealed class StockMarketCartridgeSystem : EntitySystem
             return false;
 
         var pricePerShare = company.CurrentPrice;
-        var cost = (int)Math.Round(pricePerShare * amount);
+        // Crescent: buy rounds up and sell rounds down. With Math.Round (banker's rounding) buying one share at
+        // a time and selling in bulk was a risk-free arbitrage. Computed in double/long so a large order can't
+        // overflow into a negative cost.
+        var exactCost = Math.Ceiling((double) pricePerShare * amount);
+        if (!double.IsFinite(exactCost) || exactCost <= 0 || exactCost > int.MaxValue)
+            return false;
 
+        var cost = (int) exactCost;
         if (!_bank.TryBankWithdraw(playerUid, cost))
             return false;
 
@@ -135,8 +141,12 @@ public sealed class StockMarketCartridgeSystem : EntitySystem
             return false;
 
         var pricePerShare = company.CurrentPrice;
-        var profit = (int)Math.Round(pricePerShare * amount);
-        if (!_bank.TryBankDeposit(playerUid, profit))
+        var exactProfit = Math.Floor((double) pricePerShare * amount);
+        if (!double.IsFinite(exactProfit) || exactProfit < 0 || exactProfit > long.MaxValue / 2)
+            return false;
+
+        var profit = (long) exactProfit;
+        if (profit > 0 && !_bank.TryBankDeposit(playerUid, profit))
             return false;
 
         var newOwned = owned - amount;

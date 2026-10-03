@@ -1,5 +1,5 @@
 # Sector Crescent religion altars (Sector_Crescent_Religion_Update.pdf).
-# Decorative only for now - not tied to any faith/conversion system yet.
+# Each one is where its faith is joined in round. See Prototypes/_Crescent/Religion/religions.yml.
 
 - type: entity
   id: AltarCrescentBase
@@ -10,6 +10,11 @@
     state: icon
   - type: Icon
     state: icon
+  # Touching the altar is how believers pray at it, so it should not strap them onto it too. Dragging still does.
+  - type: Strap
+    position: Down
+    rotation: -90
+    buckleOnInteractHand: false
   - type: Destructible
     thresholds:
     - trigger:
@@ -47,6 +52,8 @@
     sprite: _Crescent/Structures/Furniture/Altars/veiled_mother.rsi
   - type: Icon
     sprite: _Crescent/Structures/Furniture/Altars/veiled_mother.rsi
+  - type: ReligionAltar
+    religion: VeiledMother
 
 # SRM / Saint's Militia
 - type: entity
@@ -59,6 +66,8 @@
     sprite: _Crescent/Structures/Furniture/Altars/unbroken_pattern.rsi
   - type: Icon
     sprite: _Crescent/Structures/Furniture/Altars/unbroken_pattern.rsi
+  - type: ReligionAltar
+    religion: UnbrokenPattern
 
 # CMM / Gliessian lawmen
 - type: entity
@@ -71,6 +80,8 @@
     sprite: _Crescent/Structures/Furniture/Altars/last_watch.rsi
   - type: Icon
     sprite: _Crescent/Structures/Furniture/Altars/last_watch.rsi
+  - type: ReligionAltar
+    religion: LastWatch
 
 # SHI
 - type: entity
@@ -83,6 +94,8 @@
     sprite: _Crescent/Structures/Furniture/Altars/golden_ledger.rsi
   - type: Icon
     sprite: _Crescent/Structures/Furniture/Altars/golden_ledger.rsi
+  - type: ReligionAltar
+    religion: GoldenLedger
 
 # TFCF
 - type: entity
@@ -95,6 +108,8 @@
     sprite: _Crescent/Structures/Furniture/Altars/infernal_exchange.rsi
   - type: Icon
     sprite: _Crescent/Structures/Furniture/Altars/infernal_exchange.rsi
+  - type: ReligionAltar
+    religion: InfernalExchange
 
 # DSM
 - type: entity
@@ -107,6 +122,8 @@
     sprite: _Crescent/Structures/Furniture/Altars/four_saints.rsi
   - type: Icon
     sprite: _Crescent/Structures/Furniture/Altars/four_saints.rsi
+  - type: ReligionAltar
+    religion: FourSaints
 
 # NCWL
 - type: entity
@@ -119,6 +136,8 @@
     sprite: _Crescent/Structures/Furniture/Altars/common_hands.rsi
   - type: Icon
     sprite: _Crescent/Structures/Furniture/Altars/common_hands.rsi
+  - type: ReligionAltar
+    religion: CommonHands
 
 # Spacers / civilians
 - type: entity
@@ -131,3 +150,5 @@
     sprite: _Crescent/Structures/Furniture/Altars/returning_tide.rsi
   - type: Icon
     sprite: _Crescent/Structures/Furniture/Altars/returning_tide.rsi
+  - type: ReligionAltar
+    religion: ReturningTide

@@ -1271,10 +1271,7 @@ entities:
       parent: 1
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
-    - type: Door
-      secondsUntilStateChange: -1591.9042
-      state: Opening
+        DoorStatus: False
   - uid: 12
     components:
     - type: Transform
@@ -1283,10 +1280,7 @@ entities:
       parent: 1
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
-    - type: Door
-      secondsUntilStateChange: -1592.8042
-      state: Opening
+        DoorStatus: False
 - proto: AtmosDeviceFanTiny
   entities:
   - uid: 13

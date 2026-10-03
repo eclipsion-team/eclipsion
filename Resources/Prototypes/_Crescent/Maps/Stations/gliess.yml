@@ -42,7 +42,7 @@
       stationProto: StandardCrescentStation
       gridComponents:
         - type: FactionStation # conquest win condition
-          faction: GS
+          faction: CMM
           fallAnnouncement: faction-station-fall-gliess
           stationName: Gliess Santo
         - type: BlockShipWeaponProjectileGrid

@@ -52,6 +52,13 @@ public sealed partial class FactionPrototype : IPrototype
     public bool Enabled = false;
 
     /// <summary>
+    /// Eclipsion - the faction can be picked but only spawns through midround events or specific gamemodes.
+    /// The faction selector warns the player about it so they do not wait on a round-start slot that never comes.
+    /// </summary>
+    [DataField("limitedAvailability")]
+    public bool LimitedAvailability;
+
+    /// <summary>
     /// How this faction's join slots scale with the server population. Defaults to unrestricted.
     /// </summary>
     [DataField("balanceMode")]

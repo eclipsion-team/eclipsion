@@ -1,0 +1,380 @@
+# Great Hunt automated armories. Free CMAutomatedVendor racks, one per side, stocked with that side's classic kit
+# so a fresh respawn can rearm without research or money. Built the same way as the Hyperwar armories
+# (_Hyperwar/hyperwar_armory_vendors.yml). Not mapped anywhere yet: place them on the Great Hunt base maps.
+
+# Saint's Militia. Cheap hunter carbines and Imperial surplus, khopeshes, hunter armour, and the tools of a Hunt.
+- type: entity
+  parent: ColMarTechBase
+  id: GreatHuntSRMArmoryVendor
+  name: automated Militia armory
+  description: A Militia weapons rack blessed for the Hunt. Every Hunter draws from it; no tithe is asked of the faithful.
+  components:
+  - type: AccessReader
+    access:
+    - [ "Hunter" ]
+  - type: Sprite
+    sprite: _Crescent/Structures/Machines/Vendors/armory_srm.rsi
+  - type: CMAutomatedVendor
+    jobs:
+    - HunterSRM
+    sections:
+    - name: Primary Weapons
+      entries:
+      - id: WeaponRifleHunter
+        name: Hunter rifle
+        recommended: true
+      - id: WeaponRifleDSMLegionnaire
+        name: Legionnaire rifle
+      - id: WeaponShotgunDSMMatusa
+        name: Matusa shotgun
+      - id: WeaponShotgunReno
+        name: DA-13 Reno 12 gauge
+      - id: WeaponSubMachineGunBeetle
+        name: Mac-11 Beetle 9x19mm
+    - name: Sidearms
+      entries:
+      - id: WeaponRevolverArgenti
+        name: Argenti revolver
+      - id: WeaponPistolNeoVolker
+        name: Neo-Volker pistol
+    # Dueling khopesh only: the deflecting vibrokhopesh is kept out of the Hunt.
+    - name: Melee
+      entries:
+      - id: ClothingBeltSheathDSMDuelingKhopeshFilled
+        name: dueling khopesh with sheath
+        recommended: true
+      - id: DSMDuelingKhopesh
+        name: dueling khopesh
+    - name: Armor
+      entries:
+      - id: ClothingOuterArmorHunterVest
+        name: hunter vest
+        recommended: true
+      - id: ClothingOuterArmorHunterDuster
+        name: hunter duster
+      - id: ClothingHeadHelmetHunterBasic
+        name: hunter helmet
+      - id: ClothingOuterHardsuitHunter
+        name: hunter hardsuit
+      - id: RiotBulletShield
+        name: bullet shield
+      - id: ClothingMaskImperialCombatGasmask
+        name: Imperial combat gas mask
+    - name: Ammunition
+      entries:
+      - id: MagazineRifle
+        name: 20-round magazine (7.62x51mm)
+      - id: BoxSpeedLoaderRifle
+        name: box of stripper clips (7.62x51mm)
+      - id: MagazineLightRifle
+        name: 30-round magazine (5.56x45mm)
+      - id: MagazinePistolSubMachineGun
+        name: 35-round SMG magazine (9x19mm)
+      - id: MagazineShotgun
+        name: 10-round magazine (12 gauge)
+      - id: BoxLethalshot
+        name: box of buckshot shells (12 gauge)
+      - id: BoxShotgunSlug
+        name: box of slug shells (12 gauge)
+      - id: MagazinePistol
+        name: pistol magazine (9x19mm)
+      - id: MagazineMagnum
+        name: magnum magazine (.45)
+      - id: SpeedLoaderMagnum
+        name: magnum speed loader (.45)
+    - name: The Hunt
+      entries:
+      - id: Handcuffs
+        name: handcuffs
+      - id: BolaEnergy
+        name: energy bola
+      - id: RomaineBible
+        name: Book of Romaine
+      - id: ClothingEyesHudFactionSRM
+        name: Militia HUD
+    - name: Utilities
+      entries:
+      - id: DoubleEmergencyOxygenTankFilled
+        name: double emergency oxygen tank
+      - id: BoxMRE
+        name: MRE
+      - id: ClothingBeltAssault
+        name: assault belt
+    - name: Medical
+      entries:
+      - id: MedkitCombatFilled
+        name: combat medkit
+      - id: EmergencyMedipen
+        name: emergency medipen
+      - id: BruteAutoInjector
+        name: brute autoinjector
+      - id: BurnAutoInjector
+        name: burn autoinjector
+
+# Taypani-Atyrian Pact. Thukker-built plasma melee, the Harba, salvaged surplus long guns and the families' armour.
+- type: entity
+  parent: ColMarTechBase
+  id: GreatHuntTAPArmoryVendor
+  name: automated Pact armory
+  description: A Thukker-kept rack of everything the caravans carry. Kin arm kin; nothing is owed.
+  components:
+  - type: AccessReader
+    access:
+    - [ "Families" ]
+  - type: Sprite
+    sprite: _Crescent/Structures/Machines/Vendors/armory_tap.rsi
+  - type: CMAutomatedVendor
+    jobs:
+    - DraugrTAP
+    sections:
+    - name: Primary Weapons
+      entries:
+      - id: WeaponShotgunHarba
+        name: TAP Harba 12g
+        recommended: true
+      - id: WeaponRifleCarter
+        name: Carter rifle
+      - id: WeaponRifleSHINimrod
+        name: Nimrod rifle
+      - id: WeaponShotgunKammerer
+        name: Kammerer shotgun
+      - id: WeaponSniperNCWLNovomosin
+        name: Novomosin sniper rifle
+    - name: Melee
+      entries:
+      - id: EnergySwordFamilies
+        name: Pact energy sword
+        recommended: true
+      - id: PlasHalberd
+        name: plasma halberd
+      - id: Plashammer
+        name: plasma hammer
+    - name: Armor
+      entries:
+      - id: ClothingOuterArmorDraugrAlseik
+        name: Al'Seik draugr armour
+        recommended: true
+      - id: ClothingOuterArmorServileAlseik
+        name: Al'Seik servile armour
+      - id: ClothingHeadHatDraugr
+        name: draugr hat
+      - id: ClothingOuterHardsuitDraugr
+        name: draugr hardsuit
+      - id: ClothingOuterHardsuitIzdari
+        name: Izdari hardsuit
+      - id: ClothingOuterHardsuitThukker
+        name: Thukker hardsuit
+      - id: ClothingMaskINDGasmask
+        name: gas mask
+      - id: ClothingHandsGlovesCombat
+        name: combat gloves
+    - name: Ammunition
+      entries:
+      - id: BoxLethalshot
+        name: box of buckshot shells (12 gauge)
+      - id: BoxShotgunSlug
+        name: box of slug shells (12 gauge)
+      - id: MagazineLightRifle
+        name: 30-round magazine (5.56x45mm)
+      - id: MagazineBoxLightRifle
+        name: box magazine (5.56x45mm)
+      - id: MagazineBoxRifle
+        name: box magazine (7.62x51mm)
+      - id: SpeedLoaderRifle
+        name: rifle speed loader (7.62x51mm)
+    - name: Utilities
+      entries:
+      - id: ClothingEyesHudFactionTAP
+        name: Pact HUD
+      - id: ClothingShoesBootsMagCombatFilled
+        name: combat magboots
+      - id: DoubleEmergencyOxygenTankFilled
+        name: double emergency oxygen tank
+      - id: BoxMRE
+        name: MRE
+      - id: C4
+        name: C-4 charge
+    - name: Medical
+      entries:
+      - id: MedkitCombatFilled
+        name: combat medkit
+      - id: EmergencyMedipen
+        name: emergency medipen
+      - id: BruteAutoInjector
+        name: brute autoinjector
+      - id: BurnAutoInjector
+        name: burn autoinjector
+
+# Great Hunt: Blades. The same racks with every gun, round and explosive taken out, so the sides meet blade to
+# blade. Swapped in for the ones above at round start by the GreatHuntMeleeArmories rule (greathunt.yml).
+- type: entity
+  parent: GreatHuntSRMArmoryVendor
+  id: GreatHuntSRMArmoryVendorMelee
+  suffix: Melee
+  components:
+  - type: CMAutomatedVendor
+    sections:
+    - name: Melee
+      entries:
+      - id: ClothingBeltSheathDSMDuelingKhopeshFilled
+        name: dueling khopesh with sheath
+        recommended: true
+      - id: DSMDuelingKhopesh
+        name: dueling khopesh
+    - name: Armor
+      entries:
+      - id: ClothingOuterArmorHunterVest
+        name: hunter vest
+        recommended: true
+      - id: ClothingOuterArmorHunterDuster
+        name: hunter duster
+      - id: ClothingHeadHelmetHunterBasic
+        name: hunter helmet
+      - id: ClothingOuterHardsuitHunter
+        name: hunter hardsuit
+      - id: RiotBulletShield
+        name: bullet shield
+      - id: ClothingMaskImperialCombatGasmask
+        name: Imperial combat gas mask
+    - name: The Hunt
+      entries:
+      - id: Handcuffs
+        name: handcuffs
+      - id: BolaEnergy
+        name: energy bola
+      - id: RomaineBible
+        name: Book of Romaine
+      - id: ClothingEyesHudFactionSRM
+        name: Militia HUD
+    - name: Utilities
+      entries:
+      - id: DoubleEmergencyOxygenTankFilled
+        name: double emergency oxygen tank
+      - id: BoxMRE
+        name: MRE
+      - id: ClothingBeltAssault
+        name: assault belt
+    - name: Medical
+      entries:
+      - id: MedkitCombatFilled
+        name: combat medkit
+      - id: EmergencyMedipen
+        name: emergency medipen
+      - id: BruteAutoInjector
+        name: brute autoinjector
+      - id: BurnAutoInjector
+        name: burn autoinjector
+
+- type: entity
+  parent: GreatHuntTAPArmoryVendor
+  id: GreatHuntTAPArmoryVendorMelee
+  suffix: Melee
+  components:
+  - type: CMAutomatedVendor
+    sections:
+    - name: Melee
+      entries:
+      - id: EnergySwordFamilies
+        name: Pact energy sword
+        recommended: true
+      - id: PlasHalberd
+        name: plasma halberd
+      - id: Plashammer
+        name: plasma hammer
+    - name: Armor
+      entries:
+      - id: ClothingOuterArmorDraugrAlseik
+        name: Al'Seik draugr armour
+        recommended: true
+      - id: ClothingOuterArmorServileAlseik
+        name: Al'Seik servile armour
+      - id: ClothingHeadHatDraugr
+        name: draugr hat
+      - id: ClothingOuterHardsuitDraugr
+        name: draugr hardsuit
+      - id: ClothingOuterHardsuitIzdari
+        name: Izdari hardsuit
+      - id: ClothingOuterHardsuitThukker
+        name: Thukker hardsuit
+      - id: ClothingMaskINDGasmask
+        name: gas mask
+      - id: ClothingHandsGlovesCombat
+        name: combat gloves
+    - name: Utilities
+      entries:
+      - id: ClothingEyesHudFactionTAP
+        name: Pact HUD
+      - id: ClothingShoesBootsMagCombatFilled
+        name: combat magboots
+      - id: DoubleEmergencyOxygenTankFilled
+        name: double emergency oxygen tank
+      - id: BoxMRE
+        name: MRE
+    - name: Medical
+      entries:
+      - id: MedkitCombatFilled
+        name: combat medkit
+      - id: EmergencyMedipen
+        name: emergency medipen
+      - id: BruteAutoInjector
+        name: brute autoinjector
+      - id: BurnAutoInjector
+        name: burn autoinjector
+
+# The Militia's piety statues as mapped on the Great Hunt Refuge (refuge_greathunt). Same stock as the regular
+# ones, except that listings blacklisting GreatHuntStore (the deflecting vibrokhopesh) are left out.
+- type: entity
+  parent: SRMDogtagStoreR
+  id: GreatHuntSRMDogtagStoreR
+  suffix: Great Hunt
+  components:
+  - type: Tag
+    tags:
+    - Structure # from BaseStructure; the list is replaced, not merged
+    - GreatHuntStore
+
+- type: entity
+  parent: SRMDogtagStoreS
+  id: GreatHuntSRMDogtagStoreS
+  suffix: Great Hunt
+  components:
+  - type: Tag
+    tags:
+    - Structure # from BaseStructure; the list is replaced, not merged
+    - GreatHuntStore
+
+# Great Hunt: Blades statues. Romaine only offers blades, suits and scripture; Serraine keeps her stock, less any
+# listing blacklisting MeleeOnlyStore (the disabler crate).
+- type: entity
+  parent: GreatHuntSRMDogtagStoreR
+  id: GreatHuntSRMDogtagStoreRMelee
+  suffix: Great Hunt, Melee
+  components:
+  - type: Tag
+    tags:
+    - Structure # from BaseStructure; the list is replaced, not merged
+    - GreatHuntStore
+    - MeleeOnlyStore
+  - type: Store
+    categories:
+    - StoreCategorySRMMelee
+    - StoreCategorySRMSuits
+    - StoreCategorySRMPietyRomaine
+
+- type: entity
+  parent: GreatHuntSRMDogtagStoreS
+  id: GreatHuntSRMDogtagStoreSMelee
+  suffix: Great Hunt, Melee
+  components:
+  - type: Tag
+    tags:
+    - Structure # from BaseStructure; the list is replaced, not merged
+    - GreatHuntStore
+    - MeleeOnlyStore
+
+# Store tags read by StoreWhitelistCondition on listings.
+- type: Tag
+  id: GreatHuntStore
+
+- type: Tag
+  id: MeleeOnlyStore

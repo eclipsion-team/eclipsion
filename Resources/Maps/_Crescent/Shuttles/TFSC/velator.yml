@@ -708,10 +708,7 @@ entities:
       parent: 1
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
-    - type: Door
-      secondsUntilStateChange: -6427.595
-      state: Opening
+        DoorStatus: False
 - proto: AirlockSyndicateHorizontalLockedTFSCRamzi
   entities:
   - uid: 6
@@ -744,12 +741,9 @@ entities:
       rot: 3.141592653589793 rad
       pos: 4.5,-3.5
       parent: 1
-    - type: Door
-      secondsUntilStateChange: -3217.132
-      state: Opening
     - type: DeviceLinkSource
       lastSignals:
-        DoorStatus: True
+        DoorStatus: False
 - proto: AirlockSyndicateLockedTFSCRamzi
   entities:
   - uid: 11
