@@ -291,18 +291,42 @@ public sealed class PsionicNullifierSystem : EntitySystem
 
         // Someone already misaligned keeps their own field, and gets nothing to lose when this comes off.
         if (!HasComp<PsionicNullifierComponent>(args.Wearer))
-        {
-            var nullifier = AddComp<PsionicNullifierComponent>(args.Wearer);
-            nullifier.Range = ent.Comp.Range;
-            nullifier.FromClothing = true;
-            nullifier.Source = ent.Owner;
-            ent.Comp.GrantedNullifier = true;
-        }
+            GrantField(ent, args.Wearer);
 
         if (!HasComp<PsionicInsulationComponent>(args.Wearer))
         {
             AddComp<PsionicInsulationComponent>(args.Wearer);
             ent.Comp.GrantedInsulation = true;
+        }
+    }
+
+    private void GrantField(Entity<PsionicNullifierClothingComponent> ent, EntityUid wearer)
+    {
+        var nullifier = AddComp<PsionicNullifierComponent>(wearer);
+        nullifier.Range = ent.Comp.Range;
+        nullifier.FromClothing = true;
+        nullifier.Source = ent.Owner;
+        ent.Comp.GrantedNullifier = true;
+    }
+
+    /// <summary>
+    /// Hands the field back to the nullifier gear the wearer has on, once a field of their own that stood in its
+    /// place has lapsed. Gear put on while a temporary field (a hunter's Null Ward) was up found a field already
+    /// there and granted none, so without this it would sit on the wearer's head doing nothing.
+    /// </summary>
+    public void RestoreWornField(EntityUid wearer)
+    {
+        if (TerminatingOrDeleted(wearer) || HasComp<PsionicNullifierComponent>(wearer))
+            return;
+
+        var slots = _inventory.GetSlotEnumerator(wearer);
+        while (slots.NextItem(out var item))
+        {
+            if (!TryComp<PsionicNullifierClothingComponent>(item, out var clothing) || clothing.Wearer != wearer)
+                continue;
+
+            GrantField((item, clothing), wearer);
+            return;
         }
     }
 

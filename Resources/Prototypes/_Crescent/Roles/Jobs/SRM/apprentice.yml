@@ -3,6 +3,7 @@
   name: job-name-acolyte
   description: job-description-apprenticehunter
   playTimeTracker: JobAcolyteSRM
+  requiredReligion: UnbrokenPattern # TAP and SRM are fanatics: every role holds the faction faith
   ranks:
     RatRankSRMApprenticeHigh:
     - !type:CharacterPlaytimeRequirement
@@ -16,7 +17,6 @@
   weight: 1
   startingGear: AcolyteGear
   alwaysUseSpawner: true
-  whitelisted: true # Rat
   requireAdminNotify: false
   icon: "JobIconAcolyte"
   supervisors: job-supervisors-srm-apprentice
@@ -51,14 +51,11 @@
       - type: LanguageAdder
         addSpoken:
           - LowImperial
-          - Saintspact
+          - HighImperial
         addUnderstood:
           - LowImperial
-          - Saintspact
-      - type: InnatePsionicPowers
-        powersToAdd:
-          - TelepathyPower
-          - AssayPower
+          - HighImperial
+      - type: PsionHunter # hunts psions, is never one: Hunter's Sense and Scrutiny, psionics stripped
 
 - type: startingGear
   id: AcolyteGear

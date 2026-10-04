@@ -12,6 +12,7 @@ using Content.Shared.Follower;
 using Content.Shared.Ghost;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
+using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Events;
@@ -67,6 +68,10 @@ namespace Content.Server.Ghost
             SubscribeLocalEvent<GhostComponent, PlayerDetachedEvent>(OnPlayerDetached);
 
             SubscribeLocalEvent<GhostOnMoveComponent, MoveInputEvent>(OnRelayMoveInput);
+
+            // Crescent: track time of death on the mind so returning to a dead body doesn't reset the respawn timer.
+            SubscribeLocalEvent<MindContainerComponent, MobStateChangedEvent>(OnMindContainerMobStateChanged);
+            SubscribeLocalEvent<MindComponent, MindGotAddedEvent>(OnMindGotAdded);
 
             SubscribeNetworkEvent<GhostWarpsRequestEvent>(OnGhostWarpsRequest);
             SubscribeNetworkEvent<GhostReturnToBodyRequest>(OnGhostReturnToBodyRequest);
@@ -195,6 +200,24 @@ namespace Content.Server.Ghost
                 return;
 
             _ticker.OnGhostAttempt(mindId, component.CanReturn, mind: mind);
+        }
+
+        private void OnMindContainerMobStateChanged(Entity<MindContainerComponent> ent, ref MobStateChangedEvent args)
+        {
+            if (!TryComp<MindComponent>(ent.Comp.Mind, out var mind))
+                return;
+
+            if (args.NewMobState == MobState.Dead)
+                mind.TimeOfDeath ??= _gameTiming.CurTime;
+            else if (args.OldMobState == MobState.Dead)
+                mind.TimeOfDeath = null;
+        }
+
+        private void OnMindGotAdded(EntityUid uid, MindComponent component, MindGotAddedEvent args)
+        {
+            // Moved into a living body (cloning, borging, etc.) - no longer dead.
+            if (TryComp<MobStateComponent>(args.Container, out var mobState) && !_mobState.IsDead(args.Container, mobState))
+                component.TimeOfDeath = null;
         }
 
         private void OnGhostShutdown(EntityUid uid, GhostComponent component, ComponentShutdown args)

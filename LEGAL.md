@@ -12,7 +12,7 @@ The authors retain all copyright to their respective works submitted to this rep
 > If you require MIT-licensed code, please visit the Space Wizards repository [here](https://github.com/space-wizards/space-station-14/).
 > If the Space Wizards repository does not contain the MIT-licensed code you need, but it is available here under AGPLv3, you may contact the authors of that code and request relicensing.
 >
-> If you are unable to determine the license of a specific component or identify the author(s) of a particular feature, please ask in our [Discord](https://discord.gg/3wbbHgUmYr).
+> If you are unable to determine the license of a specific component or identify the author(s) of a particular feature, please ask in our [Discord](https://discord.gg/4kWQxfdMnk).
 
 Content contributed to this repository **after** commit  
 [87c70a8](https://github.com/Simple-Station/Einstein-Engines/commit/87c70a89a67d0521a56388e6b1c3f2cb947943e4)  
@@ -77,7 +77,7 @@ Original assets made by Taleryn and the Eclipsion Team are covered by the
 [Eclipsion Restricted Asset License](./LICENSE-ECLIPSION-ASSETS.txt). These assets have
 `"license": "Custom"` in their `meta.json` and name that license in their `copyright` field.
 They may be used only as part of Eclipsion. Any other use requires prior written permission from
-both Taleryn and the Eclipsion Team; ask in our [Discord](https://discord.gg/3wbbHgUmYr).
+both Taleryn and the Eclipsion Team; ask in our [Discord](https://discord.gg/4kWQxfdMnk).
 
 This covers only work that is entirely Taleryn's or the Eclipsion Team's own. Assets derived from
 another author's work keep that work's license, as recorded in their `meta.json`.
@@ -96,7 +96,7 @@ this author attribution:
 // SPDX-FileCopyrightText: 2026 Taleryn and the Eclipsion Team
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Additional term (AGPLv3 §7(b)): preserve the author attribution above.
-// For reuse outside Eclipsion, please contact Taleryn and the Eclipsion Team: https://discord.gg/3wbbHgUmYr
+// For reuse outside Eclipsion, please contact Taleryn and the Eclipsion Team: https://discord.gg/4kWQxfdMnk
 ```
 
 Please note that some assets are licensed under non-commercial licenses such as  

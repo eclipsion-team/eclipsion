@@ -34,6 +34,7 @@ public sealed partial class GreatHuntRuleSystem : GameRuleSystem<GreatHuntRuleCo
     {
         base.Initialize();
         SubscribeLocalEvent<GreatAltarCapturedEvent>(OnAltarCaptured);
+        InitializeMusic();
     }
 
     protected override void Started(EntityUid uid, GreatHuntRuleComponent hunt, GameRuleComponent gameRule,
@@ -143,6 +144,8 @@ public sealed partial class GreatHuntRuleSystem : GameRuleSystem<GreatHuntRuleCo
                 altar.UnlockTime = hunt.GraceEndsAt;
         }
 
+        UpdateGraceMusic(hunt, now);
+
         // Whole seconds left, rounded up, so the announcements read 00:05:00 rather than 00:04:59.
         var secondsLeft = (int) Math.Ceiling(left.TotalSeconds);
         var warnings = hunt.GraceWarnings
@@ -193,6 +196,7 @@ public sealed partial class GreatHuntRuleSystem : GameRuleSystem<GreatHuntRuleCo
     private void EndGrace(GreatHuntRuleComponent hunt, bool announce)
     {
         hunt.GraceOver = true;
+        StopGraceMusic(hunt);
 
         var now = Timing.CurTime;
         hunt.GraceEndsAt = now;

@@ -37,9 +37,10 @@ public abstract class SharedMagicMirrorSystem : EntitySystem
         if (args.Result == BoundUserInterfaceRangeResult.Fail)
             return;
 
-        DebugTools.Assert(component.Target != null && Exists(component.Target));
+        if (component.Target is not { } target || !Exists(target))
+            return;
 
-        if (!_interaction.InRangeUnobstructed(uid, component.Target.Value))
+        if (!_interaction.InRangeUnobstructed(uid, target))
             args.Result = BoundUserInterfaceRangeResult.Fail;
     }
 

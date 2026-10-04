@@ -4,8 +4,10 @@ using Content.Server.Cargo.Components;
 using Content.Server.Chemistry.Containers.EntitySystems;
 using Content.Shared.Administration;
 using Content.Shared.Body.Components;
+using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Shared.Chemistry.Reagent;
+using Content.Shared.Kitchen.Components;
 using Content.Shared.Materials;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -33,6 +35,7 @@ public sealed class PricingSystem : EntitySystem
     [Dependency] private readonly MobStateSystem _mobStateSystem = default!;
     [Dependency] private readonly SolutionContainerSystem _solutionContainerSystem = default!;
     [Dependency] private readonly EconomyPriceSystem _economyPrice = default!;
+    [Dependency] private readonly ManufacturedPriceCapSystem _manufactureCap = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -189,6 +192,9 @@ public sealed class PricingSystem : EntitySystem
     /// <summary>
     /// Get a rough price for an entityprototype. Does not consider contained entities.
     /// </summary>
+    /// <remarks>
+    /// Not capped by <see cref="ManufacturedPriceCapSystem"/>: vending machines charge this price.
+    /// </remarks>
     public double GetEstimatedPrice(EntityPrototype prototype)
     {
         var ev = new EstimatedPriceCalculationEvent()
@@ -229,17 +235,34 @@ public sealed class PricingSystem : EntitySystem
     /// </remarks>
     public double GetPrice(EntityUid uid, bool includeContents = true)
     {
+        return GetPrice(uid, includeContents, out _);
+    }
+
+    /// <inheritdoc cref="GetPrice(EntityUid, bool)"/>
+    /// <param name="movable">
+    /// Crescent: how much of the price is reagents and gases, here and in the contents. They can be poured or pumped
+    /// out, so <see cref="ManufacturedPriceCapSystem"/> never scales them.
+    /// </param>
+    public double GetPrice(EntityUid uid, bool includeContents, out double movable)
+    {
         var ev = new PriceCalculationEvent();
         RaiseLocalEvent(uid, ref ev);
 
+        movable = ev.MovablePrice;
         if (ev.Handled)
-            return ev.Price;
+            return ev.Price + ev.MovablePrice;
 
         var price = ev.Price;
         //TODO: Add an OpaqueToAppraisal component or similar for blocking the recursive descent into containers, or preventing material pricing.
         // DO NOT FORGET TO UPDATE ESTIMATED PRICING
         price += GetMaterialsPrice(uid);
-        price += GetSolutionsPrice(uid);
+
+        // Crescent: reagents that can be got out are kept apart from the capped price. Ones sealed in
+        // (a monkey cube's nutriment) are part of the item, and capped with it.
+        if (CanTakeReagentsOut(uid))
+            movable += GetSolutionsPrice(uid);
+        else
+            price += GetSolutionsPrice(uid);
 
         // Can't use static price with stackprice
         var oldPrice = price;
@@ -250,18 +273,35 @@ public sealed class PricingSystem : EntitySystem
             price += GetStaticPrice(uid);
         }
 
+        // Lathe-printable goods can't sell for more than their materials. Only the item itself is
+        // scaled: reagents and gases are not, and contents are capped by their own prototypes below.
+        price *= _manufactureCap.GetMultiplier(uid, price);
+        price += movable;
+
         if (includeContents && TryComp<ContainerManagerComponent>(uid, out var containers))
         {
             foreach (var container in containers.Containers.Values)
             {
                 foreach (var ent in container.ContainedEntities)
                 {
-                    price += GetPrice(ent);
+                    price += GetPrice(ent, true, out var contentMovable);
+                    movable += contentMovable;
                 }
             }
         }
 
         return price;
+    }
+
+    /// <summary>
+    /// Crescent: whether an entity's reagents can be poured, drawn or ground out of it into another container.
+    /// </summary>
+    private bool CanTakeReagentsOut(EntityUid uid)
+    {
+        return HasComp<DrainableSolutionComponent>(uid)
+               || HasComp<DrawableSolutionComponent>(uid)
+               || HasComp<DumpableSolutionComponent>(uid)
+               || CompOrNull<ExtractableComponent>(uid)?.GrindableSolution != null;
     }
 
     private double GetMaterialsPrice(EntityUid uid)
@@ -427,6 +467,13 @@ public record struct PriceCalculationEvent()
     /// The total price of the entity.
     /// </summary>
     public double Price = 0;
+
+    /// <summary>
+    /// Crescent: the price of what the entity holds that can be poured or pumped out of it, such as gas. Added to
+    /// the total, but never scaled by <see cref="ManufacturedPriceCapSystem"/>: moved into another container it is
+    /// worth the same, so capping it only in printed ones would undervalue it there and nowhere else.
+    /// </summary>
+    public double MovablePrice = 0;
 
     /// <summary>
     /// Whether this event was already handled.

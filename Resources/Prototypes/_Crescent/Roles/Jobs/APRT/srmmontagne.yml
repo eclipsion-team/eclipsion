@@ -3,6 +3,7 @@
   name: job-name-montagne
   description: job-description-montagne
   playTimeTracker: JobMontagneSRM
+  requiredReligion: UnbrokenPattern # TAP and SRM are fanatics: every role holds the faction faith
   requirements:
     - !type:CharacterSpeciesRequirement
       species:
@@ -34,6 +35,8 @@
         faction: SRM
       - type: Telepathic
       - type: BibleUser
+      - type: PsionHunter # hunts psions, is never one: Hunter's Sense and Scrutiny, psionics stripped
+      - type: NullWard # hunt leaders hold a null field for a while
 
 - type: startingGear
   id: APRTMontagneGear

@@ -3,6 +3,7 @@
   name: job-name-beltrunner
   description: job-description-beltrunner
   playTimeTracker:  JobBeltrunnerTAP
+  requiredReligion: VeiledMother # TAP and SRM are fanatics: every role holds the faction faith
   weight: 4
   startingGear: BeltrunnerGear
   alwaysUseSpawner: true

@@ -3,6 +3,8 @@
   id: OrganSpaceAnimalLungs
   name: space animal lungs
   components:
+  - type: Extractable # lathe-printable for about a speso: grinding it must not yield 20 spesos of nutriment
+    grindableSolutionName: null
   - type: Organ
     onAdd:
     - type: BreathingImmunity
@@ -12,6 +14,8 @@
   id: OrganSpaceAnimalHeart
   name: space animal heart
   components:
+  - type: Extractable # lathe-printable for about a speso: grinding it must not yield 20 spesos of nutriment
+    grindableSolutionName: null
   - type: Organ
     onAdd:
     - type: PressureImmunity
@@ -33,6 +37,8 @@
   id: OrganDragonLungs
   name: dragon lungs
   components:
+  - type: Extractable # lathe-printable for about a speso: grinding it must not yield 20 spesos of nutriment
+    grindableSolutionName: null
   - type: Organ
     onAdd:
     - type: ActionGun
@@ -44,6 +50,8 @@
   id: OrganLaserEyes
   name: laser raptor eyes
   components:
+  - type: Extractable # lathe-printable for about a speso: grinding it must not yield 20 spesos of nutriment
+    grindableSolutionName: null
   - type: Organ
     onAdd:
     - type: HitscanBatteryAmmoProvider
@@ -68,6 +76,8 @@
   id: OrganCobraHeart
   name: cobra gland
   components:
+  - type: Extractable # lathe-printable for about a speso: grinding it must not yield 20 spesos of nutriment
+    grindableSolutionName: null
   - type: Organ
     onAdd:
     - type: Stealth

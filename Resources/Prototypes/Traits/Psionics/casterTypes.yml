@@ -13,6 +13,9 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: TraitsCasterType
+    - !type:FactionRequirement # Saint's Militia hunt psions; they never are one (PsionHunterComponent)
+      inverted: true
+      factionID: SRM
     - !type:CharacterJobRequirement
       inverted: true
       jobs:
@@ -80,6 +83,9 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: TraitsCasterType
+    - !type:FactionRequirement # Saint's Militia hunt psions; they never are one (PsionHunterComponent)
+      inverted: true
+      factionID: SRM
     - !type:CharacterJobRequirement
       inverted: true
       jobs:
@@ -113,6 +119,9 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: TraitsCasterType
+    - !type:FactionRequirement # Saint's Militia hunt psions; they never are one (PsionHunterComponent)
+      inverted: true
+      factionID: SRM
     - !type:CharacterJobRequirement
       inverted: true
       jobs:
@@ -146,6 +155,9 @@
   requirements:
     - !type:CharacterItemGroupRequirement
       group: TraitsCasterType
+    - !type:FactionRequirement # Saint's Militia hunt psions; they never are one (PsionHunterComponent)
+      inverted: true
+      factionID: SRM
     - !type:CharacterJobRequirement
       inverted: true
       jobs:

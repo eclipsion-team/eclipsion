@@ -3,6 +3,7 @@
   name: job-name-tender
   description: job-description-tender
   playTimeTracker: JobTenderSRM
+  requiredReligion: UnbrokenPattern # TAP and SRM are fanatics: every role holds the faction faith
   ranks:
     RatRankSRMTenderSenior:
     - !type:CharacterPlaytimeRequirement
@@ -17,7 +18,6 @@
   startingGear: TenderGear
   alwaysUseSpawner: true
   requireAdminNotify: false
-  whitelisted: true # Rat
   icon: "JobIconTender"
   chatNameColor: "#B04A9A"
   supervisors: job-supervisors-srm-hunters
@@ -55,16 +55,13 @@
       - type: LanguageAdder
         addSpoken:
           - LowImperial
-          - Saintspact
           - Tradeband
+          - HighImperial
         addUnderstood:
           - LowImperial
-          - Saintspact
           - Tradeband
-      - type: InnatePsionicPowers
-        powersToAdd:
-          - TelepathyPower
-          - AssayPower
+          - HighImperial
+      - type: PsionHunter # hunts psions, is never one: Hunter's Sense and Scrutiny, psionics stripped
 
 - type: startingGear
   id: TenderGear

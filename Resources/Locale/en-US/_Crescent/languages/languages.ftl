@@ -10,10 +10,6 @@ language-LowImperial-name = Low Imperial
 language-LowImperial-description = A broad family of everyday Imperial speech used by soldiers, workers, traders, and frontier communities beneath the formal language of courts and charters.
 chat-language-LowImperial-name = Low Imperial
 
-language-Saintspact-name = Saintspact
-language-Saintspact-description = A coded cant used by cells of the Saint's Militia to record Hunts, identify fellow militants, and communicate across its four doctrinal currents.
-chat-language-Saintspact-name = Saintspact
-
 language-SolBasic-name = Solarian
 language-SolBasic-description = A trade language derived from High Imperial and Tau Ceti Basic, simplified for merchants, soldiers, immigrants, and officials working across the Mandate's many local jurisdictions.
 chat-language-SolBasic-name = Solarian

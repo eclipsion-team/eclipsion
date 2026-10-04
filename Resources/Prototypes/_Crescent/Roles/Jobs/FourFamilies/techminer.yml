@@ -3,6 +3,7 @@
   name: job-name-techminer
   description: job-description-techminer
   playTimeTracker:  JobTechminerTAP
+  requiredReligion: VeiledMother # TAP and SRM are fanatics: every role holds the faction faith
   weight: 3
   startingGear: TechminerGear
   alwaysUseSpawner: true

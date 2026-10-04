@@ -429,6 +429,7 @@
       - 0,0,1,3
     sprite: _Crescent/Objects/Weapons/Melee/duelingkhopesh.rsi
   - type: Wieldable
+    wieldedInhandPrefix: null # no wielded inhand sprites; keep the one-handed ones when wielded
   - type: IncreaseDamageOnWield # wielded: Slash 85, 10 under a wielded PlasHalberd's 95 vs mobs
     damage:
       types:

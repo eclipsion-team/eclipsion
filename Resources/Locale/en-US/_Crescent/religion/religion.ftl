@@ -1,5 +1,5 @@
 humanoid-profile-editor-religion-label = Religion
-humanoid-profile-editor-religion-required = [color=#C8A050][italic]As {$job}, you lead your faction's faith and must hold it.[/italic][/color]
+humanoid-profile-editor-religion-required = [color=#C8A050][italic]As {$job}, you are sworn to your faction's faith and must hold it.[/italic][/color]
     {$description}
 
 ## Faiths
@@ -51,8 +51,8 @@ religion-altar-examine-leader = This altar belongs to the [color={$color}]{$reli
 religion-altar-examine-follower = This altar belongs to the [color={$color}]{$religion}[/color], your faith.
 
 religion-not-permitted = Your allegiance does not allow you to follow the {$religion}.
-religion-spawn-office = As {$job}, you lead the {$religion}. Your office binds you to it, whatever you believed before.
-religion-office-bound = As {$job}, your office binds you to the {$religion}.
+religion-spawn-office = As {$job}, you are sworn to the {$religion}. Your role binds you to it, whatever you believed before.
+religion-office-bound = As {$job}, your role binds you to the {$religion}.
 religion-spawn-not-permitted = The {$religion} is not a faith your role allows. You begin this shift unaffiliated.
 
 religion-request-no-leader = Only a leader of the {$religion} can accept you, and none is near this altar.

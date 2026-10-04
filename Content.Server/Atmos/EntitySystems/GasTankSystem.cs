@@ -385,7 +385,7 @@ namespace Content.Server.Atmos.EntitySystems
 
         private void OnGasTankPrice(EntityUid uid, GasTankComponent component, ref PriceCalculationEvent args)
         {
-            args.Price += _atmosphereSystem.GetPrice(component.Air);
+            args.MovablePrice += _atmosphereSystem.GetPrice(component.Air); // Crescent: MovablePrice, gas can be moved out
         }
 
         private void OnGetAlternativeVerb(EntityUid uid, GasTankComponent component, GetVerbsEvent<AlternativeVerb> args)

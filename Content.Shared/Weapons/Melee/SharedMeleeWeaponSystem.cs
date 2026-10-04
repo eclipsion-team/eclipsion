@@ -177,7 +177,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
             return new DamageSpecifier();
 
         var ev = new GetMeleeDamageEvent(uid, new(component.Damage), new(), user, component.ResistanceBypass);
-        RaiseLocalEvent(uid, ref ev);
+        RaiseLocalEvent(uid, ref ev, true); // Crescent: broadcast too, so a game rule can scale every weapon's damage
 
         if (component.ContestArgs is not null)
             ev.Damage *= _contests.ContestConstructor(user, component.ContestArgs) * component.ClickDamageModifier;
@@ -539,7 +539,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
             // If the target has stamina and is taking blunt damage, they should also take stamina damage based on their blunt to stamina factor
             if (damageResult.DamageDict.TryGetValue("Blunt", out var bluntDamage))
             {
-                _stamina.TakeStaminaDamage(target.Value, (bluntDamage * component.BluntStaminaDamageFactor).Float(), visual: false, source: user, with: meleeUid == user ? null : meleeUid);
+                _stamina.TakeStaminaDamage(target.Value, (bluntDamage * component.BluntStaminaDamageFactor).Float(), visual: false, source: user, with: meleeUid == user ? null : meleeUid, fromDamage: true); // Crescent: fromDamage
             }
 
             if (component.MeleeStaminaDamage > 0f)
@@ -838,7 +838,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
                 // If the target has stamina and is taking blunt damage, they should also take stamina damage based on their blunt to stamina factor
                 if (damageResult.DamageDict.TryGetValue("Blunt", out var bluntDamage))
                 {
-                    _stamina.TakeStaminaDamage(entity, (bluntDamage * component.BluntStaminaDamageFactor).Float(), visual: false, source: user, with: meleeUid == user ? null : meleeUid);
+                    _stamina.TakeStaminaDamage(entity, (bluntDamage * component.BluntStaminaDamageFactor).Float(), visual: false, source: user, with: meleeUid == user ? null : meleeUid, fromDamage: true); // Crescent: fromDamage
                 }
 
                 if (component.MeleeStaminaDamage > 0f)

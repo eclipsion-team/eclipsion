@@ -1,3 +1,5 @@
+using Content.Shared.Audio;
+using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._Crescent.GreatHunt;
@@ -56,6 +58,21 @@ public sealed partial class GreatHuntRuleComponent : Component
 
     [DataField]
     public string GraceOverSound = "unionfallGraceOver";
+
+    /// <summary>
+    /// Ambient music played to both sides for the whole preparation phase, over biome, ship and combat music; it is
+    /// handed back to them when the walls fall. Null for none.
+    /// </summary>
+    [DataField]
+    public ProtoId<AmbientMusicPrototype>? GraceMusic;
+
+    /// <summary>Players who have been sent <see cref="GraceMusic"/>, so each gets it once and exactly they get it stopped.</summary>
+    [ViewVariables]
+    public HashSet<NetUserId> GraceMusicListeners = new();
+
+    /// <summary>When <see cref="GraceMusicListeners"/> is next checked for players who joined or respawned.</summary>
+    [ViewVariables]
+    public TimeSpan NextGraceMusicCheck;
 
     /// <summary>
     /// <c>BecomesStation</c> IDs of the home bases walled in during the preparation phase. Each gets a square ring

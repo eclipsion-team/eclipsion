@@ -63,7 +63,9 @@ public sealed partial class ShuttleSystem
                     return MapCoordinates.Nullspace;
                 }
             case GridMapObject grid:
-                var gridXform = Transform(grid.Entity);
+                // The grid can leave PVS or get deleted while the map is still drawing it.
+                if (!TryComp(grid.Entity, out TransformComponent? gridXform))
+                    return MapCoordinates.Nullspace;
 
                 if (HasComp<MapComponent>(grid.Entity))
                 {

@@ -21,42 +21,31 @@
   name: Great Hunt | TAP vs SRM
   showInVote: true
   description: The Saint's Militia and the Taypani-Atyrian Pact fight over the Great Altar in the Hall of Prays. Hold it for 10 minutes to win the hunt.
-  excludedJobs:
-  - UnionfallCadetDSM
-  - UnionfallRiflemanDSM
-  - UnionfallDoctorDSM
-  - UnionfallOfficerDSM
-  - UnionfallLeaderDSM
-  - UnionfallShipCaptainDSM
-  - UnionfallShipCrewDSM
-  - UnionfallCadetNCWL
-  - UnionfallRiflemanNCWL
-  - UnionfallDoctorNCWL
-  - UnionfallOfficerNCWL
-  - UnionfallLeaderNCWL
-  - UnionfallShipCaptainNCWL
-  - UnionfallShipCrewNCWL
-  - planetfall_worker
-  - planetfall_partisan
-  - planetfall_mvdofficer
-  - planetfall_mvdgrunt
-  - planetfall_kapitan
-  - planetfall_doctor
-  - planetfall_courtier
-  - planetfall_advocatus
-  - planetfall_governor
-  - planetfall_freeholder
-  - planetfall_oathbound
-  - planetfall_levyman
-  - planetfall_surgeon
+  # Only the two sides' roles show in the character editor, the way Unionfall shows only its own. Keep this in step
+  # with the StationJobs of RefugeGreatHunt and TribalHideoutGreatHunt below (GreatHuntTest checks it): a job listed
+  # here but on no station could be picked and never spawned, and one on a station but not here would be hidden.
+  availableJobs:
+  - OverseerSRM
+  - MontagneSRM
+  - HunterSRM
+  - TenderSRM
+  - AcolyteSRM
+  - ProphetTAP
+  - TinkererTAP
+  - TechminerTAP
+  - DraugrTAP
+  - ServileTAP
+  - BeltrunnerTAP
+  - Antiquarian
   rules:
   - GreatHunt
   - GreatHuntObjective
   - HullrotRoundTimeLimit
 
 # Great Hunt: Blades. The same hunt on the same maps, but the armories and the Militia's statues are swapped for
-# versions that hand out no guns, ammunition or explosives (GreatHuntMeleeArmories below), so it is fought with blades.
-# Keep excludedJobs in step with GreatHunt above.
+# versions that hand out no guns, ammunition or explosives (GreatHuntMeleeArmories below), so it is fought with blades,
+# and every blow does half damage and half stamina damage (GreatHuntMeleeCombatScale) so fights last longer.
+# Keep availableJobs in step with GreatHunt above.
 - type: gamePreset
   id: GreatHuntMelee
   alias:
@@ -64,40 +53,40 @@
   - greathuntblades
   name: Great Hunt Blades | TAP vs SRM
   showInVote: true
-  description: The Great Hunt with blades only. The armories and shrines hold no guns; hold the Great Altar for 10 minutes to win.
-  excludedJobs:
-  - UnionfallCadetDSM
-  - UnionfallRiflemanDSM
-  - UnionfallDoctorDSM
-  - UnionfallOfficerDSM
-  - UnionfallLeaderDSM
-  - UnionfallShipCaptainDSM
-  - UnionfallShipCrewDSM
-  - UnionfallCadetNCWL
-  - UnionfallRiflemanNCWL
-  - UnionfallDoctorNCWL
-  - UnionfallOfficerNCWL
-  - UnionfallLeaderNCWL
-  - UnionfallShipCaptainNCWL
-  - UnionfallShipCrewNCWL
-  - planetfall_worker
-  - planetfall_partisan
-  - planetfall_mvdofficer
-  - planetfall_mvdgrunt
-  - planetfall_kapitan
-  - planetfall_doctor
-  - planetfall_courtier
-  - planetfall_advocatus
-  - planetfall_governor
-  - planetfall_freeholder
-  - planetfall_oathbound
-  - planetfall_levyman
-  - planetfall_surgeon
+  description: The Great Hunt with blades only. The armories and shrines hold no guns, and every blow lands at half strength; hold the Great Altar for 10 minutes to win.
+  # Only the two sides' roles show in the character editor, the way Unionfall shows only its own. Keep this in step
+  # with the StationJobs of RefugeGreatHunt and TribalHideoutGreatHunt below (GreatHuntTest checks it): a job listed
+  # here but on no station could be picked and never spawned, and one on a station but not here would be hidden.
+  availableJobs:
+  - OverseerSRM
+  - MontagneSRM
+  - HunterSRM
+  - TenderSRM
+  - AcolyteSRM
+  - ProphetTAP
+  - TinkererTAP
+  - TechminerTAP
+  - DraugrTAP
+  - ServileTAP
+  - BeltrunnerTAP
+  - Antiquarian
   rules:
   - GreatHunt
   - GreatHuntObjective
   - GreatHuntMeleeArmories
+  - GreatHuntMeleeCombatScale
   - HullrotRoundTimeLimit
+
+# Blades fights are meant to run long: every melee and thrown weapon does half damage and attackers deal half stamina
+# damage. Stamina spent on one's own swings and sprinting is unchanged.
+- type: entity
+  id: GreatHuntMeleeCombatScale
+  parent: BaseGameRule
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: GreatHuntCombatScaleRule
+    damageMultiplier: 0.5
+    staminaDamageMultiplier: 0.5
 
 - type: entity
   id: GreatHuntMeleeArmories
@@ -152,6 +141,7 @@
     - 300
     - 60
     graceCountdown: 10
+    graceMusic: greatHuntGrace # played to both sides over every other track until the walls fall
     barrierStations: # BecomesStation ids of the home bases to wall in
     - RefugeGreatHunt
     - TribalHideoutGreatHunt

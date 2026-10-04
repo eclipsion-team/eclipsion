@@ -4,11 +4,11 @@
 
 **A continuation of HULLROT, built on Space Station 14.**
 
-[![Discord](https://img.shields.io/discord/1318776836599320657?style=for-the-badge&logo=discord&logoColor=white&label=Discord&color=%237289da)](https://discord.gg/3wbbHgUmYr)
+[![Discord](https://img.shields.io/discord/1318776836599320657?style=for-the-badge&logo=discord&logoColor=white&label=Discord&color=%237289da)](https://discord.gg/4kWQxfdMnk)
 [![License](https://img.shields.io/badge/code-AGPLv3-blue?style=for-the-badge)](./LEGAL.md)
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?&style=for-the-badge)](https://dotnet.microsoft.com/)
 
-[Discord](https://discord.gg/3wbbHgUmYr) • [Legal](./LEGAL.md)
+[Discord](https://discord.gg/4kWQxfdMnk) • [Legal](./LEGAL.md)
 
 </div>
 

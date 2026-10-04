@@ -40,7 +40,7 @@ elsewhere; redistributing them; relicensing them; or using them commercially.
 
 To request permission, contact the Eclipsion Team and Taleryn:
 
-  Discord: https://discord.gg/3wbbHgUmYr
+  Discord: https://discord.gg/4kWQxfdMnk
   GitHub:  https://github.com/eclipsion-team/eclipsion/issues
 
 

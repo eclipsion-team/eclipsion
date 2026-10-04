@@ -42,6 +42,7 @@ using Content.Server.Radio.EntitySystems;
 using Content.Shared._Crescent.DynamicCodes;
 using Content.Shared._Crescent.Helpers;
 using Content.Shared._Crescent.ShipBalanceEnforcement;
+using Content.Shared._Crescent.Shipyard;
 using Content.Shared.Access;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
@@ -314,7 +315,14 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         _shuttle.SetIFFColor(shuttle, iffColor);
         _shuttle.AddIFFFlag(shuttle, IFFFlags.IsPlayerShuttle);
 
-        if (TryComp<IFFComponent>(Transform(console).GridUid, out var stationIFF))
+        var stationGrid = Transform(console).GridUid;
+
+        // Civilian yards on a mixed port (Gliess) sell independent hulls; only its faction yard issues CMM ones.
+        var factionYard = TryComp<ShipyardConsoleComponent>(console, out var yard) && yard.UsesFactionTreasury;
+        if (!factionYard && HasComp<CivilianShipyardNoFactionIffComponent>(stationGrid))
+            return;
+
+        if (TryComp<IFFComponent>(stationGrid, out var stationIFF))
             _shuttle.SetIFFFaction(shuttle, stationIFF.Faction);
     }
 
@@ -1119,6 +1127,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         var comp = EnsureComp<ShipPriceMultiplierComponent>(shuttle.Owner);
         comp.priceMultiplier = 0.50f;
+        if (!voucher.Resellable)
+            comp.PurchasePrice = 0; // resale is capped at what was paid: nothing
 
         ApplyShipyardIFF(uid, shuttle.Owner);
 

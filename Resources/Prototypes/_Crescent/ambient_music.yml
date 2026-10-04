@@ -583,3 +583,15 @@
   id: GrishingradMusic
   files:
    - /Audio/_Crescent/vessels/NCWL/Grishingrad/I,Volgin.ogg
+
+#great hunt preparation phase - both sides, forced by GreatHuntRuleComponent.GraceMusic until the walls fall
+
+- type: ambientMusic
+  id: greatHuntGrace
+  sound:
+    collection: greatHuntGrace
+
+- type: soundCollection
+  id: greatHuntGrace
+  files:
+   - /Audio/_Crescent/Ambience/GreatHunt/greathunt.ogg

@@ -1,0 +1,42 @@
+# Saint's Militia psion hunting (PsionHunterSystem). Training, not powers: none of these need or make the user
+# psionic, raise glimmer or answer to insulation on the user's side.
+
+- type: entity
+  id: ActionPsionHunterSense
+  name: Hunter's Sense
+  description: Still yourself and feel for the taint of the noosphere. Tells you whether a psion is near, and which way the closest one is. Psions behind insulation stay hidden.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    icon: Interface/VerbIcons/metapsionic.png
+    useDelay: 30
+    event: !type:PsionHunterSenseActionEvent
+
+- type: entity
+  id: ActionPsionHunterScrutiny
+  name: Scrutiny
+  description: Study someone up close until you can tell whether the noosphere touches them. Moving or getting hurt breaks your focus.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: EntityTargetAction
+    icon: { sprite: Interface/Actions/psionics.rsi, state: assay }
+    useDelay: 20
+    range: 2
+    itemIconStyle: BigAction
+    canTargetSelf: false
+    whitelist:
+      components:
+      - MobState
+    event: !type:PsionHunterScrutinyActionEvent
+
+# Hunt leaders only (NullWardComponent): Overseer and Montagne.
+- type: entity
+  id: ActionNullWard
+  name: Null Ward
+  description: Hold a null field around yourself for 30 seconds. Every psion within five tiles is cut off from the noosphere, and whatever they have running collapses.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    icon: Interface/VerbIcons/dispel.png
+    useDelay: 120
+    event: !type:NullWardActionEvent

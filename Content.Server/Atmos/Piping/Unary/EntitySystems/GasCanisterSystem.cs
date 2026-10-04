@@ -313,7 +313,7 @@ public sealed class GasCanisterSystem : EntitySystem
 
     private void CalculateCanisterPrice(EntityUid uid, GasCanisterComponent component, ref PriceCalculationEvent args)
     {
-        args.Price += _atmos.GetPrice(component.Air);
+        args.MovablePrice += _atmos.GetPrice(component.Air); // Crescent: MovablePrice, gas can be moved out
     }
 
     /// <summary>

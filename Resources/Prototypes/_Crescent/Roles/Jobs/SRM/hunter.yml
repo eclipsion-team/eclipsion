@@ -3,6 +3,7 @@
   name: job-name-hunter
   description: job-description-hunter
   playTimeTracker: JobHunterSRM
+  requiredReligion: UnbrokenPattern # TAP and SRM are fanatics: every role holds the faction faith
   ranks:
     RatRankSRMHunterSrLead:
     - !type:CharacterPlaytimeRequirement
@@ -28,7 +29,6 @@
   weight: 3
   startingGear: HunterGear
   alwaysUseSpawner: true
-  whitelisted: true # Rat
   requireAdminNotify: false
   icon: "JobIconHunter"
   chatNameColor: "#188A3C"
@@ -63,14 +63,11 @@
       - type: LanguageAdder
         addSpoken:
           - LowImperial
-          - Saintspact
+          - HighImperial
         addUnderstood:
           - LowImperial
-          - Saintspact
-      - type: InnatePsionicPowers
-        powersToAdd:
-          - TelepathyPower
-          - AssayPower
+          - HighImperial
+      - type: PsionHunter # hunts psions, is never one: Hunter's Sense and Scrutiny, psionics stripped
 
 - type: startingGear
   id: HunterGear

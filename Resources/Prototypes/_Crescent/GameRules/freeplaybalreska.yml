@@ -65,6 +65,7 @@
         posX: 0
         posY: 0
         IFFColor: White
+        IFFFaction: CMM
       Taypan1AsteroidBelt:
         gameMapID: Taypan1AsteroidBelt
         posX: -2000

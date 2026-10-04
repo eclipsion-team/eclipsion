@@ -45,6 +45,7 @@
           faction: CMM
           fallAnnouncement: faction-station-fall-gliess
           stationName: Gliess Santo
+        - type: CivilianShipyardNoFactionIff # civilian yards sell independent hulls, not CMM ones
         - type: BlockShipWeaponProjectileGrid
         - type: PreventPilot
         - type: VesselIcon

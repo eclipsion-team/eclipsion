@@ -299,16 +299,21 @@ public sealed partial class StaminaSystem : EntitySystem
 
     // goob edit - stunmeta
     public void TakeStaminaDamage(EntityUid uid, float value, StaminaComponent? component = null,
-        EntityUid? source = null, EntityUid? with = null, bool visual = true, SoundSpecifier? sound = null, bool? allowsSlowdown = true, bool immediate = true)
+        EntityUid? source = null, EntityUid? with = null, bool visual = true, SoundSpecifier? sound = null, bool? allowsSlowdown = true, bool immediate = true,
+        bool fromDamage = false) // Crescent: fromDamage
     {
         if (!Resolve(uid, ref component, false)
             || value == 0)
             return;
 
-        var ev = new BeforeStaminaDamageEvent(value);
+        // Crescent: the source rides along and the value can be changed, so a game rule can scale stamina dealt by
+        // attackers.
+        var ev = new BeforeStaminaDamageEvent(value, Source: source, FromDamage: fromDamage);
         RaiseLocalEvent(uid, ref ev);
         if (ev.Cancelled)
             return;
+
+        value = ev.Value; // Crescent
 
         // Have we already reached the point of max stamina damage?
         if (component.Critical && immediate)
@@ -515,6 +520,9 @@ public sealed partial class StaminaSystem : EntitySystem
 
 /// <summary>
 ///     Raised before stamina damage is dealt to allow other systems to cancel it.
+///     Crescent: or to change <see cref="Value"/>. <see cref="Source"/> is whoever dealt it, if anyone, and
+///     <see cref="FromDamage"/> marks stamina worked out from health damage already dealt (blunt hits), which any
+///     scaling of that damage has already touched.
 /// </summary>
 [ByRefEvent]
-public record struct BeforeStaminaDamageEvent(float Value, bool Cancelled = false);
+public record struct BeforeStaminaDamageEvent(float Value, bool Cancelled = false, EntityUid? Source = null, bool FromDamage = false);

@@ -208,7 +208,7 @@ namespace Content.Shared.Damage.Systems
                 return new DamageSpecifier();
 
             var ev = new GetThrowingDamageEvent(uid, component.Damage, new(), user);
-            RaiseLocalEvent(uid, ref ev);
+            RaiseLocalEvent(uid, ref ev, true); // Crescent: broadcast too, so a game rule can scale every weapon's damage
 
             if (component.ContestArgs is not null && user is EntityUid userUid)
                 ev.Damage *= _contests.ContestConstructor(userUid, component.ContestArgs);

@@ -4,6 +4,7 @@ using Content.Server._Crescent.Religion;
 using Content.Server._Crescent.Religion.Components;
 using Content.Shared._Crescent.HullrotFaction;
 using Content.Shared._Crescent.Religion;
+using Content.Shared.Customization.Systems;
 using Content.Shared.Roles;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Localization;
@@ -159,6 +160,49 @@ public sealed class ReligionTest
                 {
                     Assert.That(protoMan.Index<JobPrototype>(job).RequiredReligion?.Id, Is.EqualTo(religion), job);
                 }
+            });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    ///     The Pact and the Militia are fanatics: every one of their roles, command or not, holds the faction faith in
+    ///     every mode, whatever the profile says.
+    /// </summary>
+    [Test]
+    public async Task FanaticFactionsHoldTheirFaithInEveryRole()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var protoMan = server.ResolveDependency<IPrototypeManager>();
+
+        var fanatics = new Dictionary<string, string>
+        {
+            ["TAP"] = "VeiledMother",
+            ["SRM"] = "UnbrokenPattern",
+        };
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.Multiple(() =>
+            {
+                var checkedJobs = 0;
+                foreach (var job in protoMan.EnumeratePrototypes<JobPrototype>())
+                {
+                    var faction = job.Requirements?
+                        .OfType<FactionRequirement>()
+                        .FirstOrDefault(r => !r.Inverted && fanatics.ContainsKey(r.FactionID))?
+                        .FactionID;
+
+                    if (faction == null)
+                        continue;
+
+                    checkedJobs++;
+                    Assert.That(job.RequiredReligion?.Id, Is.EqualTo(fanatics[faction]), job.ID);
+                }
+
+                Assert.That(checkedJobs, Is.GreaterThan(0), "No TAP or SRM jobs found.");
             });
         });
 

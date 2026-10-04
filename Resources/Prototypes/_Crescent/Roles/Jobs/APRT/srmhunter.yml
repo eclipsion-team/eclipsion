@@ -3,6 +3,7 @@
   name: job-name-hunter
   description: job-description-hunter
   playTimeTracker: JobHunterSRM
+  requiredReligion: UnbrokenPattern # TAP and SRM are fanatics: every role holds the faction faith
   requirements:
     - !type:CharacterSpeciesRequirement
       species:
@@ -33,6 +34,7 @@
           faction: SRM
         - type: Telepathic
         - type: BibleUser
+        - type: PsionHunter # hunts psions, is never one: Hunter's Sense and Scrutiny, psionics stripped
 
 - type: startingGear
   id: APRTHunterGear

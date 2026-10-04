@@ -281,7 +281,13 @@
     layers:
     # Changing it here is fine - if the PaperStatus key is actually added,
     #  something happened, so that ought to override this either way.
+    # Keep the PaperVisuals map keys, otherwise PaperSystem errors when it toggles them.
+    - state: paper
     - state: paper_words
+      map: ["enum.PaperVisualLayers.Writing"]
+    - state: paper_stamp-generic
+      map: ["enum.PaperVisualLayers.Stamp"]
+      visible: false
   - type: ActivatableUI
     key: enum.PaperUiKey.Key
   - type: UserInterface

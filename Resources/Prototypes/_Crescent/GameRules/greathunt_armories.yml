@@ -3,6 +3,8 @@
 # (_Hyperwar/hyperwar_armory_vendors.yml). Not mapped anywhere yet: place them on the Great Hunt base maps.
 
 # Saint's Militia. Cheap hunter carbines and Imperial surplus, khopeshes, hunter armour, and the tools of a Hunt.
+# Both sides also get void gear (magboots, jetpack, mass scanner) and the LPCs of their yard's cloaked hulls, so a
+# fresh respawn can take to space without waiting on money.
 - type: entity
   parent: ColMarTechBase
   id: GreatHuntSRMArmoryVendor
@@ -45,6 +47,8 @@
         recommended: true
       - id: DSMDuelingKhopesh
         name: dueling khopesh
+      - id: SecBreachingHammer
+        name: breaching hammer
     - name: Armor
       entries:
       - id: ClothingOuterArmorHunterVest
@@ -74,8 +78,6 @@
         name: 10-round magazine (12 gauge)
       - id: BoxLethalshot
         name: box of buckshot shells (12 gauge)
-      - id: BoxShotgunSlug
-        name: box of slug shells (12 gauge)
       - id: MagazinePistol
         name: pistol magazine (9x19mm)
       - id: MagazineMagnum
@@ -100,6 +102,17 @@
         name: MRE
       - id: ClothingBeltAssault
         name: assault belt
+      - id: ClothingShoesBootsMagCombatFilled
+        name: combat magboots
+      - id: JetpackBlueFilled
+        name: jetpack
+      - id: HandHeldMassScannerEE
+        name: mass scanner
+    - name: Vessels
+      choices: { GreatHuntVessel: 1 } # one hull per life: each one is a whole grid
+      entries:
+      - id: ShipVoucherSpiderGreatHunt
+        name: Spider LPC
     - name: Medical
       entries:
       - id: MedkitCombatFilled
@@ -111,7 +124,8 @@
       - id: BurnAutoInjector
         name: burn autoinjector
 
-# Taypani-Atyrian Pact. Thukker-built plasma melee, the Harba, salvaged surplus long guns and the families' armour.
+# Taypani-Atyrian Pact. Thukker-built plasma melee, the Pact's green-painted long guns (below) and the families'
+# armour.
 - type: entity
   parent: ColMarTechBase
   id: GreatHuntTAPArmoryVendor
@@ -129,17 +143,15 @@
     sections:
     - name: Primary Weapons
       entries:
-      - id: WeaponShotgunHarba
-        name: TAP Harba 12g
+      - id: WeaponRifleDSMLegionnaireTAP
+        name: Pact Legionnaire rifle
         recommended: true
-      - id: WeaponRifleCarter
-        name: Carter rifle
-      - id: WeaponRifleSHINimrod
-        name: Nimrod rifle
-      - id: WeaponShotgunKammerer
-        name: Kammerer shotgun
-      - id: WeaponSniperNCWLNovomosin
-        name: Novomosin sniper rifle
+      - id: WeaponRifleFALTAP
+        name: Pact Falin rifle
+      - id: WeaponShotgunKammererTAP
+        name: Pact Kammerer shotgun
+      - id: WeaponShotgunSpasTAP
+        name: Pact SPAS shotgun
     - name: Melee
       entries:
       - id: EnergySwordFamilies
@@ -170,30 +182,35 @@
         name: combat gloves
     - name: Ammunition
       entries:
-      - id: BoxLethalshot
-        name: box of buckshot shells (12 gauge)
-      - id: BoxShotgunSlug
-        name: box of slug shells (12 gauge)
+      - id: MagazineRifle
+        name: 20-round magazine (7.62x51mm)
       - id: MagazineLightRifle
         name: 30-round magazine (5.56x45mm)
-      - id: MagazineBoxLightRifle
-        name: box magazine (5.56x45mm)
-      - id: MagazineBoxRifle
-        name: box magazine (7.62x51mm)
-      - id: SpeedLoaderRifle
-        name: rifle speed loader (7.62x51mm)
+      - id: BoxLethalshot
+        name: box of buckshot shells (12 gauge)
     - name: Utilities
       entries:
       - id: ClothingEyesHudFactionTAP
         name: Pact HUD
       - id: ClothingShoesBootsMagCombatFilled
         name: combat magboots
+      - id: JetpackBlackFilled
+        name: jetpack
+      - id: HandHeldMassScannerEE
+        name: mass scanner
       - id: DoubleEmergencyOxygenTankFilled
         name: double emergency oxygen tank
       - id: BoxMRE
         name: MRE
       - id: C4
         name: C-4 charge
+    - name: Vessels
+      choices: { GreatHuntVessel: 1 } # one hull per life: each one is a whole grid
+      entries:
+      - id: ShipVoucherLuciferGreatHunt
+        name: Lucifer LPC
+      - id: ShipVoucherFadeemGreatHunt
+        name: Fadeem LPC
     - name: Medical
       entries:
       - id: MedkitCombatFilled
@@ -206,7 +223,8 @@
         name: burn autoinjector
 
 # Great Hunt: Blades. The same racks with every gun, round and explosive taken out, so the sides meet blade to
-# blade. Swapped in for the ones above at round start by the GreatHuntMeleeArmories rule (greathunt.yml).
+# blade. Swapped in for the ones above at round start by the GreatHuntMeleeArmories rule (greathunt.yml). The void
+# gear and the LPCs stay: the cloaked hulls are unarmed.
 - type: entity
   parent: GreatHuntSRMArmoryVendor
   id: GreatHuntSRMArmoryVendorMelee
@@ -221,6 +239,8 @@
         recommended: true
       - id: DSMDuelingKhopesh
         name: dueling khopesh
+      - id: SecBreachingHammer
+        name: breaching hammer
     - name: Armor
       entries:
       - id: ClothingOuterArmorHunterVest
@@ -254,6 +274,17 @@
         name: MRE
       - id: ClothingBeltAssault
         name: assault belt
+      - id: ClothingShoesBootsMagCombatFilled
+        name: combat magboots
+      - id: JetpackBlueFilled
+        name: jetpack
+      - id: HandHeldMassScannerEE
+        name: mass scanner
+    - name: Vessels
+      choices: { GreatHuntVessel: 1 } # one hull per life: each one is a whole grid
+      entries:
+      - id: ShipVoucherSpiderGreatHunt
+        name: Spider LPC
     - name: Medical
       entries:
       - id: MedkitCombatFilled
@@ -306,10 +337,21 @@
         name: Pact HUD
       - id: ClothingShoesBootsMagCombatFilled
         name: combat magboots
+      - id: JetpackBlackFilled
+        name: jetpack
+      - id: HandHeldMassScannerEE
+        name: mass scanner
       - id: DoubleEmergencyOxygenTankFilled
         name: double emergency oxygen tank
       - id: BoxMRE
         name: MRE
+    - name: Vessels
+      choices: { GreatHuntVessel: 1 } # one hull per life: each one is a whole grid
+      entries:
+      - id: ShipVoucherLuciferGreatHunt
+        name: Lucifer LPC
+      - id: ShipVoucherFadeemGreatHunt
+        name: Fadeem LPC
     - name: Medical
       entries:
       - id: MedkitCombatFilled
@@ -378,3 +420,104 @@
 
 - type: Tag
   id: MeleeOnlyStore
+
+# LPCs for the hunt yards' cloaked hulls (Maps/Ships/GreatHunt/greathunt_vessels.yml), handed out free by the
+# armories above. Redeemed at any shipyard console; the ship comes out cloaked like one bought at the hunt yard.
+# No resale value: they are free here and must not turn into money, so neither the disk nor the ship it
+# redeems sells for anything. One per hunter per life (the Vessels section's choices).
+- type: entity
+  parent: BaseItem
+  id: ShipVoucherGreatHuntBase
+  abstract: true
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _Crescent/Objects/Misc/lpcchip.rsi
+    layers:
+    - state: icon
+  - type: StaticPrice
+    price: 0
+
+- type: entity
+  parent: ShipVoucherGreatHuntBase
+  id: ShipVoucherSpiderGreatHunt
+  name: SRM 'Spider' hunt-pattern LPC fabprint disk
+  description: An LPC fabprint disk loaded with a Saint's Militia Spider-class stealth shuttle, refitted for the Great Hunt with a cloak that never overheats. Has to be redeemed at a shipyard console.
+  components:
+  - type: ShipVoucher
+    ship: SpiderGreatHunt
+    resellable: false
+
+- type: entity
+  parent: ShipVoucherGreatHuntBase
+  id: ShipVoucherLuciferGreatHunt
+  name: TAP 'Lucifer' hunt-pattern LPC fabprint disk
+  description: An LPC fabprint disk loaded with a Pact Lucifer-class boarding pod, refitted for the Great Hunt with a cloak that never overheats. Has to be redeemed at a shipyard console.
+  components:
+  - type: ShipVoucher
+    ship: LuciferGreatHunt
+    resellable: false
+
+- type: entity
+  parent: ShipVoucherGreatHuntBase
+  id: ShipVoucherFadeemGreatHunt
+  name: TAP 'Fadeem' hunt-pattern LPC fabprint disk
+  description: An LPC fabprint disk loaded with a Pact Fadeem-class carrier, refitted for the Great Hunt with a cloak that never overheats. Has to be redeemed at a shipyard console.
+  components:
+  - type: ShipVoucher
+    ship: FadeemGreatHunt
+    resellable: false
+
+# The Pact's Great Hunt long guns, handed out by GreatHuntTAPArmoryVendor: Imperial, Union and old NT designs in the
+# caravans' olive green. Each hits as hard as the gun it is painted from, except the SPAS, which is tuned to match
+# the Militia's Matusa shot for shot (same damage, spread and fire rate).
+- type: entity
+  parent: WeaponRifleDSMLegionnaire
+  id: WeaponRifleDSMLegionnaireTAP
+  name: TAP DA-11 legionnaire 7.62x51mm
+  description: A captured Imperial DA-11 repainted in Pact olive, still sharing the Talon's odd magazine angle and automatic magazine ejection. Chambered in 7.62x51mm USM rounds.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Objects/Weapons/Guns/legionnaire_tap.rsi
+  - type: Clothing
+    sprite: _Crescent/Objects/Weapons/Guns/legionnaire_tap.rsi
+
+- type: entity
+  parent: WeaponRifleFAL
+  id: WeaponRifleFALTAP
+  name: TAP MK-2 Falin 5.56x45mm
+  description: A Union Falin traded down the caravan routes and repainted in Pact olive. Sacrifices heavier calibers for better rifling, allowing for more rapid fire.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Objects/Weapons/Guns/fal_tap.rsi
+  - type: Clothing
+    sprite: _Crescent/Objects/Weapons/Guns/fal_tap.rsi
+
+- type: entity
+  parent: WeaponShotgunKammerer
+  id: WeaponShotgunKammererTAP
+  name: TAP 00-1 Kammerer 12g
+  description: A salvaged NT pump-action shotgun repainted in Pact olive, choke and booster device intact.
+  components:
+  - type: Item
+    sprite: _Crescent/Objects/Weapons/Guns/kammerer_tap.rsi
+  - type: Sprite
+    sprite: _Crescent/Objects/Weapons/Guns/kammerer_tap.rsi
+  - type: Clothing
+    sprite: _Crescent/Objects/Weapons/Guns/kammerer_tap.rsi
+
+- type: entity
+  parent: WeaponShotgunSpas
+  id: WeaponShotgunSpasTAP
+  name: TAP SPAS-13 12g
+  description: A salvaged NT combat shotgun repainted in Pact olive. Thukker gunsmiths opened up its choke and slowed its action to throw shot like an Imperial Matusa.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Objects/Weapons/Guns/spas13_tap.rsi
+  - type: Clothing
+    sprite: _Crescent/Objects/Weapons/Guns/spas13_tap.rsi
+  - type: Gun # kept equal to WeaponShotgunDSMMatusa
+    fireRate: 2.5
+    damageModifier: 1
+    shotgunSpreadMultiplier: 3.5

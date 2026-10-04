@@ -4,6 +4,9 @@ using System.Linq;
 using System.Numerics;
 using Content.IntegrationTests.Pair;
 using Content.Server.GameTicking;
+using Content.Server.GameTicking.Presets;
+using Content.Server.GameTicking.Rules.Components;
+using Content.Server.Maps;
 using Content.Server.Shuttles.Systems;
 using Content.Server.Station.Components;
 using Content.Server._Crescent.GreatHunt;
@@ -12,6 +15,7 @@ using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
@@ -81,6 +85,50 @@ public sealed class GreatHuntTest
                     "The preparation walls are still standing after the phase ended.");
                 Assert.That(Altars(server.EntMan).All(a => a.UnlockTime <= timing.CurTime), Is.True,
                     "The altar is still asleep after the preparation phase ended.");
+            }
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// The character editor only shows a hunt preset's availableJobs. They have to be exactly the jobs its stations
+    /// open: one more could be picked and never spawned, one less would hide a side's role from its players.
+    /// </summary>
+    [Test]
+    public async Task PresetJobsMatchStationJobs()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var proto = server.ResolveDependency<IPrototypeManager>();
+        var factory = server.ResolveDependency<IComponentFactory>();
+
+        await server.WaitAssertion(() =>
+        {
+            foreach (var presetId in new[] { "GreatHunt", "GreatHuntMelee" })
+            {
+                var preset = proto.Index<GamePresetPrototype>(presetId);
+                Assert.That(preset.AvailableJobs, Is.Not.Null.And.Not.Empty, $"{presetId} shows every job in the editor.");
+
+                var stationJobs = new HashSet<string>();
+                foreach (var ruleId in preset.Rules)
+                {
+                    if (!proto.Index<EntityPrototype>(ruleId).TryGetComponent<AdventureRuleComponent>(out var adventure, factory))
+                        continue;
+
+                    foreach (var element in adventure!.GameMapsID.Values)
+                    {
+                        var gameMap = proto.Index<GameMapPrototype>(element.GameMapID);
+                        foreach (var station in gameMap.Stations.Values)
+                        {
+                            if (station.StationComponentOverrides.TryGetComponent<StationJobsComponent>(factory, out var jobs))
+                                stationJobs.UnionWith(jobs!.SetupAvailableJobs.Keys.Select(j => j.Id));
+                        }
+                    }
+                }
+
+                Assert.That(preset.AvailableJobs!.Select(j => j.Id), Is.EquivalentTo(stationJobs),
+                    $"{presetId} availableJobs differ from the jobs its stations open.");
             }
         });
 

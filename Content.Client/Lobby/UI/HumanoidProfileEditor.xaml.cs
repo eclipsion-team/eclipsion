@@ -1122,25 +1122,10 @@ namespace Content.Client.Lobby.UI
             var hasGamemodeFilter = gamemodeJobs.Count > 0;
             var shownJobIds = new HashSet<string>();
 
-            if (Profile != null)
-            {
-                var dirty = false;
-                foreach (var (jobId, priority) in Profile.JobPriorities.ToArray())
-                {
-                    if (priority == JobPriority.Never)
-                        continue;
-
-                    if ((hasGamemodeFilter && !gamemodeJobs.Contains(jobId)) ||
-                        excludedJobs.Contains(jobId))
-                    {
-                        Profile = Profile.WithJobPriority(jobId, JobPriority.Never);
-                        dirty = true;
-                    }
-                }
-
-                if (dirty)
-                    SetDirty();
-            }
+            // Jobs the gamemode filters out are only hidden, never reset on the profile. Resetting them here used to
+            // set every other job to Never the moment a filtered mode (Unionfall, the Great Hunt) was up, and the
+            // next save of any unrelated change wiped the player's priorities for every other mode. A hidden
+            // priority is harmless: round start only offers the jobs the mode's stations actually have.
 
             void AddJobToCategory(AlternatingBGContainer cat, JobPrototype job)
             {

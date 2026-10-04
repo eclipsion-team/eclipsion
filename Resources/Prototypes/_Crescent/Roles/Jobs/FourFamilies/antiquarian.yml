@@ -3,6 +3,7 @@
   name: job-name-antiquarian
   description: job-description-antiquarian
   playTimeTracker: JobAntiquarian
+  requiredReligion: VeiledMother # TAP and SRM are fanatics: every role holds the faction faith
   weight: 49
   startingGear: AntiquarianGear
   alwaysUseSpawner: true

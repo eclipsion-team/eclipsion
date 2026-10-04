@@ -3,6 +3,7 @@
   name: job-name-hangartech
   description: job-description-hangartech
   playTimeTracker:  JobHangarTechTAP
+  requiredReligion: VeiledMother # TAP and SRM are fanatics: every role holds the faction faith
   weight: 1
   startingGear: HangarTechGear
   alwaysUseSpawner: true

@@ -30,6 +30,7 @@ using System.Diagnostics;
 using System.Threading;
 using Robust.Shared.Timing;
 using Content.Shared._Crescent.HullrotFaction;
+using Content.Shared._Crescent.Audio;
 
 namespace Content.Client.Audio;
 
@@ -74,6 +75,10 @@ public sealed partial class ContentAudioSystem
 
     // This stores the ambient music prototype to be played next.
     private AmbientMusicPrototype? _musicProto;
+
+    // Track forced by the server through AmbientMusicOverrideEvent, such as the Great Hunt's preparation theme. While
+    // set it loops over everything else; biome, vessel and combat changes are still remembered for when it ends.
+    private AmbientMusicPrototype? _musicOverride;
 
     // Need to keep track of the last biome we were in to re-play its music when we're out of combat mode
     private SpaceBiomePrototype? _lastBiome;
@@ -129,6 +134,7 @@ public sealed partial class ContentAudioSystem
         SubscribeNetworkEvent<SpaceBiomeSwapMessage>(OnBiomeChange);
         SubscribeNetworkEvent<NewVesselEnteredMessage>(OnVesselChange);
         SubscribeLocalEvent<ToggleCombatActionEvent>(OnCombatModeToggle);
+        SubscribeNetworkEvent<AmbientMusicOverrideEvent>(OnMusicOverride);
 
         Subs.CVar(_configManager, CCVars.AmbientMusicVolume, AmbienceCVarChanged, true);
         Subs.CVar(_configManager, CCVars.CombatMusicVolume, CombatCVarChanged, true);
@@ -159,6 +165,9 @@ public sealed partial class ContentAudioSystem
         if (_state.CurrentState is not GameplayState)
             return;
 
+        if (_musicOverride != null)
+            _musicProto = _musicOverride;
+
         if (_musicProto == null) //if we don't find any, we play the default track.
         {
             _musicProto = _protMan.Index<AmbientMusicPrototype>("default");
@@ -180,6 +189,9 @@ public sealed partial class ContentAudioSystem
 
         SpaceBiomePrototype biome = _protMan.Index<SpaceBiomePrototype>(ev.Biome); //get the biome prototype
         _lastBiome = biome; //save biome in case we are in combat mode
+
+        if (_musicOverride != null)
+            return;
 
         if (_combatModeSystem.IsInCombatMode()) //we don't want to change music if we are in combat mode right now
             return;
@@ -243,7 +255,7 @@ public sealed partial class ContentAudioSystem
         }
 
         // Still remembered above, so turning faction music back on can pick the station theme up.
-        if (!_factionMusicToggle)
+        if (!_factionMusicToggle || _musicOverride != null)
             return;
 
         if (_combatModeSystem.IsInCombatMode()) //we don't want to change music if we are in combat mode right now
@@ -284,7 +296,7 @@ public sealed partial class ContentAudioSystem
 
     private void OnCombatModeToggle(ToggleCombatActionEvent ev)
     {
-        if (_combatMusicToggle == false)
+        if (_combatMusicToggle == false || _musicOverride != null)
             return;
         if (!_timing.IsFirstTimePredicted == true) //needed, because combat mode is predicted, and triggers 7 times otherwise.
             return;
@@ -308,6 +320,9 @@ public sealed partial class ContentAudioSystem
     }
     private void SwitchCombatMusic(string factionComponentString)
     {
+        // A wind-down timer from before the override must not cut it off.
+        if (_musicOverride != null)
+            return;
 
         ResetAmbientReplayToken();
 
@@ -381,13 +396,11 @@ public sealed partial class ContentAudioSystem
 
 
             // when combat mode turns off, do we have valid station music to play? if yes, play it. if not, play the biome's music.
-            if (UseStationMusic)
+            // Not every biome has its own ambientMusic (e.g. tapbiome), so fall back to default instead of throwing.
+            if (!UseStationMusic || !_protMan.TryIndex<AmbientMusicPrototype>(_lastStationMusic, out _musicProto))
             {
-                _musicProto = _protMan.Index<AmbientMusicPrototype>(_lastStationMusic);
-            }
-            else
-            {
-                _musicProto = _protMan.Index<AmbientMusicPrototype>(_lastBiome.ID); //THIS CAN FUCK UP! BECAUSE THE ID MIGHT NOT HAVE MUSIC AND BE A FALLBACK!
+                if (!_protMan.TryIndex<AmbientMusicPrototype>(_lastBiome.ID, out _musicProto))
+                    _musicProto = _protMan.Index<AmbientMusicPrototype>("default");
             }
             SoundCollectionPrototype soundcol = _protMan.Index<SoundCollectionPrototype>(_musicProto.ID); //THIS IS WHAT ERRORS!
 
@@ -509,6 +522,9 @@ public sealed partial class ContentAudioSystem
         // if we are turning combat music OFF, then do all this bullshit to turn music off and get ambient music back on
         ResetCombatMusicToken();
 
+        if (_musicOverride != null)
+            return;
+
         ResetAmbientReplayToken();
 
         if (_state.CurrentState is not GameplayState)
@@ -542,13 +558,10 @@ public sealed partial class ContentAudioSystem
 
 
         // when combat mode turns off, do we have valid station music to play? if yes, play it. if not, play the biome's music.
-        if (_validStationMusic == true)
+        if (!_validStationMusic || !_protMan.TryIndex<AmbientMusicPrototype>(_lastStationMusic, out _musicProto))
         {
-            _musicProto = _protMan.Index<AmbientMusicPrototype>(_lastStationMusic);
-        }
-        else
-        {
-            _musicProto = _protMan.Index<AmbientMusicPrototype>(_lastBiome.ID); //THIS CAN FUCK UP! BECAUSE THE ID MIGHT NOT HAVE MUSIC AND BE A FALLBACK!
+            if (!_protMan.TryIndex<AmbientMusicPrototype>(_lastBiome.ID, out _musicProto))
+                _musicProto = _protMan.Index<AmbientMusicPrototype>("default");
         }
         SoundCollectionPrototype soundcol = _protMan.Index<SoundCollectionPrototype>(_musicProto.ID); //THIS IS WHAT ERRORS!
 
@@ -571,8 +584,86 @@ public sealed partial class ContentAudioSystem
 
         // Combat tracks pick the setting up with the next track. Only a station theme needs swapping
         // right away, otherwise the replay timer would keep looping it.
-        if (_isCombatMusicPlaying || !_validStationMusic)
+        if (_isCombatMusicPlaying || !_validStationMusic || _musicOverride != null)
             return;
+
+        FadeOut(_ambientMusicStream);
+
+        if (!UseStationMusic || !_protMan.TryIndex<AmbientMusicPrototype>(_lastStationMusic, out _musicProto))
+        {
+            if (_lastBiome == null || !_protMan.TryIndex<AmbientMusicPrototype>(_lastBiome.ID, out _musicProto))
+                _musicProto = _protMan.Index<AmbientMusicPrototype>("default");
+        }
+
+        SoundCollectionPrototype soundcol = _protMan.Index<SoundCollectionPrototype>(_musicProto.ID);
+
+        string path = PickNext(soundcol);
+
+        PlayMusicTrack(path, _musicProto.Sound.Params.Volume, _ambientMusicFadeInTime, false);
+
+        ScheduleAmbientReplay(path);
+    }
+
+    private void OnMusicOverride(AmbientMusicOverrideEvent ev)
+    {
+        if (ev.Music is { } music)
+        {
+            if (!_protMan.TryIndex(music, out var proto) || proto == _musicOverride)
+                return;
+
+            _musicOverride = proto;
+            PlayMusicOverride();
+            return;
+        }
+
+        if (_musicOverride == null)
+            return;
+
+        _musicOverride = null;
+        ResumeAfterOverride();
+    }
+
+    /// <summary>
+    /// Starts the override track, cutting whatever plays now, combat music included.
+    /// </summary>
+    private void PlayMusicOverride()
+    {
+        if (_musicOverride == null || _state.CurrentState is not GameplayState)
+            return;
+
+        ResetCombatMusicToken();
+        // Combat mode toggles are ignored while the override plays; start from "out of combat" once it ends.
+        _lastCombatState = false;
+
+        FadeOut(_ambientMusicStream);
+
+        _musicProto = _musicOverride;
+        SoundCollectionPrototype soundcol = _protMan.Index<SoundCollectionPrototype>(_musicProto.ID);
+
+        string path = PickNext(soundcol);
+
+        PlayMusicTrack(path, _musicProto.Sound.Params.Volume, _ambientMusicFadeInTime, false);
+
+        ScheduleAmbientReplay(path);
+    }
+
+    /// <summary>
+    /// Hands the music back once the override ends: combat music if we are fighting, otherwise the station theme or
+    /// the biome's music we were in all along.
+    /// </summary>
+    private void ResumeAfterOverride()
+    {
+        ResetAmbientReplayToken();
+
+        if (_state.CurrentState is not GameplayState)
+            return;
+
+        if (_combatMusicToggle && _combatModeSystem.IsInCombatMode())
+        {
+            var faction = CompOrNull<HullrotFactionComponent>(_player.LocalEntity)?.Faction ?? "";
+            SwitchCombatMusic(faction);
+            return;
+        }
 
         FadeOut(_ambientMusicStream);
 
@@ -632,12 +723,21 @@ public sealed partial class ContentAudioSystem
     ///</summary>
     private void OnStateChange(StateChangedEventArgs obj)
     {
-        if (obj.NewState is not GameplayState)
-            DisableAmbientMusic();
+        if (obj.NewState is GameplayState)
+        {
+            // The override can arrive while the client is still loading into the round.
+            PlayMusicOverride();
+            return;
+        }
+
+        // The server sends the override again once we are back in a body.
+        _musicOverride = null;
+        DisableAmbientMusic();
     }
 
     private void OnRoundEndMessage(RoundEndMessageEvent ev)
     {
+        _musicOverride = null;
         ResetAmbientReplayToken();
         ResetCombatMusicToken();
 

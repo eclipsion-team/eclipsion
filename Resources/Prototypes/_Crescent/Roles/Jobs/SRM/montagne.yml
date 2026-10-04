@@ -57,19 +57,15 @@
         faction: SRM
       - type: LanguageAdder
         addSpoken:
-          - Saintspact
-          - HighImperial
           - LowImperial
           - Tradeband
+          - HighImperial
         addUnderstood:
-          - Saintspact
-          - HighImperial
           - LowImperial
           - Tradeband
-      - type: InnatePsionicPowers
-        powersToAdd:
-          - TelepathyPower
-          - AssayPower
+          - HighImperial
+      - type: PsionHunter # hunts psions, is never one: Hunter's Sense and Scrutiny, psionics stripped
+      - type: NullWard # hunt leaders hold a null field for a while
 
 - type: startingGear
   id: MontagneGear

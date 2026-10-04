@@ -18,4 +18,4 @@ nav-screen-module-c = Module C
 nav-screen-module-d = Module D
 nav-screen-module-e = Module E
 
-nav-screen-renaming-mode = renaming mode
+nav-screen-renaming-mode = Renaming mode
