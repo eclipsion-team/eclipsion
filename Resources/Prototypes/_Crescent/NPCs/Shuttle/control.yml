@@ -92,6 +92,8 @@
     spawnableDrones:
     - ValorDrone
     - RocinanteDrone
+    hangarCost: # heavy drones take up two of the four hangar slots
+      RocinanteDrone: 2
     iffColor: "#C677A5" # DSM
   - type: ActivatableUI
     key: enum.DroneConsoleUiKey.Key
@@ -131,6 +133,8 @@
     spawnableDrones:
     - HornetDrone
     - WaspDrone
+    hangarCost:
+      HornetDrone: 2
     iffColor: Orange # NCWL
 
 - type: deviceFrequency

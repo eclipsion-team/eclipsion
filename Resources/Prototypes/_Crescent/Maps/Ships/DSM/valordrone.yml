@@ -6,6 +6,7 @@
     LOADOUT: 2x 150cc 'Retribution' Pulse Laser
     SHIELD: Absent
     SPEED: 40 m/s
+    HANGAR: 1 carrier slot
   price: 15000
   category: Small
   group: None

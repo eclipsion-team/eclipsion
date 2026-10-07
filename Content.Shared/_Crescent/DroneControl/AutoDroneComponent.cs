@@ -61,6 +61,13 @@ public sealed partial class AutoDroneComponent : Component
     public bool Produced;
 
     /// <summary>
+    ///     Hangar space this drone takes up on its carrier, see <see cref="DroneCarrierComponent.HangarCost"/>.
+    ///     A drone claimed from a dock rather than produced always counts as 1.
+    /// </summary>
+    [ViewVariables]
+    public int HangarCost = 1;
+
+    /// <summary>
     ///     Set when the carrier wrote this drone off as disabled (unpowered too long, or hull shot away). A
     ///     written-off drone is never claimed by any carrier again.
     /// </summary>

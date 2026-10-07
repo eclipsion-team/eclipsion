@@ -191,7 +191,7 @@ public sealed class DroneControlSystem : EntitySystem
             carrier?.Targeting ?? DroneTargeting.Enemies,
             carrier?.Formation ?? DroneFormation.Arrow,
             carrier?.ProducedCount ?? 0,
-            drones.Count,
+            carrier != null ? _autoDrone.GetDeployedSpace(carrier) : 0,
             carrier?.MaxDrones ?? 0,
             carrier != null ? _autoDrone.GetLostDrones(carrier) : 0,
             carrier != null ? _autoDrone.GetHangarCount(carrier) : 0,
@@ -218,6 +218,7 @@ public sealed class DroneControlSystem : EntitySystem
                 VesselId = vesselId,
                 Name = vessel.Name,
                 Price = _autoDrone.GetDronePrice(console, carrier, vessel),
+                HangarCost = _autoDrone.GetHangarCost(carrier, vesselId),
             });
         }
 

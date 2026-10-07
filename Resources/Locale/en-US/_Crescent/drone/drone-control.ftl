@@ -11,6 +11,7 @@ drone-carrier-spawned = Producing drone...
 drone-carrier-spawned-cost = Producing drone... ({$cost} cr billed to the treasury)
 drone-carrier-spawn-failed = Drone production failed.
 drone-carrier-hangar-empty = No drones left in the hangar. Restock at a repair station.
+drone-carrier-hangar-no-space = That pattern needs {$cost} hangar slots, only {$free} left. Restock at a repair station.
 drone-carrier-drone-lost = {$drone} is disabled and has been written off.
 drone-carrier-unknown-vessel = Unknown drone pattern: {$vessel}
 drone-carrier-treasury-insufficient = Treasury cannot cover the {$cost} cr build cost.

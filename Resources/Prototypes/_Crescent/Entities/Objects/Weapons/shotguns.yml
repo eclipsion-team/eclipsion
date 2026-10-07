@@ -670,9 +670,8 @@
     capacity: 4
   - type: Wieldable
   - type: Gun
-    fireRate: 1.5 #nerf because shotguns are stronger now
+    fireRate: 3.2 #nerf because shotguns are stronger now
     projectileSpeed: 45
-    shotgunSpreadMultiplier: 0.15
     soundGunshot:
       path: /Audio/_Crescent/Weapons/Guns/supressed_shotgun/suppressed_shotgun_fire.ogg
   - type: ReverseEngineering

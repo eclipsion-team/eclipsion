@@ -6,6 +6,7 @@
     LOADOUT: 1x 350cc 'Glare' Burst Laser, 1x 300cc 'Bolter' Plasma Caster
     SHIELD: Errant
     SPEED: 20 m/s
+    HANGAR: 2 carrier slots
   price: 35000
   category: Small
   group: None

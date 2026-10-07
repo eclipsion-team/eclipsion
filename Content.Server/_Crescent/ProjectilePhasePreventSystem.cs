@@ -160,8 +160,11 @@ public sealed class ProjectilePhasePreventerSystem : EntitySystem
             if (phase.TargetTiles)
             {
                 var tileHits = hits.ToList();
+                // Floor targeting is only ever aimed at the other ship. The firing ship's own plating sits under
+                // every muzzle, so a round without IgnoreWeaponGrid (the Torch's laser bolt) stopped on the tile
+                // beneath its own gun the moment it was fired.
                 AddTileHits(currentMap, previousPos, direction, distance + RaycastExtraDistance,
-                    projectile.IgnoreWeaponGrid ? ignoredGrid : EntityUid.Invalid, tileHits);
+                    ignoredGrid, tileHits);
                 tileHits.Sort((a, b) => a.Distance.CompareTo(b.Distance));
                 hits = tileHits;
             }
@@ -349,7 +352,10 @@ public sealed class ProjectilePhasePreventerSystem : EntitySystem
     private void DamageTargetedTile(EntityUid uid, ProjectileComponent projectile,
         EntityUid gridUid, MapGridComponent grid, TileRef tile)
     {
-        var structural = (float) projectile.Damage.DamageDict.GetValueOrDefault("Structural");
+        // Energy weapons deal heat instead of structural damage, and walls already take heat at full value.
+        // Counting structural alone let a hardlight bolt land on a floor and vanish without marking it.
+        var types = projectile.Damage.DamageDict;
+        var structural = (float) (types.GetValueOrDefault("Structural") + types.GetValueOrDefault("Heat"));
         if (structural <= 0 ||
             _tileDefinitions[tile.Tile.TypeId] is not ContentTileDefinition definition ||
             definition.ExplosionBreakMultiplier <= 0 || string.IsNullOrEmpty(definition.BaseTurf) ||

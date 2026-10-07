@@ -259,7 +259,7 @@ public sealed class AutoDroneSystem : EntitySystem
     ///     Binds an unclaimed drone sitting on <paramref name="droneGrid"/> to this specific carrier. Used the
     ///     moment a drone is produced so no other console's scan can claim it. Returns true if it bound one.
     /// </summary>
-    private bool TryBindDroneGrid(Entity<DroneCarrierComponent> carrier, EntityUid carrierGrid, MapGridComponent carrierGridComp, EntityUid droneGrid)
+    private bool TryBindDroneGrid(Entity<DroneCarrierComponent> carrier, EntityUid carrierGrid, MapGridComponent carrierGridComp, EntityUid droneGrid, int cost)
     {
         if (!_gridQuery.TryComp(droneGrid, out var dgrid))
             return false;
@@ -272,7 +272,7 @@ public sealed class AutoDroneSystem : EntitySystem
                 continue;
 
             var before = carrier.Comp.ProducedCount;
-            DeployDrone(carrier, carrierGrid, carrierGridComp, drone, produced: true);
+            DeployDrone(carrier, carrierGrid, carrierGridComp, drone, produced: true, cost);
             return carrier.Comp.ProducedCount > before;
         }
 
@@ -313,9 +313,9 @@ public sealed class AutoDroneSystem : EntitySystem
                     continue; // already deployed elsewhere
 
                 // A drone we produced ourselves may have failed to bind on the spawn tick and be waiting here.
-                var produced = ConsumePendingSpawn(carrier.Comp, partnerGrid.Value);
+                var produced = ConsumePendingSpawn(carrier.Comp, partnerGrid.Value, out var cost);
 
-                DeployDrone(carrier, carrierGrid, carrierGridComp, drone, produced);
+                DeployDrone(carrier, carrierGrid, carrierGridComp, drone, produced, cost);
 
                 if (carrier.Comp.ProducedCount >= EffectiveMaxDrones(carrier.Comp))
                     return;
@@ -326,26 +326,33 @@ public sealed class AutoDroneSystem : EntitySystem
     /// <summary>
     ///     Consumes the in-flight production record for <paramref name="droneGrid"/> if we are the console
     ///     that produced it. Matching on the grid (rather than popping the oldest entry) keeps a drone that
-    ///     merely docked here by hand from eating a production slot it never used.
+    ///     merely docked here by hand from eating a production slot it never used. <paramref name="cost"/> is
+    ///     the hangar space it reserved, or 1 for a drone we didn't produce.
     /// </summary>
-    private bool ConsumePendingSpawn(DroneCarrierComponent carrier, EntityUid droneGrid)
+    private bool ConsumePendingSpawn(DroneCarrierComponent carrier, EntityUid droneGrid, out int cost)
     {
         for (var i = 0; i < carrier.PendingSpawns.Count; i++)
         {
             if (carrier.PendingSpawns[i].Grid != droneGrid)
                 continue;
 
+            cost = carrier.PendingSpawns[i].Cost;
             carrier.PendingSpawns.RemoveAt(i);
             return true;
         }
 
+        cost = 1;
         return false;
     }
 
-    private void DeployDrone(Entity<DroneCarrierComponent> carrier, EntityUid carrierGrid, MapGridComponent grid, Entity<AutoDroneComponent> drone, bool produced = false)
+    private void DeployDrone(Entity<DroneCarrierComponent> carrier, EntityUid carrierGrid, MapGridComponent grid, Entity<AutoDroneComponent> drone, bool produced = false, int cost = 1)
     {
         // A drone its carrier already wrote off stays a derelict; it can't be docked back in to dodge a restock.
         if (drone.Comp.WrittenOff)
+            return;
+
+        // A heavy drone needs its full hangar space, not just a free formation slot.
+        if (carrier.Comp.ProducedCount + cost > EffectiveMaxDrones(carrier.Comp))
             return;
 
         var droneGrid = Transform(drone.Owner).GridUid;
@@ -364,8 +371,9 @@ public sealed class AutoDroneSystem : EntitySystem
             return;
 
         carrier.Comp.Slots[slot] = drone.Owner;
-        carrier.Comp.ProducedCount++; // lifetime count, never decremented (hard production cap)
+        carrier.Comp.ProducedCount += cost; // lifetime hangar use, only a repair station restock lowers it
 
+        drone.Comp.HangarCost = cost;
         drone.Comp.CarrierConsole = carrier.Owner;
         drone.Comp.Slot = slot;
         drone.Comp.SlotCoordinates = ComputeSlot(carrierGrid, grid, carrier.Comp, slot);
@@ -498,19 +506,47 @@ public sealed class AutoDroneSystem : EntitySystem
     #region hangar
 
     /// <summary>
-    ///     Drones this carrier produced that are no longer under its command.
+    ///     Hangar space a drone of <paramref name="vesselId"/> takes up on this carrier.
     /// </summary>
-    public int GetLostDrones(DroneCarrierComponent carrier)
+    public int GetHangarCost(DroneCarrierComponent carrier, string vesselId)
     {
-        return Math.Clamp(carrier.ProducedCount - carrier.Slots.Count, 0, EffectiveMaxDrones(carrier));
+        return carrier.HangarCost.TryGetValue(vesselId, out var cost) ? Math.Max(1, cost) : 1;
     }
 
     /// <summary>
-    ///     Drones still in the hangar, i.e. how many more can be produced right now.
+    ///     Hangar space taken by the drones this carrier currently commands.
+    /// </summary>
+    public int GetDeployedSpace(DroneCarrierComponent carrier)
+    {
+        var space = 0;
+        foreach (var drone in carrier.Slots.Values)
+        {
+            space += _autoQuery.TryComp(drone, out var comp) ? comp.HangarCost : 1;
+        }
+
+        return space;
+    }
+
+    /// <summary>
+    ///     Hangar space used by drones this carrier produced that are no longer under its command.
+    /// </summary>
+    public int GetLostDrones(DroneCarrierComponent carrier)
+    {
+        return Math.Clamp(carrier.ProducedCount - GetDeployedSpace(carrier), 0, EffectiveMaxDrones(carrier));
+    }
+
+    /// <summary>
+    ///     Hangar space still free, i.e. how much more can be produced right now.
     /// </summary>
     public int GetHangarCount(DroneCarrierComponent carrier)
     {
-        return Math.Max(0, EffectiveMaxDrones(carrier) - carrier.ProducedCount - carrier.PendingSpawns.Count);
+        var pending = 0;
+        foreach (var spawn in carrier.PendingSpawns)
+        {
+            pending += spawn.Cost;
+        }
+
+        return Math.Max(0, EffectiveMaxDrones(carrier) - carrier.ProducedCount - pending);
     }
 
     /// <summary>
@@ -801,9 +837,17 @@ public sealed class AutoDroneSystem : EntitySystem
         ent.Comp.PendingSpawns.RemoveAll(p => (now - p.Time).TotalSeconds > PendingSpawnTtl);
 
         // Produced + still-arriving must stay under the limit; only a repair station restock refills it.
-        if (GetHangarCount(ent.Comp) <= 0)
+        var free = GetHangarCount(ent.Comp);
+        if (free <= 0)
         {
             _popup.PopupEntity(Loc.GetString("drone-carrier-hangar-empty"), ent.Owner, PopupType.MediumCaution);
+            return;
+        }
+
+        var cost = GetHangarCost(ent.Comp, args.VesselId);
+        if (free < cost)
+        {
+            _popup.PopupEntity(Loc.GetString("drone-carrier-hangar-no-space", ("cost", cost), ("free", free)), ent.Owner, PopupType.MediumCaution);
             return;
         }
 
@@ -851,12 +895,12 @@ public sealed class AutoDroneSystem : EntitySystem
         var carrierGrid = Transform(ent.Owner).GridUid;
         var bound = carrierGrid != null
             && _gridQuery.TryComp(carrierGrid.Value, out var carrierGridComp)
-            && TryBindDroneGrid(ent, carrierGrid.Value, carrierGridComp, shuttle.Owner);
+            && TryBindDroneGrid(ent, carrierGrid.Value, carrierGridComp, shuttle.Owner, cost);
 
         // Fallback: a dock scan will claim it. Recording the grid keeps that claim attributable to us, so it
         // is treated as our own production rather than as a borrowed hull.
         if (!bound)
-            ent.Comp.PendingSpawns.Add((now, shuttle.Owner));
+            ent.Comp.PendingSpawns.Add((now, shuttle.Owner, cost));
 
         _popup.PopupEntity(
             price > 0

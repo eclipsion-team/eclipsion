@@ -115814,7 +115814,7 @@ entities:
     - type: ApcPowerReceiver
       needsPower: False
       powerLoad: 0
-- proto: ShinoharaBudgetVendor
+- proto: ShinoharaBudgetVendorGliess
   entities:
   - uid: 7679
     components:
@@ -118170,7 +118170,7 @@ entities:
     - type: Transform
       parent: 1
       pos: -11.5,-24.5
-- proto: TaypaniSurplusVendor
+- proto: TaypaniSurplusVendorGliess
   entities:
   - uid: 7991
     components:

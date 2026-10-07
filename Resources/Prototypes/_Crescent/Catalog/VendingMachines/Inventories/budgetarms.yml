@@ -209,3 +209,176 @@
   components:
   - type: StaticPrice
     price: 8000
+
+# Gliess Santo: weapons and ammo at half price. Its own storefront variants halve the item's
+# value along with its price, so it can't be bought here and sold on for a profit.
+- type: vendingMachineInventory
+  id: SHIBudgetArmoryInventoryGliess
+  startingInventory:
+    WeaponPistolBlastpopRedSHIBudgetGliessVend: 6
+    WeaponPistolBlastpopPurpleSHIBudgetGliessVend: 6
+    WeaponPistolBlastpopGraySHIBudgetGliessVend: 6
+    WeaponPistolBlastpopGreenSHIBudgetGliessVend: 6
+    WeaponPistolBlastpopGoldSHIBudgetGliessVend: 6
+    WeaponPistolBlastpopBlueSHIBudgetGliessVend: 6
+    WeaponPistolMk58SHIBudgetGliessVend: 6
+    MagazinePistol6mmSHIBudgetGliessVend: 12
+    WeaponSubMachineGunSabreSHIBudgetGliessVend: 4
+    MagazinePistol6mmSmgSHIBudgetGliessVend: 8
+    ClothingBeltSheathMacheteIndependentFilledSHIBudgetGliessVend: 12
+    WeaponShotgunSHIDoubleBarreled4gSHIBudgetGliessVend: 4
+    WeaponShotgunBlasterSHIBudgetGliessVend: 4
+    MagazineClip18gBuckSHIBudgetGliessVend: 12
+    BoxLethalshotSHIBudgetGliessVend: 4
+    BoxBeanbagSHIBudgetGliessVend: 4
+    WeaponRifleSHINimrodSHIBudgetGliessVend: 6
+    SpeedLoaderRifleSHIBudgetGliessVend: 12
+    ClothingOuterHardsuitFishbedSHIBudgetVend: 8
+    ClothingOuterHardsuitFishbedSilverSHIBudgetVend: 4
+    ClothingOuterHardsuitFishbedGoldSHIBudgetVend: 4
+    ClothingOuterHardsuitFishbedColonialSHIBudgetVend: 4
+    ClothingOuterHardsuitFishbedNLFSHIBudgetVend: 4
+
+- type: entity
+  parent: WeaponPistolBlastpopRedSHIBudgetVend
+  id: WeaponPistolBlastpopRedSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 500
+
+- type: entity
+  parent: WeaponPistolBlastpopPurpleSHIBudgetVend
+  id: WeaponPistolBlastpopPurpleSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 500
+
+- type: entity
+  parent: WeaponPistolBlastpopGraySHIBudgetVend
+  id: WeaponPistolBlastpopGraySHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 500
+
+- type: entity
+  parent: WeaponPistolBlastpopGreenSHIBudgetVend
+  id: WeaponPistolBlastpopGreenSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 500
+
+- type: entity
+  parent: WeaponPistolBlastpopGoldSHIBudgetVend
+  id: WeaponPistolBlastpopGoldSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 500
+
+- type: entity
+  parent: WeaponPistolBlastpopBlueSHIBudgetVend
+  id: WeaponPistolBlastpopBlueSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 500
+
+- type: entity
+  parent: WeaponPistolMk58SHIBudgetVend
+  id: WeaponPistolMk58SHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 2000
+
+- type: entity
+  parent: MagazinePistol6mmSHIBudgetVend
+  id: MagazinePistol6mmSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 250
+
+- type: entity
+  parent: WeaponSubMachineGunSabreSHIBudgetVend
+  id: WeaponSubMachineGunSabreSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 5000
+
+- type: entity
+  parent: MagazinePistol6mmSmgSHIBudgetVend
+  id: MagazinePistol6mmSmgSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 375
+
+- type: entity
+  parent: ClothingBeltSheathMacheteIndependentFilledSHIBudgetVend
+  id: ClothingBeltSheathMacheteIndependentFilledSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 1250
+
+- type: entity
+  parent: WeaponShotgunSHIDoubleBarreled4gSHIBudgetVend
+  id: WeaponShotgunSHIDoubleBarreled4gSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 3000
+
+- type: entity
+  parent: WeaponShotgunBlasterSHIBudgetVend
+  id: WeaponShotgunBlasterSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 5500
+
+- type: entity
+  parent: MagazineClip18gBuckSHIBudgetVend
+  id: MagazineClip18gBuckSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 300
+
+- type: entity
+  parent: BoxLethalshotSHIBudgetVend
+  id: BoxLethalshotSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 375
+
+- type: entity
+  parent: BoxBeanbagSHIBudgetVend
+  id: BoxBeanbagSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 125
+
+- type: entity
+  parent: WeaponRifleSHINimrodSHIBudgetVend
+  id: WeaponRifleSHINimrodSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 7500
+
+- type: entity
+  parent: SpeedLoaderRifleSHIBudgetVend
+  id: SpeedLoaderRifleSHIBudgetGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 250

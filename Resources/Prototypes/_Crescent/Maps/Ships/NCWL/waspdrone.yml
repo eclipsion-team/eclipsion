@@ -6,6 +6,7 @@
     LOADOUT: 1x 200cc 'Starburst' Plasma Gatling
     SHIELD: Absent
     SPEED: 45 m/s
+    HANGAR: 1 carrier slot
   price: 12500
   category: Small
   group: None

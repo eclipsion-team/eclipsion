@@ -138,3 +138,104 @@
   components:
   - type: StaticPrice
     price: 5000
+
+# Gliess Santo: weapons and ammo at half price. Its own storefront variants halve the item's
+# value along with its price, so it can't be bought here and sold on for a profit.
+- type: vendingMachineInventory
+  id: TaypaniSurplusVendorPackGliess
+  startingInventory:
+    WeaponSniperNCWLNovomosinTaypaniGliessVend: 6
+    WeaponRifleSHINimrodTaypaniGliessVend: 6
+    WeaponRifleCarterTaypaniGliessVend: 6
+    WeaponShotgunKammererTaypaniGliessVend: 6
+    SpeedLoaderRifleTaypaniGliessVend: 18
+    MagazineBoxRifleTaypaniGliessVend: 18
+    MagazineLightRifleTaypaniGliessVend: 18
+    MagazineBoxLightRifleTaypaniGliessVend: 18
+    BoxLethalshotTaypaniGliessVend: 18
+    BoxShotgunSlugTaypaniGliessVend: 18
+    ClothingMaskINDGasmaskTaypaniVend: 6
+    ClothingHandsGlovesCombatTaypaniVend: 6
+    ClothingShoesBootsMagCombatFilledTaypaniVend: 6
+    ClothingEyesHudFactionCivilianTaypaniVend: 6
+    AmmoTechFabCircuitboardTaypaniVend: 4
+
+- type: entity
+  parent: WeaponSniperNCWLNovomosinTaypaniVend
+  id: WeaponSniperNCWLNovomosinTaypaniGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 4000
+
+- type: entity
+  parent: WeaponRifleSHINimrodTaypaniVend
+  id: WeaponRifleSHINimrodTaypaniGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 7500
+
+- type: entity
+  parent: WeaponRifleCarterTaypaniVend
+  id: WeaponRifleCarterTaypaniGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 10000
+
+- type: entity
+  parent: WeaponShotgunKammererTaypaniVend
+  id: WeaponShotgunKammererTaypaniGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 5500
+
+- type: entity
+  parent: SpeedLoaderRifleTaypaniVend
+  id: SpeedLoaderRifleTaypaniGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 250
+
+- type: entity
+  parent: MagazineBoxRifleTaypaniVend
+  id: MagazineBoxRifleTaypaniGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 625
+
+- type: entity
+  parent: MagazineLightRifleTaypaniVend
+  id: MagazineLightRifleTaypaniGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 450
+
+- type: entity
+  parent: MagazineBoxLightRifleTaypaniVend
+  id: MagazineBoxLightRifleTaypaniGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 625
+
+- type: entity
+  parent: BoxLethalshotTaypaniVend
+  id: BoxLethalshotTaypaniGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 375
+
+- type: entity
+  parent: BoxShotgunSlugTaypaniVend
+  id: BoxShotgunSlugTaypaniGliessVend
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StaticPrice
+    price: 500

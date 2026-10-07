@@ -14699,7 +14699,7 @@ entities:
     - type: Transform
       parent: 1
       pos: -18.5,10.5
-- proto: CrateArtilleryAmmoExplosive
+- proto: Crate120mmAmmo
   entities:
   - uid: 2037
     components:

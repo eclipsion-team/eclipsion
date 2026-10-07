@@ -130,14 +130,14 @@ public sealed partial class DroneConsoleWindow : FancyWindow
         if (state.IsCarrier)
         {
             // Lost drones don't return to the hangar, so the squadron reads short (3/4, 2/4) until a repair
-            // station restocks it.
-            DeployedLabel.Text = $"Drones: {state.AliveCount}/{state.MaxDrones}";
+            // station restocks it. Counted in hangar slots, since a heavy drone takes up more than one.
+            DeployedLabel.Text = $"Drones: {state.Drones.Count} ({state.AliveCount}/{state.MaxDrones} slots)";
 
-            HangarLabel.Text = state.HangarCount > 0 ? $"Hangar: {state.HangarCount} ready" : "Hangar empty - no drones left";
+            HangarLabel.Text = state.HangarCount > 0 ? $"Hangar: {state.HangarCount} slots free" : "Hangar empty - no drones left";
             HangarLabel.FontColorOverride = state.HangarCount > 0 ? Color.DarkGray : HullCritical;
 
             LostLabel.Visible = state.LostCount > 0;
-            LostLabel.Text = $"Lost: {state.LostCount} - restock at a repair station";
+            LostLabel.Text = $"Lost: {state.LostCount} slots - restock at a repair station";
             LostLabel.FontColorOverride = HullWorn;
 
             TreasuryLabel.Text = state.Treasury is { } treasury ? $"Treasury: {treasury} cr" : string.Empty;
@@ -164,7 +164,9 @@ public sealed partial class DroneConsoleWindow : FancyWindow
                 for (var i = 0; i < _spawnableDrones.Count; i++)
                 {
                     var entry = _spawnableDrones[i];
-                    var label = entry.Price > 0 ? $"{entry.Name} - {entry.Price} cr" : entry.Name;
+                    var label = entry.HangarCost > 1 ? $"{entry.Name} ({entry.HangarCost} slots)" : entry.Name;
+                    if (entry.Price > 0)
+                        label = $"{label} - {entry.Price} cr";
                     SpawnOption.AddItem(label, i);
                 }
 

@@ -94,6 +94,14 @@
     mod: 1.5
 
 - type: entity
+  parent: ShinoharaBudgetVendor
+  id: ShinoharaBudgetVendorGliess
+  suffix: Gliess
+  components:
+  - type: VendingMachine
+    pack: SHIBudgetArmoryInventoryGliess
+
+- type: entity
   parent: [BaseStructureUnanchorable, VendingMachine]
   id: NCWLArmoryVendory
   name: union armory vendor
@@ -537,3 +545,11 @@
       map: ["enum.WiresVisualLayers.MaintenancePanel"]
   - type: MarketModifier
     mod: 1.5
+
+- type: entity
+  parent: TaypaniSurplusVendor
+  id: TaypaniSurplusVendorGliess
+  suffix: Gliess
+  components:
+  - type: VendingMachine
+    pack: TaypaniSurplusVendorPackGliess

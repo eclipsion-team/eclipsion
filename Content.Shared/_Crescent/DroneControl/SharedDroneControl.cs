@@ -53,6 +53,9 @@ public struct DroneSpawnEntry
 
     /// <summary>What producing it costs the treasury, or 0 if production is free.</summary>
     public int Price;
+
+    /// <summary>Hangar slots a drone of this pattern takes up on the carrier.</summary>
+    public int HangarCost;
 }
 
 [Serializable, NetSerializable]
@@ -70,18 +73,19 @@ public sealed class DroneConsoleBoundUserInterfaceState : BoundUserInterfaceStat
     public DroneTargeting Targeting;
     public DroneFormation Formation;
 
-    /// <summary>Drones produced over the console's lifetime - this is what the production cap counts.</summary>
+    /// <summary>Hangar slots used up over the console's lifetime - this is what the production cap counts.</summary>
     public int ProducedCount;
 
-    /// <summary>How many of the produced drones are still alive and under command.</summary>
+    /// <summary>Hangar slots taken by the drones still alive and under command.</summary>
     public int AliveCount;
 
+    /// <summary>Total hangar slots of the carrier.</summary>
     public int MaxDrones;
 
-    /// <summary>Drones produced and since destroyed or written off, waiting on a repair station restock.</summary>
+    /// <summary>Hangar slots of drones since destroyed or written off, waiting on a repair station restock.</summary>
     public int LostCount;
 
-    /// <summary>Drones still available to produce before the hangar runs dry.</summary>
+    /// <summary>Hangar slots still free to produce drones in before the hangar runs dry.</summary>
     public int HangarCount;
 
     public List<DroneSpawnEntry> SpawnableDrones;

@@ -11,7 +11,9 @@ using Content.Shared.Inventory.VirtualItem;
 using Content.Shared.Popups;
 using Content.Shared._Crescent.Dispenser;
 using Content.Shared.Cargo.Prototypes;
+using Content.Shared.VendingMachines;
 using Content.Server.Cargo.Systems;
+using Content.Server.Station.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
@@ -31,6 +33,7 @@ public sealed class DispenserSystem : SharedDispenserSystem
     [Dependency] private readonly PowerReceiverSystem _power = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly PaperSystem _paper = default!;
+    [Dependency] private readonly PricingSystem _pricing = default!;
 
     private const string RecordPrintoutPrototype = "PaperPassportRecord";
     internal const float MinimumTradePayoutMultiplier = 0.5f;
@@ -173,6 +176,12 @@ public sealed class DispenserSystem : SharedDispenserSystem
             if (GetCargoBuyPrice(prototype.ID) is { } buyPrice)
                 finalAmount = Math.Min(finalAmount, buyPrice);
 
+            // Same for a vending machine on this station: buying a good next to the chute and
+            // turning it straight back in must not pay out more than it cost (e.g. Old Gliess,
+            // whose dispensary stands right beside its chute). Hauling between stations is unaffected.
+            if (GetLocalVendPrice(uid, stationUid, prototype) is { } vendPrice)
+                finalAmount = Math.Min(finalAmount, vendPrice);
+
             if (stationUid.HasValue)
                 _marketSystem.RecordSale(stationUid.Value, prototype.ID);
 
@@ -313,6 +322,43 @@ public sealed class DispenserSystem : SharedDispenserSystem
         }
 
         return _cargoBuyPrices.TryGetValue(prototypeId, out var cost) ? cost : null;
+    }
+
+    /// <summary>
+    /// Returns the cheapest price a vending machine on the dispenser's grid (or on any grid of the
+    /// given station) sells the given good for, or <c>null</c> if no local vendor stocks it.
+    /// Grid-based so it also covers event-spawned grids that are not registered as stations.
+    /// </summary>
+    public int? GetLocalVendPrice(EntityUid dispenser, EntityUid? station, EntityPrototype prototype)
+    {
+        var grids = new HashSet<EntityUid>();
+        if (Transform(dispenser).GridUid is { } grid)
+            grids.Add(grid);
+        if (TryComp<StationDataComponent>(station, out var stationData))
+            grids.UnionWith(stationData.Grids);
+
+        if (grids.Count == 0)
+            return null;
+
+        double? cheapest = null;
+        var query = EntityQueryEnumerator<VendingMachineComponent, TransformComponent>();
+        while (query.MoveNext(out _, out var vend, out var xform))
+        {
+            if (xform.GridUid is not { } vendGrid || !grids.Contains(vendGrid))
+                continue;
+
+            if (!vend.Inventory.ContainsKey(prototype.ID)
+                && !vend.EmaggedInventory.ContainsKey(prototype.ID)
+                && !vend.ContrabandInventory.ContainsKey(prototype.ID))
+                continue;
+
+            // Mirrors the price VendingMachineSystem charges on purchase.
+            var price = _pricing.GetEstimatedPrice(prototype) * vend.GlobalPriceMod;
+            if (cheapest == null || price < cheapest)
+                cheapest = price;
+        }
+
+        return cheapest is { } value ? (int) value : null;
     }
 
     public bool TryGetDispenseItem(DispenserComponent component, string itemId, out string dispenseItemId)

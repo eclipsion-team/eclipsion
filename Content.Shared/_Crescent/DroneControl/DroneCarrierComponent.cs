@@ -11,10 +11,18 @@ namespace Content.Shared._Crescent.DroneControl;
 public sealed partial class DroneCarrierComponent : Component
 {
     /// <summary>
-    ///     Maximum number of drones deployed at once. Also defines the formation slot layout size.
+    ///     Hangar space of the carrier. Each drone takes up its <see cref="HangarCost"/> of it, so this is
+    ///     also the most drones that can ever be deployed at once and defines the formation slot layout size.
     /// </summary>
     [DataField]
     public int MaxDrones = 4;
+
+    /// <summary>
+    ///     Hangar space a drone of the given vessel prototype takes up. Vessels not listed take 1. Lets a heavy
+    ///     drone cost more of the squadron than a light one instead of every pattern being worth the same.
+    /// </summary>
+    [DataField]
+    public Dictionary<string, int> HangarCost = new();
 
     /// <summary>
     ///     Combat stance the drones adopt. Selected by the player from the console verbs.
@@ -141,9 +149,9 @@ public sealed partial class DroneCarrierComponent : Component
     public Dictionary<int, EntityUid> Slots = new();
 
     /// <summary>
-    ///     Drones taken out of the hangar so far. A destroyed or written-off drone does NOT free up capacity -
-    ///     once <see cref="MaxDrones"/> have been produced the hangar is empty. Only a repair station restock
-    ///     brings it back down to the number of drones still alive.
+    ///     Hangar space used up by drones taken out so far. A destroyed or written-off drone does NOT free up
+    ///     its space - once <see cref="MaxDrones"/> worth has been produced the hangar is empty. Only a repair
+    ///     station restock brings it back down to the space taken by the drones still alive.
     /// </summary>
     [ViewVariables]
     public int ProducedCount;
@@ -162,8 +170,8 @@ public sealed partial class DroneCarrierComponent : Component
     public float DisabledHullIntegrity = 0.25f;
 
     /// <summary>
-    ///     What a repair station bills to restock the hangar after losing one drone. Scales linearly up to
-    ///     <see cref="RestockCostMax"/> for losing the whole squadron.
+    ///     What a repair station bills to restock the hangar after losing one slot's worth of drones. Scales
+    ///     linearly up to <see cref="RestockCostMax"/> for losing the whole hangar.
     /// </summary>
     [DataField]
     public int RestockCostMin = 15000;
@@ -189,11 +197,11 @@ public sealed partial class DroneCarrierComponent : Component
     /// <summary>
     ///     Drones produced but not yet claimed into a slot, used to gate production against the limit while a
     ///     fresh drone is still FTL-docking. The grid is recorded so the eventual claim can be matched back to
-    ///     the hull we actually built, rather than crediting whichever drone happens to dock next. Entries
-    ///     expire on their own. Runtime state.
+    ///     the hull we actually built, rather than crediting whichever drone happens to dock next. Cost is the
+    ///     hangar space it reserves. Entries expire on their own. Runtime state.
     /// </summary>
     [ViewVariables]
-    public List<(TimeSpan Time, EntityUid Grid)> PendingSpawns = new();
+    public List<(TimeSpan Time, EntityUid Grid, int Cost)> PendingSpawns = new();
 
     /// <summary>
     ///     Shared focus target all this carrier's drones concentrate fire on. Re-selected when the current

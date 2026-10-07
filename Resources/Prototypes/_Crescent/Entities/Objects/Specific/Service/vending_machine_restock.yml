@@ -26,6 +26,7 @@
   - type: VendingMachineRestock
     canRestock:
     - TaypaniSurplusVendorPack
+    - TaypaniSurplusVendorPackGliess
   - type: Sprite
     sprite: _Crescent/Objects/Specific/Service/vending_machine_restock.rsi
     layers:
