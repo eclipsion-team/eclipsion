@@ -3,12 +3,6 @@
   name: Weapons
   priority: 4
 
-# Blades only. Takes the place of Weapons on the Great Hunt: Blades statue (GreatHuntSRMDogtagStoreRMelee).
-- type: storeCategory
-  id: StoreCategorySRMMelee
-  name: Blades
-  priority: 4
-
 - type: storeCategory
   id: StoreCategorySRMAmmo
   name: Ammunition
@@ -41,11 +35,6 @@
     PietySRM: 25
   categories:
   - StoreCategorySRMWeapons
-  conditions:
-  - !type:StoreWhitelistCondition # not on the Great Hunt statues
-    blacklist:
-      tags:
-      - GreatHuntStore
 
 - type: listing
   id: StoreListingSRMDuelingKhopesh
@@ -57,7 +46,6 @@
     PietySRM: 3
   categories:
   - StoreCategorySRMWeapons
-  - StoreCategorySRMMelee
 
 - type: listing
   id: StoreListingSRMRifleHunter

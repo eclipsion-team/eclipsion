@@ -63,7 +63,7 @@ public sealed partial class PumpControl : BoxContainer
 
         foreach (var value in Enum.GetValues<VentPumpDirection>())
         {
-            _pumpDirection.AddItem(Loc.GetString($"{value}"), (int) value);
+            _pumpDirection.AddItem(Loc.GetString($"air-alarm-ui-vent-pump-direction-{value.ToString().ToLower()}"), (int) value);
         }
 
         _pumpDirection.SelectId((int) _data.PumpDirection);
@@ -76,7 +76,7 @@ public sealed partial class PumpControl : BoxContainer
 
         foreach (var value in Enum.GetValues<VentPressureBound>())
         {
-            _pressureCheck.AddItem(Loc.GetString($"{value}"), (int) value);
+            _pressureCheck.AddItem(Loc.GetString($"air-alarm-ui-vent-pressure-bound-{value.ToString().ToLower()}"), (int) value);
         }
 
         _pressureCheck.SelectId((int) _data.PressureChecks);

@@ -366,7 +366,7 @@
     size: Normal
   - type: DisarmMalus #harder to shake firm grip
   - type: IgniteOnMeleeHit
-    fireStacks: 10 #BURN ALIVE ONCE ARMOR FAILS
+    fireStacks: 2 # stacks per hit, out of a 10 max; a few blows still set the target well alight
   - type: ReverseEngineering
     difficulty: 4
     recipes:

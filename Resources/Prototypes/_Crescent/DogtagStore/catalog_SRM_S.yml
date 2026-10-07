@@ -252,11 +252,6 @@
     PietySRM: 3
   categories:
   - StoreCategorySRMSupport
-  conditions:
-  - !type:StoreWhitelistCondition # disablers are guns; not on the Great Hunt: Blades statue
-    blacklist:
-      tags:
-      - MeleeOnlyStore
 
 #Support End
 

@@ -21,10 +21,16 @@ public sealed partial class IdCardComponent : Component
     [Access(typeof(SharedIdCardSystem), typeof(SharedPdaSystem), typeof(SharedAgentIdCardSystem), Other = AccessPermissions.ReadWrite)]
     public LocId? JobTitle;
 
+    // Networked so clients see custom titles set by the server (examine, identity) instead of an empty one.
+    [AutoNetworkedField]
     private string? _jobTitle;
 
     [Access(typeof(SharedIdCardSystem), typeof(SharedPdaSystem), typeof(SharedAgentIdCardSystem), Other = AccessPermissions.ReadWriteExecute)]
-    public string? LocalizedJobTitle { set => _jobTitle = value; get => _jobTitle ?? Loc.GetString(JobTitle ?? string.Empty); }
+    public string? LocalizedJobTitle
+    {
+        set => _jobTitle = value;
+        get => _jobTitle ?? (JobTitle is { } title && !string.IsNullOrEmpty(title.Id) ? Loc.GetString(title) : string.Empty);
+    }
 
     /// <summary>
     /// The state of the job icon rsi.

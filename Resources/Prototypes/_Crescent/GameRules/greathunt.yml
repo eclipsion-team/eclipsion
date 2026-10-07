@@ -7,7 +7,9 @@
 # opposite flanks — the SRM at the Refuge (Hunter's Den), the TAP at the Tribal Hideout — and has to cross to it.
 # Both bases are Great Hunt copies of the regular maps (refuge_greathunt / tribalhideout_greathunt, gameMaps below);
 # the originals stay untouched for the other modes. The copies drop the civilian and scrap yards and sell ships only
-# from a faction yard limited to unarmed hulls with an IFF cloak.
+# from a faction yard limited to unarmed hulls with an IFF cloak. The Refuge copy's saint statues are plain scenery
+# (StatueSaintRomaine / StatueSaintSerraine) rather than piety stores, so the Militia cannot buy armed hulls or heavy
+# weapons the Pact has no answer to.
 #
 # Preparation: for the first gracePeriod (10 minutes) both bases sit inside a ring of the same indestructible wall
 # Unionfall's grace barrier uses, barrierMargin tiles out so the ships bought meanwhile fit inside, and the altar
@@ -42,8 +44,8 @@
   - GreatHuntObjective
   - HullrotRoundTimeLimit
 
-# Great Hunt: Blades. The same hunt on the same maps, but the armories and the Militia's statues are swapped for
-# versions that hand out no guns, ammunition or explosives (GreatHuntMeleeArmories below), so it is fought with blades,
+# Great Hunt: Blades. The same hunt on the same maps, but the armories are swapped for versions that hand out no
+# guns, ammunition or explosives (GreatHuntMeleeArmories below), so it is fought with blades,
 # and every blow does half damage and half stamina damage (GreatHuntMeleeCombatScale) so fights last longer.
 # Keep availableJobs in step with GreatHunt above.
 - type: gamePreset
@@ -53,7 +55,7 @@
   - greathuntblades
   name: Great Hunt Blades | TAP vs SRM
   showInVote: true
-  description: The Great Hunt with blades only. The armories and shrines hold no guns, and every blow lands at half strength; hold the Great Altar for 10 minutes to win.
+  description: The Great Hunt with blades only. The armories hold no guns, and every blow lands at half strength; hold the Great Altar for 10 minutes to win.
   # Only the two sides' roles show in the character editor, the way Unionfall shows only its own. Keep this in step
   # with the StationJobs of RefugeGreatHunt and TribalHideoutGreatHunt below (GreatHuntTest checks it): a job listed
   # here but on no station could be picked and never spawned, and one on a station but not here would be hidden.
@@ -97,8 +99,6 @@
     replacements:
       GreatHuntSRMArmoryVendor: GreatHuntSRMArmoryVendorMelee
       GreatHuntTAPArmoryVendor: GreatHuntTAPArmoryVendorMelee
-      GreatHuntSRMDogtagStoreR: GreatHuntSRMDogtagStoreRMelee
-      GreatHuntSRMDogtagStoreS: GreatHuntSRMDogtagStoreSMelee
 
 - type: entity
   id: GreatHunt

@@ -1,3 +1,4 @@
+using Content.Shared._Crescent.DegradeableArmor; // Crescent
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Robust.Shared.Audio;
@@ -10,6 +11,7 @@ public sealed partial class BlockingSystem
 {
     [Dependency] private readonly DamageableSystem _damageable = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly DegradeableArmorSystem _degradeableArmor = default!; // Crescent
 
     private void InitializeUser()
     {
@@ -46,9 +48,15 @@ public sealed partial class BlockingSystem
 
     private void OnUserDamageModified(EntityUid uid, BlockingUserComponent component, DamageModifyEvent args)
     {
+        if (!TryComp<BlockingComponent>(component.BlockingItem, out var blocking) || args.Damage.GetTotal() <= 0)
+            return;
+
+        // Crescent: shields plated with degradeable armor soak hits with it instead of taking damage themselves.
+        TryComp<DegradeableArmorComponent>(component.BlockingItem, out var armor);
+
         // A shield should only block damage it can itself absorb. To determine that we need the Damageable component on it.
-        if (!TryComp<BlockingComponent>(component.BlockingItem, out var blocking) || args.Damage.GetTotal() <= 0 ||
-            !TryComp<DamageableComponent>(component.BlockingItem, out var dmgComp))
+        DamageableComponent? dmgComp = null;
+        if (armor == null && !TryComp(component.BlockingItem, out dmgComp))
             return;
 
         if (!_toggle.IsActivated(component.BlockingItem.Value)) // Goobstation
@@ -61,10 +69,19 @@ public sealed partial class BlockingSystem
 
         var blockFraction = blocking.IsBlocking ? blocking.ActiveBlockFraction : blocking.PassiveBlockFraction;
         blockFraction = Math.Clamp(blockFraction, 0, 1);
+
+        // Crescent: the block fraction is how much of each hit the plating catches.
+        if (armor != null)
+        {
+            if (_degradeableArmor.AbsorbDamage(component.BlockingItem.Value, armor, args, uid, blockFraction) && blocking.IsBlocking)
+                _audio.PlayPvs(blocking.BlockSound, uid);
+            return;
+        }
+
         _damageable.TryChangeDamage(component.BlockingItem, blockFraction * args.OriginalDamage);
 
         var modify = new DamageModifierSet();
-        foreach (var key in dmgComp.Damage.DamageDict.Keys)
+        foreach (var key in dmgComp!.Damage.DamageDict.Keys)
             modify.Coefficients.TryAdd(key, 1 - blockFraction);
 
         args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage, modify);

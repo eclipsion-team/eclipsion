@@ -1,5 +1,5 @@
 ﻿<DefaultWindow
-    xmlns="https://spacestation14.io" Title="{Loc Add Gas}">
+    xmlns="https://spacestation14.io" Title="{Loc admin-ui-atmos-add-gas}">
     <BoxContainer Orientation="Vertical">
         <BoxContainer Orientation="Horizontal">
             <Label Text="{Loc Grid}" MinSize="100 0" />
@@ -26,6 +26,6 @@
             <Control MinSize="50 0" />
             <SpinBox Name="AmountSpin" MinSize="100 0" HorizontalExpand="True" />
         </BoxContainer>
-        <Button Name="SubmitButton" Text="{Loc Add Gas}" />
+        <Button Name="SubmitButton" Text="{Loc admin-ui-atmos-add-gas}" />
     </BoxContainer>
 </DefaultWindow>

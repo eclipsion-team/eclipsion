@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Content.Client._Crescent.Blocking.Components; // Crescent
 using Content.Shared._Crescent.Blocking; // Crescent
+using Content.Shared._Crescent.DegradeableArmor; // Crescent
 using Content.Shared.Actions;
 using Content.Shared.Damage;
 using Content.Shared.Examine;
@@ -379,13 +380,23 @@ public sealed partial class BlockingSystem : SharedBlockingSystem // Crescent
 
         var msg = new FormattedMessage();
         // Crescent changes start
-        msg.AddMarkupOrThrow(
-            Loc.GetString((component.IsClothing ? "blocking-fraction-armor" : "blocking-fraction"),
-                ("value", MathF.Round(fraction * 100, 1)))
-        );
-        // Crescent changes end
+        // Plated shields protect through their degradeable armor, which describes itself on examine.
+        if (HasComp<DegradeableArmorComponent>(uid))
+        {
+            msg.AddMarkupOrThrow(Loc.GetString("blocking-fraction-degradeable",
+                ("passive", MathF.Round(Math.Clamp(component.PassiveBlockFraction, 0, 1) * 100, 1)),
+                ("active", MathF.Round(Math.Clamp(component.ActiveBlockFraction, 0, 1) * 100, 1))));
+        }
+        else
+        {
+            msg.AddMarkupOrThrow(
+                Loc.GetString((component.IsClothing ? "blocking-fraction-armor" : "blocking-fraction"),
+                    ("value", MathF.Round(fraction * 100, 1)))
+            );
 
-        AppendCoefficients(modifier, msg);
+            AppendCoefficients(modifier, msg);
+        }
+        // Crescent changes end
 
         _examine.AddDetailedExamineVerb(args, component, msg,
             Loc.GetString("blocking-examinable-verb-text"),

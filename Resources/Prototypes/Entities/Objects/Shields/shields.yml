@@ -32,31 +32,7 @@
           Heat: 1
     - type: Damageable
       damageContainer: Shield
-    - type: Destructible
-      thresholds:
-        - trigger:
-            !type:DamageTrigger
-            damage: 80
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-        - trigger:
-            !type:DamageTrigger
-            damage: 40 #This is probably enough damage before it breaks
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-            - !type:PlaySoundBehavior
-              sound:
-                collection: MetalBreak
-            - !type:SpawnEntitiesBehavior
-              spawn:
-                SheetSteel:
-                  min: 2
-                  max: 2
-                SheetGlass:
-                  min: 2
-                  max: 2
+    # Crescent: shields no longer break, children get a DegradeableArmor that wears down and is welded back.
     - type: StaticPrice
       price: 50
 
@@ -70,49 +46,16 @@
   components:
     - type: StaticPrice
       price: 90
-    - type: Blocking
-      passiveBlockModifier:
-        coefficients:
-          Blunt: 0.75
-          Slash: 0.80
-          Piercing: 0.80
-          Heat: 0.80
-      activeBlockModifier:
-        coefficients:
-          Blunt: 0.60
-          Slash: 0.65
-          Piercing: 0.65
-          Heat: 0.65
+    - type: DegradeableArmor
+      armorMaxHealth: 300
+      armorType: Metallic
+      armorRepair: SteelPlate
+      initialModifiers:
         flatReductions:
-          Blunt: 3
-          Slash: 2
-          Piercing: 2
-          Heat: 2
-    - type: Destructible
-      thresholds:
-        - trigger:
-            !type:DamageTrigger
-            damage: 60
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-        - trigger:
-            !type:DamageTrigger
-            damage: 30
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-            - !type:PlaySoundBehavior
-              sound:
-                collection: MetalBreak
-            - !type:SpawnEntitiesBehavior
-              spawn:
-                SheetSteel:
-                  min: 2
-                  max: 2
-                SheetGlass:
-                  min: 2
-                  max: 2
+          Blunt: 20
+          Slash: 15
+          Piercing: 15
+          Heat: 10
 
 - type: entity
   name: riot laser shield
@@ -124,46 +67,23 @@
       state: riot_laser-icon
     - type: Item
       heldPrefix: riot_laser
-    - type: Blocking
-      passiveBlockModifier:
-        coefficients:
-          Heat: 0.35
-          Slash: 1.10
-          Blunt: 1.15
-          Piercing: 1.20
-      activeBlockModifier:
-        coefficients:
-          Heat: 0.25
-          Slash: 1.10
-          Blunt: 1.15
-          Piercing: 1.20
+    - type: DegradeableArmor
+      armorMaxHealth: 300
+      armorType: Metallic
+      armorRepair: SteelPlate
+      armorDamageCoefficients:
+        Blunt: 1.4
+        Slash: 1.7
+        Piercing: 1
+        Heat: 0.5
+        Caustic: 10
+        Radiation: 0.1
+      initialModifiers:
         flatReductions:
-          Heat: 6
-    - type: Destructible
-      thresholds:
-        - trigger:
-            !type:DamageTrigger
-            damage: 160
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-        - trigger:
-            !type:DamageTrigger
-            damage: 80
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-            - !type:PlaySoundBehavior
-              sound:
-                collection: MetalBreak
-            - !type:SpawnEntitiesBehavior
-              spawn:
-                SheetSteel:
-                  min: 2
-                  max: 2
-                SheetGlass:
-                  min: 2
-                  max: 2
+          Heat: 25
+          Blunt: 5
+          Slash: 5
+          Piercing: 5
 
 - type: entity
   name: riot bullet shield
@@ -175,47 +95,15 @@
       state: riot_bullet-icon
     - type: Item
       heldPrefix: riot_bullet
-    - type: Blocking
-      passiveBlockModifier:
-        coefficients:
-          Piercing: 0.30
-          Blunt: 0.65
-          Slash: 1.15
-          Heat: 1.25
-      activeBlockModifier:
-        coefficients:
-          Piercing: 0.20
-          Blunt: 0.55
-          Slash: 1.15
-          Heat: 1.25
+    - type: DegradeableArmor
+      armorMaxHealth: 300
+      armorType: Ceramic
+      armorRepair: CeramicPlate
+      initialModifiers:
         flatReductions:
-          Piercing: 8
-          Blunt: 2
-    - type: Destructible
-      thresholds:
-        - trigger:
-            !type:DamageTrigger
-            damage: 100
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-        - trigger:
-            !type:DamageTrigger
-            damage: 45
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-            - !type:PlaySoundBehavior
-              sound:
-                collection: MetalBreak
-            - !type:SpawnEntitiesBehavior
-              spawn:
-                SheetSteel:
-                  min: 2
-                  max: 2
-                SheetGlass:
-                  min: 2
-                  max: 2
+          Piercing: 25
+          Blunt: 10
+          Slash: 5
 
 #Craftable shields
 
@@ -229,48 +117,27 @@
       state: buckler-icon
     - type: Item
       heldPrefix: buckler
-    - type: Blocking
-      passiveBlockModifier:
-        coefficients:
-          Blunt: 0.95
-          Slash: 0.95
-          Piercing: 0.95
-          Heat: 2
-      activeBlockModifier:
-        coefficients:
-          Blunt: 0.85
-          Slash: 0.85
-          Piercing: 0.85
-          Heat: 2
-        flatReductions:
-          Blunt: 1
-          Slash: 1
-          Piercing: 1
     - type: Construction
       graph: WoodenBuckler
       node: woodenBuckler
-    - type: Destructible
-      thresholds:
-        - trigger:
-            !type:DamageTrigger
-            damage: 60
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-        - trigger:
-            !type:DamageTrigger
-            damage: 30 #Weaker shield
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-            - !type:PlaySoundBehavior
-              sound:
-                collection: WoodDestroy
-            - !type:SpawnEntitiesBehavior
-              spawn:
-                MaterialWoodPlank:
-                  min: 5
-                  max: 5
+    - type: DegradeableArmor
+      armorMaxHealth: 150
+      armorType: Ceramic
+      breakSound:
+        collection: WoodDestroy
+      armorDamageCoefficients: # wood burns away fast
+        Blunt: 1.4
+        Slash: 1.7
+        Piercing: 1
+        Heat: 3
+        Caustic: 10
+        Radiation: 0.1
+      initialModifiers:
+        flatReductions:
+          Blunt: 10
+          Slash: 10
+          Piercing: 8
+          Heat: 2
     - type: StaticPrice
       price: 150
 
@@ -284,49 +151,19 @@
       state: makeshift-icon
     - type: Item
       heldPrefix: metal
-    - type: Blocking
-      passiveBlockModifier:
-        coefficients:
-          Blunt: 0.95
-          Slash: 0.95
-          Piercing: 0.95
-          Heat: 0.9
-      activeBlockModifier:
-        coefficients:
-          Blunt: 0.85
-          Slash: 0.85
-          Piercing: 0.85
-          Heat: 0.8
-        flatReductions:
-          Blunt: 0.5
-          Slash: 0.5
-          Piercing: 0.5
-          Heat: 1
     - type: Construction
       graph: MakeshiftShield
       node: makeshiftShield
-    - type: Destructible
-      thresholds:
-        - trigger:
-            !type:DamageTrigger
-            damage: 40
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-        - trigger:
-            !type:DamageTrigger
-            damage: 20 #Very weak shield
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-            - !type:PlaySoundBehavior
-              sound:
-                collection: MetalBreak
-            - !type:SpawnEntitiesBehavior
-              spawn:
-                SheetSteel:
-                  min: 1
-                  max: 2
+    - type: DegradeableArmor
+      armorMaxHealth: 120
+      armorType: Metallic
+      armorRepair: SteelPlate
+      initialModifiers:
+        flatReductions:
+          Blunt: 8
+          Slash: 8
+          Piercing: 6
+          Heat: 5
 
 - type: entity
   name: web shield
@@ -340,46 +177,27 @@
     - type: Item
       sprite: Objects/Weapons/Melee/web-shield.rsi
       heldPrefix: icon
-    - type: Blocking
-      passiveBlockModifier:
-        coefficients:
-          Blunt: 0.95
-          Slash: 0.95
-          Piercing: 0.95
-      activeBlockModifier:
-        coefficients:
-          Blunt: 0.85
-          Slash: 0.85
-          Piercing: 0.85
-        flatReductions:
-          Blunt: 0.5
-          Slash: 0.5
-          Piercing: 0.5
     - type: Construction
       graph: WebObjects
       node: shield
-    - type: Destructible
-      thresholds:
-        - trigger:
-            !type:DamageTrigger
-            damage: 40
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-        - trigger:
-            !type:DamageTrigger
-            damage: 20
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-            - !type:SpawnEntitiesBehavior
-              spawn:
-                MaterialWebSilk:
-                  min: 1
-                  max: 1
-            - !type:PlaySoundBehavior
-              sound:
-                collection: WoodDestroy
+    - type: DegradeableArmor
+      armorMaxHealth: 100
+      armorType: Ceramic
+      breakSound:
+        collection: WoodDestroy
+      armorDamageCoefficients: # silk doesn't do well against heat
+        Blunt: 1.4
+        Slash: 1.7
+        Piercing: 1
+        Heat: 3
+        Caustic: 10
+        Radiation: 0.1
+      initialModifiers:
+        flatReductions:
+          Blunt: 6
+          Slash: 6
+          Piercing: 5
+          Heat: 2
 
 #Magic/Cult Shields (give these to wizard for now)
 
@@ -393,24 +211,21 @@
       state: ratvarian-icon
     - type: Item
       heldPrefix: ratvarian
-    - type: Blocking
-      passiveBlockModifier:
-        coefficients:
-          Blunt: 0.8
-          Slash: 0.8
-          Piercing: 0.8
-          Heat: 1.5
-      activeBlockModifier:
-        coefficients:
-          Blunt: 0.7
-          Slash: 0.7
-          Piercing: 0.7
-          Heat: 1.5
+    - type: DegradeableArmor
+      armorMaxHealth: 300
+      armorType: Metallic
+      armorDamageCoefficients:
+        Blunt: 1.4
+        Slash: 1.7
+        Piercing: 1
+        Heat: 1.5
+        Caustic: 10
+        Radiation: 0.1
+      initialModifiers:
         flatReductions:
-          Blunt: 1
-          Slash: 1
-          Piercing: 1
-      #Have it break into brass when clock cult is in
+          Blunt: 15
+          Slash: 15
+          Piercing: 15
 
 - type: entity
   name: energy shield
@@ -572,30 +387,15 @@
         right:
           - state: inhand-right-shield
     - type: Appearance
-    - type: Destructible
-      thresholds:
-        - trigger:
-            !type:DamageTrigger
-            damage: 100
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-        - trigger:
-            !type:DamageTrigger
-            damage: 70
-          behaviors:
-            - !type:DoActsBehavior
-              acts: [ "Destruction" ]
-            - !type:PlaySoundBehavior
-              sound:
-                collection: MetalGlassBreak
-            - !type:SpawnEntitiesBehavior
-              spawn:
-                SheetSteel:
-                  min: 1
-                  max: 1
-                SheetGlass:
-                  min: 2
-                  max: 2
+    - type: DegradeableArmor
+      armorMaxHealth: 250
+      armorType: Metallic
+      armorRepair: SteelPlate
+      initialModifiers:
+        flatReductions:
+          Blunt: 15
+          Slash: 15
+          Piercing: 12
+          Heat: 8
     - type: StaticPrice
       price: 250

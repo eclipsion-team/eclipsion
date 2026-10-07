@@ -363,64 +363,6 @@
       - id: BurnAutoInjector
         name: burn autoinjector
 
-# The Militia's piety statues as mapped on the Great Hunt Refuge (refuge_greathunt). Same stock as the regular
-# ones, except that listings blacklisting GreatHuntStore (the deflecting vibrokhopesh) are left out.
-- type: entity
-  parent: SRMDogtagStoreR
-  id: GreatHuntSRMDogtagStoreR
-  suffix: Great Hunt
-  components:
-  - type: Tag
-    tags:
-    - Structure # from BaseStructure; the list is replaced, not merged
-    - GreatHuntStore
-
-- type: entity
-  parent: SRMDogtagStoreS
-  id: GreatHuntSRMDogtagStoreS
-  suffix: Great Hunt
-  components:
-  - type: Tag
-    tags:
-    - Structure # from BaseStructure; the list is replaced, not merged
-    - GreatHuntStore
-
-# Great Hunt: Blades statues. Romaine only offers blades, suits and scripture; Serraine keeps her stock, less any
-# listing blacklisting MeleeOnlyStore (the disabler crate).
-- type: entity
-  parent: GreatHuntSRMDogtagStoreR
-  id: GreatHuntSRMDogtagStoreRMelee
-  suffix: Great Hunt, Melee
-  components:
-  - type: Tag
-    tags:
-    - Structure # from BaseStructure; the list is replaced, not merged
-    - GreatHuntStore
-    - MeleeOnlyStore
-  - type: Store
-    categories:
-    - StoreCategorySRMMelee
-    - StoreCategorySRMSuits
-    - StoreCategorySRMPietyRomaine
-
-- type: entity
-  parent: GreatHuntSRMDogtagStoreS
-  id: GreatHuntSRMDogtagStoreSMelee
-  suffix: Great Hunt, Melee
-  components:
-  - type: Tag
-    tags:
-    - Structure # from BaseStructure; the list is replaced, not merged
-    - GreatHuntStore
-    - MeleeOnlyStore
-
-# Store tags read by StoreWhitelistCondition on listings.
-- type: Tag
-  id: GreatHuntStore
-
-- type: Tag
-  id: MeleeOnlyStore
-
 # LPCs for the hunt yards' cloaked hulls (Maps/Ships/GreatHunt/greathunt_vessels.yml), handed out free by the
 # armories above. Redeemed at any shipyard console; the ship comes out cloaked like one bought at the hunt yard.
 # No resale value: they are free here and must not turn into money, so neither the disk nor the ship it
@@ -471,7 +413,7 @@
 
 # The Pact's Great Hunt long guns, handed out by GreatHuntTAPArmoryVendor: Imperial, Union and old NT designs in the
 # caravans' olive green. Each hits as hard as the gun it is painted from, except the SPAS, which is tuned to match
-# the Militia's Matusa shot for shot (same damage, spread and fire rate).
+# the Militia's Matusa shot for shot (same damage, spread and fire rate, and both hands to fire).
 - type: entity
   parent: WeaponRifleDSMLegionnaire
   id: WeaponRifleDSMLegionnaireTAP
@@ -521,3 +463,4 @@
     fireRate: 2.5
     damageModifier: 1
     shotgunSpreadMultiplier: 3.5
+  - type: GunRequiresWield # like the Matusa: no firing it one-handed

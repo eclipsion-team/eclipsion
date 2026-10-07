@@ -1,5 +1,5 @@
 ﻿<DefaultWindow
-    xmlns="https://spacestation14.io" Title="{Loc Load Blueprint}">
+    xmlns="https://spacestation14.io" Title="{Loc admin-ui-adminbus-load-blueprint}">
     <BoxContainer Orientation="Vertical">
         <BoxContainer Orientation="Horizontal">
             <Label Text="{Loc Map}" MinSize="100 0" />
@@ -26,7 +26,7 @@
             <Control MinSize="50 0" />
             <SpinBox Name="RotationSpin" MinSize="100 0" HorizontalExpand="True" />
         </BoxContainer>
-        <Button Name="SubmitButton" Text="{Loc Load Blueprint}" />
+        <Button Name="SubmitButton" Text="{Loc admin-ui-adminbus-load-blueprint}" />
         <Button Name="TeleportButton" Text="{Loc Teleport to}" />
         <Button Name="ResetButton" Text="{Loc Reset to default}"></Button>
     </BoxContainer>

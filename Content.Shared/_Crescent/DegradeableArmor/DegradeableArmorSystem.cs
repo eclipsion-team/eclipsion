@@ -1,5 +1,6 @@
 using Content.Shared.ArachnidChaos;
 using Content.Shared.Armor;
+using Content.Shared.Blocking;
 using Content.Shared.Chasm;
 using Content.Shared.Chat;
 using Content.Shared.Clothing;
@@ -99,7 +100,8 @@ public sealed class DegradeableArmorSystem : EntitySystem
 
     private void OnInteractUsing(Entity<DegradeableArmorComponent> owner, ref InteractUsingEvent args)
     {
-        if (args.Handled)
+        // Only welders repair armor, anything else used on it shouldn't be swallowed or spam popups.
+        if (args.Handled || !_toolSystem.HasQuality(args.Used, "Welding"))
             return;
         if (owner.Comp.armorHealth == owner.Comp.armorMaxHealth)
         {
@@ -113,6 +115,12 @@ public sealed class DegradeableArmorSystem : EntitySystem
             return;
         }
 
+        if (TryComp<BlockingComponent>(owner, out var blocking) && blocking.IsBlocking)
+        {
+            _popup.PopupClient(Loc.GetString("degradeable-armor-cant-repair-blocking"), args.User, args.User, PopupType.Medium);
+            return;
+        }
+
         args.Handled = _toolSystem.UseTool(args.Used, args.User, owner.Owner, 15, "Welding", new ArmorRepairDoAfterEvent(), 50);
 
     }
@@ -123,6 +131,7 @@ public sealed class DegradeableArmorSystem : EntitySystem
             return;
 
         owner.Comp.armorHealth = owner.Comp.armorMaxHealth;
+        Dirty(owner);
         if (TryComp<ToggleableClothingComponent>(owner.Owner, out var component))
         {
             foreach (var (ClothingUid, _) in component.ClothingUids)
@@ -130,6 +139,7 @@ public sealed class DegradeableArmorSystem : EntitySystem
                 if (TryComp<DegradeableArmorComponent>(ClothingUid, out var headwearArmor))
                 {
                     headwearArmor.armorHealth = headwearArmor.armorMaxHealth;
+                    Dirty(ClothingUid, headwearArmor);
                 }
             }
 
@@ -179,18 +189,36 @@ public sealed class DegradeableArmorSystem : EntitySystem
     }
     private void OnDamageModify(EntityUid uid, DegradeableArmorComponent component, InventoryRelayedEvent<DamageModifyEvent> args)
     {
-        if (component.armorHealth <= 0)
+        // Shields only protect while held, the blocking system runs them through AbsorbDamage itself.
+        if (HasComp<BlockingComponent>(uid))
             return;
+
+        AbsorbDamage(uid, component, args.Args, component.wearer);
+    }
+
+    /// <summary>
+    /// Runs a hit through the armor: flat reduction scaled by the armor's health, armor penetration,
+    /// wear on the armor and the impact of stopped rounds transferred to the wearer.
+    /// </summary>
+    /// <param name="wearer">Who feels the impact, <see cref="EntityUid.Invalid"/> for nobody.</param>
+    /// <param name="coverage">Fraction of the hit the armor catches, scales protection, wear and impact.</param>
+    /// <returns>True if the armor stopped any damage.</returns>
+    public bool AbsorbDamage(EntityUid uid, DegradeableArmorComponent component, DamageModifyEvent args, EntityUid wearer, float coverage = 1f)
+    {
+        if (component.armorHealth <= 0 || coverage <= 0)
+            return false;
         var armorDamage = 0f;
         var blockedAny = false;
-        var protection = GetProtectionFactor(component);
+        var protection = GetProtectionFactor(component) * coverage;
         var (penFactor, wearFactor) = component.armorType switch
         {
             ArmorDegradation.Ceramic => (CeramicPenFactor, CeramicWearFactor),
             _ => (MetallicPenFactor, MetallicWearFactor),
         };
 
-        var damageDictionary = args.Args.Damage.DamageDict;
+        // Work on a copy, the incoming specifier can be shared with OriginalDamage or the damage source.
+        var damage = new DamageSpecifier(args.Damage);
+        var damageDictionary = damage.DamageDict;
         damageDictionary.TryAdd(conversionPrototype, 0);
         foreach (var (type, value) in damageDictionary)
         {
@@ -202,38 +230,42 @@ public sealed class DegradeableArmorSystem : EntitySystem
             if (trueReduction == 0)
                 continue;
 
-            trueReduction = Math.Clamp(trueReduction * protection - args.Args.HullrotArmorPen * penFactor, 0f, (float) value);
+            trueReduction = Math.Clamp(trueReduction * protection - args.HullrotArmorPen * penFactor, 0f, (float) value);
             if (trueReduction > 0)
                 blockedAny = true;
             // Safe access: if a damage type isn't in the coefficients dict, default to 1.0 (full armor damage).
             var coeff = component.armorDamageCoefficients.TryGetValue(type, out var c) ? c : 1f;
-            armorDamage += (float) value * coeff * wearFactor;
+            armorDamage += (float) value * coeff * wearFactor * coverage;
             damageDictionary[type] = Math.Max(0f, (float) value - trueReduction);
         }
 
         // The impact of a stopped round is transferred to the wearer once per hit, not once per damage type.
-        if (blockedAny && args.Args.stoppingPower > 0)
+        if (blockedAny && args.stoppingPower > 0)
         {
+            var impact = args.stoppingPower * coverage;
             switch (component.armorType)
             {
                 // Ceramic shatters to absorb the impact, the shock is felt as stamina damage.
                 case ArmorDegradation.Ceramic:
-                    if (component.wearer != EntityUid.Invalid)
-                        _stamina.TakeStaminaDamage(component.wearer, args.Args.stoppingPower);
+                    if (wearer != EntityUid.Invalid)
+                        _stamina.TakeStaminaDamage(wearer, impact);
                     break;
                 // Metal deforms inward, the impact comes through as blunt trauma.
                 case ArmorDegradation.Metallic:
-                    damageDictionary[conversionPrototype] += args.Args.stoppingPower;
+                    damageDictionary[conversionPrototype] += impact;
                     break;
             }
         }
+        args.Damage = damage;
+
         var healthBefore = component.armorHealth;
         component.armorHealth = Math.Max(0, component.armorHealth - armorDamage);
         if (healthBefore > 0 && component.armorHealth <= 0 && component.breakSound != null)
         {
-            _audio.PlayPredicted(component.breakSound, uid, component.wearer != EntityUid.Invalid ? component.wearer : uid);
+            _audio.PlayPredicted(component.breakSound, uid, wearer != EntityUid.Invalid ? wearer : uid);
         }
         Dirty(uid, component);
+        return blockedAny;
     }
 
 }
