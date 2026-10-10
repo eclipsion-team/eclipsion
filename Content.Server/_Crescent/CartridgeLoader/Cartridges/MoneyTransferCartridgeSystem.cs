@@ -287,9 +287,10 @@ public sealed class MoneyTransferCartridgeSystem : EntitySystem
             hist.Entries.RemoveAt(0);
     }
 
-    private static string SanitizeComment(string raw)
+    private static string SanitizeComment(string? raw)
     {
-        var s = raw.Trim();
+        // The comment comes straight off the network; a modified client can send null.
+        var s = (raw ?? string.Empty).Trim();
         if (s.Length > MaxCommentLength)
             s = s[..MaxCommentLength];
         return s;
@@ -359,9 +360,6 @@ public sealed class MoneyTransferCartridgeSystem : EntitySystem
                     continue;
 
                 if (!TryComp<BankAccountComponent>(uid, out _))
-                    continue;
-
-                if (_mobState.IsDead(uid))
                     continue;
 
                 var name = MetaData(uid).EntityName;

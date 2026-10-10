@@ -77,7 +77,8 @@ public sealed class StockMarketCommand : IConsoleCommand
             return;
         }
 
-        if (!float.TryParse(args[2], out var percent))
+        // float.TryParse accepts "NaN" and "Infinity"; either would poison a price that persists across rounds.
+        if (!float.TryParse(args[2], out var percent) || !float.IsFinite(percent))
         {
             shell.WriteError(Loc.GetString("shell-argument-must-be-number"));
             return;

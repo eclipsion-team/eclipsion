@@ -19,10 +19,8 @@
 - type: randomHumanoidSettings
   id: DSMLevymanGhostSpawner
   randomizeName: true
-  speciesBlacklist:
-    - Monkey
-    - Kobold
-    - Abductor
+  speciesWhitelist: # Mandate soldiers are human; other species serve as Oathbound.
+    - Human
   components:
     - type: GhostRole
       name: Imperial Levyman
@@ -82,10 +80,8 @@
 - type: randomHumanoidSettings
   id: DSMKnightGhostSpawner
   randomizeName: true
-  speciesBlacklist:
-    - Monkey
-    - Kobold
-    - Abductor
+  speciesWhitelist: # Mandate soldiers are human; other species serve as Oathbound.
+    - Human
   components:
     - type: GhostRole
       name: Imperial Knight

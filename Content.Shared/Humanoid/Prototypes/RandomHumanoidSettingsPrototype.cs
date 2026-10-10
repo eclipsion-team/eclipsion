@@ -30,6 +30,13 @@ public sealed partial class RandomHumanoidSettingsPrototype : IPrototype, IInher
     public HashSet<string> SpeciesBlacklist { get; private set; } = new();
 
     /// <summary>
+    ///     Eclipsion - if set, only these species can be rolled and <see cref="SpeciesBlacklist"/> is ignored.
+    ///     Use this for lore-locked roles so a species made round-start later can't slip past a blacklist.
+    /// </summary>
+    [DataField("speciesWhitelist")]
+    public HashSet<ProtoId<SpeciesPrototype>> SpeciesWhitelist { get; private set; } = new();
+
+    /// <summary>
     ///     Extra components to add to this entity.
     /// </summary>
     [DataField("components")]

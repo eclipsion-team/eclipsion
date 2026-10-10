@@ -102,7 +102,9 @@ public sealed class EconomyPriceSystem : EntitySystem
         if (!IsEconomyAdmin(args.SenderSession))
             return;
 
-        if (msg.Price < 0)
+        // NaN slips past a plain "< 0" check and would poison every price it touched; infinities overflow the
+        // integer conversions below.
+        if (!double.IsFinite(msg.Price) || msg.Price < 0)
             return;
 
         // Treasury and player-bank balances are live entity state, not prototype price overrides.
@@ -144,6 +146,9 @@ public sealed class EconomyPriceSystem : EntitySystem
                 break;
             case EconomyListCategory.Vessels:
                 if (!_prototypeManager.TryIndex<VesselPrototype>(msg.Id, out var vessel))
+                    return;
+
+                if (msg.Price > int.MaxValue)
                     return;
 
                 basePrice = vessel.Price;
@@ -364,7 +369,8 @@ public sealed class EconomyPriceSystem : EntitySystem
 
         foreach (var session in _playerManager.Sessions)
         {
-            if (session.Status != SessionStatus.Connected)
+            // Players in the round are InGame, not Connected; filtering on Connected alone listed only the lobby.
+            if (session.Status is not (SessionStatus.Connected or SessionStatus.InGame))
                 continue;
 
             // Prefer the live bank component on the piloted mob; fall back to the selected character's
@@ -468,6 +474,9 @@ public sealed class EconomyPriceSystem : EntitySystem
 
     private void SetTreasuryBalance(EconomyAdminSetPriceEvent msg, ICommonSession session)
     {
+        if (msg.Price > int.MaxValue)
+            return;
+
         var newBalance = (int) Math.Round(msg.Price);
 
         var query = EntityQueryEnumerator<StationTradeMarketComponent, MetaDataComponent>();

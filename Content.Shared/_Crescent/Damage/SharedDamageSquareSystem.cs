@@ -31,7 +31,8 @@ public abstract class SharedDamageSquareSystem : EntitySystem
 
     private void OnMapInit(Entity<DamageSquareComponent> ent, ref MapInitEvent args)
     {
-        Timer.Spawn((int) ent.Comp.DamageDelay * 1000,
+        // (int) DamageDelay * 1000 truncated the 0.2s delay to 0 before scaling, so squares hit instantly.
+        Timer.Spawn(TimeSpan.FromSeconds(ent.Comp.DamageDelay),
             () =>
             {
                 if (!TerminatingOrDeleted(ent))

@@ -55,7 +55,7 @@
 - type: entity
   parent: RubberStampBase
   id: RatRubberStampEmpireVestmar
-  name: imperial vetsmar rubber stamp
+  name: imperial vestmar rubber stamp
   components:
   - type: Stamp
     stampedName: rat-stamp-name-empire-vestmar
@@ -95,7 +95,7 @@
 - type: entity
   parent: RubberStampBase
   id: RatRubberStampNCWLComissar
-  name: league comissar rubber stamp
+  name: league commissar rubber stamp
   components:
   - type: Stamp
     stampedName: rat-stamp-name-ncwl-comissar

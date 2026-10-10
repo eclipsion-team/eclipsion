@@ -61,6 +61,9 @@ public sealed class ShipShieldOverlay : Overlay
 
             DrawShield(handle, chain, transform, xform.LocalPosition, _shieldTexture, _verts);
         }
+
+        // Don't leak the unshaded shader into whatever draws after this overlay.
+        handle.UseShader(null);
     }
 
     private static bool IsOnScreen(ChainShape chain, Vector2 worldCenter, in Box2 viewport)

@@ -6,6 +6,7 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Nutrition.Components;
 using Content.Shared.Nutrition.EntitySystems;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Crescent.PassiveRegeneration;
@@ -19,9 +20,7 @@ public sealed class PassiveRegenerationSystem : EntitySystem
     [Dependency] private readonly ThirstSystem _thirst = default!;
     [Dependency] private readonly HungerSystem _hunger = default!;
     [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly MobStateSystem _states = default!;
-
-    EntityQuery<PassiveRegenerationComponent> _componentQuery;
+    [Dependency] private readonly INetManager _net = default!;
 
     private float accumulator = 0f;
 
@@ -29,6 +28,12 @@ public sealed class PassiveRegenerationSystem : EntitySystem
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        // Hunger, thirst and damage are all server-authoritative; running this on the client as well only
+        // mispredicted them every ten seconds until the next server state corrected it.
+        if (_net.IsClient)
+            return;
+
         accumulator += frameTime;
         if (accumulator > 10f)
         {

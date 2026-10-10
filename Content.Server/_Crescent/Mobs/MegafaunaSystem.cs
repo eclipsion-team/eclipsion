@@ -24,6 +24,10 @@ public sealed class MegafaunaSystem : EntitySystem
 
     public void OnDeath<T>(EntityUid uid, T comp, ref MobStateChangedEvent args) where T : MegafaunaComponent
     {
+        // Raised for every state transition, not just death.
+        if (args.NewMobState != MobState.Dead)
+            return;
+
         var coords = Transform(uid).Coordinates;
 
         comp.CancelToken.Cancel();
@@ -36,8 +40,9 @@ public sealed class MegafaunaSystem : EntitySystem
             var msg = new BossMusicStopEvent();
             foreach (var aggressor in aggresive.Aggressors)
             {
+                // One aggressor without a player attached must not stop the music for everyone else.
                 if (!TryComp<ActorComponent>(aggressor, out var actor))
-                    return;
+                    continue;
 
                 RaiseNetworkEvent(msg, actor.PlayerSession.Channel);
             }

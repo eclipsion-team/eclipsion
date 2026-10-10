@@ -7,6 +7,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
@@ -21,6 +22,7 @@ public sealed class CursedHeartSystem : EntitySystem
     [Dependency] private readonly DamageableSystem _damage = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private readonly INetManager _net = default!;
 
     public override void Initialize()
     {
@@ -36,6 +38,11 @@ public sealed class CursedHeartSystem : EntitySystem
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        // LastPump is not networked, so on the client it is always stale: the client would run its own damage
+        // and popup every MaxDelay on top of the server's. The server owns this tick.
+        if (_net.IsClient)
+            return;
 
         var query = EntityQueryEnumerator<CursedHeartComponent, MobStateComponent>();
         while (query.MoveNext(out var uid, out var comp, out var state))

@@ -3,6 +3,7 @@ using Content.Client.Computer;
 using Content.Client.PointCannons;
 using Content.Client._KS14.UI; // KS14
 using Content.Client._Crescent.ShipShields; // KS14: shield readout on the status strip
+using Content.Client._Crescent.UI;
 using Content.Shared.CCVar; // KS14
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.PointCannons;
@@ -307,14 +308,15 @@ public sealed partial class TargetingConsoleWindow : KsBaseWindow, IComputerWind
     /// </summary>
     private void KsRefreshStatusStrip()
     {
-        StatusLabel.Text = Loc.GetString("targeting-console-status",
+        // Runs every frame; assigning Text unconditionally relaid out the whole console each frame.
+        StatusLabel.SetTextIfChanged(Loc.GetString("targeting-console-status",
             ("group", _selectedGroups.Count > 0
                 ? string.Join('+', _selectedGroups.Select(g => g.ToUpperInvariant()))
                 : Loc.GetString("targeting-console-status-no-group")),
             ("cannons", _cannonCount),
             ("ammo", _ammoValue),
             ("capacity", _ammoMax),
-            ("shield", KsShieldReadout()));
+            ("shield", KsShieldReadout())));
 
         StatusLabel.FontColorOverride = _cannonCount > 0
             ? KsInstrumentPalette.Shell.Text
@@ -326,7 +328,7 @@ public sealed partial class TargetingConsoleWindow : KsBaseWindow, IComputerWind
         if (!dry)
             return;
 
-        AlertLabel.Text = Loc.GetString("targeting-console-alert-dry");
+        AlertLabel.SetTextIfChanged(Loc.GetString("targeting-console-alert-dry"));
         AlertLabel.FontColorOverride = KsInstrumentPalette.Shell.Warning;
     }
 }

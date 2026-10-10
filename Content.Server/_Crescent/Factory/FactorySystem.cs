@@ -181,14 +181,23 @@ namespace Content.Server.Factory.EntitySystems
 
         private void OnSnatch(EntityUid uid, FactoryTrackingComponent component,ref EntGotInsertedIntoContainerMessage args)
         {
-            if (!TerminatingOrDeleted(component.FactoryID))
-            {
-                component.FactoryReference.Inserted.Remove(uid);
-                component.FactoryReference.InsertCount--;
-                if (component.FactoryReference.InsertCount == 0)
-                    RemComp<ActiveFactoryComponent>(component.FactoryID);
-            }
+            Untrack(uid, component);
             RemComp<FactoryTrackingComponent>(uid);
+        }
+
+        /// <summary>
+        /// Drops an item from its factory's input list. InsertCount is derived from the list rather than counted
+        /// up and down separately: the old counter missed deletions and drifted, which left the factory
+        /// permanently active and processed every 0.3 seconds with nothing on it.
+        /// </summary>
+        private void Untrack(EntityUid item, FactoryTrackingComponent tracker)
+        {
+            var factory = tracker.FactoryReference;
+            factory.Inserted.Remove(item);
+            factory.InsertCount = factory.Inserted.Count;
+
+            if (factory.InsertCount == 0 && !TerminatingOrDeleted(tracker.FactoryID))
+                RemComp<ActiveFactoryComponent>(tracker.FactoryID);
         }
 
         private void OnInsertion(EntityUid uid, FactoryComponent component, ref StartCollideEvent args)
@@ -197,14 +206,21 @@ namespace Content.Server.Factory.EntitySystems
             {
                 if (trackerComp.FactoryID == uid)
                     return;
+
+                // Moving straight from one factory onto another: release it from the old one first, or the old
+                // factory keeps counting it as an input.
+                if (!TerminatingOrDeleted(trackerComp.FactoryID))
+                    Untrack(args.OtherEntity, trackerComp);
             }
-            component.Inserted.Add(args.OtherEntity);
+
+            if (!component.Inserted.Contains(args.OtherEntity))
+                component.Inserted.Add(args.OtherEntity);
+
             EnsureComp(args.OtherEntity,out FactoryTrackingComponent tracker);
             tracker.FactoryReference = component;
             tracker.FactoryID = uid;
-            component.InsertCount++;
-            if (component.InsertCount == 1)
-                EnsureComp<ActiveFactoryComponent>(uid);
+            component.InsertCount = component.Inserted.Count;
+            EnsureComp<ActiveFactoryComponent>(uid);
 
         }
 
@@ -217,7 +233,7 @@ namespace Content.Server.Factory.EntitySystems
             }
             if (TerminatingOrDeleted(uid))
             {
-                component.FactoryReference.Inserted.Remove(uid);
+                Untrack(uid, component);
                 return;
             }
             if (TryComp<TransformComponent>(component.FactoryID, out var transform))
@@ -232,10 +248,7 @@ namespace Content.Server.Factory.EntitySystems
                     return;
             }
             RemComp<FactoryTrackingComponent>(uid);
-            component.FactoryReference.Inserted.Remove(uid);
-            component.FactoryReference.InsertCount--;
-            if (component.FactoryReference.InsertCount == 0)
-                RemComp<ActiveFactoryComponent>(component.FactoryID);
+            Untrack(uid, component);
         }
         private void OnPowerChanged(EntityUid uid, FactoryComponent component, ref PowerChangedEvent args)
         {
@@ -280,19 +293,26 @@ namespace Content.Server.Factory.EntitySystems
                             i--;
                         }
 
+                    comp.InsertCount = comp.Inserted.Count;
+
                     foreach (EntityUid entity in comp.Inserted)
                     {
-                        MetaDataComponent entityData = EntityManager.GetComponent<MetaDataComponent>(entity);
-                        string entityString = MetaData(entity).EntityPrototype!.ID;
+                        if (MetaData(entity).EntityPrototype is not { } entityProto)
+                            continue;
+
+                        string entityString = entityProto.ID;
                         if (TryComp<StackComponent>(entity, out var myStack))
                         {
                             entityString = myStack.StackTypeId;
                         }
 
+                        // The list used to be seeded with the entity and then have it added again below, so the
+                        // first item of every type was listed twice. Consumption then "used" the same item twice
+                        // and left a real one behind: every product cost one input less than the recipe said.
                         if (!itemCounts.ContainsKey(entityString))
                         {
                             itemCounts.Add(entityString, 0);
-                            recipeEntities.Add(entityString, new List<EntityUid> { entity });
+                            recipeEntities.Add(entityString, new List<EntityUid>());
                         }
 
                         if (myStack is not null)
@@ -392,11 +412,10 @@ namespace Content.Server.Factory.EntitySystems
                                 }
                                 else
                                 {
-                                    QueueDel(targetEntity);
                                     amount--;
                                     itemCounts[recipePair.Key]--;
-                                    EntityManager.DeleteEntity(delete.First());
                                     delete.RemoveAt(0);
+                                    EntityManager.DeleteEntity(targetEntity);
                                 }
                             }
                         }

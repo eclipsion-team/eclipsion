@@ -158,35 +158,27 @@ public sealed class DockingConsoleSystem : SharedDockingConsoleSystem
         if (ent.Comp.Shuttle != null || UpdateShuttle(ent) || HasComp<DockingShuttleComponent>(ent.Comp.Shuttle))
             return;
 
+        // Find the target. Checked before loading anything so a console off-grid does not leak a map per click.
+        var targetMap = Transform(ent).MapID;
+        if (Transform(ent).GridUid is not {} grid || Transform(ent).MapUid is not {} targetUid)
+            return;
+
         _mapSystem.CreateMap(out var dummyMap);
         _mapLoader.TryLoadGrid(dummyMap, _miningShuttlePath, out _);
-
-        // Find the target
-        var targetMap = Transform(ent).MapID;
-        if (Transform(ent).GridUid is not {} grid)
-            return;
 
         // Find the mining shuttle
         var shuttle = _mapMan.GetAllGrids(dummyMap).FirstOrNull(x => HasComp<DockingShuttleComponent>(x));
         if (!TryComp<DockingShuttleComponent>(shuttle, out var docking))
         {
             Log.Error("Failed to call Mining shuttle since it failed to load.");
+            _mapSystem.DeleteMap(dummyMap);
             return;
         }
 
-        // Add the station of the calling console
-        var shuttleUid = ent.Comp.Shuttle;
-        if (!TryComp<DockingShuttleComponent>(shuttleUid, out var shuttleComp))
-            return;
-        if (shuttleComp.Station == null)
-        {
-            var targetUid = Transform(ent).MapUid;
-
-            if (targetUid == null)
-                return;
-
-            RaiseLocalEvent(shuttleUid.Value, new ShuttleAddStationEvent(targetUid.Value, targetMap, grid));
-        }
+        // Add the station of the calling console. The freshly loaded shuttle is the one being called; the
+        // console only learns about it through the shuttle's MapInit, so do not depend on that here.
+        if (docking.Station == null)
+            RaiseLocalEvent(shuttle.Value, new ShuttleAddStationEvent(targetUid, targetMap, grid));
 
         // Finally FTL
         _shuttle.FTLToDock(shuttle.Value, Comp<ShuttleComponent>(shuttle.Value), grid, priorityTag: docking.DockTag);

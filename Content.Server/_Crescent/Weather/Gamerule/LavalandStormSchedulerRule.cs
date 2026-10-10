@@ -43,6 +43,10 @@ public sealed class LavalandStormSchedulerRule : GameRuleSystem<LavalandStormSch
         var newMaps = maps.Where(lavaland => !HasComp<LavalandStormedMapComponent>(lavaland)).ToList();
         maps = newMaps;
 
+        // Every lavaland already has a storm running.
+        if (maps.Count == 0)
+            return;
+
         var map = _random.Pick(maps);
         if (map.Comp.PrototypeId == null)
             return;

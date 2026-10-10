@@ -15,6 +15,10 @@ public sealed partial class AutominerWindow : FancyWindow
     private TimeSpan _cooldownEnd = TimeSpan.Zero;
     private bool _isActive;
 
+    // This runs every frame; markup is only re-parsed when the text actually changes (once a second at most).
+    private string? _timerText;
+    private string? _statusText;
+
     public Action? OnStartButtonPressed;
 
     public AutominerWindow()
@@ -33,18 +37,33 @@ public sealed partial class AutominerWindow : FancyWindow
 
     private void UpdateDisplay()
     {
+        string timer;
+        string status;
+
         if (_isActive && _timing.CurTime < _cooldownEnd)
         {
             var timeLeft = _cooldownEnd - _timing.CurTime;
-            TimerLabel.SetMarkup(Loc.GetString("autominer-timer", ("time", $"{timeLeft.Minutes:0}:{timeLeft.Seconds:00}")));
-            StatusLabel.SetMarkup(Loc.GetString("autominer-status-active"));
+            timer = Loc.GetString("autominer-timer", ("time", $"{timeLeft.Minutes:0}:{timeLeft.Seconds:00}"));
+            status = Loc.GetString("autominer-status-active");
             StartButton.Disabled = true;
         }
         else
         {
-            TimerLabel.SetMarkup(Loc.GetString("autominer-timer-ready"));
-            StatusLabel.SetMarkup(Loc.GetString("autominer-status-idle"));
+            timer = Loc.GetString("autominer-timer-ready");
+            status = Loc.GetString("autominer-status-idle");
             StartButton.Disabled = false;
+        }
+
+        if (timer != _timerText)
+        {
+            _timerText = timer;
+            TimerLabel.SetMarkup(timer);
+        }
+
+        if (status != _statusText)
+        {
+            _statusText = status;
+            StatusLabel.SetMarkup(status);
         }
     }
 

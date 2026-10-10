@@ -53,6 +53,15 @@ public sealed class RandomHumanoidSystem : EntitySystem
         if (!prototype.SpeciesBlacklist.Any())
             blacklist = _notRoundStartSpecies;
 
+        // Eclipsion - a whitelist blacklists every species outside it.
+        if (prototype.SpeciesWhitelist.Count > 0)
+        {
+            blacklist = _prototypeManager.EnumeratePrototypes<SpeciesPrototype>()
+                .Where(x => !prototype.SpeciesWhitelist.Contains(x.ID))
+                .Select(x => x.ID)
+                .ToHashSet();
+        }
+
         var profile = HumanoidCharacterProfile.Random(blacklist);
         var speciesProto = _prototypeManager.Index<SpeciesPrototype>(profile.Species);
         var humanoid = EntityManager.CreateEntityUninitialized(speciesProto.Prototype, coordinates);

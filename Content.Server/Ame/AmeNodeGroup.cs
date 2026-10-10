@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Server._Crescent.NuclearBlast;
 using Content.Server.Ame.Components;
 using Content.Server.Ame.EntitySystems;
 using Content.Server.Chat.Managers;
@@ -240,6 +241,10 @@ public sealed class AmeNodeGroup : BaseNodeGroup
             * todo: add an exact to the shielding and make this find the core closest to the controller
             * so they chain explode, after helpers have been added to make it not cancer
         */
+
+        // Nuclear AMEs level everything within their blast radius, however many cores they had.
+        if (_entMan.System<NuclearBlastSystem>().TryDetonate(MasterController.Value))
+            return;
 
         // A "full" AME (many cores, high injection) should detonate hard again.
         // Scale the total intensity by the number of cores so bigger reactors blow bigger,

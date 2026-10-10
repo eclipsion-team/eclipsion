@@ -50,3 +50,10 @@ materials-lightgaugecasing = light gauge casings
 materials-mediumgaugecasing = medium gauge casings
 materials-largegaugecasing = large gauge casings
 materials-compositecasing = composite casings
+
+# Upstream materials whose names were never localized here; the lathe and material UIs showed the raw ids.
+materials-brass = brass
+materials-circuitry = circuitry
+materials-clockwork-glass = clockwork glass
+materials-uranium-glass = uranium glass
+materials-reinforced-uranium-glass = reinforced uranium glass

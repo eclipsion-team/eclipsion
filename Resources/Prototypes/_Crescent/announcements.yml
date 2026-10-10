@@ -178,7 +178,7 @@
 
 - type: broadcastMessage
   id: bm21
-  name: Vigilance is the foundation of security. Eyes foward.
+  name: Vigilance is the foundation of security. Eyes forward.
   sound:
     path: /Audio/_Crescent/Announcements/propagandalong_06.ogg
   outpost: default

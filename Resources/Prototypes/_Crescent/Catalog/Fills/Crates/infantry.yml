@@ -151,7 +151,7 @@
   id: WeaponCaseCobra
   parent: WeaponCasePistol
   name: pang tai arms "T2 Cobra" case
-  description: A robust pistol with a integrated supressor.
+  description: A robust pistol with an integrated suppressor.
   components:
   - type: StorageFill
     contents:
@@ -164,7 +164,7 @@
   id: WeaponCaseGhost
   parent: WeaponCaseSmg
   name: pang tai arms "T3 Ghost" case
-  description: A smart smg with a integrated supressor.
+  description: A smart smg with an integrated suppressor.
   components:
   - type: StorageFill
     contents:
@@ -177,7 +177,7 @@
   id: WeaponCasePhantom
   parent: WeaponCaseRifle
   name: pang tai arms "T4 Phantom" case
-  description: A robust rifle with a integrated supressor.
+  description: A robust rifle with an integrated suppressor.
   components:
   - type: StorageFill
     contents:
@@ -190,7 +190,7 @@
   id: WeaponCaseVintorez
   parent: WeaponCaseRifle
   name: pang tai arms "T4-Pro Vintorez" case
-  description: A robust rifle with a integrated supressor, that trades ROF for damage.
+  description: A robust rifle with an integrated suppressor, that trades ROF for damage.
   components:
   - type: StorageFill
     contents:

@@ -347,7 +347,9 @@ public sealed class LavalandPlanetSystem : EntitySystem
         // Cut off ruins if there's not enough places for them
         if (hugeRuins.Count >= randomCoords.Count)
         {
-            hugeRuins.RemoveRange(randomCoords.Count - 1, hugeRuins.Count - randomCoords.Count + 1);
+            // Keep one coordinate free; with no coordinates at all the old range started at -1 and threw.
+            var keep = Math.Max(randomCoords.Count - 1, 0);
+            hugeRuins.RemoveRange(keep, hugeRuins.Count - keep);
             spawnSmallRuins = false;
         }
 
@@ -372,14 +374,9 @@ public sealed class LavalandPlanetSystem : EntitySystem
             }
         }
 
-        // Create a new list that excludes all already used spaces that intersect with big ruins.
-        // Sweet optimization (another lag machine).
-        var newCoords = randomCoords.ToHashSet();
-        foreach (var usedBox in usedSpace)
-        {
-            var list = randomCoords.Where(coord => !usedBox.Contains(coord)).ToHashSet();
-            newCoords = newCoords.Concat(list).ToHashSet();
-        }
+        // Only coordinates outside every used box. This used to union the per-box results onto the full set, which
+        // filtered nothing and left small ruins burning their spawn attempts on spots already taken.
+        var newCoords = randomCoords.Where(coord => !usedSpace.Any(usedBox => usedBox.Contains(coord))).ToHashSet();
 
         if (newCoords.Count == 0 || !spawnSmallRuins)
             return;

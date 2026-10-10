@@ -9,6 +9,6 @@
   components:
   - type: Explosive
     explosionType: Default
-    totalIntensity: 15000
+    totalIntensity: 15000 # overridden by the NuclearBlast radius inherited from AmeController
     intensitySlope: 150
     maxIntensity: 1500

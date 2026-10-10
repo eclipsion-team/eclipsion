@@ -38,9 +38,14 @@ public sealed class TendrilSystem : EntitySystem
         var query = EntityQueryEnumerator<TendrilComponent>();
         while (query.MoveNext(out var uid, out var comp))
         {
-            if (comp.Mobs.Count >= comp.MaxSpawns)
-                continue;
             if (comp.LastSpawn + TimeSpan.FromSeconds(comp.SpawnDelay) > _time.CurTime)
+                continue;
+
+            // Mobs deleted without dying (chasms, cleanup, admin deletes) never raise the death event and would
+            // otherwise hold their slot forever, until the tendril stopped spawning altogether.
+            comp.Mobs.RemoveAll(mob => TerminatingOrDeleted(mob));
+
+            if (comp.Mobs.Count >= comp.MaxSpawns)
                 continue;
 
             var xform = Transform(uid);
@@ -70,7 +75,10 @@ public sealed class TendrilSystem : EntitySystem
 
     private void OnTendrilMobDeath(EntityUid uid, TendrilComponent comp, ref TendrilMobDeadEvent args)
     {
-        comp.Mobs.Remove(args.Entity);
+        // Only count a mob once, even if it is revived and killed again.
+        if (!comp.Mobs.Remove(args.Entity))
+            return;
+
         comp.DefeatedMobs++;
 
         // John Shitcode
@@ -84,6 +92,7 @@ public sealed class TendrilSystem : EntitySystem
     private void OnTendrilDestruction(EntityUid uid, TendrilComponent comp, DestructionEventArgs args)
     {
         var coords = Transform(uid).Coordinates;
+        var radius = comp.ChasmRadius;
         var delay = comp.ChasmDelay;
 
         if (comp.DestroyedWithMobs)
@@ -94,7 +103,11 @@ public sealed class TendrilSystem : EntitySystem
         Timer.Spawn(TimeSpan.FromSeconds(delay),
             () =>
         {
-            SpawnChasm(coords, comp.ChasmRadius);
+            // The grid/map the tendril stood on can be gone by the time the delay runs out.
+            if (TerminatingOrDeleted(coords.EntityId))
+                return;
+
+            SpawnChasm(coords, radius);
         });
     }
 

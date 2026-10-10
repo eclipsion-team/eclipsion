@@ -223,7 +223,7 @@
 - type: material
   id: PlastitaniumFibreAlloy
   stackEntity: PlastitaniumFibreAlloy
-  name: materials-plastitaniumfibre
+  name: materials-plastitaniumfibrealloy
   unit: materials-unit-sheet
   icon: { sprite: _Crescent/Objects/Materials/materials.rsi, state: plastitaniumfibrealloy }
   price: 0.40

@@ -81,6 +81,12 @@ public sealed class SupermatterConsoleSystem : SharedSupermatterConsoleSystem
     {
         base.Update(frameTime);
 
+        _updateTimer += frameTime;
+        if (_updateTimer < UpdateTime)
+            return;
+
+        _updateTimer -= UpdateTime;
+
         // Keep a list of UI entries for each gridUid, in case multiple consoles stand on the same grid
         var supermatterEntriesForEachGrid = new Dictionary<EntityUid, SupermatterConsoleEntry[]>();
 
@@ -168,14 +174,13 @@ public sealed class SupermatterConsoleSystem : SharedSupermatterConsoleSystem
         if (focusSupermatter == null)
             return null;
 
-        var focusSupermatterXform = Transform(focusSupermatter.Value);
+        // The focused supermatter may have been deleted since the client selected it.
+        if (!TryComp<TransformComponent>(focusSupermatter.Value, out var focusSupermatterXform))
+            return null;
 
         if (!focusSupermatterXform.Anchored ||
             focusSupermatterXform.GridUid != gridUid ||
-            !TryComp<SupermatterComponent>(focusSupermatter.Value, out var focusComp))
-            return null;
-
-        if (!TryComp<SupermatterComponent>(focusSupermatter.Value, out var sm))
+            !TryComp<SupermatterComponent>(focusSupermatter.Value, out var sm))
             return null;
 
         if (!TryComp<RadiationSourceComponent>(focusSupermatter.Value, out var radiationComp))
@@ -189,7 +194,7 @@ public sealed class SupermatterConsoleSystem : SharedSupermatterConsoleSystem
             GetIntegrity(sm),
             sm.Power,
             radiationComp.Intensity,
-            gases.Sum(gas => gases[gas.Key]),
+            gases.Values.Sum(),
             sm.Temperature,
             tempThreshold * sm.DynamicHeatResistance,
             sm.WasteMultiplier,

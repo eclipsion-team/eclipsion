@@ -105,10 +105,17 @@ public sealed class DirectionalTilingSystem : EntitySystem
 
     public void GridInitialize(GridInitializeEvent args)
     {
-        var mapComp = Comp<MapGridComponent>(args.EntityUid);
+        if (tileIdToDecals == null || tileIdToDecals.Count == 0
+            || !TryComp<MapGridComponent>(args.EntityUid, out var mapComp))
+            return;
+
         var enumerator = _mapSystem.GetAllTilesEnumerator(args.EntityUid, mapComp, true);
         while (enumerator.MoveNext(out var tile))
         {
+            // Most tiles on most grids are not directional; skip them before doing any coordinate work.
+            if (!tileIdToDecals.ContainsKey(tile.Value.Tile.TypeId))
+                continue;
+
             if (!(_tiles[tile.Value.Tile.TypeId] is ContentTileDefinition contentDef))
                 continue;
             EntityCoordinates gridPos = _mapSystem.GridTileToLocal(args.EntityUid, mapComp, tile.Value.GridIndices);
@@ -139,7 +146,7 @@ public sealed class DirectionalTilingSystem : EntitySystem
     public void OnTileChanged(ref TileChangedEvent tileEvent)
     {
 
-        if (!TryComp<MapGridComponent>(tileEvent.Entity, out var map))
+        if (!HasComp<MapGridComponent>(tileEvent.Entity))
             return;
 
         foreach (var entry in tileEvent.Changes)
@@ -150,6 +157,13 @@ public sealed class DirectionalTilingSystem : EntitySystem
 
     public void OnTileSingularChanged(TileChangedEntry entry, EntityUid tileGrid)
     {
+        // Directional decals only ever sit on directional tiles, and only directional tiles get their neighbours
+        // updated below. Explosions and hull breaches change thousands of ordinary tiles at once; without this every
+        // one of them paid for a decal range query that could never find anything.
+        if (tileIdToDecals == null
+            || !tileIdToDecals.ContainsKey(entry.OldTile.TypeId) && !tileIdToDecals.ContainsKey(entry.NewTile.TypeId))
+            return;
+
         if (!TryComp<MapGridComponent>(tileGrid, out var map))
             return;
 

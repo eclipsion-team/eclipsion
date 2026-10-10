@@ -65,9 +65,11 @@
       insertSuccessPopup: ame-controller-component-fuel-slot-success-insert
   - type: Explosive
     explosionType: Default
-    totalIntensity: 5000 # Hullrot - explosive AMEs
+    totalIntensity: 5000 # Hullrot - explosive AMEs. Overridden by the NuclearBlast radius below.
     intensitySlope: 150
     maxIntensity: 1500
+  - type: NuclearBlast # gibs everyone and erases everything within the radius
+    radius: 28
   - type: ActivatableUI
     key: enum.AmeControllerUiKey.Key
   - type: UserInterface

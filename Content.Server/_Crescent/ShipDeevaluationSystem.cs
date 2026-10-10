@@ -15,6 +15,13 @@ public sealed partial class ShipPriceMultiplierComponent : Component
     /// sold straight back at a profit, over and over.
     /// </summary>
     public int? PurchasePrice;
+
+    /// <summary>
+    /// Crescent: the station whose faction treasury paid for this hull, if a faction yard sold it. The resale goes
+    /// back into that vault; paying it to whoever holds the deed let a faction member launder treasury money into
+    /// their own account by buying at the faction yard and selling at a civilian one.
+    /// </summary>
+    public EntityUid? TreasuryStation;
 }
 public sealed class ShipPriceMultiplierSystem : EntitySystem
 {

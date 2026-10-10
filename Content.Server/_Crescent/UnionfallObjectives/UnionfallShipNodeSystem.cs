@@ -23,6 +23,7 @@ using Robust.Shared.Timing;
 using Content.Shared._Crescent.UnionfallShipNode;
 using Content.Server.Explosion.EntitySystems;
 using Content.Shared.Destructible;
+using Content.Server._Crescent.NuclearBlast;
 
 
 namespace Content.Server._Crescent.UnionfallCapturePoint;
@@ -34,6 +35,7 @@ public sealed class UnionfallShipNodeSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly DoAfterSystem _doAfter = default!;
     [Dependency] private readonly ExplosionSystem _explosionSystem = default!;
+    [Dependency] private readonly NuclearBlastSystem _nuclearBlast = default!;
     [Dependency] private readonly TransformSystem _transformSystem = default!;
 
     private ISawmill _sawmill = default!;
@@ -60,13 +62,17 @@ public sealed class UnionfallShipNodeSystem : EntitySystem
 
     }
 
-    private (int dsm, int ncwl) CountRemainingNodes()
+    private (int dsm, int ncwl) CountRemainingNodes(EntityUid destroyed)
     {
         int dsm = 0;
         int ncwl = 0;
         var query = EntityQueryEnumerator<UnionfallShipNodeComponent>();
-        while (query.MoveNext(out _, out var node))
+        while (query.MoveNext(out var uid, out var node))
         {
+            // Nodes caught in the same nuclear blast are queued for deletion but not gone yet.
+            if (uid == destroyed || TerminatingOrDeleted(uid) || EntityManager.IsQueuedForDeletion(uid))
+                continue;
+
             if (node.OwningFaction == "DSM") dsm++;
             else if (node.OwningFaction == "NCWL") ncwl++;
         }
@@ -156,22 +162,33 @@ public sealed class UnionfallShipNodeSystem : EntitySystem
 
     private void OnDestruction(EntityUid uid, UnionfallShipNodeComponent capturepoint, DestructionEventArgs args)
     {
-        _explosionSystem.TriggerExplosive(uid);
+        if (!_nuclearBlast.TryDetonate(uid))
+            _explosionSystem.TriggerExplosive(uid);
         if (isRoundEnding)
             return;
 
-        var (dsm, ncwl) = CountRemainingNodes();
-        if (capturepoint.OwningFaction == "NCWL") ncwl -= 1;
-        else if (capturepoint.OwningFaction == "DSM") dsm -= 1;
+        var (dsm, ncwl) = CountRemainingNodes(uid);
 
         if (ncwl <= 0 || dsm <= 0)
         {
+            // The blast can take other nodes down with this one, so the side that just ran out is not necessarily
+            // the side that owned it.
+            var loser = dsm <= 0 && ncwl > 0 ? "DSM"
+                : ncwl <= 0 && dsm > 0 ? "NCWL"
+                : capturepoint.OwningFaction;
+
             isRoundEnding = true;
             _announcer.SendAnnouncement(_announcer.GetAnnouncementId("Fallback"), Filter.Broadcast(),
-                capturepoint.OwningFaction + " has lost all of their warships and cloner databases. They are doomed to a slow death in Taypan.");
-            _gameTicker.EndRound("All of " + capturepoint.OwningFaction + "'s cloner databases have been destroyed. ROUND OVER");
+                loser + " has lost all of their warships and cloner databases. They are doomed to a slow death in Taypan.");
+            _gameTicker.EndRound("All of " + loser + "'s cloner databases have been destroyed. ROUND OVER");
             capturepoint.CurrentCaptureProgress = 999999;
-            Timer.Spawn(TimeSpan.FromMinutes(1), _gameTicker.RestartRound);
+            // An admin may restart by hand during the countdown; the timer must not then restart the next round too.
+            var roundId = _gameTicker.RoundId;
+            Timer.Spawn(TimeSpan.FromMinutes(1), () =>
+            {
+                if (_gameTicker.RoundId == roundId && _gameTicker.RunLevel == GameRunLevel.PostRound)
+                    _gameTicker.RestartRound();
+            });
         }
         else
         {

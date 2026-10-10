@@ -7,5 +7,5 @@ public sealed partial class GridCannonCacheComponent : Component
     public HashSet<EntityUid> CachedCannons = new();
 
     [ViewVariables]
-    public bool Dirty = true;
+    public bool CacheDirty = true;
 }

@@ -47,6 +47,7 @@ public sealed class PointCannonSystem : EntitySystem
     [Dependency] private readonly HardpointSystem _hardpoint = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IGameTiming _timing = default!; // +NEW
+    [Dependency] private readonly ShipWeaponTargetingSystem _shipTargeting = default!;
 
     private float _accumulatedFrameTime;
     private float _uiTps;
@@ -58,6 +59,13 @@ public sealed class PointCannonSystem : EntitySystem
     private readonly List<(EntityUid Console, bool Full)> _relinkScratch = new();
     private readonly Dictionary<EntityUid, GridCannonCacheComponent> _dirtyGridScratch = new();
     private static readonly TimeSpan RelinkDebounce = TimeSpan.FromSeconds(2);
+
+    /// <summary>
+    ///     A refresh re-measures every gun aboard with a 25-tile static lookup each, and the message comes straight
+    ///     from the client, so it is rate limited per console.
+    /// </summary>
+    private static readonly TimeSpan RefreshCooldown = TimeSpan.FromSeconds(1);
+    private readonly Dictionary<EntityUid, TimeSpan> _nextRefresh = new();
 
     /// <summary>
     ///     How long a fire order stands before it lapses on its own. Two and a half of the console's 100ms
@@ -152,7 +160,7 @@ public sealed class PointCannonSystem : EntitySystem
     public void InvalidateGridCannons(EntityUid gridUid)
     {
         if (_gridCacheQuery.TryGetComponent(gridUid, out var cache))
-            cache.Dirty = true;
+            cache.CacheDirty = true;
 
         QueueGridConsoleRelink(gridUid);
     }
@@ -164,7 +172,7 @@ public sealed class PointCannonSystem : EntitySystem
         if (xform.GridUid is not { } gridUid)
             return;
         if (_gridCacheQuery.TryGetComponent(gridUid, out var cache))
-            cache.Dirty = true;
+            cache.CacheDirty = true;
 
         QueueGridConsoleRelink(gridUid);
     }
@@ -232,7 +240,7 @@ public sealed class PointCannonSystem : EntitySystem
     {
         var cache = EnsureComp<GridCannonCacheComponent>(gridUid);
 
-        if (!cache.Dirty)
+        if (!cache.CacheDirty)
             return cache.CachedCannons;
 
         cache.CachedCannons.Clear();
@@ -244,7 +252,7 @@ public sealed class PointCannonSystem : EntitySystem
                 cache.CachedCannons.Add(uid);
         }
 
-        cache.Dirty = false;
+        cache.CacheDirty = false;
         return cache.CachedCannons;
     }
 
@@ -260,7 +268,7 @@ public sealed class PointCannonSystem : EntitySystem
                 continue;
 
             var cache = EnsureComp<GridCannonCacheComponent>(gridUid);
-            if (!cache.Dirty)
+            if (!cache.CacheDirty)
                 continue;
 
             cache.CachedCannons.Clear();
@@ -278,7 +286,7 @@ public sealed class PointCannonSystem : EntitySystem
         }
 
         foreach (var cache in _dirtyGridScratch.Values)
-            cache.Dirty = false;
+            cache.CacheDirty = false;
     }
 
     public override void Update(float frameTime)
@@ -416,9 +424,15 @@ public sealed class PointCannonSystem : EntitySystem
 
     private void OnRefreshServer(EntityUid console, TargetingConsoleComponent component, FireControlConsoleRefreshServerMessage args)
     {
+        var now = _timing.CurTime;
+        if (_nextRefresh.TryGetValue(console, out var next) && now < next)
+            return;
+
+        _nextRefresh[console] = now + RefreshCooldown;
+
         var gridUid = Transform(console).GridUid;
         if (gridUid is not null && _gridCacheQuery.TryGetComponent(gridUid.Value, out var cache))
-            cache.Dirty = true;
+            cache.CacheDirty = true;
 
         // A cannon is only ever measured on the tick it gets linked, so arcs describe the hull as it was when
         // the console first picked the gun up. Walls come and go - a breach opens a lane the arcs still call
@@ -463,6 +477,7 @@ public sealed class PointCannonSystem : EntitySystem
         comp.FireOrderExpiry = TimeSpan.Zero;
         _activeConsoles.Remove(console);
         _pendingRelinks.Remove(console);
+        _nextRefresh.Remove(console);
     }
 
     private void OnConsoleAnchor(EntityUid console, TargetingConsoleComponent comp, ref AnchorStateChangedEvent args)
@@ -827,7 +842,7 @@ public sealed class PointCannonSystem : EntitySystem
             entPos = new EntityCoordinates(form.MapUid.Value, pos);
         }
 
-        EntityManager.System<ShipWeaponTargetingSystem>().SetConsole(uid, console);
+        _shipTargeting.SetConsole(uid, console);
         _gunSys.AttemptShoot(uid, uid, gun, entPos);
         return true;
     }

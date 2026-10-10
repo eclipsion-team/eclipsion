@@ -83,19 +83,29 @@ public sealed partial class SupermatterSystem : EntitySystem
         SubscribeLocalEvent<SupermatterComponent, SupermatterDoAfterEvent>(OnGetSliver);
     }
 
-    private HashSet<Entity<SupermatterComponent>> _activeSupermatterCrystals = new();
+    private readonly HashSet<Entity<SupermatterComponent>> _activeSupermatterCrystals = new();
+    private readonly List<Entity<SupermatterComponent>> _inactiveScratch = new();
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
 
+        // Removals are collected first: the set used to be edited while it was being enumerated, and a crystal
+        // deleted while active (destroyed, round restart) stayed in it forever.
+        _inactiveScratch.Clear();
         foreach (var ent in _activeSupermatterCrystals)
         {
-            if (!ent.Comp.Activated)
-                _activeSupermatterCrystals.Remove(ent);
+            if (TerminatingOrDeleted(ent) || !ent.Comp.Activated)
+            {
+                _inactiveScratch.Add(ent);
+                continue;
+            }
 
             AnnounceCoreDamage(ent.Owner, ent.Comp);
         }
+
+        foreach (var ent in _inactiveScratch)
+            _activeSupermatterCrystals.Remove(ent);
     }
 
     private void OnMapInit(EntityUid uid, SupermatterComponent sm, MapInitEvent args)
@@ -227,8 +237,12 @@ public sealed partial class SupermatterSystem : EntitySystem
 
     private void OnGetSliver(EntityUid uid, SupermatterComponent sm, ref SupermatterDoAfterEvent args)
     {
-        if (args.Cancelled)
+        // Several do-afters can be started before the first one lands; only one of them gets the sliver.
+        if (args.Cancelled || args.Handled || sm.SliverRemoved)
             return;
+
+        args.Handled = true;
+        sm.SliverRemoved = true;
 
         // Your criminal actions will not go unnoticed
         sm.Damage += sm.DamageDelaminationPoint / 10;

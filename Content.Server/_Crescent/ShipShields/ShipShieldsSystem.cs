@@ -117,8 +117,8 @@ public sealed partial class ShipShieldsSystem : EntitySystem
             if (emitter.Shielded is { } shielded && shielded != parent.Value)
                 RemoveEmitterShield(uid, emitter);
 
-            // filter is needed to play the power down / power up noise for ONLY those on the ship grid
-            var filter = _station.GetInOwningStation(uid);
+            // The power up / down noise plays for ONLY those on the ship grid. Built on demand: it walks every
+            // player, and almost every second of an emitter's life plays no sound at all.
 
             // if our emitter's .DamageTaken is over the .DamageLimit, then set the OverloadAccumulator to the DamageOverloadTimePunishment.
             if (emitter.Damage > emitter.DamageLimit)
@@ -137,7 +137,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
                 {
                     emitter.Shield = shield;
                     emitter.Shielded = parent.Value;
-                    _audio.PlayGlobal(emitter.PowerUpSound, filter, true, emitter.PowerUpSound.Params);
+                    _audio.PlayGlobal(emitter.PowerUpSound, _station.GetInOwningStation(uid), true, emitter.PowerUpSound.Params);
                 }
             }
             // if our emitter is Overloaded, AND the shield is active, shut down the shield.
@@ -145,14 +145,14 @@ public sealed partial class ShipShieldsSystem : EntitySystem
             {
                 emitter.Recharging = true; //boost hp recharge when it's down
                 RemoveEmitterShield(uid, emitter);
-                _audio.PlayGlobal(emitter.PowerDownSound, filter, true, emitter.PowerUpSound.Params);
+                _audio.PlayGlobal(emitter.PowerDownSound, _station.GetInOwningStation(uid), true, emitter.PowerUpSound.Params);
             }
 
             if (!power.Powered && emitter.Shield is not null) // if shield is depowered then unshield the ship
             {
                 emitter.Recharging = true; //boost hp recharge when it's down
                 RemoveEmitterShield(uid, emitter);
-                _audio.PlayGlobal(emitter.PowerDownSound, filter, true, emitter.PowerUpSound.Params);
+                _audio.PlayGlobal(emitter.PowerDownSound, _station.GetInOwningStation(uid), true, emitter.PowerUpSound.Params);
             }
 
             // SHIELDS POWERING UP / DOWN BECAUSE OF POWER DRAW IS HANDLED SOMEWHERE ELSE

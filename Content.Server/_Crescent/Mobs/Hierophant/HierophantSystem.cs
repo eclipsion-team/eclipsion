@@ -79,7 +79,14 @@ public sealed class HierophantSystem : EntitySystem
         var position = _xform.GetMapCoordinates(field);
         _damage.SetAllDamage(ent, damageable, 0);
         _threshold.SetMobStateThreshold(ent, _baseHierophantHp, MobState.Dead, thresholds);
-        Timer.Spawn(TimeSpan.FromSeconds(10), () => _xform.SetMapCoordinates(ent, position));
+        Timer.Spawn(TimeSpan.FromSeconds(10), () =>
+        {
+            // The boss can be killed or deleted (round restart) before the timer fires.
+            if (TerminatingOrDeleted(ent))
+                return;
+
+            _xform.SetMapCoordinates(ent, position);
+        });
     }
 
     private void OnHierophantKilled(Entity<HierophantBossComponent> ent, ref MegafaunaKilledEvent args)
@@ -158,7 +165,16 @@ public sealed class HierophantSystem : EntitySystem
 
     private void InitBoss(Entity<HierophantBossComponent> ent, AggressiveComponent aggressors)
     {
-        ent.Comp.Aggressive = true;  
+        ent.Comp.Aggressive = true;
+
+        // DeinitBoss cancels the token to stop pending attacks. A cancelled source stays cancelled, so without a
+        // fresh one every token-bound attack (chasers, crosses, damage areas) silently never fires after re-aggro.
+        if (ent.Comp.CancelToken.IsCancellationRequested)
+        {
+            ent.Comp.CancelToken.Dispose();
+            ent.Comp.CancelToken = new System.Threading.CancellationTokenSource();
+        }
+
         RaiseLocalEvent(ent, new MegafaunaStartupEvent());
     }
 
@@ -187,7 +203,8 @@ public sealed class HierophantSystem : EntitySystem
                 SpawnCrosses(ent, target, attackPower);
                 break;
             case HierophantAttackType.DamageArea:
-                if (_random.Next(0, 1) == 1)
+                // Next(0, 1) always returned 0 (the upper bound is exclusive), so this was never a coin flip.
+                if (_random.Prob(0.5f))
                     DamageArea(ent, target, attackPower + 1);
                 else
                     DamageArea(ent, target, attackPower * 2); // bad luck
@@ -213,12 +230,15 @@ public sealed class HierophantSystem : EntitySystem
         var target = PickTarget(ent);
 
         // How we round up our anger level, to bigger value or the lower.
-        var rounding = _random.Next(0, 1) == 1 ? MidpointRounding.AwayFromZero : MidpointRounding.ToZero;
+        var rounding = _random.Prob(0.5f) ? MidpointRounding.AwayFromZero : MidpointRounding.ToZero;
 
         // Attack amount is just rounded up anger
         var attackPower = (int) Math.Round(ent.Comp.CurrentAnger, rounding);
         // Pick random attack, but not a previous one
         var attacks = ent.Comp.Attacks.Keys.Where(x => x != ent.Comp.PreviousAttack).ToList();
+        if (attacks.Count == 0)
+            return;
+
         var attackType = _random.Pick(attacks);
 
         DoAttack(ent, target, attackType, attackPower);
@@ -252,7 +272,8 @@ public sealed class HierophantSystem : EntitySystem
             Timer.Spawn(delay,
                 () =>
                 {
-                    SpawnDamageBox(beacon, rangeCopy);
+                    if (!TerminatingOrDeleted(beacon))
+                        SpawnDamageBox(beacon, rangeCopy);
                 }, token);
         }
 
@@ -276,6 +297,9 @@ public sealed class HierophantSystem : EntitySystem
             Timer.Spawn(delay,
                 () =>
                 {
+                    if (TerminatingOrDeleted(ent))
+                        return;
+
                     var chaser = Spawn(_chaserPrototype, Transform(ent).Coordinates);
                     if (TryComp<HierophantChaserComponent>(chaser, out var chasercomp))
                     {
@@ -301,14 +325,15 @@ public sealed class HierophantSystem : EntitySystem
                 () =>
                 {
                     target ??= ent;
-                    SpawnCross(target.Value);
+                    if (!TerminatingOrDeleted(target.Value))
+                        SpawnCross(target.Value);
                 }, token);
         }
     }
 
     private void BlinkRandom(EntityUid uid)
     {
-        var vector = new Vector2();
+        Vector2? vector = null;
 
         var grid = _xform.GetGrid(uid);
         if (grid == null)
@@ -324,10 +349,13 @@ public sealed class HierophantSystem : EntitySystem
             if (!ents.Any())
             {
                 vector = position;
+                break;
             }
         }
 
-        Blink(uid, vector);
+        // Falling back to a default Vector2 teleported the boss to the map origin.
+        if (vector != null)
+            Blink(uid, vector.Value);
     }
 
     #endregion
@@ -386,6 +414,12 @@ public sealed class HierophantSystem : EntitySystem
         Timer.Spawn((int)(HierophantBossComponent.TileDamageDelay * 1000),
             () =>
             {
+                if (TerminatingOrDeleted(ent))
+                {
+                    QueueDel(dummy);
+                    return;
+                }
+
                 _audio.PlayPvs(new SoundPathSpecifier("/Audio/Magic/blink.ogg"), Transform(ent).Coordinates, AudioParams.Default.WithMaxDistance(10f));
                 _xform.SetWorldPosition(ent, worldPos);
                 QueueDel(dummy);

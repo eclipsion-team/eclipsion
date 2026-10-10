@@ -1,6 +1,6 @@
 - type: stealTargetGroup
   id: SupermatterSliver
-  name: steal-target-supermatter-sliver
+  name: supermatter sliver
   sprite:
     sprite: _Crescent/Structures/Power/Generation/Supermatter/supermatter_sliver.rsi
     state: icon

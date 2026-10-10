@@ -213,6 +213,9 @@ public sealed class IntruderTeleporterSystem : EntitySystem
 
         if (comp.Squad.Remove(user))
         {
+            // The launch works off a snapshot of the roster; leaving during the countdown has to take them off
+            // that too, or they are told they left and get thrown onto the target anyway.
+            comp.LaunchSquad.Remove(user);
             _popup.PopupEntity(Loc.GetString("intruder-teleporter-left"), uid, user);
             UpdateUi(ent);
             return;

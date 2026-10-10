@@ -55,11 +55,12 @@ private void OnComponentInit(EntityUid uid, UnionfallCapturePointComponent compo
         {
             capturepoint.GracePeriod -= frameTime; //we do it this way so we can VVedit in admin mode midgame
 
+            // continue, not return: one idle point must not stop every other point from being processed.
             if (capturepoint.GracePeriod > 0f) //point is still in grace period
-                return;
+                continue;
 
             if (capturepoint.CapturingFaction == null) //if nobody's capping it then don't do anything
-                return;
+                continue;
             else //someone is capping it rn
             {
                 capturepoint.CurrentCaptureProgress -= frameTime; //this is how the timer decreases
@@ -71,7 +72,13 @@ private void OnComponentInit(EntityUid uid, UnionfallCapturePointComponent compo
             capturepoint.CapturingFaction + " has secured the control point! The round is over.");
                 _gameTicker.EndRound(capturepoint.CapturingFaction + " WON. RESTARTING ROUND IN 1 MINUTE");
                 capturepoint.CurrentCaptureProgress = 999999;
-                Timer.Spawn(TimeSpan.FromMinutes(1), _gameTicker.RestartRound);
+                // An admin may restart by hand during the countdown; the timer must not then restart the next round too.
+                var roundId = _gameTicker.RoundId;
+                Timer.Spawn(TimeSpan.FromMinutes(1), () =>
+                {
+                    if (_gameTicker.RoundId == roundId && _gameTicker.RunLevel == GameRunLevel.PostRound)
+                        _gameTicker.RestartRound();
+                });
             }
         }
     }

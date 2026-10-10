@@ -4,6 +4,7 @@ using Content.Server.Explosion.EntitySystems;
 using Content.Shared._Crescent.Diplomacy;
 using Content.Shared.Projectiles;
 using Content.Shared.Shuttles.Systems;
+using Robust.Shared.Map;
 
 namespace Content.Server._Crescent.ProximityFuse;
 
@@ -17,16 +18,15 @@ public sealed class ProximityFuseSystem : EntitySystem
     [Dependency] private readonly SharedShuttleSystem _shuttle = default!;
 
     private EntityQuery<TransformComponent> _xformQuery;
-    private EntityQuery<ProximityFuseTargetComponent> _targetQuery;
     private EntityQuery<ProjectileComponent> _projectileQuery;
 
     private readonly List<EntityUid> _keysScratch = new();
+    private readonly HashSet<Entity<ProximityFuseTargetComponent>> _nearbyScratch = new();
 
     public override void Initialize()
     {
         base.Initialize();
         _xformQuery = GetEntityQuery<TransformComponent>();
-        _targetQuery = GetEntityQuery<ProximityFuseTargetComponent>();
         _projectileQuery = GetEntityQuery<ProjectileComponent>();
     }
 
@@ -83,12 +83,15 @@ public sealed class ProximityFuseSystem : EntitySystem
 
             comp.NextDiscoveryScan = DiscoveryInterval;
 
-            var nearby = _lookup.GetEntitiesInRange(uid, comp.MaxRange,
+            // Query the target component directly into a reused set. Pulling every entity in range and filtering
+            // afterwards allocated a fresh set per projectile every 0.08s and walked every wall and item near a ship.
+            _nearbyScratch.Clear();
+            _lookup.GetEntitiesInRange(new MapCoordinates(ourMapPos, xform.MapID), comp.MaxRange, _nearbyScratch,
                 LookupFlags.Dynamic | LookupFlags.Static | LookupFlags.Sundries);
 
-            foreach (var near in nearby)
+            foreach (var (near, _) in _nearbyScratch)
             {
-                if (!_targetQuery.HasComponent(near))
+                if (near == uid)
                     continue;
 
                 if (!_xformQuery.TryGetComponent(near, out var txform))

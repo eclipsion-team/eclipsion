@@ -17,6 +17,10 @@ armor-damage-type-cold = Cold
 armor-damage-type-poison = Poison
 armor-damage-type-shock = Shock
 armor-damage-type-structural = Structural
+armor-damage-type-holy = Holy
+armor-damage-type-decay = Decay
+armor-damage-type-trauma = Trauma
+armor-damage-type-piercinginducedblunt = Impact
 armor-examine-stamina = - [color=cyan]Stamina[/color] damage reduced by [color=lightblue]{$num}%[/color].
 armor-material-examine = It is plated with [color=cyan]{$material}[/color].
 armor-degradation-ceramic = ceramic

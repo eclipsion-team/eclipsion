@@ -81,6 +81,10 @@ public sealed class HullrotSelfDeleteSystem : EntitySystem
 
     private void DeleteEntity(EntityUid uid)
     {
+        // Runs off a timer; the entity may already be gone (picked up and destroyed, round restart).
+        if (TerminatingOrDeleted(uid))
+            return;
+
         _IentityManager.DeleteEntity(uid);
     }
 
@@ -105,9 +109,13 @@ public sealed class HullrotSelfDeleteSystem : EntitySystem
         if (transformComp.GridUid == null) //are we STILL in space?
         {
             //_sawmill.Debug("2. trying to delete entity + " + Name(uid) + "...");
-            var enumerator = EntityManager.EntityQueryEnumerator<ActorComponent>(); //should only detect players, but this fails for some reason.
-            while (enumerator.MoveNext(out var actorUid, out var _))
+            var enumerator = EntityManager.EntityQueryEnumerator<ActorComponent, TransformComponent>(); //should only detect players, but this fails for some reason.
+            while (enumerator.MoveNext(out var actorUid, out var _, out var actorXform))
             {
+                // World positions are only comparable on the same map.
+                if (actorXform.MapID != transformComp.MapID)
+                    continue;
+
                 //_sawmill.Debug("3. checking distance between entity (" + Name(uid) + "), [" + _transform.GetWorldPosition(uid).ToString() + "], and actor " + Name(actorUid) + ", [" + _transform.GetWorldPosition(actorUid).ToString() + "], length = " + (_transform.GetWorldPosition(uid) - _transform.GetWorldPosition(actorUid)).Length().ToString());
                 if ((_transform.GetWorldPosition(uid) - _transform.GetWorldPosition(actorUid)).Length() < _distanceToDeleteItems)
                 {
@@ -147,9 +155,13 @@ public sealed class HullrotSelfDeleteSystem : EntitySystem
         if (!_mappingManager.IsInitialized(transformComp.MapID)) //if the map is NOT initialized, then WE ARE IN MAPPING MODE!!! SO DON'T DO SHIT!!!!
             return;
 
-        var enumerator = EntityManager.EntityQueryEnumerator<ActorComponent>(); //only players are actors. i think.
-        while (enumerator.MoveNext(out var actorUid, out var _))
+        var enumerator = EntityManager.EntityQueryEnumerator<ActorComponent, TransformComponent>(); //only players are actors. i think.
+        while (enumerator.MoveNext(out var actorUid, out var _, out var actorXform))
         {
+            // World positions are only comparable on the same map.
+            if (actorXform.MapID != transformComp.MapID)
+                continue;
+
             if ((_transform.GetWorldPosition(uid) - _transform.GetWorldPosition(actorUid)).Length() < _distanceToDeleteGrids)
             {
                 var dEv = new HullrotAttemptCleanupGrid();

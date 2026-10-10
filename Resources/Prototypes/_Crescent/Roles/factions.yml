@@ -180,6 +180,11 @@
 - type: faction
   name: "Colonial Minutemen"
   id: CMM
+  descriptionPrefix: |
+    MINIMUM PLAYTIME: NONE
+    The remnant of Taypan's old public defense force, sheltering at Gliess Santo.
+    Minutemen roles only open once the Analiesse returns midround.
+  buttonColor: "#2E4E78"
   description: |
     The Colonial Minutemen began as a publicly funded Taypani defense force during the first chaotic years of the
     Turning. Port fees, local levies, donated supplies and volunteer service paid them to protect routes and civilians,
@@ -191,7 +196,10 @@
   color: "#9FED58"
   uiAccent: "#4E8FD6"
   weight: 1
-  enabled: false
+  enabled: true
+  # No round-start station of its own: the Minutemen jobs live on the Analiesse, which only arrives as the
+  # CMM finale (see _Crescent/Maps/Stations/analiesse.yml).
+  limitedAvailability: true
   icon:
     sprite: /Textures/_Crescent/faction_icons.rsi
     state: cmm

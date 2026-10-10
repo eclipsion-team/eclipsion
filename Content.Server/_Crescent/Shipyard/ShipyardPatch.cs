@@ -515,7 +515,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
                 return;
             }
 
-            if (bank.Balance <= vesselPrice)
+            // An exact balance is enough; the withdrawal itself allows it.
+            if (bank.Balance < vesselPrice)
             {
                 ConsolePopup(args.Actor, Loc.GetString("cargo-console-insufficient-funds", ("cost", vesselPrice)));
                 PlayDenySound(uid, component);
@@ -549,6 +550,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         var priceMult = EnsureComp<ShipPriceMultiplierComponent>(shuttle.Owner);
         priceMult.priceMultiplier = 0.9f;
         priceMult.PurchasePrice = vesselPrice;
+        priceMult.TreasuryStation = isFactionYard ? station : null;
 
         var sellValue = ComputeSellValue(shuttle.Owner, (ShipyardConsoleUiKey)args.UiKey);
 
@@ -689,6 +691,9 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         var channel = component.ShipyardChannel;
 
+        // Read before the sale deletes the hull: a ship the faction treasury paid for is sold back into that vault.
+        var treasuryStation = CompOrNull<ShipPriceMultiplierComponent>(shuttleUid)?.TreasuryStation;
+
         if (!TrySellShuttle(stationUid, shuttleUid, out var bill, (ShipyardConsoleUiKey) args.UiKey))
         {
             ConsolePopup(args.Actor, Loc.GetString("shipyard-console-sale-reqs"));
@@ -700,7 +705,14 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         Del(targetId);
 
 
-        if (component.UsesFactionTreasury && _market.GetStationFaction(stationUid) is not null)
+        if (treasuryStation is { } paidBy)
+        {
+            // Wherever it is sold, a treasury-bought hull never pays out to a personal account. If the paying
+            // station is gone the proceeds are simply lost rather than handed to the seller.
+            if (!TerminatingOrDeleted(paidBy) && _market.GetStationFaction(paidBy) is not null)
+                _market.AddTreasury(paidBy, bill);
+        }
+        else if (component.UsesFactionTreasury && _market.GetStationFaction(stationUid) is not null)
             _market.AddTreasury(stationUid, bill);
         else
             _bank.TryBankDeposit(player, bill);

@@ -74,6 +74,7 @@
     color: "#90d5ff"
   - type: AnimationPlayer
   - type: Appearance
+  - type: NuclearBlastImmune # main objective, must survive a database going off next to it
   - type: UnionfallCapturePoint
     gracePeriod: 600
     timeToCapture: 10
@@ -166,7 +167,9 @@
     intensitySlope: 2
     maxIntensity: 200
     tileBreakScale: 0.2 # until MLG makes grid pieces not spam the map, then keep this
-    totalIntensity: 20000
+    totalIntensity: 20000 # overridden by the NuclearBlast radius below
+  - type: NuclearBlast # gibs everyone and erases everything within the radius
+    radius: 28
   - type: UnionfallShipNode
     gracePeriod: 600
     timeToCapture: 60
@@ -257,7 +260,9 @@
     intensitySlope: 5
     maxIntensity: 50
     tileBreakScale: 0.2 # until MLG makes grid pieces not spam the map, then keep this 
-    totalIntensity: 5000 # slips most ships in half
+    totalIntensity: 5000 # overridden by the NuclearBlast radius below
+  - type: NuclearBlast # gibs everyone and erases everything within the radius
+    radius: 28
   - type: UnionfallShipNode
     gracePeriod: 600
     timeToCapture: 60
