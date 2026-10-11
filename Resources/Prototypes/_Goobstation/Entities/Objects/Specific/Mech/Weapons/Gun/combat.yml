@@ -242,7 +242,7 @@
     sprite: Objects/Specific/Mech/mecha_equipment.rsi
     state: mecha_missilerack
   - type: Gun
-    fireRate: 1
+    fireRate: 0.5
     selectedMode: SemiAuto
     availableModes:
       - SemiAuto
@@ -265,7 +265,7 @@
     sprite: Objects/Specific/Mech/mecha_equipment.rsi
     state: mecha_missilerack_six
   - type: Gun
-    fireRate: 1
+    fireRate: 0.5
     selectedMode: SemiAuto
     availableModes:
       - SemiAuto

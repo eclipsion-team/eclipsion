@@ -111,7 +111,7 @@
     sprite: _Crescent/Objects/Specific/mechaweapons.rsi
     state: mechmissile
   - type: Gun
-    fireRate: 0.3
+    fireRate: 0.25
     selectedMode: SemiAuto
     availableModes:
       - SemiAuto
@@ -378,7 +378,7 @@
     state: hmg
   - type: Gun
     minAngle: 10
-    fireRate: 2
+    fireRate: 0.75 # explosive shells - a cannon, not a hose
     selectedMode: FullAuto
     availableModes:
       - FullAuto
@@ -413,7 +413,7 @@
     sprite: _Crescent/Objects/Specific/mechaweapons.rsi
     state: Cannon
   - type: Gun
-    fireRate: 0.5
+    fireRate: 0.4
     projectileSpeed: 75
     selectedMode: FullAuto
     availableModes:
@@ -519,7 +519,7 @@
     sprite: _Crescent/Objects/Specific/mechaweapons.rsi
     state: grenadelauncher
   - type: Gun
-    fireRate: 0.3
+    fireRate: 0.25
     selectedMode: FullAuto
     availableModes:
       - FullAuto
@@ -548,9 +548,9 @@
     sprite: _Crescent/Objects/Specific/mechaweapons.rsi
     state: plasmarifle
   - type: Gun
-    shotsPerBurst: 3
-    burstFireRate: 4
-    burstCooldown: 1
+    shotsPerBurst: 2
+    burstFireRate: 2
+    burstCooldown: 2.5
     selectedMode: Burst
     availableModes:
       - Burst
@@ -659,7 +659,7 @@
     sprite: _Crescent/Objects/Specific/mechaweapons.rsi
     state: plasmacannon
   - type: Gun
-    fireRate: 0.5
+    fireRate: 0.4
     selectedMode: FullAuto
     availableModes:
       - FullAuto

@@ -189,6 +189,16 @@
   parent: Projectile27mmHE
   categories: [ HideSpawnMenu ]
   components:
+  # The HE burst alone barely scratches a person: it is a 3.6-intensity Fragmentation blast,
+  # which only puts 30% of its damage on the body and is then cut down by armour's explosion
+  # resistance. Without this the round lands with BaseBulletTrigger's 6.3 blunt.
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 60
+        Structural: 50
+    harmorPenetration: 50
+    stoppingPower: 7
   - type: Explosive
     maxIntensity: 3.6
     totalIntensity: 22.5
