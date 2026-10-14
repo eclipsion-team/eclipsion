@@ -45,10 +45,10 @@ public sealed class WallGirderTest
             // Ships are rarely axis-aligned; this is where the old random-offset spawn missed the tile.
             xformSys.SetLocalRotation(map.Grid.Owner, Angle.FromDegrees(37));
 
-            for (var i = 0; i < WallPrototypes.Length; i++)
+            // Fill the gaps between the walls too: isolated tiles get split off into grids of their own.
+            for (var x = 0; x < WallPrototypes.Length * 2; x++)
             {
-                var tile = new Vector2i(i * 2, 0);
-                mapSys.SetTile(map.Grid.Owner, map.Grid.Comp, tile, map.Tile.Tile);
+                mapSys.SetTile(map.Grid.Owner, map.Grid.Comp, new Vector2i(x, 0), map.Tile.Tile);
             }
         });
 

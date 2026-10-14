@@ -29,17 +29,17 @@
 #   diagonals     Abandoned Station    2000,  2000    Taypan-1 belt      -2000,  2000
 #                 Taypan-2 belt        2000, -2000    Ship Graveyard     -2000, -2000
 #
-# DERELICTS (no warp point) are not pinned to a spot at all. randomRingMin/Max put them somewhere on
+# DERELICTS are not pinned to a spot at all. randomRingMin/Max put them somewhere on
 # a ring around posX/posY - a fresh angle and radius every round - so the same wreck turns up in a
 # different part of the sector each time and nobody can memorise a loot route.
-# All five roll on 0..8500 centred on the origin: the whole sector disc, from the core out to the
+# All six roll on 0..8500 centred on the origin: the whole sector disc, from the core out to the
 # 8500 edge, north side and south side alike. An earlier 6000..8500 ring parked every wreck in the
 # outer band, which is its own memorisable route - sweep the rim and you have them all. With the
 # full disc a wreck can turn up between the faction stations just as easily as past them, so there
 # is no one direction worth rushing. The radius is rolled on r^2 (see RollRingPosition), so rolls
 # spread evenly over the area instead of bunching near the middle.
 #
-# All five carry IFFLabel: Derelict rather than hideIFF, so each one is a contact on radar under the
+# All six carry IFFLabel: Derelict rather than hideIFF, so each one is a contact on radar under the
 # same anonymous name. Hiding them outright meant a wreck drew nothing at all until a ship was
 # already on top of it, which made a random position worth very little - nobody sweeps 8500 units of
 # empty space on the off chance. A shared label keeps the find worth making: you can see that
@@ -198,6 +198,15 @@
         minClearance: 2000
         IFFLabel: Derelict
         pinned: true
+      PsionicChurch:
+        gameMapID: PsionicChurch
+        posX: 0
+        posY: 0
+        randomRingMin: 0
+        randomRingMax: 8500
+        minClearance: 2000
+        IFFLabel: Derelict
+        pinned: true
       DerelictWaystation:
         gameMapID: DerelictWaystation
         posX: 2000
@@ -333,6 +342,15 @@
         minClearance: 2000
         IFFLabel: Derelict
         pinned: true
+      PsionicChurch:
+        gameMapID: PsionicChurch
+        posX: 0
+        posY: 0
+        randomRingMin: 0
+        randomRingMax: 8500
+        minClearance: 2000
+        IFFLabel: Derelict
+        pinned: true
       DerelictWaystation:
         gameMapID: DerelictWaystation
         posX: 2000
@@ -460,6 +478,15 @@
         pinned: true
       FogwreckedDerelict:
         gameMapID: FogwreckedDerelict
+        posX: 0
+        posY: 0
+        randomRingMin: 0
+        randomRingMax: 8500
+        minClearance: 2000
+        IFFLabel: Derelict
+        pinned: true
+      PsionicChurch:
+        gameMapID: PsionicChurch
         posX: 0
         posY: 0
         randomRingMin: 0
@@ -606,6 +633,15 @@
         minClearance: 2000
         IFFLabel: Derelict
         pinned: true
+      PsionicChurch:
+        gameMapID: PsionicChurch
+        posX: 0
+        posY: 0
+        randomRingMin: 0
+        randomRingMax: 8500
+        minClearance: 2000
+        IFFLabel: Derelict
+        pinned: true
       DerelictWaystation:
         gameMapID: DerelictWaystation
         posX: 2000
@@ -737,6 +773,15 @@
         pinned: true
       FogwreckedDerelict:
         gameMapID: FogwreckedDerelict
+        posX: 0
+        posY: 0
+        randomRingMin: 0
+        randomRingMax: 8500
+        minClearance: 2000
+        IFFLabel: Derelict
+        pinned: true
+      PsionicChurch:
+        gameMapID: PsionicChurch
         posX: 0
         posY: 0
         randomRingMin: 0

@@ -20230,7 +20230,7 @@ entities:
     - type: Transform
       pos: -2.5,11.5
       parent: 1
-- proto: PaperBin20
+- proto: PaperBin
   entities:
   - uid: 520
     components:

@@ -7,11 +7,14 @@
 # to. Drinking from (or draining) the fountain is the only thing it is there for.
 #
 # The fountain also tops itself back up forever, so draining it only ever costs time.
+# Place it with OracleInfiniteSpawner (Markers/Spawners/statues.yml), the same way the vanilla
+# Oracle goes in through OracleSpawner.
 
 - type: entity
   parent: BaseStructure
-  id: OracleDormant
+  id: OracleInfinite
   name: dormant oracle
+  suffix: Infinite
   description: She asks for nothing. Her fountain was filled long before anyone thought to bargain for it.
   components:
   - type: Sprite
@@ -26,20 +29,20 @@
   - type: SolutionContainerManager
     solutions:
       fountain:
-        maxVol: 200
+        maxVol: 500
         reagents:
         - ReagentId: LotophagoiOil
-          Quantity: 200
-  # 1u every 3 seconds - 20u a minute, so a full dose comes back in about a minute and a
-  # drained fountain refills in roughly ten. The system clamps to the free volume, so a full
-  # fountain never overflows or spills.
+          Quantity: 500
+  # 5u every 2 seconds - 150u a minute, so a drained fountain is back to its full 500u in a
+  # little over three minutes. The system clamps to the free volume, so a full fountain never
+  # overflows or spills.
   - type: SolutionRegeneration
     solution: fountain
-    duration: 3
+    duration: 2
     generated:
       reagents:
       - ReagentId: LotophagoiOil
-        Quantity: 1
+        Quantity: 5
   - type: Drink
     solution: fountain
   - type: DrawableSolution

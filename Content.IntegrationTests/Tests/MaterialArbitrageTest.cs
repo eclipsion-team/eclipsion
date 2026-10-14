@@ -57,7 +57,11 @@ public sealed class MaterialArbitrageTest
         Dictionary<string, List<LatheRecipePrototype>> latheRecipes = new();
         foreach (var proto in protoManager.EnumeratePrototypes<LatheRecipePrototype>())
         {
-            latheRecipes.GetOrNew(proto.Result).Add(proto);
+            // Reagent-only recipes have no entity result.
+            if (proto.Result is not { } result)
+                continue;
+
+            latheRecipes.GetOrNew(result).Add(proto);
         }
 
         // Lets assume the possible lathe for resource multipliers:

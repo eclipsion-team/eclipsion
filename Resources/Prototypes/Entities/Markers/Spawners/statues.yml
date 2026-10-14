@@ -11,6 +11,20 @@
     prototypes:
       - Oracle
 
+# Crescent: the no-demands Oracle whose fountain refills itself to 500u forever.
+- type: entity
+  name: Oracle Infinite Spawner
+  id: OracleInfiniteSpawner
+  parent: MarkerBase
+  components:
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    layers:
+      - state: green
+  - type: ConditionalSpawner
+    prototypes:
+      - OracleInfinite
+
 - type: entity
   name: Sophia Spawner
   id: SophicScribeSpawner

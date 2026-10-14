@@ -186,3 +186,20 @@
       components:
         - type: StationNameSetup
           mapNameTemplate: 'Ancient Battlefield'
+
+- type: gameMap
+  id: PsionicChurch
+  mapName: 'Psionic Church'
+  mapPath: /Maps/_Crescent/Derelicts/psionicchurch.yml
+  minPlayers: 0
+  stations:
+    PsionicChurch:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Psionic Church'

@@ -121,6 +121,15 @@
         minClearance: 2000
         IFFLabel: Derelict
         pinned: true
+      PsionicChurch:
+        gameMapID: PsionicChurch
+        posX: 0
+        posY: 0
+        randomRingMin: 0
+        randomRingMax: 8500
+        minClearance: 2000
+        IFFLabel: Derelict
+        pinned: true
       DerelictWaystation:
         gameMapID: DerelictWaystation
         posX: 2000
