@@ -76,6 +76,18 @@
         posX: 2000
         posY: -2000
         pinned: true
+      # Psionic Church rolls a fresh spot every round, but always 2-3 km out from Gliess Santo (0,0).
+      # It is listed first among the ring elements so it claims its narrow band before the
+      # sector-wide derelicts are rolled; 1500 clearance keeps it off the four diagonal POIs.
+      PsionicChurch:
+        gameMapID: PsionicChurch
+        posX: 0
+        posY: 0
+        randomRingMin: 2000
+        randomRingMax: 3000
+        minClearance: 1500
+        IFFLabel: Derelict
+        pinned: true
       ImperialHaulerWreck:
         gameMapID: ImperialHaulerWreck
         posX: 0
@@ -114,15 +126,6 @@
         pinned: true
       FogwreckedDerelict:
         gameMapID: FogwreckedDerelict
-        posX: 0
-        posY: 0
-        randomRingMin: 0
-        randomRingMax: 8500
-        minClearance: 2000
-        IFFLabel: Derelict
-        pinned: true
-      PsionicChurch:
-        gameMapID: PsionicChurch
         posX: 0
         posY: 0
         randomRingMin: 0
