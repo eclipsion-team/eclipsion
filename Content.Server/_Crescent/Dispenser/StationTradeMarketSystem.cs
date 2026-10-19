@@ -13,6 +13,7 @@ public sealed class StationTradeMarketSystem : EntitySystem
 {  
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly FactionTreasurySystem _treasury = default!;
+    [Dependency] private readonly FactionTaxRateSystem _taxRates = default!;
 
     public override void Initialize()  
     {
@@ -103,7 +104,16 @@ public sealed class StationTradeMarketSystem : EntitySystem
         if (!TryComp<StationTradeMarketComponent>(stationUid, out var market))
             return;
 
+        // Resolved before the write, so a faction resolving afterwards cannot load last round's rates over it.
+        EnsureFactionResolved(stationUid, market);
+
         market.DefaultTaxRate = SanitizeRate(rate, market);
+
+        if (string.IsNullOrEmpty(market.Faction))
+            return;
+
+        _taxRates.SetDefault(market.Faction, market.DefaultTaxRate);
+        SyncFactionTaxRates(stationUid, market.Faction);
     }
 
     public void SetTaxOverride(EntityUid stationUid, string tradeGoodId, float rate)
@@ -111,7 +121,48 @@ public sealed class StationTradeMarketSystem : EntitySystem
         if (!TryComp<StationTradeMarketComponent>(stationUid, out var market))
             return;
 
-        market.TaxOverrides[tradeGoodId] = SanitizeRate(rate, market);
+        EnsureFactionResolved(stationUid, market);
+
+        var sanitized = SanitizeRate(rate, market);
+        market.TaxOverrides[tradeGoodId] = sanitized;
+
+        if (string.IsNullOrEmpty(market.Faction))
+            return;
+
+        _taxRates.SetOverride(market.Faction, tradeGoodId, sanitized);
+        SyncFactionTaxRates(stationUid, market.Faction);
+    }
+
+    /// <summary>
+    /// Copies a faction's saved rates onto a station that has just been tied to it. Called once per station per
+    /// round, when its faction is first resolved.
+    /// </summary>
+    private void ApplySavedTaxRates(StationTradeMarketComponent market)
+    {
+        var saved = _taxRates.Get(market.Faction);
+        if (saved is null)
+            return;
+
+        market.DefaultTaxRate = SanitizeRate(saved.DefaultRate, market);
+
+        market.TaxOverrides.Clear();
+        foreach (var (good, rate) in saved.Overrides)
+            market.TaxOverrides[good] = SanitizeRate(rate, market);
+    }
+
+    /// <summary>
+    /// Pushes a rate change made at one of a faction's stations to every other station it owns this round. The
+    /// saved record is per faction, so without this the stations would disagree until the next round collapsed
+    /// them all onto whichever console was worked last.
+    /// </summary>
+    private void SyncFactionTaxRates(EntityUid source, string faction)
+    {
+        var query = EntityQueryEnumerator<StationTradeMarketComponent>();
+        while (query.MoveNext(out var uid, out var market))
+        {
+            if (uid != source && market.FactionResolved && market.Faction == faction)
+                ApplySavedTaxRates(market);
+        }
     }
 
     /// <summary>
@@ -137,7 +188,15 @@ public sealed class StationTradeMarketSystem : EntitySystem
         if (!TryComp<StationTradeMarketComponent>(stationUid, out var market))
             return;
 
+        EnsureFactionResolved(stationUid, market);
+
         market.TaxOverrides.Remove(tradeGoodId);
+
+        if (string.IsNullOrEmpty(market.Faction))
+            return;
+
+        _taxRates.ClearOverride(market.Faction, tradeGoodId);
+        SyncFactionTaxRates(stationUid, market.Faction);
     }
 
     /// <summary>
@@ -165,6 +224,7 @@ public sealed class StationTradeMarketSystem : EntitySystem
 
         market.Faction = faction;
         market.FactionResolved = true;
+        ApplySavedTaxRates(market);
     }
 
     /// <summary>
@@ -184,6 +244,7 @@ public sealed class StationTradeMarketSystem : EntitySystem
 
         market.Faction = faction;
         market.FactionResolved = true;
+        ApplySavedTaxRates(market);
     }
 
     /// <summary>

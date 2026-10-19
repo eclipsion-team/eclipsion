@@ -39,7 +39,8 @@ public sealed class TaxationConsoleSystem : EntitySystem
     /// Building one walks every dispenser in the world and resolves each one's owning station (a
     /// transform-parent walk), which was happening on every open, every button press, and now every
     /// refresh tick. What a station sells barely changes within a round, so the list is rebuilt on a
-    /// timer and whenever a rate edit makes the cached effective rates wrong.
+    /// timer and whenever a rate edit makes the cached effective rates wrong. A rate edit clears every
+    /// station's list, not just the edited one: rates are per faction, so the edit lands on all of its stations.
     /// </remarks>
     private readonly Dictionary<EntityUid, (TimeSpan Built, List<TaxableGoodEntry> Goods)> _goodsCache = new();
 
@@ -87,7 +88,7 @@ public sealed class TaxationConsoleSystem : EntitySystem
             return;
 
         _market.SetDefaultTaxRate(station, args.Rate);
-        _goodsCache.Remove(station);
+        _goodsCache.Clear();
         UpdateUi(uid);
     }
 
@@ -97,7 +98,7 @@ public sealed class TaxationConsoleSystem : EntitySystem
             return;
 
         _market.SetTaxOverride(station, args.ProtoId, args.Rate);
-        _goodsCache.Remove(station);
+        _goodsCache.Clear();
         UpdateUi(uid);
     }
 
@@ -107,7 +108,7 @@ public sealed class TaxationConsoleSystem : EntitySystem
             return;
 
         _market.ClearTaxOverride(station, args.ProtoId);
-        _goodsCache.Remove(station);
+        _goodsCache.Clear();
         UpdateUi(uid);
     }
 

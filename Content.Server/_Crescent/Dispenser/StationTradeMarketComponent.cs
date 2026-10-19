@@ -24,7 +24,9 @@ public sealed partial class StationTradeMarketComponent : Component
     /// <summary>
     /// Station-wide default tax rate (0..1) applied to every trade good sold through
     /// this station's trade points, unless a per-good override exists in <see cref="TaxOverrides"/>.
-    /// Set from the taxation console.
+    /// Set from the taxation console. For a faction station this is a live copy of the faction's rates in
+    /// <c>FactionTaxRateSystem</c>, which carries them across rounds; write through
+    /// <c>StationTradeMarketSystem</c> so the change is saved.
     /// </summary>
     [DataField]
     public float DefaultTaxRate = 0f;

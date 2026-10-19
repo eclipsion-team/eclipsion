@@ -101,7 +101,10 @@ public sealed partial class RatDiplomacySystem
             {
                 foreach (var (other, relation) in relations)
                 {
-                    if (relation == FactionRelation.Neutral)
+                    // Only departures from the starting position are stored. Skipping Neutral instead lost a pair
+                    // that starts at war and was talked down to neutral (peace, then trade, then the trade broken):
+                    // the next server restart put it straight back at war.
+                    if (relation == DefaultRelation(faction, other))
                         continue;
 
                     data.Relations[PairKey(faction, other)] = relation.ToString();
@@ -135,6 +138,6 @@ internal sealed class FactionDiplomacySaveData
 {
     public int Version { get; set; }
 
-    /// <summary>"FactionA|FactionB" (ordered) to relation name. Neutral pairs are simply absent.</summary>
+    /// <summary>"FactionA|FactionB" (ordered) to relation name. Pairs still at their starting relation are absent.</summary>
     public Dictionary<string, string> Relations { get; set; } = new();
 }

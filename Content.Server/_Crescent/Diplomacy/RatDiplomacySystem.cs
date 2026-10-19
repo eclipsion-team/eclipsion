@@ -84,24 +84,30 @@ public sealed partial class RatDiplomacySystem : EntitySystem
             foreach (var other in AllFactions)
             {
                 if (factionId != other)
-                    _relations[factionId][other] = FactionRelation.Neutral;
+                    _relations[factionId][other] = DefaultRelation(factionId, other);
             }
 
             _pending[factionId] = new List<PendingProposal>();
         }
+    }
+
+    /// <summary>
+    /// The written-in starting relation for a pair. Persistence only stores pairs that differ from this, so it
+    /// has to be the one place the starting position is defined.
+    /// </summary>
+    private static FactionRelation DefaultRelation(string f1, string f2)
+    {
+        // Lock permanent-enemy pairs (e.g. DSM vs NCWL) into war.
+        if (IsPermanentEnemyPair(f1, f2))
+            return FactionRelation.War;
 
         // The TFCF's strategic conflict is with Shinohara; its four member organizations remain commercial actors
         // that need customers elsewhere in the sector. Everyone else starts neutral and Federation-wide relations
         // are settled at the diplomacy console under the Administrator's joint mandate.
-        _relations["TFSC"]["SHI"] = FactionRelation.War;
-        _relations["SHI"]["TFSC"] = FactionRelation.War;
+        if ((f1 == "TFSC" && f2 == "SHI") || (f1 == "SHI" && f2 == "TFSC"))
+            return FactionRelation.War;
 
-        // Lock permanent-enemy pairs (e.g. DSM vs NCWL) into war.
-        foreach (var (a, b) in PermanentEnemyPairs)
-        {
-            _relations[a][b] = FactionRelation.War;
-            _relations[b][a] = FactionRelation.War;
-        }
+        return FactionRelation.Neutral;
     }
 
     private void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs args)
