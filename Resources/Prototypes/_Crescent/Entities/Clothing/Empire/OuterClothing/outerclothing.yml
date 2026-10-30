@@ -122,6 +122,7 @@
   name: archmaester's jacket
   description: The Archmaester's bolero jacket; designed for the modern explorer.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _Crescent/Clothing/Empire/OuterClothing/archmaester.rsi
   - type: Clothing
@@ -600,6 +601,7 @@
   name: imperial military parade jacket
   description: An ornate military jacket, intended for a formal parade.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _Crescent/Clothing/Empire/OuterClothing/mandateparade.rsi
   - type: Clothing
@@ -619,6 +621,7 @@
   name: royal officer's jacket
   description: An ornate military jacket, intended for formal use.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _Crescent/Clothing/Empire/OuterClothing/clarizianofficer.rsi
   - type: Clothing

@@ -34399,7 +34399,7 @@ entities:
     - type: Transform
       pos: -25.5,-26.5
       parent: 1
-- proto: PortableGeneratorPacman
+- proto: PortableGeneratorPacmanShuttle
   entities:
   - uid: 4984
     components:

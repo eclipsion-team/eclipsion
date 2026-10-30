@@ -43,23 +43,28 @@ public sealed class HardsuitHelmetHatSlotSystem : EntitySystem
             return;
         }
 
-        var hatVisuals = new GetEquipmentVisualsEvent(args.Equipee, args.Slot);
-        RaiseLocalEvent(hat, hatVisuals);
+        AddContainedClothingLayers(hat, LayerPrefix, args);
+    }
 
-        TryComp(hat, out SpriteComponent? hatSprite);
-        foreach (var (key, layer) in hatVisuals.Layers)
+    public void AddContainedClothingLayers(EntityUid contained, string layerPrefix, GetEquipmentVisualsEvent args)
+    {
+        var containedVisuals = new GetEquipmentVisualsEvent(args.Equipee, args.Slot);
+        RaiseLocalEvent(contained, containedVisuals);
+
+        TryComp(contained, out SpriteComponent? containedSprite);
+        foreach (var (key, layer) in containedVisuals.Layers)
         {
             var copy = _serialization.CreateCopy(layer, notNullableOverride: true);
             if (copy.RsiPath == null && copy.TexturePath == null)
-                copy.RsiPath = hatSprite?.BaseRSI?.Path.ToString();
+                copy.RsiPath = containedSprite?.BaseRSI?.Path.ToString();
 
             if (copy.MapKeys != null)
-                copy.MapKeys = copy.MapKeys.Select(PrefixKey).ToHashSet();
+                copy.MapKeys = copy.MapKeys.Select(k => layerPrefix + k).ToHashSet();
 
             if (copy.CopyToShaderParameters != null)
-                copy.CopyToShaderParameters.LayerKey = PrefixKey(copy.CopyToShaderParameters.LayerKey);
+                copy.CopyToShaderParameters.LayerKey = layerPrefix + copy.CopyToShaderParameters.LayerKey;
 
-            args.Layers.Add((PrefixKey(key), copy));
+            args.Layers.Add((layerPrefix + key, copy));
         }
     }
 
@@ -91,10 +96,5 @@ public sealed class HardsuitHelmetHatSlotSystem : EntitySystem
     {
         if (args.ContainerId == helmet.Comp.SlotId)
             _itemSystem.VisualsChanged(helmet);
-    }
-
-    private static string PrefixKey(string key)
-    {
-        return $"{LayerPrefix}{key}";
     }
 }

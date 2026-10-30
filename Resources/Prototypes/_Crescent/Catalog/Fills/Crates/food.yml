@@ -7,8 +7,8 @@
   - type: StorageFill
     contents:
     - id: FoodSnackNutribrick
-      amount: 10
+      amount: 8
     - id: FoodPSB
-      amount: 20
+      amount: 14
     - id: DrinkWaterBottleFull
-      amount: 10
+      amount: 8

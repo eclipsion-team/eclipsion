@@ -5,15 +5,13 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 01/21/2026 13:20:39
-  entityCount: 123
+  entityCount: 121
 maps: []
 grids:
 - 1
 orphans:
 - 1
-nullspace:
-- 122
-- 123
+nullspace: []
 tilemap:
   0: Space
   4: FloorDark
@@ -195,20 +193,6 @@ entities:
         chunkSize: 4
     - type: GasTileOverlay
     - type: RadiationGridResistance
-  - uid: 122
-    mapInit: true
-    components:
-    - type: MetaData
-      name: mind (Bidelia Alekseev)
-    - type: Transform
-    - type: Mind
-      ownedEntity: 53
-      characterName: Bidelia Alekseev
-      visitingEntity: invalid
-      originalOwnerUserId: f446168a-ef16-49a7-a800-14029d2ea10c
-      mindRoles:
-      - 123
-      objectives: []
 - proto: AAAHardpointFixed
   entities:
   - uid: 2
@@ -558,37 +542,6 @@ entities:
     - type: Transform
       pos: 1.5,-0.5
       parent: 1
-    - type: MindContainer
-      mind: 122
-      originalMind: 122
-    - type: InputMover
-    - type: MobMover
-    - type: MovementSpeedModifier
-    - type: Speech
-      suffixSpeechVerbs:
-        chat-speech-verb-suffix-exclamation-strong: DefaultExclamationStrong
-        chat-speech-verb-suffix-exclamation: DefaultExclamation
-        chat-speech-verb-suffix-question: DefaultQuestion
-        chat-speech-verb-suffix-stutter: DefaultStutter
-        chat-speech-verb-suffix-mumble: DefaultMumble
-      allowedEmotes: []
-    - type: Emoting
-    - type: LanguageSpeaker
-      understoodLanguages:
-      - TauCetiBasic
-      spokenLanguages:
-      - TauCetiBasic
-      currentLanguage: TauCetiBasic
-    - type: LanguageKnowledge
-      understands:
-      - TauCetiBasic
-      speaks:
-      - TauCetiBasic
-    - type: Examiner
-    - type: Eye
-    - type: TypingIndicator
-    - type: Appearance
-    - type: SpaceBiomeTracker
   - uid: 54
     components:
     - type: Transform
@@ -734,15 +687,6 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 3.5,4.5
       parent: 1
-- proto: MindRoleJob
-  entities:
-  - uid: 123
-    mapInit: true
-    components:
-    - type: MindRole
-      jobPrototype: Captain
-    - type: JobRole
-      prototype: null
 - proto: NFHolopadShip
   entities:
   - uid: 74

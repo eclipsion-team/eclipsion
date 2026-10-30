@@ -20,7 +20,7 @@
   - type: EmpOnTrigger
     range: 4
     energyConsumption: 50000
-    disableDuration: 60
+    disableDuration: 15 # eclipsion - was 60
 
 - type: entity
   id: CartridgeRocketEmp

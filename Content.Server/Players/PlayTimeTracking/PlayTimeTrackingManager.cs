@@ -357,6 +357,15 @@ public sealed partial class PlayTimeTrackingManager : ISharedPlaytimeManager, IP
         data.DbTrackersDirty.Add(tracker);
     }
 
+    public void SetTrackerTime(ICommonSession id, string tracker, TimeSpan time)
+    {
+        if (!_playTimeData.TryGetValue(id, out var data) || !data.Initialized)
+            throw new InvalidOperationException("Play time info is not yet loaded for this player!");
+
+        data.TrackerTimes[tracker] = time;
+        data.DbTrackersDirty.Add(tracker);
+    }
+
     public void AddTimeToOverallPlaytime(ICommonSession id, TimeSpan time)
     {
         AddTimeToTracker(id, PlayTimeTrackingShared.TrackerOverall, time);

@@ -252,6 +252,10 @@
   id: GliessSheriffCommand
   name: id-card-access-level-gliess-sheriff-command
 
+- type: accessLevel
+  id: GliessDockmasterCommand
+  name: id-card-access-level-gliess-dockmaster-command
+
 - type: accessGroup
   id: miscAA
   tags:
@@ -259,6 +263,7 @@
   - GliessDockmaster
   - GliessSheriff
   - GliessSheriffCommand
+  - GliessDockmasterCommand
 
 #4families
 

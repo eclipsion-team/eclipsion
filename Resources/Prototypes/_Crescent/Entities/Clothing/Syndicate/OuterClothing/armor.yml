@@ -17,8 +17,8 @@
     damageCoefficient: 0.3
   - type: DegradeableArmor
     armorMaxHealth: 900
-    armorType: Metallic
-    armorRepair: SteelPlate
+    armorType: Ceramic
+    armorRepair: NTCeramic
     initialModifiers:
       flatReductions:
         Blunt: 10
@@ -102,8 +102,8 @@
     value: 8
   - type: DegradeableArmor
     armorMaxHealth: 800
-    armorType: Metallic
-    armorRepair: PlasteelPlate
+    armorType: Ceramic
+    armorRepair: NTCeramic
     initialModifiers:
       flatReductions:
         Blunt: 15
@@ -179,8 +179,8 @@
     damageCoefficient: 1
   - type: DegradeableArmor
     armorMaxHealth: 700
-    armorType: Metallic
-    armorRepair: SteelPlate
+    armorType: Ceramic
+    armorRepair: NTCeramic
     initialModifiers:
       flatReductions:
         Blunt: 20
@@ -333,6 +333,7 @@
   name: interdyne supervisor's jacket
   description: A Kevlar-interwoven durathread jacket with an Interdyne logo on the back, so you know who your boss is.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _Crescent/Clothing/Syndicate/OuterClothing/ipm_jacket.rsi
   - type: Clothing

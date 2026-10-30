@@ -99,6 +99,10 @@ public sealed class TargetingConsoleBoundUserInterface : BoundUserInterface
     protected override void Open()
     {
         base.Open();
+
+        if (_window != null)
+            return;
+
         StopFiring();
 
         _window = new TargetingConsoleWindow();

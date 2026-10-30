@@ -7,3 +7,10 @@
 # Ship repair
 - type: Tag
   id: ShipRepairTool
+
+# Crafting
+- type: Tag
+  id: RemoteSignaller
+
+- type: Tag
+  id: AdvancedLaserPistol

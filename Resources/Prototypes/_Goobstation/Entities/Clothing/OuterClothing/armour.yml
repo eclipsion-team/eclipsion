@@ -25,6 +25,7 @@
   name: blueshield's armored jacket
   description: A jacket with sewn-in reinforcement layers.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _Goobstation/Clothing/OuterClothing/Armor/blueshield_jacket.rsi
   - type: Clothing
@@ -38,6 +39,7 @@
   name: blueshield's armored cowboy jacket
   description: A jacket to protect important people in wild areas.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _Goobstation/Clothing/OuterClothing/Armor/blueshield_cowboy_jacket.rsi
   - type: Clothing

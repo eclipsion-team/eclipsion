@@ -17,7 +17,7 @@ mind-swap-power-initialization-feedback = I can feel the bonds of soul and body 
 mind-swap-power-metapsionic-feedback = {CAPITALIZE($entity)} lacks a strong bond with their vessel, as if their connection with spirit is malleable.
 
 # Noospheric Zap
-noospheric-zap-power-description = Shocks the conciousness of the target and leaves them stunned and stuttering.
+noospheric-zap-power-description = Shocks the conciousness of the target, draining most of their stamina and leaving them stuttering.
 noospheric-zap-power-initialization-feedback =
     In a single transcendent moment, I find myself standing in a universe tiled by silicon.
     I wander this place for days, desperate to find some form of life, and yet none greet me.

@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared._Crescent.Territory;
 using Content.Server.Atmos.Components;
 using Content.Server.Atmos.EntitySystems;
 using Content.Shared.Body.Components;
@@ -682,6 +683,12 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
     {
         if (_tileDefinitionManager[tileRef.Tile.TypeId] is not ContentTileDefinition tileDef)
             return;
+
+        if (TryComp<PersistentPoiGridComponent>(tileRef.GridUid, out var territory) &&
+            territory.ProtectsTile(tileRef.GridIndices))
+        {
+            return;
+        }
 
         if (!CanCreateVacuum)
             canCreateVacuum = false;

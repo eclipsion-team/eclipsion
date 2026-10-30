@@ -90,4 +90,9 @@ public sealed partial class HullrotMapElementGameMapID
     [DataField("IFFLabel", required: false)]
     public string? IFFLabel = null;
 
+    [DataField("persistent", required: false)]
+    public bool Persistent = false;
+
+    [DataField("persistentVersion", required: false)]
+    public int PersistentVersion = 1;
 }

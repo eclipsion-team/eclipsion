@@ -130,3 +130,27 @@
         - state: equipped-HELMET
         - state: equipped-HELMET-unshaded
           shader: unshaded
+
+- type: entity
+  parent: ClothingHeadHatHoodChaplainHood
+  id: ClothingHeadHatHoodMonasticDark
+  categories: [ HideSpawnMenu ]
+  name: dark monastic hood
+  description: The hood of a dark monastic robe.
+  components:
+    - type: Sprite
+      sprite: _Crescent/Clothing/Head/Hoods/monastic_dark.rsi
+    - type: Clothing
+      sprite: _Crescent/Clothing/Head/Hoods/monastic_dark.rsi
+
+- type: entity
+  parent: ClothingHeadHatHoodChaplainHood
+  id: ClothingHeadHatHoodMonasticLight
+  categories: [ HideSpawnMenu ]
+  name: light monastic hood
+  description: The hood of a light monastic robe.
+  components:
+    - type: Sprite
+      sprite: _Crescent/Clothing/Head/Hoods/monastic_light.rsi
+    - type: Clothing
+      sprite: _Crescent/Clothing/Head/Hoods/monastic_light.rsi

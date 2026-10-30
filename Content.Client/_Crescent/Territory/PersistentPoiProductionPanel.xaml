@@ -1,0 +1,48 @@
+<BoxContainer xmlns="https://spacestation14.io"
+              xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+              Orientation="Vertical" Margin="8" SeparationOverride="6"
+              VerticalExpand="True" HorizontalExpand="True">
+    <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+        <Label Name="HolderLabel" StyleClasses="LabelHeading" HorizontalExpand="True"/>
+        <Label Name="LevelLabel" StyleClasses="LabelSecondaryColor" VerticalAlignment="Center"/>
+    </BoxContainer>
+
+    <Label Text="{Loc 'persistent-poi-production-ui-capability'}" StyleClasses="LabelSecondaryColor"/>
+    <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+        <OptionButton Name="CapabilitySelector" HorizontalExpand="True"/>
+        <Button Name="RetoolButton" Text="{Loc 'persistent-poi-production-ui-retool'}" StyleClasses="Caution"/>
+    </BoxContainer>
+    <RichTextLabel Name="CapabilityDescription" HorizontalExpand="True"/>
+    <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+        <Label Name="FactoriesLabel" HorizontalExpand="True"/>
+        <Label Name="CountLabel" StyleClasses="LabelSecondaryColor"/>
+    </BoxContainer>
+    <RichTextLabel Name="HintLabel" HorizontalExpand="True"/>
+
+    <PanelContainer Name="PaymentPanel" Visible="False">
+        <PanelContainer.PanelOverride>
+            <gfx:StyleBoxFlat BackgroundColor="#1b1b1e" BorderColor="#5a4a2a" BorderThickness="1"
+                              ContentMarginLeftOverride="6" ContentMarginRightOverride="6"
+                              ContentMarginTopOverride="4" ContentMarginBottomOverride="4"/>
+        </PanelContainer.PanelOverride>
+        <BoxContainer Orientation="Vertical" SeparationOverride="4">
+            <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                <Label Text="{Loc 'territory-payment-pay-from'}" VerticalAlignment="Center"/>
+                <Button Name="PersonalButton" ToggleMode="True" StyleClasses="OpenRight" HorizontalExpand="True"
+                        ClipText="True"/>
+                <Button Name="FactionButton" ToggleMode="True" StyleClasses="OpenLeft" HorizontalExpand="True"
+                        ClipText="True"/>
+            </BoxContainer>
+            <RichTextLabel Name="PaymentNote" HorizontalExpand="True"/>
+            <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                <Label Name="OvertimeLabel" HorizontalExpand="True" VerticalAlignment="Center" ClipText="True"/>
+                <Button Name="OvertimeButton" StyleClasses="OpenBoth"/>
+            </BoxContainer>
+        </BoxContainer>
+    </PanelContainer>
+
+    <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+        <BoxContainer Name="MachinesContainer" Orientation="Vertical" SeparationOverride="6"/>
+    </ScrollContainer>
+    <RichTextLabel Name="EmptyLabel" HorizontalExpand="True" Visible="False"/>
+</BoxContainer>

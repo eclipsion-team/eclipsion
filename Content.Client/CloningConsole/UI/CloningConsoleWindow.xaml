@@ -1,4 +1,5 @@
 <DefaultWindow xmlns="https://spacestation14.io"
+            xmlns:cui="clr-namespace:Content.Client._Crescent.UI"
             Title="{Loc 'comp-pda-ui-menu-title'}"
             SetSize="400 400"
             MinSize="400 400">
@@ -28,7 +29,7 @@
                             HorizontalExpand="True" />
                 </BoxContainer>
                 <BoxContainer Name="GeneticScannerMissing" Margin="5 5 5 5" Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True">
-                    <Label HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Loc 'cloning-console-window-no-scanner-detected-label'}" />
+                    <cui:HintLabel VerticalAlignment="Center" Hint="{Loc 'cloning-console-window-no-scanner-detected-label'}" />
                 </BoxContainer>
                 <BoxContainer Name="GeneticScannerFar" Margin="5 5 5 5" Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True">
                     <Label HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Loc 'cloning-console-window-scanner-far-label'}" />
@@ -48,7 +49,7 @@
                     </BoxContainer>
                 </BoxContainer>
                 <BoxContainer Name="CloningPodMissing" Margin="5 5 5 5" Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True">
-                    <Label HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Loc 'cloning-console-window-no-clone-pod-detected-label'}" />
+                    <cui:HintLabel VerticalAlignment="Center" Hint="{Loc 'cloning-console-window-no-clone-pod-detected-label'}" />
                 </BoxContainer>
                 <BoxContainer Name="CloningPodFar" Margin="5 5 5 5" Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True">
                     <Label HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Loc 'cloning-console-window-clone-pod-far-label'}" />

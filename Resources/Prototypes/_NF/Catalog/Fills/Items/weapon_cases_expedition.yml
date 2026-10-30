@@ -96,7 +96,7 @@
 
 # Shotguns
 - type: entity
-  parent: WeaponCaseShort
+  parent: WeaponCaseLong # the handmade pistol is 5 long now, the short case only has 4
   id: WeaponCaseShortHandmadeExpedition
   suffix: Dungeon, Handmade Pistol
   categories: [ HideSpawnMenu ]
@@ -122,7 +122,7 @@
       amount: 2
 
 - type: entity
-  parent: WeaponCaseShort
+  parent: WeaponCaseLong # gun and shell box need 14 cells, the short case has 12
   id: WeaponCaseShortSawnExpedition
   suffix: Dungeon, Sawn-off
   categories: [ HideSpawnMenu ]
@@ -157,10 +157,9 @@
     contents:
     - id: WeaponShotgunBulldog
       amount: 1
+    # The 5x3 gun leaves only 1-wide gaps in the 6x4 case, so ammo has to be magazines, not 2x2 boxes.
     - id: MagazineShotgun
-      amount: 2
-    - id: BoxLethalshot
-      amount: 2
+      amount: 4
 
 # SMGs
 - type: entity
@@ -400,10 +399,9 @@
   components:
   - type: StorageFill
     contents:
+    # Comes with a box magazine loaded; a spare 2x2 box can't fit beside the 6x3 gun.
     - id: WeaponLightMachineGunL6
       amount: 1
-    - id: MagazineLightRifleBox
-      amount: 2
 
 # Melee
 - type: entity

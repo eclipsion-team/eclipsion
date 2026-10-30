@@ -1,0 +1,159 @@
+#
+
+- type: territoryDecalSet
+  id: Markings
+  name: territory-decal-page-markings
+  priority: 0
+  decals:
+  - WarnFullGreyscale
+  - WarningLineGreyscale
+  - WarningLineCornerGreyscale
+  - WarningLineCornerFlippedGreyscale
+  - WarnLineGreyscaleN
+  - WarnEndGreyscaleN
+  - WarnCornerGreyscaleNE
+  - WarnCornerSmallGreyscaleNE
+  - WarnBoxGreyscale
+  - BoxGreyscale
+  - BotGreyscale
+  - BotLeftGreyscale
+  - BotRightGreyscale
+  - DeliveryGreyscale
+  - LoadingAreaGreyscale
+  - CautionGreyscale
+  - StandClearGreyscale
+  - ArrowsGreyscale
+
+- type: territoryDecalSet
+  id: Tiling
+  name: territory-decal-page-tiling
+  priority: 1
+  decals:
+  - FullTileOverlayGreyscale
+  - ThreeQuarterTileOverlayGreyscale
+  - HalfTileOverlayGreyscale
+  - QuarterTileOverlayGreyscale
+  - MonoOverlay
+  - CheckerNESW
+  - CheckerNWSE
+  - DiagonalOverlay
+  - DiagonalCheckerAOverlay
+  - HerringboneOverlay
+  - MiniTileOverlay
+  - MiniTileCheckerAOverlay
+  - MiniTileDiagonalOverlay
+  - OffsetOverlay
+  - PavementOverlay
+
+- type: territoryDecalSet
+  id: Borders
+  name: territory-decal-page-borders
+  priority: 2
+  decals:
+  - BrickTileSteelBox
+  - BrickTileSteelLineN
+  - BrickTileSteelLineE
+  - BrickTileSteelLineS
+  - BrickTileSteelLineW
+  - BrickTileSteelEndN
+  - BrickTileSteelEndE
+  - BrickTileSteelEndS
+  - BrickTileSteelEndW
+  - BrickTileSteelCornerNe
+  - BrickTileSteelCornerNw
+  - BrickTileSteelCornerSe
+  - BrickTileSteelCornerSw
+  - BrickTileSteelInnerNe
+  - BrickTileSteelInnerNw
+  - BrickTileSteelInnerSe
+  - BrickTileSteelInnerSw
+  - BrickBoxOverlay
+  - BrickLineOverlayN
+  - BrickEndOverlayN
+  - BrickCornerOverlayNE
+  - MiniTileBoxOverlay
+  - MiniTileLineOverlayN
+  - MiniTileEndOverlayN
+  - MiniTileCornerOverlayNE
+  - MiniTileInnerOverlayNE
+  - TrimlineNorth
+  - TrimlineNorthEnd
+  - TrimlineNorthEastCorner
+  - TrimWarnNorth
+  - TrimWarnNorthEast
+
+- type: territoryDecalSet
+  id: NumbersAndSigns
+  name: territory-decal-page-signs
+  priority: 3
+  decals:
+  - ZeroTest
+  - OneTest
+  - TwoTest
+  - ThreeTest
+  - FourTest
+  - FiveTest
+  - SixTest
+  - SevenTest
+  - EightTest
+  - NineTest
+  - CargoDecal
+  - MineDecal
+  - MedDecal
+  - SciDecal
+  - SecDecal
+  - BarDecal
+
+- type: territoryDecalPalette
+  id: Default
+  colors:
+  - "#FFFFFF"
+  - "#A6A6AD"
+  - "#5A5A61"
+  - "#1E1E22"
+
+- type: territoryDecalPalette
+  id: DSM
+  colors:
+  - "#BD7AFF"
+  - "#6E3AA8"
+  - "#E2C6FF"
+  - "#D381C996" # departmental epistemics
+  - "#FFFFFF"
+  - "#A6A6AD"
+  - "#1E1E22"
+  # emblems: a faction's insignia decals go here, on a page of their own. None of the four has a tile-sized one yet.
+
+- type: territoryDecalPalette
+  id: NCWL
+  colors:
+  - "#FF9944"
+  - "#A85A1E"
+  - "#FFD2AD"
+  - "#EFB34196" # departmental engineering
+  - "#FFFFFF"
+  - "#A6A6AD"
+  - "#1E1E22"
+
+- type: territoryDecalPalette
+  id: TFSC
+  colors:
+  - "#FF5555"
+  - "#9E2626"
+  - "#FFB3B3"
+  - "#DE3A3A96" # departmental security
+  - "#FFFFFF"
+  - "#A6A6AD"
+  - "#1E1E22"
+
+- type: territoryDecalPalette
+  id: SHI
+  colors:
+  - "#A0482A"
+  - "#4A4A4F"
+  - "#D4D4D4"
+  - "#D4D4D496" # departmental neutral
+  - "#D4D4D428" # departmental neutral light
+  - "#FFFFFF"
+  - "#A6A6AD"
+  - "#1E1E22"

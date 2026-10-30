@@ -1,0 +1,18 @@
+# Craster's Belt under another name: a copy of its outpost on the RatCrimsonDespair biome (_Rat/World/basic.yml).
+- type: gameMap
+  id: CrimsonDespair
+  mapName: 'Crimson Despair'
+  mapPath: /Maps/_Crescent/Explorables/crimsondespair.yml
+  minPlayers: 0
+  stations:
+    CrimsonDespair:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: PreventPilot
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: asteroids
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Crimson Despair'

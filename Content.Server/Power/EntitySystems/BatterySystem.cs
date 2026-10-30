@@ -118,7 +118,8 @@ namespace Content.Server.Power.EntitySystems
         {
             args.Affected = true;
             args.Disabled = true;
-            UseCharge(uid, args.EnergyConsumption, component);
+            // eclipsion - weapon emps only take a share of the battery per hit
+            UseCharge(uid, MathF.Min(args.EnergyConsumption, component.MaxCharge * args.MaxDrainFraction), component);
             // Apply a cooldown to the entity's self recharge if needed to avoid it immediately self recharging after an EMP.
             TrySetChargeCooldown(uid);
         }

@@ -36,7 +36,7 @@ public sealed class ApcSystem : EntitySystem
         SubscribeLocalEvent<ApcComponent, ApcToggleMainBreakerMessage>(OnToggleMainBreaker);
         SubscribeLocalEvent<ApcComponent, GotEmaggedEvent>(OnEmagged);
 
-        SubscribeLocalEvent<ApcComponent, EmpPulseEvent>(OnEmpPulse);
+        SubscribeLocalEvent<EmpDisabledComponent, ComponentStartup>(OnEmpDisabledStartup);
         SubscribeLocalEvent<ApcComponent, EmpDisabledRemoved>(OnEmpDisabledRemoved);
     }
 
@@ -188,10 +188,12 @@ public sealed class ApcSystem : EntitySystem
         return ApcExternalPowerState.Good;
     }
 
-    private void OnEmpPulse(EntityUid uid, ApcComponent component, ref EmpPulseEvent args)
+    // eclipsion - this used to add EmpDisabled itself to get the sprite right, but a ship round that only drains
+    // (EmpSystem buildup) then left it on for good. the sprite updates once EmpSystem adds it instead
+    private void OnEmpDisabledStartup(EntityUid uid, EmpDisabledComponent component, ComponentStartup args)
     {
-        EnsureComp<EmpDisabledComponent>(uid, out var emp); //event calls before EmpDisabledComponent is added, ensure it to force sprite update
-        UpdateApcState(uid);
+        if (HasComp<ApcComponent>(uid))
+            UpdateApcState(uid);
     }
 
     private void OnEmpDisabledRemoved(EntityUid uid, ApcComponent component, ref EmpDisabledRemoved args)

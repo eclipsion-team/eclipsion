@@ -39,6 +39,7 @@
   access:
   - GliessSheriff
   - GliessDockmaster
+  - GliessDockmasterCommand
 
 - type: startingGear
   id: GliessDockmasterGear

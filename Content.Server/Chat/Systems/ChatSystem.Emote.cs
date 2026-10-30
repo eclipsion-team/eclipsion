@@ -2,7 +2,10 @@ using System.Collections.Frozen;
 using System.Linq;
 using Content.Shared.Chat;
 using Content.Shared.Chat.Prototypes;
+using Content.Shared.Dataset; // eclipsion
+using Content.Shared.Random.Helpers; // eclipsion
 using Content.Shared.Speech;
+using Robust.Shared.Player; // eclipsion
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
@@ -11,6 +14,9 @@ namespace Content.Server.Chat.Systems;
 // emotes using emote prototype
 public partial class ChatSystem
 {
+    private static readonly ProtoId<LocalizedDatasetPrototype> SootProtocolPhrases = "SootProtocolNicePhrases"; // eclipsion
+    private static readonly ProtoId<LocalizedDatasetPrototype> SootProtocolFunPhrases = "SootProtocolAdminFunPhrases"; // eclipsion
+
     private FrozenDictionary<string, EmotePrototype> _wordEmoteDict = FrozenDictionary<string, EmotePrototype>.Empty;
     private IReadOnlyList<string> Punctuation { get; } = new List<string> { ",", ".", "!", "?", "-", "~", "'", "\"", };
 
@@ -201,6 +207,36 @@ public partial class ChatSystem
             return false;
 
         return true;
+    }
+
+    private bool IsSootProtocolEmote(EntityUid source, string message, InGameICChatType type)
+    {
+        var trimmed = message.Trim();
+
+        if (type == InGameICChatType.Emote)
+        {
+            var actionLower = trimmed.ToLower();
+            if (Punctuation.Any(punctuation => actionLower.EndsWith(punctuation)))
+                actionLower = actionLower.Remove(actionLower.Length - 1);
+
+            return _wordEmoteDict.TryGetValue(actionLower, out var emote) && AllowedToUseEmote(source, emote);
+        }
+
+        return _sanitizer.TrySanitizeOutSmilies(trimmed, source, out var rest, out _)
+            && string.IsNullOrWhiteSpace(rest);
+    }
+
+    public string PickSootProtocolPhrase(ICommonSession player)
+    {
+        var adminFun = _chatManager.TryGetSootProtocol(player.UserId, out var entry) && entry.AdminFun;
+        return PickSootProtocolPhrase(adminFun);
+    }
+
+    public string PickSootProtocolPhrase(bool adminFun)
+    {
+        // adminfun mixes the short ones (thank you, of course, spread love) in with the long ones
+        var dataset = adminFun && _random.Prob(0.6f) ? SootProtocolFunPhrases : SootProtocolPhrases;
+        return Loc.GetString(_random.Pick(_prototypeManager.Index(dataset)));
     }
 
     private void InvokeEmoteEvent(EntityUid uid, EmotePrototype proto)

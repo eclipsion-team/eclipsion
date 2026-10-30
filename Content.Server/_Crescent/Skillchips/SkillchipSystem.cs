@@ -28,7 +28,9 @@ public sealed partial class SkillchipSystem : EntitySystem
         {
             var itemSlotName = $"{skilldeck.Comp.SkillchipSlotPrefix}{i}";
 
-            if (_itemSlots.TryGetSlot(skilldeck.Owner, itemSlotName, out var _))
+            // The first slot added creates ItemSlots, so it may not exist yet.
+            if (TryComp<ItemSlotsComponent>(skilldeck.Owner, out var slots)
+                && _itemSlots.TryGetSlot(skilldeck.Owner, itemSlotName, out _, slots))
                 continue;
 
             var slot = new ItemSlot();

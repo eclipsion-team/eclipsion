@@ -11,7 +11,7 @@ namespace Content.Server._Mono.Spawning;
 public sealed partial class GridSpawnerComponent : Component
 {
     [DataField(required: true)]
-    public ResPath Path = new("Maps/_Mono/Shuttles/Debug/wedge.yml");
+    public ResPath Path = new("/Maps/Test/floor3x3.yml"); // eclipsion - mono's wedge.yml was never ported
 
     [DataField]
     public ProtoId<LocalizedDatasetPrototype>? NameDataset = null;

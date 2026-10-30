@@ -8,7 +8,7 @@
     <BoxContainer Margin="4 0" Orientation="Horizontal">
         <BoxContainer Orientation="Vertical" HorizontalExpand="True" SizeFlagsStretchRatio="2" VerticalAlignment="Top" Margin="5">
             <GridContainer Margin="2 0 0 0" Columns="2" HorizontalExpand="True">
-                <Label Name="StatusLabel" Text="{Loc 'portable-generator-ui-power-switch'}" HorizontalExpand="True" />
+                <Label Name="StatusLabel" Text="{Loc 'portable-generator-ui-status-stopped'}" HorizontalExpand="True" />
                 <Control MinWidth="120">
                     <Button Name="StartButton" Text="{Loc 'portable-generator-ui-start'}" />
                     <Button Name="StopButton" Text="{Loc 'portable-generator-ui-stop'}" />

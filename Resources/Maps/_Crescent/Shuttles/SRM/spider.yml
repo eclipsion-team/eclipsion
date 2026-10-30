@@ -1907,8 +1907,6 @@ entities:
     - type: Transform
       pos: 4.5,1.5
       parent: 1
-    - type: PowerCharge
-      charge: 0
     - type: Physics
       fixedRotation: False
 - proto: Grille

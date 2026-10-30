@@ -375,11 +375,8 @@
       - JudgeLPC
       - SentinelLPC
       - ClothingOuterHardsuitMinutemenEnsign
-      - WeaponRifleCMMNimrod
       - WeaponShotgunKammerer
       - WeaponRifleCMMHound
-      - WeaponRifleCMMLecter
-      - WeaponLightMachineGunCMMStratos
       - WeaponSubMachineGunCMMMP5
       - WeaponPistolCMMLockwell
       - WeaponRevolverCMMBulldog
@@ -1743,6 +1740,9 @@
       - PouchMedicalLargeElectronics
       - PouchGrenadeElectronics
       - PouchFlareElectronics
+      # Mono - MonoTrapEngineering, civilian discipline
+      - ShotgunTrapPacked
+      - SignalTimerItem
     #  - ClothingOuterHardsuitCybersunDreadnoughtCyberdawn #Has to go since Egui is working now.
   - type: MaterialStorageMagnetPickup
     magnetEnabled: True
@@ -2326,6 +2326,8 @@
       - UtilityBelt
       - Pickaxe
       - ModularReceiver
+      - ShotgunTrapPacked # Mono
+      - SignalTimerItem # Mono
       - AppraisalTool
       - Beaker
       - Syringe
@@ -2579,6 +2581,8 @@
       - UtilityBelt
       - Pickaxe
       - ModularReceiver
+      - ShotgunTrapPacked # Mono
+      - SignalTimerItem # Mono
       - AppraisalTool
       - Beaker
       - Syringe

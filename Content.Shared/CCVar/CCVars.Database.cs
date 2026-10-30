@@ -73,4 +73,30 @@ public sealed partial class CCVars
     // Basically only exists for integration tests to avoid race conditions.
     public static readonly CVarDef<bool> DatabaseSynchronous =
         CVarDef.Create("database.sync", false, CVar.SERVERONLY);
+
+    // eclipsion - nothing ever deleted old logs, admin_log ends up being most of the database. 0 keeps them forever.
+
+    /// <summary>
+    /// Days to keep low and medium impact admin logs (damage, interactions, actions...), the bulk of the table.
+    /// </summary>
+    public static readonly CVarDef<int> DatabaseAdminLogRetentionDays =
+        CVarDef.Create("database.admin_log_retention_days", 30, CVar.SERVERONLY);
+
+    /// <summary>
+    /// Days to keep high and extreme impact admin logs.
+    /// </summary>
+    public static readonly CVarDef<int> DatabaseAdminLogHighRetentionDays =
+        CVarDef.Create("database.admin_log_high_retention_days", 180, CVar.SERVERONLY);
+
+    /// <summary>
+    /// Days to keep connection logs. Connections that hit a ban are always kept.
+    /// </summary>
+    public static readonly CVarDef<int> DatabaseConnectionLogRetentionDays =
+        CVarDef.Create("database.connection_log_retention_days", 90, CVar.SERVERONLY);
+
+    /// <summary>
+    /// Run VACUUM on startup when a lot of the sqlite file is free pages, otherwise the file never shrinks.
+    /// </summary>
+    public static readonly CVarDef<bool> DatabaseSqliteVacuum =
+        CVarDef.Create("database.sqlite_vacuum", true, CVar.SERVERONLY);
 }

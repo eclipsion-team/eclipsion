@@ -1,0 +1,109 @@
+###########################################
+#      IF YOU ARE ADDING A NEW FONT,      #
+#  PLEASE ADD IT TO THE CYBERSUN PEN TOO  #
+###########################################
+
+- type: traitCategory
+  id: SignatureFonts
+  root: true
+
+- type: characterItemGroup
+  id: TraitsSignatureFonts
+  maxItems: 1
+  items:
+    - type: trait
+      id: FontComicNeue
+    - type: trait
+      id: FontHachiMaruPop
+    - type: trait
+      id: FontKodeMono
+    - type: trait
+      id: FontReenieBeanie
+    - type: trait
+      id: FontTangerine
+    - type: trait
+      id: FontUnifrakturMaguntia
+
+- type: trait
+  id: FontComicNeue
+  category: SignatureFonts
+  points: 0
+  slots: 0
+  requirements:
+    - !type:CharacterItemGroupRequirement
+      group: TraitsSignatureFonts
+  functions:
+    - !type:TraitAddComponent
+      components:
+        - type: SignatureFont
+          font: ComicNeue
+
+- type: trait
+  id: FontHachiMaruPop
+  category: SignatureFonts
+  points: 0
+  slots: 0
+  requirements:
+    - !type:CharacterItemGroupRequirement
+      group: TraitsSignatureFonts
+  functions:
+    - !type:TraitAddComponent
+      components:
+        - type: SignatureFont
+          font: HachiMaruPop
+
+- type: trait
+  id: FontKodeMono
+  category: SignatureFonts
+  points: 0
+  slots: 0
+  requirements:
+    - !type:CharacterItemGroupRequirement
+      group: TraitsSignatureFonts
+  functions:
+    - !type:TraitAddComponent
+      components:
+        - type: SignatureFont
+          font: KodeMono
+
+- type: trait
+  id: FontReenieBeanie
+  category: SignatureFonts
+  points: 0
+  slots: 0
+  requirements:
+    - !type:CharacterItemGroupRequirement
+      group: TraitsSignatureFonts
+  functions:
+    - !type:TraitAddComponent
+      components:
+        - type: SignatureFont
+          font: ReenieBeanie
+
+- type: trait
+  id: FontTangerine
+  category: SignatureFonts
+  points: 0
+  slots: 0
+  requirements:
+    - !type:CharacterItemGroupRequirement
+      group: TraitsSignatureFonts
+  functions:
+    - !type:TraitAddComponent
+      components:
+        - type: SignatureFont
+          font: Tangerine
+
+- type: trait
+  id: FontUnifrakturMaguntia
+  category: SignatureFonts
+  points: 0
+  slots: 0
+  requirements:
+    - !type:CharacterItemGroupRequirement
+      group: TraitsSignatureFonts
+  functions:
+    - !type:TraitAddComponent
+      components:
+        - type: SignatureFont
+          font: UnifrakturMaguntia

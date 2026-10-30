@@ -1,0 +1,39 @@
+# The two wreck yards among the four outer fields past the political map's edge. Each marker is a small
+# indestructible scrap ring with the zone's biome source and a warp point; the wrecks around it are the
+# RatFourthBattalionGrave and RatChengrdizBattalionGrave biomes (_Rat/World/basic.yml).
+
+- type: gameMap
+  id: FourthBattalionGrave
+  mapName: 'Imperial Fourth Defense Battalion Grave'
+  mapPath: /Maps/_Crescent/Explorables/fourthbattaliongrave.yml
+  minPlayers: 0
+  stations:
+    FourthBattalionGrave:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: PreventPilot
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Imperial Fourth Defense Battalion Grave'
+
+- type: gameMap
+  id: ChengrdizBattalionGrave
+  mapName: 'Chengrdiz Battalion Grave'
+  mapPath: /Maps/_Crescent/Explorables/chengrdizbattaliongrave.yml
+  minPlayers: 0
+  stations:
+    ChengrdizBattalionGrave:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: PreventPilot
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Chengrdiz Battalion Grave'

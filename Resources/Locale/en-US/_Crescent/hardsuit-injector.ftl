@@ -15,3 +15,6 @@ hardsuit-injector-auto-injected = Your hardsuit detects your critical condition 
 
 hardsuit-injector-examine-loaded = Injector slot {$slot} contains {$source}; its dose is set to {$amount}u.
 hardsuit-injector-examine-empty = Injector slot {$slot} is empty.
+
+alerts-hardsuit-injector-missing-name = [color=yellow]Medipen Missing[/color]
+alerts-hardsuit-injector-missing-desc = One of your hardsuit's injector slots is empty or spent. Load a medipen so the suit can treat you in an emergency.

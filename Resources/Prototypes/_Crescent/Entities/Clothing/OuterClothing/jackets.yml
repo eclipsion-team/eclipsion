@@ -5,6 +5,7 @@
   name: insulated jacket
   description: A thick jacket with a membrane attached to the end of its sleeves that conforms to the user's hands, allowing it to function as insulated gloves. Useful if you can't wear or find regular insulated gloves.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _Crescent/Clothing/GloveJackets/insulated_jacket.rsi
   - type: Clothing
@@ -28,6 +29,7 @@
   name: surgical jacket
   description: A thick jacket with a membrane attached to the end of its sleeves that conforms to the user's hands, allowing it to function as surgical gloves. Useful for if you need to do surgery but can't wear normal gloves.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _Crescent/Clothing/GloveJackets/surgical_jacket.rsi
   - type: Clothing

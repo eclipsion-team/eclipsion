@@ -1,7 +1,8 @@
-player-panel-job-whitelists = Job Whitelists
+player-panel-job-whitelists = Whitelists
+player-panel-playtime-button = Playtime
 player-panel-title = information for {$player}
 player-panel-username = Username: {$player}
-player-panel-whitelisted = Whitelisted:
+player-panel-whitelisted = Server whitelist: {$whitelisted}
 player-panel-bans = Total Bans: {$totalBans}
 player-panel-rolebans = Total Role Bans: {$totalRoleBans}
 player-panel-notes = Total Notes: {$totalNotes}
@@ -21,3 +22,4 @@ player-panel-logs = Logs
 player-panel-delete = Delete
 player-panel-rejuvenate = Rejuvenate
 player-panel-false = False
+player-panel-true = True

@@ -219,6 +219,24 @@ public sealed partial class ChatSystem : SharedChatSystem
         if (player != null && _chatManager.IsMessageFiltered(player, message))
             return;
 
+        if (player != null
+            && _chatManager.IsUnderSootProtocol(player)
+            && !IsSootProtocolEmote(source, message, desiredType)
+            && !ChatManager.IsEmojiOnly(message))
+        {
+            if (desiredType is not (InGameICChatType.Speak or InGameICChatType.Whisper))
+            {
+                _chatManager.SootProtocolBlocks(player, message);
+                return;
+            }
+
+            _adminLogger.Add(LogType.Chat, LogImpact.Low,
+                $"{player:Player} tried to say \"{message}\" under the Soot Contingency Protocol");
+
+            message = PickSootProtocolPhrase(player);
+            checkRadioPrefix = false;
+        }
+
         ignoreActionBlocker = CheckIgnoreSpeechBlocker(source, ignoreActionBlocker);
 
         // this method is a disaster
@@ -328,6 +346,9 @@ public sealed partial class ChatSystem : SharedChatSystem
 
         // Crescent - word filter
         if (_chatManager.IsMessageFiltered(player, message))
+            return;
+
+        if (_chatManager.SootProtocolBlocks(player, message))
             return;
 
         message = SanitizeInGameOOCMessage(message);

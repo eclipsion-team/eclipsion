@@ -1,0 +1,28 @@
+<BoxContainer xmlns="https://spacestation14.io"
+              xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+              xmlns:politics="clr-namespace:Content.Client._Crescent.PoliticalMap"
+              Orientation="Horizontal" SeparationOverride="6"
+              VerticalExpand="True" HorizontalExpand="True">
+
+    <politics:PoliticalMapControl Name="Map" HorizontalExpand="True" VerticalExpand="True" MinSize="300 300"/>
+
+    <PanelContainer MinWidth="230" SetWidth="230" VerticalExpand="True">
+        <PanelContainer.PanelOverride>
+            <gfx:StyleBoxFlat BorderColor="#4d4d55" BorderThickness="2" BackgroundColor="#15171c"/>
+        </PanelContainer.PanelOverride>
+
+        <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="4" VerticalExpand="True">
+            <Label Text="{Loc 'political-map-heading'}" StyleClasses="LabelHeading" HorizontalAlignment="Center"/>
+            <Label Text="{Loc 'political-map-legend'}" StyleClasses="LabelSecondaryColor"/>
+            <BoxContainer Name="LegendContainer" Orientation="Vertical" SeparationOverride="2"/>
+
+            <PanelContainer StyleClasses="LowDivider" HorizontalExpand="True" SetHeight="2" Margin="0 6"/>
+
+            <Label Name="HoverTitle" StyleClasses="LabelHeading"/>
+            <Label Name="HoverRuler"/>
+            <BoxContainer Name="HoverAnchors" Orientation="Vertical" SeparationOverride="2"/>
+            <Control VerticalExpand="True"/>
+            <Label Text="{Loc 'political-map-hint'}" StyleClasses="LabelSecondaryColor"/>
+        </BoxContainer>
+    </PanelContainer>
+</BoxContainer>

@@ -1,6 +1,8 @@
+using System.Linq;
 using Content.Server.Access.Systems;
 using Content.Server.Paper;
 using Content.Server.Popups;
+using Content.Shared.DeltaV.Paper;
 using Content.Shared.Paper;
 using Content.Shared.Popups;
 using Content.Shared.Tag;
@@ -20,6 +22,9 @@ public sealed class SignatureSystem : EntitySystem
 
     // The sprite used to visualize "signatures" on paper entities.
     private const string SignatureStampState = "paper_stamp-signature";
+
+    // Font used when neither the pen nor the signer picks one.
+    private const string DefaultSignatureFont = "Default";
 
     public override void Initialize()
     {
@@ -61,14 +66,31 @@ public sealed class SignatureSystem : EntitySystem
             return false;
 
         var signatureName = DetermineEntitySignature(signer);
+        var signatureColor = Color.DarkSlateGray;
+        string? signatureFont = null;
+
+        if (TryComp<SignatureWriterComponent>(pen, out var writer))
+        {
+            signatureColor = writer.Color;
+            signatureFont = writer.Font;
+        }
+
+        // The signer's own handwriting is used unless the pen forces a font.
+        if (signatureFont == null && TryComp<SignatureFontComponent>(signer, out var signerFont))
+            signatureFont = signerFont.Font;
 
         var stampInfo = new StampDisplayInfo()
         {
             StampedName = signatureName,
-            StampedColor = Color.DarkSlateGray, //TODO Make this configurable depending on the pen.
+            StampedColor = signatureColor,
+            StampFont = signatureFont ?? DefaultSignatureFont,
+            Borderless = true,
         };
 
-        if (!comp.StampedBy.Contains(stampInfo) && _paper.TryStamp(paper, stampInfo, SignatureStampState, comp))
+        // One signature per name, regardless of which font or ink was used.
+        var alreadySigned = comp.StampedBy.Any(s => s.Borderless && s.StampedName == signatureName);
+
+        if (!alreadySigned && _paper.TryStamp(paper, stampInfo, SignatureStampState, comp))
         {
             // Show popups and play a paper writing sound
             var signedOtherMessage = Loc.GetString("paper-signed-other", ("user", signer), ("target", paper.Owner));

@@ -21524,8 +21524,6 @@ entities:
       parent: 1
       pos: -9.5,20.5
     - type: DeviceNetwork
-      configurators:
-      - invalid
     - type: SurveillanceCamera
       nameSet: True
       id: cell 2

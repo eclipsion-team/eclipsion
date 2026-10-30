@@ -8,13 +8,13 @@ public sealed partial class CCVars
     ///     Allows enabling/disabling player-started votes for ultimate authority
     /// </summary>
     public static readonly CVarDef<bool> VoteEnabled =
-        CVarDef.Create("vote.enabled", false, CVar.SERVERONLY);
+        CVarDef.Create("vote.enabled", true, CVar.SERVERONLY);
 
     /// <summary>
     ///     See vote.enabled, but specific to restart votes
     /// </summary>
     public static readonly CVarDef<bool> VoteRestartEnabled =
-        CVarDef.Create("vote.restart_enabled", true, CVar.SERVERONLY);
+        CVarDef.Create("vote.restart_enabled", false, CVar.SERVERONLY);
 
     /// <summary>
     ///     Config for when the restart vote should be allowed to be called regardless with less than this amount of players.
@@ -32,7 +32,7 @@ public sealed partial class CCVars
     ///     See vote.enabled, but specific to preset votes
     /// </summary>
     public static readonly CVarDef<bool> VotePresetEnabled =
-        CVarDef.Create("vote.preset_enabled", false, CVar.SERVERONLY);
+        CVarDef.Create("vote.preset_enabled", true, CVar.SERVERONLY);
 
     /// <summary>
     ///     See vote.enabled, but specific to map votes

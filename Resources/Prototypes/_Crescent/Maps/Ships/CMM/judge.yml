@@ -9,7 +9,7 @@
     LOADOUT: 2x 48mm 'Shortbow' SRM, 2x 350cc 'Glare' Burst Laser, 1x 300cc 'Bolter' Plasma Caster, 2x 35mm 'Scout' Autocannon, 2x 150cc 'Retribution' Pulse Laser
     SHIELD: Errant
     SPEED: 30 m/s
-  price: 15000
+  price: 80000
   category: Small
   group: None
   path: /Maps/_Crescent/Shuttles/CMM/judge.yml

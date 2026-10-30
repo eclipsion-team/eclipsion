@@ -497,6 +497,8 @@
     range: 8
     energyConsumption: 4500 #IPCs hate this... (nap time)
     disableDuration: 4
+    hitsToDisable: 3 # eclipsion - ship rounds drain first, enough hits in a row shut it down
+    maxDrainFraction: 0.2
   - type: PointLight
     radius: 3.5
     color: orange

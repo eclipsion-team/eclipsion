@@ -1,5 +1,6 @@
 using Content.Server._Crescent.DroneControl;
 using Content.Server.Shuttles.Components;
+using Content.Shared._Crescent.Territory;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Audio;
 using Content.Shared.CCVar;
@@ -11,6 +12,7 @@ using Content.Shared.Maps;
 using Content.Shared.Physics;
 using Content.Shared.Projectiles;
 using Content.Shared.Slippery;
+using Content.Shared.Tiles;
 using Robust.Shared.Audio;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -597,11 +599,15 @@ public sealed partial class ShuttleSystem
         var entitiesOnTile = _entitiesOnTile;
         var tileCenter = new Vector2(grid.TileSize / 2f, grid.TileSize / 2f);
 
+        TryComp<PersistentPoiGridComponent>(uid, out var territory);
+        // same as ship guns, a protected grid's floor doesn't break
+        var protectedGrid = HasComp<ProtectedGridComponent>(uid);
+
         for (var i = startIndex; i < endIndex; i++)
         {
             var tileData = tilesToProcess[i];
 
-            bool canBreakTile = true;
+            bool canBreakTile = !protectedGrid && (territory == null || !territory.ProtectsTile(tileData.Tile));
 
             // Process entities on this tile
             entitiesOnTile.Clear();

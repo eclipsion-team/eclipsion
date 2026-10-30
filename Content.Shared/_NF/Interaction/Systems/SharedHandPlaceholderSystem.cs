@@ -53,6 +53,10 @@ public sealed partial class HandPlaceholderSystem : EntitySystem
 
     private void SpawnAndPickUpPlaceholder(Entity<HandPlaceholderRemoveableComponent> ent, EntityUid user)
     {
+        // borg being deleted drops everything, nothing left to hold the placeholder
+        if (TerminatingOrDeleted(user))
+            return;
+
         if (_net.IsServer)
         {
             var placeholder = Spawn("HandPlaceholder");

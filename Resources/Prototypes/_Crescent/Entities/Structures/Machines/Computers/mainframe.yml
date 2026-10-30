@@ -1,4 +1,3 @@
-# Command mainframe: one console hosting overwatch, diplomacy, alert and economy as tabs.
 # Each tab keeps its own component, UI key and server system — this entity just carries all of them.
 
 - type: entity
@@ -6,7 +5,7 @@
   id: BaseMainframeConsole
   parent: BaseComputer
   name: command mainframe
-  description: A faction command terminal that bundles the overwatch, diplomacy, alert, market and announcement consoles into one screen, each on its own tab. Locked to the faction it was issued to.
+  description: A faction command terminal that bundles the overwatch, diplomacy, political map, alert, market, territory and announcement consoles into one screen, each on its own tab. Locked to the faction it was issued to.
   placement:
     mode: SnapgridCenter
   components:
@@ -50,6 +49,8 @@
     # between-announcements cooldown (delay) still applies after each broadcast.
     initialDelay: 0
 
+  - type: TerritoryConsole
+
   # PaymentConsole is deliberately absent. MainframeConsoleSystem and the client can host a payroll
   # tab, but this entity's AccessReader is the faction's base tag (so ordinary members can use the
   # overwatch tab), and payroll behind that gate lets any member pay themselves out of the vault.
@@ -77,6 +78,10 @@
       # comms window, so the same UI key drives a tab here but a full window on a normal comms console.
       enum.CommunicationsConsoleUiKey.Key:
         type: Content.Client._Crescent.Mainframe.MainframeAnnouncementBoundUserInterface
+      enum.TerritoryConsoleUiKey.Key:
+        type: TerritoryConsoleBoundUserInterface
+      enum.PoliticalMapUiKey.Key:
+        type: PoliticalMapBoundUserInterface
 
   - type: Sprite
     netsync: false
@@ -109,6 +114,9 @@
   components:
   - type: OverwatchConsole
     faction: DSM
+  - type: TerritoryConsole
+    faction: DSM
+    commandAccess: [["EmpireNoble"], ["EmpireAdjutant"], ["EmpireGovernor"]]
   - type: GenericVisualizer
     visuals:
       enum.ComputerVisuals.Powered:
@@ -134,6 +142,9 @@
   components:
   - type: OverwatchConsole
     faction: NCWL
+  - type: TerritoryConsole
+    faction: NCWL
+    commandAccess: [["NCWLCommand"], ["NCWLKommissar"]]
   - type: GenericVisualizer
     visuals:
       enum.ComputerVisuals.Powered:
@@ -159,6 +170,9 @@
   components:
   - type: OverwatchConsole
     faction: SHI
+  - type: TerritoryConsole
+    faction: SHI
+    commandAccess: [["ShinoharaOfficer"], ["ShinoharaExecutive"]]
   - type: GenericVisualizer
     visuals:
       enum.ComputerVisuals.Powered:
@@ -183,6 +197,8 @@
   name: Families Command Console
   components:
   - type: OverwatchConsole
+    faction: TAP
+  - type: TerritoryConsole
     faction: TAP
   - type: GenericVisualizer
     visuals:
@@ -209,6 +225,9 @@
   components:
   - type: OverwatchConsole
     faction: TFSC
+  - type: TerritoryConsole
+    faction: TFSC
+    commandAccess: [["SyndicateCommand"], ["SyndicateRingleader"]]
   - type: GenericVisualizer
     visuals:
       enum.ComputerVisuals.Powered:
@@ -239,6 +258,8 @@
   components:
   - type: OverwatchConsole
     faction: SRM
+  - type: TerritoryConsole
+    faction: SRM
   - type: GenericVisualizer
     visuals:
       enum.ComputerVisuals.Powered:
@@ -263,6 +284,8 @@
   name: Gliess Command Console
   components:
   - type: OverwatchConsole
+    faction: CMM
+  - type: TerritoryConsole
     faction: CMM
   - type: GenericVisualizer
     visuals:

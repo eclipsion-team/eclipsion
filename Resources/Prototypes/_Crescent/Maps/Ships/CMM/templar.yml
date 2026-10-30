@@ -6,7 +6,7 @@
     LOADOUT: 2x SHI 43mm "Dasher" ballistic slugthrower, 8x 20mm PTA "Operator" gatling turret
     SHIELD: Absent
     SPEED: 20 m/s
-  price: 90000
+  price: 111000
   category: Small
   group: None
   path: /Maps/_Crescent/Shuttles/CMM/templar.yml

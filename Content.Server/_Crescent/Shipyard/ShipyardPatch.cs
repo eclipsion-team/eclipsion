@@ -1,4 +1,4 @@
-﻿using Content.Server.Shuttles.Components;
+using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
@@ -21,6 +21,9 @@ using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using Content.Server._Crescent.Economy;
+using Content.Server._Crescent.Taxation;
+using Content.Shared._Crescent.Economy;
+using Content.Shared._Crescent.Factions;
 using Content.Server._Crescent.Shipyard; // Eclipsion - high-value purchase approval
 using Content.Server._Crescent;
 using Content.Server.Crescent.Dispenser;
@@ -95,6 +98,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     [Dependency] private readonly EntityWhitelistSystem _whitelists = default!;
     [Dependency] private readonly EconomyPriceSystem _economyPrice = default!;
     [Dependency] private readonly StationTradeMarketSystem _market = default!;
+    [Dependency] private readonly FactionTreasurySystem _factionTreasury = default!;
     [Dependency] private readonly ShipPurchaseApprovalSystem _approvals = default!; // Eclipsion - high-value purchase approval
 
     /// <summary>
@@ -322,6 +326,13 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         if (!factionYard && HasComp<CivilianShipyardNoFactionIffComponent>(stationGrid))
             return;
 
+        if (factionYard && TryComp<FactionMachineComponent>(console, out var machine) && machine.Explicit &&
+            !string.IsNullOrEmpty(machine.Faction))
+        {
+            _shuttle.SetIFFFaction(shuttle, machine.Faction);
+            return;
+        }
+
         if (TryComp<IFFComponent>(stationGrid, out var stationIFF))
             _shuttle.SetIFFFaction(shuttle, stationIFF.Faction);
     }
@@ -442,9 +453,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             return;
         }
 
-        // Faction yards bill the treasury, civilian ones bill the buyer.
-        var faction = _market.GetStationFaction(station);
-        var isFactionYard = component.UsesFactionTreasury && faction != null;
+        var faction = GetYardFaction(uid, component, station);
+        var isFactionYard = faction != null && args.Source == PaymentSource.Faction;
 
         TryComp<BankAccountComponent>(player, out var bank);
 
@@ -461,7 +471,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
                 return;
             }
 
-            if (_market.GetTreasury(station) < vesselPrice)
+            if (_factionTreasury.Get(faction!) < vesselPrice)
             {
                 ConsolePopup(args.Actor, Loc.GetString("shipyard-console-treasury-insufficient", ("cost", vesselPrice)));
                 PlayDenySound(uid, component);
@@ -471,7 +481,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             // Eclipsion Start - a purchase big enough to matter to the whole faction is signed off at the
             // treasury console that pays for it. Checked after the funds test so an unaffordable ship is
             // still refused outright rather than queued for an approval that could never be honoured.
-            if (_approvals.RequiresApproval(station, vesselPrice, component))
+            if (_approvals.RequiresApproval(_factionTreasury.Get(faction!), vesselPrice, component))
             {
                 // Approvals are recorded against an account, so a buyer with no session behind them (an
                 // NPC, an admin-spawned dummy) has nothing to sign off and nothing to sign off with.
@@ -532,7 +542,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         if (isFactionYard)
         {
-            _market.TryWithdrawTreasury(station, vesselPrice);
+            _factionTreasury.TryWithdraw(faction!, vesselPrice);
             if (buyer is { } buyerId)
                 _factionShipPurchases[buyerId] = _factionShipPurchases.GetValueOrDefault(buyerId) + 1;
         }
@@ -550,7 +560,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         var priceMult = EnsureComp<ShipPriceMultiplierComponent>(shuttle.Owner);
         priceMult.priceMultiplier = 0.9f;
         priceMult.PurchasePrice = vesselPrice;
-        priceMult.TreasuryStation = isFactionYard ? station : null;
+        priceMult.TreasuryFaction = isFactionYard ? faction : null;
+        priceMult.PaidPersonally = !isFactionYard;
 
         var sellValue = ComputeSellValue(shuttle.Owner, (ShipyardConsoleUiKey)args.UiKey);
 
@@ -629,7 +640,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         ChatPurchaseLocation(uid, station, config);
 
         PlayConfirmSound(uid, component);
-        _adminLogger.Add(LogType.ShipYardUsage, LogImpact.Low, $"{ToPrettyString(player):actor} purchased shuttle {ToPrettyString(shuttle.Owner)} for {vesselPrice} credits via {ToPrettyString(component.Owner)}");
+        _adminLogger.Add(LogType.ShipYardUsage, LogImpact.Low, $"{ToPrettyString(player):actor} purchased shuttle {ToPrettyString(shuttle.Owner)} for {vesselPrice} credits via {ToPrettyString(component.Owner)}, paid from {(isFactionYard ? $"the {faction} treasury" : "their own account")}");
         RefreshState(uid, GetDisplayBalance(uid, player), true, name, sellValue, true, (ShipyardConsoleUiKey) args.UiKey);
 
     }
@@ -691,8 +702,9 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         var channel = component.ShipyardChannel;
 
-        // Read before the sale deletes the hull: a ship the faction treasury paid for is sold back into that vault.
-        var treasuryStation = CompOrNull<ShipPriceMultiplierComponent>(shuttleUid)?.TreasuryStation;
+        var purchase = CompOrNull<ShipPriceMultiplierComponent>(shuttleUid);
+        var treasuryFaction = purchase?.TreasuryFaction;
+        var paidPersonally = purchase?.PaidPersonally == true;
 
         if (!TrySellShuttle(stationUid, shuttleUid, out var bill, (ShipyardConsoleUiKey) args.UiKey))
         {
@@ -705,15 +717,14 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         Del(targetId);
 
 
-        if (treasuryStation is { } paidBy)
+        if (!string.IsNullOrEmpty(treasuryFaction))
         {
-            // Wherever it is sold, a treasury-bought hull never pays out to a personal account. If the paying
-            // station is gone the proceeds are simply lost rather than handed to the seller.
-            if (!TerminatingOrDeleted(paidBy) && _market.GetStationFaction(paidBy) is not null)
-                _market.AddTreasury(paidBy, bill);
+            _factionTreasury.Add(treasuryFaction, bill);
         }
-        else if (component.UsesFactionTreasury && _market.GetStationFaction(stationUid) is not null)
-            _market.AddTreasury(stationUid, bill);
+        else if (!paidPersonally && GetYardFaction(uid, component, stationUid) is { } yardFaction)
+        {
+            _factionTreasury.Add(yardFaction, bill);
+        }
         else
             _bank.TryBankDeposit(player, bill);
         PlayConfirmSound(uid, component);
@@ -735,9 +746,6 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         //      mayhaps re-enable this later for HoS/SA
         //        var station = _station.GetOwningStation(uid);
-
-        if (!TryComp<BankAccountComponent>(player, out var bank))
-            return;
 
         var targetId = component.TargetIdSlot.ContainerSlot?.ContainedEntity;
 
@@ -857,14 +865,11 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         foreach (var actor in actors)
         {
-            if (!TryComp<BankAccountComponent>(actor, out var bank))
-                continue;
-
             var sellValue = ComputeSellValue(shuttle, uiKey);
 
             RefreshState(
                 console,
-                bank.Balance,
+                GetDisplayBalance(console, actor),
                 true,
                 shipName,
                 sellValue,
@@ -895,9 +900,6 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         foreach (var user in uiUsers)
         {
             if (user is not { Valid: true } player)
-                continue;
-
-            if (!TryComp<BankAccountComponent>(player, out var bank))
                 continue;
 
             var targetId = component.TargetIdSlot.ContainerSlot?.ContainedEntity;
@@ -994,12 +996,23 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
     private long GetDisplayBalance(EntityUid console, EntityUid player)
     {
-        if (TryComp<ShipyardConsoleComponent>(console, out var comp) && comp.UsesFactionTreasury
+        if (TryComp<ShipyardConsoleComponent>(console, out var comp)
             && _station.GetOwningStation(console) is { Valid: true } station
-            && _market.GetStationFaction(station) is not null)
-            return _market.GetTreasury(station);
+            && GetYardFaction(console, comp, station) is { } faction)
+            return _factionTreasury.Get(faction);
 
         return TryComp<BankAccountComponent>(player, out var bank) ? bank.Balance : 0;
+    }
+
+    public string? GetYardFaction(EntityUid console, ShipyardConsoleComponent component, EntityUid? station)
+    {
+        if (!component.UsesFactionTreasury)
+            return null;
+
+        if (TryComp<FactionMachineComponent>(console, out var machine) && machine.Explicit && !string.IsNullOrEmpty(machine.Faction))
+            return machine.Faction;
+
+        return station is { } owning ? _market.GetStationFaction(owning) : null;
     }
 
     private void RefreshState(EntityUid uid, long balance, bool access, string? shipDeed, int shipSellValue, bool isTargetIdPresent, ShipyardConsoleUiKey uiKey)
@@ -1018,6 +1031,20 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             uiKey.ToString(),
             canSell);
 
+        if (console != null &&
+            GetYardFaction(uid, console, _station.GetOwningStation(uid)) is { } faction)
+        {
+            newState.TreasuryFaction = faction;
+            newState.TreasuryBalance = _factionTreasury.Get(faction);
+        }
+
+        if (_ui.GetActors(uid, uiKey).FirstOrDefault() is { Valid: true } viewer &&
+            TryComp<BankAccountComponent>(viewer, out var bank))
+        {
+            newState.HasPersonalAccount = true;
+            newState.PersonalBalance = bank.Balance;
+        }
+
         _ui.SetUiState(uid, uiKey, newState);
     }
 
@@ -1026,8 +1053,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         deed.ShuttleUid = shuttleUid;
         TryParseShuttleName(deed, shuttleName!);
         deed.ShuttleOwner = shuttleOwner;
-        if(shuttleUid is not null)
-            EntityManager.Dirty(shuttleUid.Value, deed);
+
+        EntityManager.Dirty(deed.Owner, deed);
     }
 
     private void OnInitDeedSpawner(EntityUid uid, StationDeedSpawnerComponent component, MapInitEvent args)

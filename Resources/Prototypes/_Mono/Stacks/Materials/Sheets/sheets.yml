@@ -1,0 +1,6 @@
+- type: stack
+  id: Pyrogel
+  name: pyrogel
+  icon: { sprite: _Mono/Objects/Materials/pyrogel.rsi, state: icon }
+  spawn: MaterialPyrogel1
+  maxCount: 150

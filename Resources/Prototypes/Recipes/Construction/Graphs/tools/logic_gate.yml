@@ -33,9 +33,20 @@
           sprite: Objects/Tools/multitool.rsi
           state: icon
         name: a multitool
+    # Mono
+    - to: timer
+      steps:
+      - material: Steel
+        amount: 3
+        doAfter: 1
+      - material: Cable
+        amount: 2
+        doAfter: 1
   - node: logic_gate
     entity: LogicGateOr
   - node: edge_detector
     entity: EdgeDetector
   - node: power_sensor
     entity: PowerSensor
+  - node: timer # Mono
+    entity: SignalTimerItem

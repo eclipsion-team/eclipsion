@@ -6,7 +6,7 @@
     LOADOUT: 4x medium 'Lancer' MRM missile system
     SHIELD: Absent
     SPEED: 30 m/s
-  price: 30000
+  price: 37000
   category: Small
   group: None
   path: /Maps/_Crescent/Shuttles/CMM/justiciar.yml

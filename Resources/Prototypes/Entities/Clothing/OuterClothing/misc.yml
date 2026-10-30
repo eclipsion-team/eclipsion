@@ -51,6 +51,7 @@
   name: chef jacket
   description: An apron-jacket used by a high class chef.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: Clothing/OuterClothing/Misc/chef.rsi
   - type: Clothing
@@ -62,6 +63,7 @@
   name: nanotrasen chef jacket
   description: An apron-jacket used by a high class Nanotrasen Corporation chef.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: Clothing/OuterClothing/Misc/chef_nt.rsi
   - type: Clothing
@@ -73,6 +75,7 @@
   name: idris chef jacket
   description: An apron-jacket used by a high class Idris Incorporated chef.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: Clothing/OuterClothing/Misc/chef_idris.rsi
   - type: Clothing
@@ -84,6 +87,7 @@
   name: orion chef jacket
   description: An apron-jacket used by a high class Orion Expresschef.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: Clothing/OuterClothing/Misc/chef_orion.rsi
   - type: Clothing
@@ -305,6 +309,7 @@
   name: red flannel jacket
   description: An old fashioned red flannel jacket for space autumn.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: Clothing/OuterClothing/Misc/flannel_jacket.rsi
     layers:
@@ -341,6 +346,7 @@
   name: blue flannel jacket
   description: An old fashioned blue flannel jacket for space autumn.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: Clothing/OuterClothing/Misc/flannel_jacket.rsi
     layers:
@@ -377,6 +383,7 @@
   name: green flannel jacket
   description: An old fashioned green flannel jacket for space autumn.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: Clothing/OuterClothing/Misc/flannel_jacket.rsi
     layers:
@@ -451,6 +458,7 @@
   name: suit jacket
   description: A snappy dress jacket.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: Clothing/OuterClothing/Misc/suit_jacket.rsi
   - type: Clothing

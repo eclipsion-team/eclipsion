@@ -14,6 +14,7 @@ using Robust.Shared.ContentPack;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Map.Events;
 using Robust.Shared.Prototypes;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
@@ -37,6 +38,19 @@ namespace Content.IntegrationTests.Tests
             "NukieOutpost"
         };
 
+        // Shelved maps nothing loads; they are kept for reference and not maintained.
+        private static readonly string[] ArchivedMapFolders =
+        {
+            "/NonUsedMaps/",
+            "/old maps/",
+        };
+
+        private static bool IsArchived(ResPath path)
+        {
+            var str = path.ToString();
+            return ArchivedMapFolders.Any(folder => str.Contains(folder, StringComparison.Ordinal));
+        }
+
         private static readonly string[] Grids =
         {
             "/Maps/CentralCommand/main.yml",
@@ -50,7 +64,8 @@ namespace Content.IntegrationTests.Tests
         {
             "Box",
             "Core",
-            "Saltern"
+            "Saltern",
+            "EmptyHullrot" // placeholder with no grid, the gamerules spawn the real stations
         };
 
         private static readonly string[] GameMaps =
@@ -58,30 +73,8 @@ namespace Content.IntegrationTests.Tests
             "Dev",
             "TestTeg",
             "MeteorArena",
-            "NukieOutpost",
-            "Core", // No current maintainer. In need of a rework...
-            "Pebble", // Maintained by Plyushune
-            // "Edge", // De-rotated, no current maintainer.
-            "Saltern", // Maintained by the Sin Mapping Team, ODJ, and TCJ.
-            "Shoukou", // Maintained by Violet
-            // "Tortuga", // De-rotated, no current maintainer.
-            "Arena", // Maintained by astriloqua.
-            "Asterisk", // Maintained by mrs.
-            "Glacier", // Maintained by Violet
-            "TheHive", // Maintained by dootythefrooty
-            // "Hammurabi", // De-rotated, maintained by Ichai.
-            "Lighthouse", // Maintained by Violet
-            // "Submarine", // De-rotated, no current maintainer.
-            "Gax", // Maintained by Ichaai
             "Lavatest", // Lavaland Change
-            "Rad", // Maintained by Ichai
-            // "Europa", // De-rotated, has significant issues.
-            "Meta", // Maintained by Ichai
-            "Cyberiad", // Maintained by Ichai
-            "Lambda", // Maintained by Ichai
-            "Bagel", // Maintained by Ichai
-            "Northway", // Maintained by Violet
-            "Anchor" // Maintained by the SiN Mapping Team.
+            "EmptyHullrot" // eclipsion - the upstream station maps were removed, this is the only map in the pool
         };
 
         /// <summary>
@@ -252,7 +245,11 @@ namespace Content.IntegrationTests.Tests
                 return false;
             }
 
-            var reader = new EntityDeserializer(deps, data, DeserializationOptions.Default);
+            // Apply /Migrations like MapLoaderSystem does, or renamed prototypes read as missing.
+            var ev = new BeforeEntityReadEvent();
+            deps.Resolve<IEntityManager>().EventBus.RaiseEvent(EventSource.Local, ev);
+
+            var reader = new EntityDeserializer(deps, data, DeserializationOptions.Default, ev.RenamedPrototypes, ev.DeletedPrototypes);
             if (!reader.TryProcessData())
             {
                 Assert.Fail($"Failed to process {map}");
@@ -475,6 +472,10 @@ namespace Content.IntegrationTests.Tests
                 {
                     continue;
                 }
+
+                if (IsArchived(rootedPath))
+                    continue;
+
                 mapPaths.Add(rootedPath);
             }
 

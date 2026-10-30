@@ -110,6 +110,11 @@ public sealed partial class ShuttleConsoleWindow : KsBaseWindow, // KS14: instru
         {
             CrewContainer.Visible = false;
         }
+
+        if (mode != ShuttleConsoleMode.Politics)
+        {
+            PoliticsContainer.Visible = false;
+        }
     }
 
     private void NavPressed(BaseButton.ButtonEventArgs obj)
@@ -144,6 +149,9 @@ public sealed partial class ShuttleConsoleWindow : KsBaseWindow, // KS14: instru
             case ShuttleConsoleMode.Crew:
                 CrewContainer.Visible = true;
                 break;
+            case ShuttleConsoleMode.Politics:
+                PoliticsContainer.Visible = true;
+                break;
             default:
                 throw new NotImplementedException();
         }
@@ -166,6 +174,7 @@ public sealed partial class ShuttleConsoleWindow : KsBaseWindow, // KS14: instru
         Map,
         Dock,
         Crew,
+        Politics, // crescent
     }
 
     public void UpdateState(EntityUid owner, ShuttleBoundUserInterfaceState cState)
@@ -186,6 +195,7 @@ public sealed partial class ShuttleConsoleWindow : KsBaseWindow, // KS14: instru
         }
 
         _statusGrid = coordinates?.EntityId; // KS14: status strip
+        PoliticsContainer.Viewer = coordinates?.EntityId;
         NavContainer.SetShuttle(coordinates?.EntityId);
         MapContainer.SetShuttle(coordinates?.EntityId);
         MapContainer.SetConsole(owner);
@@ -208,7 +218,7 @@ public sealed partial class ShuttleConsoleWindow : KsBaseWindow, // KS14: instru
     private void KsSetupChrome()
     {
         KsInstrumentSheetlet.MakeInstrument(
-            NavModeButton, MapModeButton, DockModeButton, CrewManagementButton, CloseChromeButton);
+            NavModeButton, MapModeButton, DockModeButton, CrewManagementButton, PoliticsModeButton, CloseChromeButton);
 
         Bezel.PanelOverride = new StyleBoxFlat
         {
@@ -226,7 +236,7 @@ public sealed partial class ShuttleConsoleWindow : KsBaseWindow, // KS14: instru
 
         TitleLabel.FontColorOverride = KsInstrumentChrome.TitleText;
 
-        foreach (var separator in new[] { Sep1, Sep2, Sep3 })
+        foreach (var separator in new[] { Sep1, Sep2, Sep3, Sep4 })
         {
             separator.FontColorOverride = KsInstrumentPalette.Shell.AccentDim;
         }

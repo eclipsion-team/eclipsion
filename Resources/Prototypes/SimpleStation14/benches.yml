@@ -21,6 +21,9 @@
   id: BenchParkMiddle
   parent: BenchBaseMiddle
   components:
+  - type: Construction
+    graph: BenchesGraph
+    node: BenchParkMiddleNode
   - type: Sprite
     sprite: SimpleStation14/Structures/Furniture/Benches/parkbench_wooden.rsi
 
@@ -29,6 +32,9 @@
   suffix: Left
   parent: BenchParkMiddle
   components:
+  - type: Construction
+    graph: BenchesGraph
+    node: BenchParkLeftNode
   - type: Sprite
     state: left
 
@@ -37,6 +43,9 @@
   suffix: Right
   parent: BenchParkMiddle
   components:
+  - type: Construction
+    graph: BenchesGraph
+    node: BenchParkRightNode
   - type: Sprite
     state: right
 
@@ -46,6 +55,9 @@
   id: BenchParkBambooMiddle
   parent: BenchBaseMiddle
   components:
+  - type: Construction
+    graph: BenchesGraph
+    node: BenchParkBambooMiddleNode
   - type: Sprite
     sprite: SimpleStation14/Structures/Furniture/Benches/parkbench_bamboo.rsi
 
@@ -54,6 +66,9 @@
   suffix: Left
   parent: BenchParkBambooMiddle
   components:
+  - type: Construction
+    graph: BenchesGraph
+    node: BenchParkBambooLeftNode
   - type: Sprite
     state: left
 
@@ -62,6 +77,9 @@
   suffix: Right
   parent: BenchParkBambooMiddle
   components:
+  - type: Construction
+    graph: BenchesGraph
+    node: BenchParkBambooRightNode
   - type: Sprite
     state: right
 
@@ -71,6 +89,9 @@
   id: BenchPewMiddle
   parent: BenchBaseMiddle
   components:
+  - type: Construction
+    graph: BenchesGraph
+    node: BenchPewMiddleNode
   - type: Sprite
     sprite: SimpleStation14/Structures/Furniture/Benches/pews.rsi
 
@@ -79,6 +100,9 @@
   suffix: Left
   parent: BenchPewMiddle
   components:
+  - type: Construction
+    graph: BenchesGraph
+    node: BenchPewLeftNode
   - type: Sprite
     state: left
 
@@ -87,6 +111,9 @@
   suffix: Right
   parent: BenchPewMiddle
   components:
+  - type: Construction
+    graph: BenchesGraph
+    node: BenchPewRightNode
   - type: Sprite
     state: right
 
@@ -96,6 +123,9 @@
   id: BenchSteelMiddle
   parent: BenchBaseMiddle
   components:
+  - type: Construction
+    graph: BenchesGraph
+    node: BenchSteelMiddleNode
   - type: Sprite
     sprite: SimpleStation14/Structures/Furniture/Benches/steel_bench.rsi
 
@@ -104,6 +134,9 @@
   suffix: Left
   parent: BenchSteelMiddle
   components:
+  - type: Construction
+    graph: BenchesGraph
+    node: BenchSteelLeftNode
   - type: Sprite
     state: left
 
@@ -112,6 +145,9 @@
   suffix: Right
   parent: BenchSteelMiddle
   components:
+  - type: Construction
+    graph: BenchesGraph
+    node: BenchSteelRightNode
   - type: Sprite
     state: right
 
@@ -121,6 +157,9 @@
   id: BenchSteelWhiteMiddle
   parent: BenchBaseMiddle
   components:
+  - type: Construction
+    graph: BenchesGraph
+    node: BenchSteelWhiteMiddleNode
   - type: Sprite
     sprite: SimpleStation14/Structures/Furniture/Benches/steel_bench_white.rsi
 
@@ -129,6 +168,9 @@
   suffix: Left
   parent: BenchSteelWhiteMiddle
   components:
+  - type: Construction
+    graph: BenchesGraph
+    node: BenchSteelWhiteLeftNode
   - type: Sprite
     state: left
 
@@ -137,6 +179,9 @@
   suffix: Right
   parent: BenchSteelWhiteMiddle
   components:
+  - type: Construction
+    graph: BenchesGraph
+    node: BenchSteelWhiteRightNode
   - type: Sprite
     state: right
 
@@ -146,6 +191,9 @@
   id: BenchSofaMiddle
   parent: BenchBaseMiddle
   components:
+  - type: Construction
+    graph: SofasGraph
+    node: BenchSofaMiddleNode
   - type: Sprite
     sprite: SimpleStation14/Structures/Furniture/Benches/sofa.rsi
 
@@ -154,6 +202,9 @@
   suffix: Left
   parent: BenchSofaMiddle
   components:
+  - type: Construction
+    graph: SofasGraph
+    node: BenchSofaLeftNode
   - type: Sprite
     state: left
 
@@ -162,6 +213,9 @@
   suffix: Right
   parent: BenchSofaMiddle
   components:
+  - type: Construction
+    graph: SofasGraph
+    node: BenchSofaRightNode
   - type: Sprite
     state: right
 
@@ -173,6 +227,9 @@
   placement:
     mode: SnapgridCenter
   components:
+  - type: Construction
+    graph: SofasGraph
+    node: BenchSofaCornerNode
   - type: Transform
     anchored: true
   - type: Rotatable
@@ -203,6 +260,9 @@
   id: BenchSofaCorpMiddle
   parent: BenchBaseMiddle
   components:
+  - type: Construction
+    graph: SofasGraph
+    node: BenchSofaCorpMiddleNode
   - type: Sprite
     sprite: SimpleStation14/Structures/Furniture/Benches/sofa_corp.rsi
 
@@ -211,6 +271,9 @@
   suffix: Left
   parent: BenchSofaCorpMiddle
   components:
+  - type: Construction
+    graph: SofasGraph
+    node: BenchSofaCorpLeftNode
   - type: Sprite
     state: left
 
@@ -219,6 +282,9 @@
   suffix: Right
   parent: BenchSofaCorpMiddle
   components:
+  - type: Construction
+    graph: SofasGraph
+    node: BenchSofaCorpRightNode
   - type: Sprite
     state: right
 
@@ -230,6 +296,9 @@
   placement:
     mode: SnapgridCenter
   components:
+  - type: Construction
+    graph: SofasGraph
+    node: BenchSofaCorpCornerNode
   - type: Transform
     anchored: true
   - type: Rotatable

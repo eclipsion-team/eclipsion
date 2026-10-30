@@ -1,0 +1,7 @@
+- type: alert
+  id: HardsuitInjectorMissing
+  icons:
+  - sprite: /Textures/Objects/Specific/Medical/medipen.rsi
+    state: medipen_empty
+  name: alerts-hardsuit-injector-missing-name
+  description: alerts-hardsuit-injector-missing-desc

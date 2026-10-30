@@ -22,18 +22,26 @@ public sealed class TargetingConsoleBoundUserInterfaceState : BoundUserInterface
     /// </summary>
     public List<string> ActiveGroups;
 
+    public int? FireControlLimit;
+
+    public int UncontrolledCannons;
+
     public TargetingConsoleBoundUserInterfaceState(
         NavInterfaceState navState,
         IFFInterfaceState iffState,
         List<string>? groups,
         List<NetEntity>? controlled,
-        List<string> activeGroups)
+        List<string> activeGroups,
+        int? fireControlLimit = null,
+        int uncontrolledCannons = 0)
     {
         NavState = navState;
         IFFState = iffState;
         CannonGroups = groups;
         ControlledCannons = controlled;
         ActiveGroups = activeGroups;
+        FireControlLimit = fireControlLimit;
+        UncontrolledCannons = uncontrolledCannons;
     }
 }
 

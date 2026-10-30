@@ -1,0 +1,24 @@
+<BoxContainer xmlns="https://spacestation14.io"
+              Orientation="Vertical" Margin="8" SeparationOverride="6"
+              VerticalExpand="True" HorizontalExpand="True">
+    <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+        <BoxContainer Orientation="Vertical" SeparationOverride="6" HorizontalExpand="True">
+            <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                <Label Name="RegionLabel" StyleClasses="LabelHeading" HorizontalExpand="True" ClipText="True"/>
+                <Label Name="LevelLabel" StyleClasses="LabelHeading"/>
+            </BoxContainer>
+            <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                <Label Name="HolderLabel" HorizontalExpand="True"/>
+                <Label Name="CapabilityLabel" StyleClasses="LabelSecondaryColor"/>
+            </BoxContainer>
+
+            <Label Text="{Loc 'persistent-poi-admin-ui-limits'}" StyleClasses="LabelSecondaryColor"/>
+            <BoxContainer Name="LimitsGrid" Orientation="Vertical" SeparationOverride="2"/>
+
+            <Label Name="NextLevelHeader" StyleClasses="LabelSecondaryColor"/>
+            <BoxContainer Name="CostContainer" Orientation="Vertical" SeparationOverride="4"/>
+        </BoxContainer>
+    </ScrollContainer>
+    <RichTextLabel Name="DepositHint" HorizontalExpand="True"/>
+    <Button Name="UpgradeButton" StyleClasses="OpenRight"/>
+</BoxContainer>

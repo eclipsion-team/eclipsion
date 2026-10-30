@@ -9,7 +9,7 @@
     LOADOUT: 2x 48mm 'Shortbow' SRM, 2x 20mm 'Screamer' Rotary Cannon
     SHIELD: Absent
     SPEED: 35 m/s
-  price: 30000
+  price: 36000
   category: Small
   group: None
   path: /Maps/_Crescent/Shuttles/TFSC/fridge.yml

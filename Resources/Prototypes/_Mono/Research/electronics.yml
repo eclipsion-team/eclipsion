@@ -1,0 +1,13 @@
+# Electronics is the civilian discipline, so every faction's server can reach this one.
+- type: technology
+  id: MonoTrapEngineering
+  name: research-technology-mono-trap-engineering
+  icon:
+    sprite: _Mono/Objects/Weapons/Traps/shotguntrap.rsi
+    state: shotgun_trap_handheld
+  discipline: Electronics
+  tier: 1
+  cost: 5000
+  recipeUnlocks:
+  - ShotgunTrapPacked
+  - SignalTimerItem

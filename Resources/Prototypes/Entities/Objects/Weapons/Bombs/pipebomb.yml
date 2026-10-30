@@ -4,6 +4,8 @@
   name: pipe bomb
   description: An improvised explosive made from pipes and wire.
   components:
+  # Required by the short pipe bomb case whitelist.
+  - type: WeaponCaseInsertable
   - type: Sprite
     sprite: Objects/Weapons/Bombs/pipebomb.rsi
     layers:

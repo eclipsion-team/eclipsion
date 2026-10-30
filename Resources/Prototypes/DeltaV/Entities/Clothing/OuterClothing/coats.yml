@@ -81,6 +81,7 @@
   name: leather jacket
   description: A rugged leather jacket, for fashion or for utility.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: DeltaV/Clothing/OuterClothing/Coats/leatherjacket.rsi
   - type: Clothing
@@ -147,6 +148,7 @@
   name: head of personnel's formal jacket
   description: A showy and over-the-top jacket with gold buttons and red trim. More tacky than classy.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: DeltaV/Clothing/OuterClothing/Coats/repcoat.rsi
   - type: Clothing

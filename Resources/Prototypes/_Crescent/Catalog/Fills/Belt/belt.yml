@@ -185,9 +185,9 @@
   - type: StorageFill
     contents:
       - id: MagazineMagnum
-        amount: 3
+        amount: 2
       - id: CartridgeAntiMateriel
-        amount: 6
+        amount: 4
       - id: Gauze
       - id: EmergencyMedipen
       - id: SpaceMedipen
@@ -349,9 +349,9 @@
   - type: StorageFill
     contents:
       - id: MagazineMagnum
-        amount: 3
+        amount: 2
       - id: CartridgeAntiMateriel
-        amount: 6
+        amount: 4
       - id: Gauze
       - id: EmergencyMedipen
       - id: SpaceMedipen

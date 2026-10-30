@@ -86,7 +86,8 @@ public abstract class SharedJetpackSystem : EntitySystem
         // The client re-parents predicted entities while resetting them during state application. Adding or removing
         // the relay components here then mutates the collection the engine is iterating ("Collection was modified").
         // The server state already carries the right components.
-        if (_timing.ApplyingState)
+        // Deleting the user detaches it too; don't add relay components to a terminating entity.
+        if (_timing.ApplyingState || TerminatingOrDeleted(uid))
             return;
 
         RefreshOrDisableUser(uid, component, args.Transform);

@@ -1,0 +1,52 @@
+<controls:FancyWindow
+        xmlns="https://spacestation14.io"
+        xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+        xmlns:cc="clr-namespace:Content.Client.Administration.UI.CustomControls"
+        Title="{Loc playtime-window-title}" MinSize="1000 650">
+    <BoxContainer Orientation="Horizontal" Margin="4">
+        <!-- Picking the player: from the list, or by name or user id for someone who isn't in it -->
+        <BoxContainer Orientation="Vertical" MinWidth="260" Margin="0 0 8 0">
+            <BoxContainer Orientation="Horizontal">
+                <LineEdit Name="FindPlayer" PlaceHolder="{Loc playtime-window-find-placeholder}" HorizontalExpand="True"/>
+                <Button Name="FindButton" Text="{Loc playtime-window-find}" StyleClasses="OpenLeft"/>
+            </BoxContainer>
+            <cc:PlayerListControl Name="PlayerList" VerticalExpand="True"/>
+        </BoxContainer>
+
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+            <BoxContainer Orientation="Horizontal">
+                <Label Name="PlayerName" StyleClasses="LabelHeading" HorizontalExpand="True"/>
+                <Label Name="Summary" StyleClasses="LabelSubText" VerticalAlignment="Center"/>
+            </BoxContainer>
+
+            <PanelContainer StyleClasses="BackgroundDark" Margin="0 4">
+                <BoxContainer Orientation="Vertical" Margin="4">
+                    <CheckBox Name="Overall" Text="{Loc playtime-window-overall}" Disabled="True"/>
+                    <BoxContainer Orientation="Horizontal" Margin="0 4 0 0">
+                        <LineEdit Name="TimeInput" PlaceHolder="{Loc playtime-window-time-placeholder}"
+                                  ToolTip="{Loc playtime-window-time-help}" MinWidth="180"/>
+                        <Label Name="TimePreview" StyleClasses="LabelSubText" Margin="8 0" HorizontalExpand="True"/>
+                        <Button Name="AddButton" Text="{Loc playtime-window-add}" StyleClasses="OpenRight" Disabled="True"/>
+                        <controls:ConfirmButton Name="SetButton" Text="{Loc playtime-window-set}" StyleClasses="OpenBoth"
+                                                Disabled="True"/>
+                        <Button Name="MeetButton" Text="{Loc playtime-window-meet}" ToolTip="{Loc playtime-window-meet-tooltip}"
+                                StyleClasses="OpenLeft" Disabled="True"/>
+                    </BoxContainer>
+                </BoxContainer>
+            </PanelContainer>
+
+            <BoxContainer Orientation="Horizontal" Margin="0 0 0 4">
+                <LineEdit Name="Search" PlaceHolder="{Loc playtime-window-search}" HorizontalExpand="True"/>
+                <Label Name="Selected" StyleClasses="LabelSubText" VerticalAlignment="Center" Margin="8 0"/>
+                <Button Name="SelectShown" Text="{Loc playtime-window-select-shown}" StyleClasses="OpenRight"/>
+                <Button Name="ClearSelection" Text="{Loc playtime-window-clear}" StyleClasses="OpenLeft"/>
+            </BoxContainer>
+
+            <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+                <BoxContainer Name="Departments" Orientation="Vertical"/> <!-- Populated with DepartmentPlaytimePanel -->
+            </ScrollContainer>
+
+            <Label Name="Status" StyleClasses="LabelSubText" Visible="False" Margin="0 4 0 0"/>
+        </BoxContainer>
+    </BoxContainer>
+</controls:FancyWindow>

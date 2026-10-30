@@ -201,6 +201,8 @@ namespace Content.Shared.SubFloor
             if (Resolve(uid, ref appearance, false))
             {
                 Appearance.SetData(uid, SubFloorVisuals.Covered, hideComp.IsUnderCover, appearance);
+
+                Appearance.QueueUpdate(uid, appearance);
             }
         }
 

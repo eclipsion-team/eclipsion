@@ -4316,8 +4316,6 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 17
-      configurators:
-      - invalid
 - proto: GeneratorRTG
   entities:
   - uid: 1420

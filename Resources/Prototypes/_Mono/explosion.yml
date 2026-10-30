@@ -1,0 +1,29 @@
+# Monolith's versions of these also set temperature/fireChance/fire levels, which our ExplosionPrototype doesn't have.
+
+- type: explosion
+  id: BottleBomb
+  damagePerIntensity:
+    types:
+      Heat: 10
+      Blunt: 2
+      Piercing: 3
+  lightColor: Orange
+  texturePath: /Textures/Effects/fire.rsi
+  fireStates: 7
+  fireStacks: 3
+
+- type: explosion
+  id: PyrogelBomb
+  damagePerIntensity:
+    types:
+      Heat: 10
+      Blunt: 2
+      Piercing: 3
+  lightColor: Orange
+  texturePath: /Textures/Effects/fire.rsi
+  fireStates: 10
+  fireStacks: 8
+
+# STOP
+# BEFORE YOU ADD MORE EXPLOSION TYPES CONSIDER IF AN EXISTING ONE IS SUITABLE
+# ADDING NEW ONES IS PROHIBITIVELY EXPENSIVE

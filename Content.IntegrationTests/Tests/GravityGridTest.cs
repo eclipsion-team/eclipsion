@@ -66,7 +66,8 @@ namespace Content.IntegrationTests.Tests
                 powerComponent.NeedsPower = false;
             });
 
-            await server.WaitRunTicks(5);
+            // power nets only update every 0.5 s here
+            await pair.RunSeconds(1);
 
             await server.WaitAssertion(() =>
             {
@@ -85,7 +86,7 @@ namespace Content.IntegrationTests.Tests
                 powerComponent.NeedsPower = true;
             });
 
-            await server.WaitRunTicks(5);
+            await pair.RunSeconds(1);
 
             await server.WaitAssertion(() =>
             {

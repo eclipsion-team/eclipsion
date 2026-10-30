@@ -1,5 +1,6 @@
 using Content.Server.Gatherable;
 using Content.Server.Gatherable.Components;
+using Content.Shared._Crescent.Territory;
 using Content.Shared.Decals;
 using Content.Shared.Maps;
 using Content.Shared.Power;
@@ -100,7 +101,13 @@ public sealed class ShipDrillSystem : EntitySystem
             var tileDef = (ContentTileDefinition) _tileDefinitionManager[tileRef.Tile.TypeId];
 
             if (tileDef.ID != TargetTileId)
-                return; 
+                return;
+
+            if (TryComp<PersistentPoiGridComponent>(gridUid, out var territory) &&
+                territory.ProtectsTile(tileRef.GridIndices))
+            {
+                return;
+            }
 
             var ev = new FloorTileAttemptEvent();
             RaiseLocalEvent(gridUid, ref ev);

@@ -58,6 +58,9 @@
   - type: Sprite
     sprite: Objects/Specific/Security/target.rsi
     state: target_h
+  - type: Construction # Mono
+    graph: ShootingTargets
+    node: TargetHuman
 
 - type: entity
   name: syndicate target
@@ -68,6 +71,9 @@
   - type: Sprite
     sprite: Objects/Specific/Security/target.rsi
     state: target_s
+  - type: Construction # Mono
+    graph: ShootingTargets
+    node: TargetSyndicate
 
 - type: entity
   name: clown target
@@ -78,6 +84,9 @@
   - type: Sprite
     sprite: Objects/Specific/Security/target.rsi
     state: target_c
+  - type: Construction # Mono
+    graph: ShootingTargets
+    node: TargetClown
 
 # put it on a salvage or something
 - type: entity
@@ -89,6 +98,9 @@
   - type: Sprite
     sprite: Objects/Specific/Security/target.rsi
     state: target_f
+  - type: Construction # Mono
+    graph: ShootingTargets
+    node: TargetStrange
   - type: Destructible
     thresholds:
     - trigger:

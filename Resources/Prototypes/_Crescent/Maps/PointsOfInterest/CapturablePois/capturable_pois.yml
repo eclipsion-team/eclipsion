@@ -1,0 +1,399 @@
+# Capturable territories: copies of derelict maps under Maps/_Crescent/CapturablePois, each with a claim standard (and
+# its regionId), a warp point on the standard's tile and a derelict hunter garrison. The originals they were copied
+# from stay as they were, for the wreck fields and anything else that spawns them.
+#
+# Twelve of them are laid out, persistent, on half the political map's hexes, away from the stations - see the comment
+# at the top of _Crescent/GameRules/hullrotGamemodes.yml; the rest wait here for a hex to fill. See
+# _Crescent/CaptureFlag/README.md for how territories work. The map name, the standard's baseName and its warp point
+# all carry the same name, and no two territories share one.
+
+- type: gameMap
+  id: CapturableAbandonedChapel
+  mapName: 'Abandoned Chapel'
+  mapPath: /Maps/_Crescent/CapturablePois/abandonedchapel.yml
+  minPlayers: 0
+  stations:
+    CapturableAbandonedChapel:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Abandoned Chapel'
+
+- type: gameMap
+  id: CapturableCrystalSanctum
+  mapName: 'Crystal Sanctum'
+  mapPath: /Maps/_Crescent/CapturablePois/psionicpoi.yml
+  minPlayers: 0
+  stations:
+    CapturableCrystalSanctum:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Crystal Sanctum'
+
+- type: gameMap
+  id: CapturableExplorerWreck
+  mapName: 'Explorer Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/explorerwreck.yml
+  minPlayers: 0
+  stations:
+    CapturableExplorerWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Explorer Wreck'
+
+- type: gameMap
+  id: CapturableSolarSailWreck
+  mapName: 'Solar Sail Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/solarsailwreck.yml
+  minPlayers: 0
+  stations:
+    CapturableSolarSailWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Solar Sail Wreck'
+
+- type: gameMap
+  id: CapturableShuttleWreck
+  mapName: 'Shuttle Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/shuttlewreck.yml
+  minPlayers: 0
+  stations:
+    CapturableShuttleWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Shuttle Wreck'
+
+- type: gameMap
+  id: CapturableAbandonedStation
+  mapName: 'Abandoned Station'
+  mapPath: /Maps/_Crescent/CapturablePois/abandonedstation.yml
+  minPlayers: 0
+  stations:
+    CapturableAbandonedStation:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Abandoned Station'
+
+- type: gameMap
+  id: CapturableClementineWreck
+  mapName: 'Clementine Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/clementinewreck.yml
+  minPlayers: 0
+  stations:
+    CapturableClementineWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Clementine Wreck'
+
+- type: gameMap
+  id: CapturableCockroachWreck
+  mapName: 'Cockroach Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/cockroachwreck.yml
+  minPlayers: 0
+  stations:
+    CapturableCockroachWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Cockroach Wreck'
+
+- type: gameMap
+  id: CapturableCorvaxWreck
+  mapName: 'Corvax Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/corvaxwreck.yml
+  minPlayers: 0
+  stations:
+    CapturableCorvaxWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Corvax Wreck'
+
+- type: gameMap
+  id: CapturableGargutWreck
+  mapName: 'Gargut Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/gargutwreck.yml
+  minPlayers: 0
+  stations:
+    CapturableGargutWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Gargut Wreck'
+
+- type: gameMap
+  id: CapturableHammerheadWreck
+  mapName: 'Hammerhead Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/hammerheadwreck.yml
+  minPlayers: 0
+  stations:
+    CapturableHammerheadWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Hammerhead Wreck'
+
+- type: gameMap
+  id: CapturableHindWreck
+  mapName: 'Hind Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/hindwreck.yml
+  minPlayers: 0
+  stations:
+    CapturableHindWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Hind Wreck'
+
+- type: gameMap
+  id: CapturableIvarodWreck
+  mapName: 'Ivarod Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/ivarodwreck.yml
+  minPlayers: 0
+  stations:
+    CapturableIvarodWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Ivarod Wreck'
+
+- type: gameMap
+  id: CapturableLodkaWreck
+  mapName: 'Lodka Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/lodkawreck.yml
+  minPlayers: 0
+  stations:
+    CapturableLodkaWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Lodka Wreck'
+
+- type: gameMap
+  id: CapturableMolotWreck
+  mapName: 'Molot Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/molotwreck.yml
+  minPlayers: 0
+  stations:
+    CapturableMolotWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Molot Wreck'
+
+- type: gameMap
+  id: CapturableMusiyaneWreck
+  mapName: 'Musiyane Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/musiyanewreck.yml
+  minPlayers: 0
+  stations:
+    CapturableMusiyaneWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Musiyane Wreck'
+
+- type: gameMap
+  id: CapturableNemesisWreck
+  mapName: 'Nemesis Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/nemesiswreck.yml
+  minPlayers: 0
+  stations:
+    CapturableNemesisWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Nemesis Wreck'
+
+- type: gameMap
+  id: CapturablePraxisWreck
+  mapName: 'Praxis Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/praxiswreck.yml
+  minPlayers: 0
+  stations:
+    CapturablePraxisWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Praxis Wreck'
+
+- type: gameMap
+  id: CapturableQianWreck
+  mapName: 'Qian Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/qianwreck.yml
+  minPlayers: 0
+  stations:
+    CapturableQianWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Qian Wreck'
+
+- type: gameMap
+  id: CapturableSternWreck
+  mapName: 'Stern Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/sternwreck.yml
+  minPlayers: 0
+  stations:
+    CapturableSternWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Stern Wreck'
+
+- type: gameMap
+  id: CapturableSuzerainWreck
+  mapName: 'Suzerain Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/suzerainwreck.yml
+  minPlayers: 0
+  stations:
+    CapturableSuzerainWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Suzerain Wreck'
+
+- type: gameMap
+  id: CapturableTriumphantWreck
+  mapName: 'Triumphant Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/triumphantwreck.yml
+  minPlayers: 0
+  stations:
+    CapturableTriumphantWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Triumphant Wreck'
+
+- type: gameMap
+  id: CapturableMojaveWreck
+  mapName: 'Mojave Wreck'
+  mapPath: /Maps/_Crescent/CapturablePois/mojavewreck.yml
+  minPlayers: 0
+  stations:
+    CapturableMojaveWreck:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: pointofinterest
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Mojave Wreck'

@@ -4,13 +4,15 @@ using Content.Shared.CCVar;
 using Robust.Client.Animations;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
-using Robust.Client.Player;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
+using Robust.Shared.Map;
+using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
+using EngineAudioSystem = Robust.Client.Audio.AudioSystem;
 
 namespace Content.Client.Audio.Jukebox;
 
@@ -22,10 +24,14 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
     [Dependency] private readonly SharedAppearanceSystem _appearanceSystem = default!;
     [Dependency] private readonly SharedUserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IPlayerManager _player = default!;
     [Dependency] private readonly IEyeManager _eye = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly SharedTransformSystem _xform = default!;
+    [Dependency] private readonly SharedMapSystem _maps = default!;
+    [Dependency] private readonly EngineAudioSystem _engineAudio = default!;
+
+    private EntityQuery<JukeboxComponent> _jukeboxQuery;
+    private EntityQuery<PhysicsComponent> _physicsQuery;
 
     /// <summary>
     /// The listener's boombox volume slider, converted from gain to dB so it can be added on top
@@ -36,8 +42,10 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
     public override void Initialize()
     {
         base.Initialize();
-        // Runs after the engine has positioned each stream, so the overrides below win.
-        UpdatesAfter.Add(typeof(Robust.Client.Audio.AudioSystem));
+        _jukeboxQuery = GetEntityQuery<JukeboxComponent>();
+        _physicsQuery = GetEntityQuery<PhysicsComponent>();
+        _engineAudio.ProcessStreamOverride += ProcessStream;
+
         SubscribeLocalEvent<JukeboxComponent, AppearanceChangeEvent>(OnAppearanceChange);
         SubscribeLocalEvent<JukeboxComponent, AnimationCompletedEvent>(OnAnimationCompleted);
         SubscribeLocalEvent<JukeboxComponent, AfterAutoHandleStateEvent>(OnJukeboxAfterState);
@@ -56,6 +64,7 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
     {
         base.Shutdown();
         _protoManager.PrototypesReloaded -= OnProtoReload;
+        _engineAudio.ProcessStreamOverride -= ProcessStream;
     }
 
     private void OnProtoReload(PrototypesReloadedEventArgs obj)
@@ -83,13 +92,9 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
     }
 
     /// <summary>
-    /// Plays every jukebox stream as flat music instead of a positional sound. OpenAL treats a
-    /// mono track as a point source 5 units off the listener plane (the engine's z-offset), with
-    /// HRTF, panning, Doppler and its own distance model all on top; the further you walk the
-    /// harder that bends a full music track, until it is plainly garbled. Pinning the source to the
-    /// listener with the listener's velocity switches all of that off (the server zeroes OpenAL's
-    /// rolloff), and the distance falloff is applied here as a plain volume change instead.
-    ///
+    /// Jukebox music plays as a flat stream pinned to the listener (see <see cref="ProcessStream"/>),
+    /// so the distance falloff is applied here as a plain volume change. The server zeroes OpenAL's
+    /// rolloff for these streams.
     /// Every jukebox is visited each frame rather than caching its stream: the stream entity can
     /// arrive a few ticks after the jukebox's state, and the server re-sends the stream's params
     /// (wiping the local volume) whenever it changes them.
@@ -99,9 +104,6 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
         base.FrameUpdate(frameTime);
 
         var listener = _eye.CurrentEye.Position;
-        var listenerVelocity = _player.LocalEntity is { } local
-            ? _physics.GetMapLinearVelocity(local)
-            : Vector2.Zero;
 
         var query = EntityQueryEnumerator<JukeboxComponent>();
         while (query.MoveNext(out var comp))
@@ -117,9 +119,106 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
             var falloff = SharedAudioSystem.GainToVolume(GetFalloff(distance, audio.Params));
 
             ApplyVolume(stream, comp.Volume + _volumeSlider + falloff, audio);
-            audio.Position = listener.Position;
-            audio.Velocity = listenerVelocity;
         }
+    }
+
+    /// <summary>
+    /// Replaces the engine's per-stream update so jukebox streams get their position written once.
+    /// Overriding it after the engine let OpenAL's mixer catch the source at its real position in
+    /// between, which crackled worse the further you stood. Other streams mirror the engine's
+    /// AudioSystem.ProcessStream. Runs in a parallel job: read-only entity access only.
+    /// </summary>
+    private void ProcessStream(EntityUid entity, AudioComponent component, TransformComponent xform, MapCoordinates listener)
+    {
+        if (!component.Started)
+        {
+            component.Started = true;
+            component.StartPlaying();
+        }
+
+        if (_jukeboxQuery.TryComp(xform.ParentUid, out var jukebox) && jukebox.AudioStream == entity)
+        {
+            ProcessJukeboxStream(entity, component, xform, listener);
+            return;
+        }
+
+        if (component.Global)
+        {
+            if (xform.MapID != MapId.Nullspace && listener.MapId != xform.MapID)
+            {
+                component.Gain = 0f;
+                return;
+            }
+
+            component.Volume = component.Params.Volume;
+            return;
+        }
+
+        if (listener.MapId != xform.MapID)
+        {
+            component.Gain = 0f;
+            return;
+        }
+
+        var parentUid = xform.ParentUid;
+        component.Volume = component.Params.Volume;
+
+        var worldPos = (component.Flags & AudioFlags.GridAudio) != 0x0
+            ? _maps.GetGridPosition(parentUid)
+            : _xform.GetWorldPosition(entity);
+
+        var delta = worldPos - listener.Position;
+        var distance = delta.Length();
+
+        if (_engineAudio.GetAudioDistance(distance) > component.MaxDistance)
+        {
+            component.Gain = 0f;
+            return;
+        }
+
+        if (distance > 0f && distance < 0.01f)
+        {
+            worldPos = listener.Position;
+            delta = Vector2.Zero;
+            distance = 0f;
+        }
+
+        component.Occlusion = (component.Flags & AudioFlags.NoOcclusion) != 0x0
+            ? 0f
+            : _engineAudio.GetOcclusion(listener, delta, distance, parentUid);
+
+        component.Position = worldPos;
+
+        if (_physicsQuery.TryComp(parentUid, out var physics))
+            component.Velocity = _physics.GetMapLinearVelocity(parentUid, physics);
+    }
+
+    private void ProcessJukeboxStream(EntityUid entity, AudioComponent component, TransformComponent xform, MapCoordinates listener)
+    {
+        if (listener.MapId != xform.MapID)
+        {
+            component.Gain = 0f;
+            return;
+        }
+
+        // FrameUpdate keeps Params.Volume at the falloff-adjusted level.
+        component.Volume = component.Params.Volume;
+
+        if ((component.Flags & AudioFlags.NoOcclusion) != 0x0)
+        {
+            component.Occlusion = 0f;
+        }
+        else
+        {
+            var delta = _xform.GetWorldPosition(entity) - listener.Position;
+            var distance = delta.Length();
+            component.Occlusion = _engineAudio.GetOcclusion(listener, delta, distance, xform.ParentUid);
+        }
+
+        // Straight below the listener (the engine's z-offset) with no velocity: centred, no HRTF
+        // direction and no Doppler, so a long track plays unbent at any distance.
+        component.Position = listener.Position;
+        component.Velocity = Vector2.Zero;
     }
 
     /// <summary>

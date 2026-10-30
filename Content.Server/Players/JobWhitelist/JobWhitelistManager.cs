@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Database;
@@ -47,12 +47,15 @@ public sealed class JobWhitelistManager : IPostInjectInit
         _whitelists.Remove(session.UserId);
     }
 
-    public async void AddWhitelist(NetUserId player, ProtoId<JobPrototype> job)
+    public async void AddWhitelists(NetUserId player, IReadOnlyCollection<ProtoId<JobPrototype>> jobs)
     {
         if (_whitelists.TryGetValue(player, out var whitelists))
-            whitelists.Add(job);
+            whitelists.UnionWith(jobs.Select(job => job.Id));
 
-        await _db.AddJobWhitelist(player, job);
+        foreach (var job in jobs)
+        {
+            await _db.AddJobWhitelist(player, job);
+        }
 
         if (_player.TryGetSessionById(player, out var session))
             SendJobWhitelist(session);
@@ -87,12 +90,16 @@ public sealed class JobWhitelistManager : IPostInjectInit
         return whitelists.Contains(job);
     }
 
-    public async void RemoveWhitelist(NetUserId player, ProtoId<JobPrototype> job)
+    public async void RemoveWhitelists(NetUserId player, IReadOnlyCollection<ProtoId<JobPrototype>> jobs)
     {
-        _whitelists.GetValueOrDefault(player)?.Remove(job);
-        await _db.RemoveJobWhitelist(player, job);
+        _whitelists.GetValueOrDefault(player)?.ExceptWith(jobs.Select(job => job.Id));
 
-        if (_player.TryGetSessionById(new NetUserId(player), out var session))
+        foreach (var job in jobs)
+        {
+            await _db.RemoveJobWhitelist(player, job);
+        }
+
+        if (_player.TryGetSessionById(player, out var session))
             SendJobWhitelist(session);
     }
 

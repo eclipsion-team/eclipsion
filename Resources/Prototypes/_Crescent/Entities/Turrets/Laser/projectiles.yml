@@ -51,6 +51,8 @@
     range: 3.5
     energyConsumption: 3000
     disableDuration: 6
+    hitsToDisable: 3 # eclipsion - ship rounds drain first, enough hits in a row shut it down
+    maxDrainFraction: 0.2
   - type: PointLight
     radius: 3.5
     color: blue

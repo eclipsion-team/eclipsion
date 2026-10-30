@@ -1,4 +1,5 @@
 using Content.Shared.Actions;
+using Content.Shared.Alert;
 using Content.Shared.FixedPoint;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
@@ -40,6 +41,9 @@ public sealed partial class HardsuitInjectorComponent : Component
 
     [DataField]
     public bool AutoInjectOnCritical = true;
+
+    [DataField]
+    public ProtoId<AlertPrototype> MissingInjectorAlert = "HardsuitInjectorMissing";
 }
 
 /// <summary>

@@ -413,6 +413,9 @@ namespace Content.Server.Database
 
         private readonly List<Action<DatabaseNotification>> _notificationHandlers = [];
 
+        private Timer? _pruneTimer; // eclipsion
+        private ISawmill _pruneLog = default!;
+
         public void Init()
         {
             _msLogProvider = new LoggingProvider(_logMgr);
@@ -441,10 +444,53 @@ namespace Content.Server.Database
             }
 
             _db.OnNotificationReceived += HandleDatabaseNotification;
+
+            if (!_synchronous)
+                StartLogPruning();
+        }
+
+        // eclipsion - old admin/connection logs were never deleted and grew the database without limit
+        private void StartLogPruning()
+        {
+            _pruneLog = _logMgr.GetSawmill("db.prune");
+
+            // the first pass holds up startup on purpose, a vacuum wants the database to itself
+            Task.Run(() => PruneLogs(_cfg.GetCVar(CCVars.DatabaseSqliteVacuum))).Wait();
+
+            _pruneTimer = new Timer(_ => _ = PruneLogs(false), null, TimeSpan.FromDays(1), TimeSpan.FromDays(1));
+        }
+
+        private async Task PruneLogs(bool compact)
+        {
+            try
+            {
+                var now = DateTime.UtcNow;
+                var (logs, connections) = await _db.PruneOldLogs(
+                    Cutoff(now, CCVars.DatabaseAdminLogRetentionDays),
+                    Cutoff(now, CCVars.DatabaseAdminLogHighRetentionDays),
+                    Cutoff(now, CCVars.DatabaseConnectionLogRetentionDays));
+
+                if (logs > 0 || connections > 0)
+                    _pruneLog.Info($"Deleted {logs} old admin logs and {connections} old connection logs.");
+
+                if (compact && await _db.Compact())
+                    _pruneLog.Info("Vacuumed the database to give the freed space back.");
+            }
+            catch (Exception e)
+            {
+                _pruneLog.Error($"Pruning old logs failed: {e}");
+            }
+        }
+
+        private DateTime? Cutoff(DateTime now, CVarDef<int> days)
+        {
+            var value = _cfg.GetCVar(days);
+            return value > 0 ? now.AddDays(-value) : null;
         }
 
         public void Shutdown()
         {
+            _pruneTimer?.Dispose();
             _db.OnNotificationReceived -= HandleDatabaseNotification;
 
             _sqliteInMemoryConnection?.Dispose();

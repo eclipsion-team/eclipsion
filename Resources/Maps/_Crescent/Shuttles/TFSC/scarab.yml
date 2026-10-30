@@ -1513,7 +1513,6 @@ entities:
       parent: 1
     - type: UserInterface
     - type: ActivatableUI
-      currentSingleUser: invalid
     - type: Apc
       hasAccess: True
       lastExternalState: Good

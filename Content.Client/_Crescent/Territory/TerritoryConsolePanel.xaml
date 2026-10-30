@@ -1,0 +1,51 @@
+<BoxContainer xmlns="https://spacestation14.io"
+              xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+              xmlns:territory="clr-namespace:Content.Client._Crescent.Territory"
+              Orientation="Horizontal" Margin="6" SeparationOverride="6"
+              VerticalExpand="True" HorizontalExpand="True">
+
+    <PanelContainer MinWidth="300" SetWidth="300" VerticalExpand="True">
+        <PanelContainer.PanelOverride>
+            <gfx:StyleBoxFlat BorderColor="#4d4d55" BorderThickness="2"/>
+        </PanelContainer.PanelOverride>
+
+        <BoxContainer Orientation="Vertical" Margin="6" VerticalExpand="True">
+            <Label Text="{Loc 'territory-console-list-heading'}" StyleClasses="ConsoleSubHeading"
+                   HorizontalAlignment="Center"/>
+            <PanelContainer StyleClasses="LowDivider" HorizontalExpand="True" SetHeight="2" Margin="0 4"/>
+            <RichTextLabel Name="FactionNote" HorizontalExpand="True" Visible="False"/>
+            <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+                <BoxContainer Name="TerritoryList" Orientation="Vertical" SeparationOverride="4"/>
+            </ScrollContainer>
+            <RichTextLabel Name="EmptyListLabel" HorizontalExpand="True" Visible="False"/>
+        </BoxContainer>
+    </PanelContainer>
+
+    <PanelContainer VerticalExpand="True" HorizontalExpand="True">
+        <PanelContainer.PanelOverride>
+            <gfx:StyleBoxFlat BorderColor="#4d4d55" BorderThickness="2"/>
+        </PanelContainer.PanelOverride>
+
+        <BoxContainer Orientation="Vertical" Margin="6" VerticalExpand="True" HorizontalExpand="True">
+            <Label Name="SelectedHeading" StyleClasses="ConsoleSubHeading" HorizontalAlignment="Center"/>
+            <PanelContainer StyleClasses="LowDivider" HorizontalExpand="True" SetHeight="2" Margin="0 4"/>
+            <Label Name="SelectedStatus" HorizontalAlignment="Center"/>
+
+            <BoxContainer Name="LinksRow" Orientation="Horizontal" SeparationOverride="16" HorizontalAlignment="Center"
+                          Margin="0 2 0 2">
+                <Label Name="ProductionLink"/>
+            </BoxContainer>
+
+            <RichTextLabel Name="DetailsNote" HorizontalExpand="True" VerticalAlignment="Center" VerticalExpand="True"/>
+
+            <TabContainer Name="DetailsRow" VerticalExpand="True" HorizontalExpand="True">
+                <territory:PersistentPoiAdministrationPanel Name="Administration" Access="Public"
+                                                           HorizontalExpand="True" VerticalExpand="True"/>
+                <territory:PersistentPoiProductionPanel Name="Production" Access="Public"
+                                                       HorizontalExpand="True" VerticalExpand="True"/>
+                <territory:TerritoryCommandPanel Name="Command" Access="Public"
+                                                 HorizontalExpand="True" VerticalExpand="True"/>
+            </TabContainer>
+        </BoxContainer>
+    </PanelContainer>
+</BoxContainer>

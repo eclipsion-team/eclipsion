@@ -72,6 +72,7 @@
   parent: MarkerBase
   name: Great Altar spawn point
   suffix: Random, one per grid
+  categories: [ Spawner ]
   components:
   - type: Sprite
     layers:

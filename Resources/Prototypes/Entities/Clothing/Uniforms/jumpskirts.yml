@@ -641,6 +641,13 @@
       sprite: Clothing/Uniforms/Jumpskirt/monastic_robe_dark.rsi
     - type: Clothing
       sprite: Clothing/Uniforms/Jumpskirt/monastic_robe_dark.rsi
+    - type: ToggleableClothing
+      clothingPrototype: ClothingHeadHatHoodMonasticDark
+      slot: head
+      requiredSlot: INNERCLOTHING
+    - type: ContainerContainer
+      containers:
+        toggleable-clothing: !type:Container {}
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -652,6 +659,13 @@
       sprite: Clothing/Uniforms/Jumpskirt/monastic_robe_light.rsi
     - type: Clothing
       sprite: Clothing/Uniforms/Jumpskirt/monastic_robe_light.rsi
+    - type: ToggleableClothing
+      clothingPrototype: ClothingHeadHatHoodMonasticLight
+      slot: head
+      requiredSlot: INNERCLOTHING
+    - type: ContainerContainer
+      containers:
+        toggleable-clothing: !type:Container {}
 
 - type: entity
   parent: ClothingUniformSkirtBase

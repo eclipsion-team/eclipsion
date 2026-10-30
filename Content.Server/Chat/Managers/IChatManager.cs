@@ -54,6 +54,16 @@ namespace Content.Server.Chat.Managers
         /// tells the player, logs it and alerts admins for slurs.
         /// </summary>
         /// <returns>True if the message was blocked and must not be sent.</returns>
-        bool IsMessageFiltered(ICommonSession player, string message);
+        bool IsMessageFiltered(ICommonSession player, string message, string? source = null);
+
+        IReadOnlyDictionary<NetUserId, SootProtocolEntry> SootProtocolEntries { get; }
+        void ActivateSootProtocol(NetUserId user, SootProtocolEntry entry);
+        bool SetSootProtocolAdminFun(NetUserId user, bool enabled);
+        bool DeactivateSootProtocol(NetUserId user);
+        bool TryGetSootProtocol(NetUserId user, [NotNullWhen(true)] out SootProtocolEntry? entry);
+
+        bool IsUnderSootProtocol(ICommonSession player);
+
+        bool SootProtocolBlocks(ICommonSession player, string message, string blockedLocId = "soot-protocol-blocked");
     }
 }

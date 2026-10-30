@@ -1,6 +1,7 @@
 using System.Numerics;
 using System.Linq;
 using Content.Shared._Crescent;
+using Content.Shared._Crescent.Territory;
 using Content.Server._Crescent.ShipShields;
 using Content.Shared._Crescent.ShipShields;
 using Content.Shared.Physics;
@@ -354,6 +355,9 @@ public sealed class ProjectilePhasePreventerSystem : EntitySystem
     {
         // Energy weapons deal heat instead of structural damage, and walls already take heat at full value.
         // Counting structural alone let a hardlight bolt land on a floor and vanish without marking it.
+        if (TryComp<PersistentPoiGridComponent>(gridUid, out var territory) && territory.ProtectsTile(tile.GridIndices))
+            return;
+
         var types = projectile.Damage.DamageDict;
         var structural = (float) (types.GetValueOrDefault("Structural") + types.GetValueOrDefault("Heat"));
         if (structural <= 0 ||

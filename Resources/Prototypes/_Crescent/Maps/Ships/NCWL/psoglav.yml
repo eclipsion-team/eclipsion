@@ -9,7 +9,7 @@
     LOADOUT: 1x 88mm 'Stormreign' Flak Array, 3x 150cc 'Retribution' Pulse Laser, 4x 200cc 'Starburst' Plasma Gatling
     SHIELD: Absent
     SPEED: 20 m/s
-  price: 88000
+  price: 102000
   category: Large
   group: None
   path: /Maps/_Crescent/Shuttles/NCWL/psoglav.yml

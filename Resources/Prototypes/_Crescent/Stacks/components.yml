@@ -32,7 +32,7 @@
 
 - type: stack
   id: AdvancedElectronics
-  name: basic electronic components
+  name: advanced electronic components
   icon: { sprite: _Crescent/Objects/Materials/materials.rsi, state: advancedelectronics }
   spawn: AdvancedElectronics1
   maxCount: 10
@@ -90,7 +90,7 @@
   id: HardlightGenerator
   name: hardlight generator conduit
   icon: { sprite: _Crescent/Objects/Materials/materials.rsi, state: hardlightgenerator }
-  spawn: HardlightGenerator
+  spawn: HardlightGenerator1
   maxCount: 5
 
 - type: stack

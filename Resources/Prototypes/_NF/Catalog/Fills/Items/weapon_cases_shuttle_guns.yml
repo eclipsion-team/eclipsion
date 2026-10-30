@@ -147,7 +147,7 @@
 
 # WeaponShotgunSawn
 - type: entity
-  parent: WeaponCaseShortShuttle
+  parent: WeaponCaseLongShuttle # gun and shell box need 14 cells, the short case has 12
   id: ShuttleWeaponShotgunSawn
   categories: [ HideSpawnMenu ]
   components:
@@ -158,7 +158,7 @@
 
 # WeaponShotgunSawnNonlethal
 - type: entity
-  parent: WeaponCaseShortShuttle
+  parent: WeaponCaseLongShuttle # gun and shell box need 14 cells, the short case has 12
   id: ShuttleWeaponShotgunSawnNonlethal
   categories: [ HideSpawnMenu ]
   components:

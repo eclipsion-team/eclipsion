@@ -1,0 +1,35 @@
+- type: material
+  id: Pyrogel
+  stackEntity: MaterialPyrogel1
+  name: materials-pyrogel
+  unit: materials-unit-sheet
+  icon: { sprite: _Mono/Objects/Materials/pyrogel.rsi, state: icon }
+  color: "#C0C0C0"
+  price: 0.3 # Monolith has 5, way above anything else here
+
+- type: entity
+  parent: MaterialBase
+  id: MaterialPyrogel
+  name: pyrogel
+  description: An experimental incendiary chemical gel.
+  suffix: Full
+  components:
+  - type: Stack
+    stackType: Pyrogel
+    count: 50
+  - type: Sprite
+    sprite: _Mono/Objects/Materials/pyrogel.rsi
+    layers:
+    - state: icon
+  - type: Material
+  - type: PhysicalComposition
+    materialComposition:
+      Pyrogel: 100
+
+- type: entity
+  parent: MaterialPyrogel
+  id: MaterialPyrogel1
+  suffix: 1
+  components:
+  - type: Stack
+    count: 1

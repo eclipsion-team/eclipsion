@@ -35,7 +35,7 @@ public sealed class SubFloorHideSystem : SharedSubFloorHideSystem
         if (args.Sprite == null)
             return;
 
-        _appearance.TryGetData<bool>(uid, SubFloorVisuals.Covered, out var covered, args.Component);
+        var covered = component.IsUnderCover;
         _appearance.TryGetData<bool>(uid, SubFloorVisuals.ScannerRevealed, out var scannerRevealed, args.Component);
 
         scannerRevealed &= !ShowAll; // no transparency for show-subfloor mode.

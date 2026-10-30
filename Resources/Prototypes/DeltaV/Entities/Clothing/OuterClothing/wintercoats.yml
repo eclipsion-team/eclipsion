@@ -23,6 +23,7 @@
   name: Nanotrasen Corporate Jacket
   description: A cozy jacket with the Nanotrasen logo printed on the back. Merchandise rewarded to stations with a safety factor of uhh... seven.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: DeltaV/Clothing/OuterClothing/WinterCoats/corpo_jacket.rsi
   - type: Clothing
@@ -34,6 +35,7 @@
   name: Denim jacket
   description: A jean jacket with a warm inner lining.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: DeltaV/Clothing/OuterClothing/WinterCoats/denim_jacket.rsi
   - type: Clothing

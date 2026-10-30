@@ -87,6 +87,7 @@
   suffix: TCFL
   description: A high quality jacket made from a blend of tear resistant and fire retardant fabric. It's commonly worn by current and former members of the Tau-Ceti Armed Forces
   components:
+    - type: OverArmorJacket
     - type: Sprite
       sprite: _Crescent/Clothing/BieselRepublic/OuterClothing/TCAF_jacket.rsi
     - type: Clothing

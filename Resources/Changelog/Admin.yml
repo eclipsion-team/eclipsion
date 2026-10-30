@@ -98,3 +98,19 @@ Entries:
   - {message: 'Faction soldier NPCs can be spawned for DSM, NCWL, TFCF, SHI and independents. See the player changelog for what they do.', type: Add}
   id: 16
   time: '2026-09-26T00:00:00.0000000+00:00'
+- author: Taleryn
+  changes:
+  - {message: 'Added strike team ghost role spawners for DSM, NCWL, TFCF and SHI, a rank-and-file role and a leader each. They spawn hardsuited and armed, with jetpacks, spare magazines and a medkit.', type: Add}
+  - {message: 'Added the greathunt_skipgrace command. It ends the Great Hunt preparation early and drops the walls.', type: Add}
+  - {message: 'The Analiesse arrival can also be started by hand as a game rule.', type: Add}
+  - {message: 'Admin verbs no longer break when the target ghosts or disconnects while a dialog is open.', type: Fix}
+  id: 17
+  time: '2026-10-04T00:00:00.0000000+00:00'
+- author: Taleryn
+  changes:
+  - {message: 'Added the playtime panel, to look up, add, set or top up any player''s playtime to a job''s requirements. playtime_addoverall, playertime and timeadd all open it, and so does the Playtime button in the player panel. It replaces the time transfer panel and the old playtime commands.', type: Add}
+  - {message: 'The whitelists window now covers every job whitelist and the server whitelist, with a search and grant or revoke all shown. whitelistadd, whitelistremove and the faction whitelist commands were removed.', type: Tweak}
+  - {message: 'Added the sootcontingencyprotocol command. It blocks a player from every chat channel and from writing, leaving only emoji and emotes, and turns whatever they say out loud into something nice.', type: Add}
+  - {message: 'Added territory profile, reset, resetfaction and resetall to manage saved territories per game mode. resetall moves the saves aside instead of deleting them.', type: Add}
+  id: 18
+  time: '2026-10-30T00:00:00.0000000+00:00'

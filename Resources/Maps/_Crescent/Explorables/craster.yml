@@ -1855,7 +1855,7 @@ entities:
     - type: Transform
       pos: 7.5,0.5
       parent: 1
-- proto: OrisBiomeSource
+- proto: CrastersBeltBiomeSource
   entities:
   - uid: 369
     components:
@@ -2326,7 +2326,8 @@ entities:
       pos: 2.5,1.5
       parent: 1
     - type: WarpPoint
-      location: Craster's Grave
+      location: Craster's Belt
+      category: Asteroid
 - proto: WaterCooler
   entities:
   - uid: 76

@@ -1,4 +1,5 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
+               xmlns:cui="clr-namespace:Content.Client._Crescent.UI"
                       xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
                       xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
                       xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
@@ -70,7 +71,7 @@
 
             <Control VerticalExpand="True"/>
 
-            <Label Name="HintLabel" Text="{Loc 'intruder-teleporter-hint'}" StyleClasses="LabelSecondaryColor"/>
+            <cui:HintLabel Name="HintLabel" Hint="{Loc 'intruder-teleporter-hint'}"/>
         </BoxContainer>
 
         <!-- Right column: the scanner itself. -->

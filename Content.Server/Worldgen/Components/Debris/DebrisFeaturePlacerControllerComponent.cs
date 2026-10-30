@@ -1,4 +1,4 @@
-﻿using Robust.Shared.Prototypes;
+using Robust.Shared.Prototypes;
 using System.Numerics;
 using Content.Server.Worldgen.Prototypes;
 using Content.Server.Worldgen.Systems.Debris;
@@ -33,6 +33,8 @@ public sealed partial class DebrisFeaturePlacerControllerComponent : Component
     ///     Radius in which there should be no objects for debris to spawn.
     /// </summary>
     [DataField("safetyZoneRadius")] public float SafetyZoneRadius = 16.0f;
+
+    [DataField("regenerate")] public bool Regenerate = true;
 
     /// <summary>
     ///     The noise channel to use as a density controller.

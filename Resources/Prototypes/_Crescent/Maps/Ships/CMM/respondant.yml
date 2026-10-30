@@ -9,7 +9,7 @@
     LOADOUT: 2x 60mm 'Azimuth' Rocket Pods, 2x 50mm 'Striker' Heavy Autocannons
     SHIELD: Absent
     SPEED: 25 m/s
-  price: 41000
+  price: 46000
   category: Small
   group: None
   path: /Maps/_Crescent/Shuttles/CMM/respondant.yml

@@ -900,6 +900,48 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
             await db.DbContext.SaveChangesAsync();
         }
 
+        // eclipsion - null cutoff keeps that kind forever. connections that hit a ban stay, the ban hit points at them
+        public async Task<(int Logs, int Connections)> PruneOldLogs(
+            DateTime? lowCutoff,
+            DateTime? highCutoff,
+            DateTime? connectionCutoff)
+        {
+            await using var db = await GetDb();
+            var ctx = db.DbContext;
+            var logs = 0;
+            var connections = 0;
+
+            if (lowCutoff is { } low)
+                logs += await DeleteAdminLogs(ctx, ctx.AdminLog.Where(l => l.Date < low && l.Impact <= LogImpact.Medium));
+
+            if (highCutoff is { } high)
+                logs += await DeleteAdminLogs(ctx, ctx.AdminLog.Where(l => l.Date < high));
+
+            if (connectionCutoff is { } conn)
+            {
+                connections = await ctx.ConnectionLog
+                    .Where(c => c.Time < conn && !c.BanHits.Any())
+                    .ExecuteDeleteAsync();
+            }
+
+            return (logs, connections);
+        }
+
+        private static async Task<int> DeleteAdminLogs(ServerDbContext ctx, IQueryable<AdminLog> old)
+        {
+            // not relying on the cascade, sqlite only honours it with foreign keys switched on
+            await ctx.AdminLogPlayer
+                .Where(p => old.Any(l => l.RoundId == p.RoundId && l.Id == p.LogId))
+                .ExecuteDeleteAsync();
+
+            return await old.ExecuteDeleteAsync();
+        }
+
+        /// <summary>
+        /// Gives freed space back to the disk if the engine needs telling. Returns false if nothing was done.
+        /// </summary>
+        public virtual Task<bool> Compact() => Task.FromResult(false);
+
         protected abstract IQueryable<AdminLog> StartAdminLogsQuery(ServerDbContext db, LogFilter? filter = null);
 
         private IQueryable<AdminLog> GetAdminLogsQuery(ServerDbContext db, LogFilter? filter = null)

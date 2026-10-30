@@ -9,6 +9,54 @@
   - faggot
   - retard
   - tranny
+  inWord:
+  - niglet
+  - nigguh
+  - niggur
+  # q-for-g spelling: niqqa, niqqer
+  - niqq
+  - jigaboo
+  - sheboon
+  # also catches "negroid"
+  - groid
+  - pickaninny
+  - spearchucker
+  - kneegrow
+  - shitskin
+  - chinaman
+  - pajeet
+  - dothead
+  - mudslime
+  - muzrat
+  - sandmonkey
+  - jewboy
+  - fagg
+  - newfag
+  - oldfag
+  - phaggot
+  - trannie
+  - shemale
+  - shirtlifter
+  - fucktard
+  - libtard
+  # Gaps are optional: "ching chong" and "chingchong" both match.
+  - ching chong
+  - slant eye
+  - curry muncher
+  - street shitter
+  - camel jockey
+  - oven dodger
+  - moon cricket
+  - porch monkey
+  - jungle bunny
+  - bix nood
+  - carpet muncher
+  - rug muncher
+  - fudge packer
+  - heil hitler
+  - sieg heil
+  - seig heil
+  - gas the jews
   wholeWord:
   - fag
   - fagot
@@ -29,6 +77,37 @@
   - porchmonkey
   - junglebunny
   - zipperhead
+  # wholeWord because "gargoyle" contains it.
+  - goy
+  - goyim
+  - goyslop
+  - nig
+  - nibba
+  - darkie
+  - darky
+  - dindu
+  - jap
+  - chinky
+  - jeet
+  - kyke
+  - heeb
+  - yid
+  - jewed
+  - muzzie
+  - dago
+  - polack
+  - gypo
+  - pikey
+  - trany
+  - troony
+  - troonie
+  - lesbo
+  - lezbo
+  - lezzie
+  - poofter
+  - pooftah
+  - mong
+  - sperg
   allowed:
   # Removed before matching, so these never reach the lists above.
   - retardant
@@ -51,15 +130,38 @@
   # otherwise "grape", "drapes", "scraping" and "therapist" all get blocked.
   - gangrape
   - gangraping
+  # the gap is optional, so this also covers skullfuck/skullfucked/skullfucking
+  - skull fuck
+  - lolicon
+  - shotacon
+  - jailbait
+  - child porn
+  - necrophil
+  - zoophil
   wholeWord:
   - rape
   - raped
   - raping
+  - rapeing
   - rapist
   - rapey
+  - loli
   # wholeWord because "torpedo" and "pedometer" are ordinary words here.
   - pedo
   - paedo
+
+- type: chatFilter
+  id: ExtremeInsults
+  severity: Slur
+  inWord:
+  # no innocent word is built on it: whores, whorehouse
+  - whore
+  - slut
+  - neck yourself
+  - neck urself
+  wholeWord:
+  # "kill yourself", aimed at a player
+  - kys
 
 # Ordinary swearing (fuck, shit, goddamn it) is deliberately NOT filtered.
 # If you ever want a milder tier back, add a second prototype and flip chat.filter_profanity:

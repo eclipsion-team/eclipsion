@@ -4,7 +4,10 @@ using Content.Server.GameTicking;
 using Content.Server.Ghost.Components;
 using Content.Server.Mind;
 using Content.Server.Roles.Jobs;
+using Content.Server._Crescent.PoliticalMap;
 using Content.Server.Warps;
+using Content.Server.Worldgen.Components.Debris;
+using Content.Shared._Crescent.Territory;
 using Content.Shared.Actions;
 using Content.Shared.Examine;
 using Content.Shared.Eye;
@@ -396,12 +399,43 @@ namespace Content.Server.Ghost
 
         private IEnumerable<GhostWarp> GetLocationWarps()
         {
-            var allQuery = AllEntityQuery<WarpPointComponent>();
+            var stationGrids = new HashSet<EntityUid>();
+            var allQuery = AllEntityQuery<WarpPointComponent, TransformComponent>();
 
-            while (allQuery.MoveNext(out var uid, out var warp))
+            while (allQuery.MoveNext(out var uid, out var warp, out var xform))
             {
-                yield return new GhostWarp(GetNetEntity(uid), warp.Location ?? Name(uid), true);
+                var category = WarpCategory(warp, xform.GridUid);
+                if (category == GhostWarpCategory.Station && xform.GridUid is { } grid)
+                    stationGrids.Add(grid);
+
+                yield return new GhostWarp(GetNetEntity(uid), warp.Location ?? Name(uid), true, category);
             }
+
+            var stations = AllEntityQuery<PoliticalMapStationComponent>();
+            while (stations.MoveNext(out var grid, out _))
+            {
+                if (!stationGrids.Add(grid))
+                    continue;
+
+                yield return new GhostWarp(GetNetEntity(grid), Name(grid), true, GhostWarpCategory.Station);
+            }
+        }
+
+        private GhostWarpCategory WarpCategory(WarpPointComponent warp, EntityUid? grid)
+        {
+            if (grid is { } gridUid)
+            {
+                if (HasComp<PersistentPoiGridComponent>(gridUid))
+                    return GhostWarpCategory.Territory;
+
+                if (HasComp<PoliticalMapStationComponent>(gridUid))
+                    return GhostWarpCategory.Station;
+
+                if (HasComp<OwnedDebrisComponent>(gridUid))
+                    return GhostWarpCategory.Wreck;
+            }
+
+            return warp.Category ?? GhostWarpCategory.Other;
         }
 
         private IEnumerable<GhostWarp> GetPlayerWarps(EntityUid except)

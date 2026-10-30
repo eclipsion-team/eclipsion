@@ -68,6 +68,8 @@
     normalizeFaction: false
   - type: CaptureRegionDevice
     updateName: true
+  - type: PersistentPoiWorks
+    category: TargetingConsole
   - type: TerritoryAutoDefense
     # Matches the console's own 512-tile radar: unattended, it may shoot at exactly what a crewman sitting at it
     # could have seen and clicked on.
@@ -75,6 +77,11 @@
     neutralEngagementRange: 384
     scanInterval: 1
     warOnly: true
+  - type: UserInterface
+    interfaces:
+      enum.TargetingConsoleUiKey.Key:
+        type: TargetingConsoleBoundUserInterface
+        interactionRange: 0
 
 - type: entity
   parent: BaseComputerCircuitboard

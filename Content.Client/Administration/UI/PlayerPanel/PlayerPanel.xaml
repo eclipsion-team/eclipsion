@@ -10,9 +10,12 @@
         </BoxContainer>
        <BoxContainer Orientation="Horizontal">
            <Label Name="Whitelisted"/>
-           <controls:ConfirmButton Name="WhitelistToggle" Text="{Loc 'player-panel-false'}" Visible="False"></controls:ConfirmButton>
+           <Button Name="WhitelistsButton" Text="{Loc 'player-panel-job-whitelists'}" Disabled="True"/>
        </BoxContainer>
-       <Label Name="Playtime"/>
+       <BoxContainer Orientation="Horizontal">
+           <Label Name="Playtime"/>
+           <Button Name="PlaytimeButton" Text="{Loc 'player-panel-playtime-button'}" Disabled="True"/>
+       </BoxContainer>
        <Label Name="Notes"/>
        <Label Name="Bans"/>
        <Label Name="RoleBans"/>

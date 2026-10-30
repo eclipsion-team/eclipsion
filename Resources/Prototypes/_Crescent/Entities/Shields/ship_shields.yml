@@ -3,7 +3,11 @@
   name: ship shield
   categories: [ HideSpawnMenu ]
   components:
+  - type: Transform
+    gridTraversal: false # stays on the grid it shields, its centre is often over empty space
   - type: ShipShield
   - type: ShipShieldVisuals
+  # Physics lives on the prototype so clients never get the fixture state without a body.
+  - type: Physics
   - type: Fixtures
   - type: IgnorePredictionHit

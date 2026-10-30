@@ -1,4 +1,5 @@
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.Utility;
 
 namespace Content.Client._Crescent.UI;
 
@@ -25,6 +26,8 @@ public static class ConsolePalette
 
     /// <summary>Ordinary readout text.</summary>
     public static readonly Color Normal = Color.FromHex("#DDDDE3");
+
+    public static readonly Color Secondary = Color.DarkGray;
 }
 
 public static class ConsoleUiExt
@@ -39,6 +42,15 @@ public static class ConsoleUiExt
             return;
 
         label.Text = text;
+    }
+
+    public static void SetHint(this RichTextLabel label, string text, Color? color = null)
+    {
+        var message = FormattedMessage.FromUnformatted(text);
+        if (color == null && label.GetMessage() == message.ToMarkup())
+            return;
+
+        label.SetMessage(message, defaultColor: color ?? ConsolePalette.Secondary);
     }
 
     /// <summary>

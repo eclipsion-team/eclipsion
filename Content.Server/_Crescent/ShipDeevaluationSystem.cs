@@ -1,4 +1,4 @@
-﻿namespace Content.Server._Crescent;
+namespace Content.Server._Crescent;
 
 /// <summary>
 /// This handles...
@@ -17,11 +17,12 @@ public sealed partial class ShipPriceMultiplierComponent : Component
     public int? PurchasePrice;
 
     /// <summary>
-    /// Crescent: the station whose faction treasury paid for this hull, if a faction yard sold it. The resale goes
     /// back into that vault; paying it to whoever holds the deed let a faction member launder treasury money into
     /// their own account by buying at the faction yard and selling at a civilian one.
     /// </summary>
-    public EntityUid? TreasuryStation;
+    public string? TreasuryFaction;
+
+    public bool PaidPersonally;
 }
 public sealed class ShipPriceMultiplierSystem : EntitySystem
 {

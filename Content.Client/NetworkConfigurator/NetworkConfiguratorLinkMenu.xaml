@@ -1,8 +1,9 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
+            xmlns:cui="clr-namespace:Content.Client._Crescent.UI"
                 xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
                 Title="{Loc network-configurator-link-title}" MinSize="900 600" SetSize="980 680" RectClipContent="True">
     <BoxContainer Orientation="Vertical" VerticalExpand="True">
-        <Label Margin="12 4" Text="{Loc network-configurator-link-help}" StyleClasses="LabelSubText"/>
+        <cui:HintLabel Margin="12 4" Hint="{Loc network-configurator-link-help}"/>
 
         <!-- Devices and ports -->
         <BoxContainer Orientation="Horizontal" VerticalExpand="True" SizeFlagsStretchRatio="0.6" Margin="12 4 12 0">

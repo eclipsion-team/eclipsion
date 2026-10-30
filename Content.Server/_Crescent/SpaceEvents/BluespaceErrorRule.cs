@@ -45,6 +45,14 @@ public sealed class BluespaceErrorRule : StationEventSystem<BluespaceErrorRuleCo
     {
         base.Started(uid, component, gameRule, args);
 
+        // No round map yet (lobby, or the rule spawned on its own): nowhere to send the grid.
+        var mapId = GameTicker.DefaultMap;
+        if (!_mapManager.MapExists(mapId))
+        {
+            ForceEndSelf(uid, gameRule);
+            return;
+        }
+
         var shuttleMapUid = _mapManager.CreateMap(out var shuttleMap);
 
         if (!_map.TryLoadGrid(shuttleMap, new ResPath(component.GridPath), out var gridUids))
@@ -55,7 +63,6 @@ public sealed class BluespaceErrorRule : StationEventSystem<BluespaceErrorRuleCo
         component.startingValue = _pricing.AppraiseGrid(gridUid);
         _shuttle.SetIFFColor(gridUid, component.Color);
         var offset = GetSpawnOffset(component);
-        var mapId = GameTicker.DefaultMap;
         var mapUid = _mapManager.GetMap(mapId);
         if (TryComp<ShuttleComponent>(component.GridUid, out var shuttle))
         {
@@ -107,6 +114,10 @@ public sealed class BluespaceErrorRule : StationEventSystem<BluespaceErrorRuleCo
     protected override void Ended(EntityUid uid, BluespaceErrorRuleComponent component, GameRuleComponent gameRule, GameRuleEndedEvent args)
     {
         base.Ended(uid, component, gameRule, args);
+
+        // Never got a grid (no round map when it started).
+        if (component.GridUid == null)
+            return;
 
         if(!EntityManager.TryGetComponent<TransformComponent>(component.GridUid, out var gridTransform))
         {

@@ -3,12 +3,15 @@ using System.Numerics;
 using Content.Client._RMC14.Movement;
 using Content.Client._RMC14.Weapons.Ranged.Prediction;
 using Content.Client.Animations;
+using Content.Client.Examine;
 using Content.Client.Gameplay;
 using Content.Client.Items;
 using Content.Client.Weapons.Ranged.Components;
 using Content.Shared._RMC14.Weapons.Ranged;
 using Content.Shared._RMC14.Weapons.Ranged.Prediction;
+using Content.Shared.CCVar;
 using Content.Shared.CombatMode;
+using Content.Shared.Input;
 using Content.Shared.Mech.Components;
 using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Weapons.Ranged.Systems;
@@ -19,7 +22,9 @@ using Robust.Client.Input;
 using Robust.Client.Player;
 using Robust.Client.State;
 using Robust.Shared.Animations;
+using Robust.Shared.Configuration;
 using Robust.Shared.Input;
+using Robust.Shared.Input.Binding;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
@@ -31,6 +36,7 @@ namespace Content.Client.Weapons.Ranged.Systems;
 
 public sealed partial class GunSystem : SharedGunSystem
 {
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IEyeManager _eyeManager = default!;
     [Dependency] private readonly IInputManager _inputManager = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
@@ -95,6 +101,52 @@ public sealed partial class GunSystem : SharedGunSystem
         InitializeMagazineVisuals();
         InitializeSpentAmmo();
         _sawmill = IoCManager.Resolve<ILogManager>().GetSawmill("gunsystem.client");
+
+        CommandBinds.Builder
+            .BindBefore(ContentKeyFunctions.ExamineEntity,
+                new PointerInputCmdHandler(HandleExamineWhileArmed, outsidePrediction: true),
+                typeof(ExamineSystem))
+            .Register<GunSystem>();
+    }
+
+    public override void Shutdown()
+    {
+        base.Shutdown();
+        CommandBinds.Unregister<GunSystem>();
+    }
+
+    private bool HandleExamineWhileArmed(in PointerInputCmdHandler.PointerInputCmdArgs args)
+    {
+        if (!_cfg.GetCVar(CCVars.SprintFire) ||
+            _player.LocalEntity is not { } entity ||
+            !TryComp<CombatModeComponent>(entity, out var combat) || !combat.IsInCombatMode ||
+            !TryGetGun(entity, out _, out var gun) || !gun.UseKey)
+        {
+            return false;
+        }
+
+        return ExamineSharesFireKey();
+    }
+
+    private bool IsSprintFiring()
+    {
+        return _cfg.GetCVar(CCVars.SprintFire)
+               && _inputSystem.CmdStates.GetState(ContentKeyFunctions.ExamineEntity) == BoundKeyState.Down
+               && ExamineSharesFireKey();
+    }
+
+    private bool ExamineSharesFireKey()
+    {
+        foreach (var examine in _inputManager.GetKeyBindings(ContentKeyFunctions.ExamineEntity))
+        {
+            foreach (var use in _inputManager.GetKeyBindings(EngineKeyFunctions.Use))
+            {
+                if (examine.BaseKey == use.BaseKey)
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     private void OnUpdateClientAmmo(EntityUid uid, AmmoCounterComponent ammoComp, ref UpdateClientAmmoEvent args)
@@ -191,7 +243,10 @@ public sealed partial class GunSystem : SharedGunSystem
 
         var useKey = gun.UseKey ? EngineKeyFunctions.Use : EngineKeyFunctions.UseSecondary;
 
-        if (_inputSystem.CmdStates.GetState(useKey) != BoundKeyState.Down && !gun.BurstActivated)
+        var fireDown = _inputSystem.CmdStates.GetState(useKey) == BoundKeyState.Down
+                       || gun.UseKey && IsSprintFiring();
+
+        if (!fireDown && !gun.BurstActivated)
         {
             if (gun.ShotCounter != 0)
                 RaisePredictiveEvent(new RequestStopShootEvent { Gun = GetNetEntity(gunUid) });

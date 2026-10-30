@@ -1,0 +1,8 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      xmlns:territory="clr-namespace:Content.Client._Crescent.Territory"
+                      Title="{Loc 'persistent-poi-production-ui-title'}"
+                      MinSize="600 460"
+                      SetSize="660 600">
+    <territory:PersistentPoiProductionPanel Name="Panel" Access="Public"/>
+</controls:FancyWindow>

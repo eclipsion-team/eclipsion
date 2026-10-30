@@ -11,25 +11,38 @@ public sealed class JobWhitelistsEuiState : EuiStateBase
     public string PlayerName;
     public HashSet<ProtoId<JobPrototype>> Whitelists;
 
-    public JobWhitelistsEuiState(string playerName, HashSet<ProtoId<JobPrototype>> whitelists)
+    public bool? ServerWhitelisted;
+
+    public JobWhitelistsEuiState(string playerName, HashSet<ProtoId<JobPrototype>> whitelists, bool? serverWhitelisted)
     {
         PlayerName = playerName;
         Whitelists = whitelists;
+        ServerWhitelisted = serverWhitelisted;
     }
 }
 
 /// <summary>
-/// Tries to add or remove a whitelist of a job for a player.
 /// </summary>
 [Serializable, NetSerializable]
-public sealed class SetJobWhitelistedMessage : EuiMessageBase
+public sealed class SetJobWhitelistsMessage : EuiMessageBase
 {
-    public ProtoId<JobPrototype> Job;
+    public List<ProtoId<JobPrototype>> Jobs;
     public bool Whitelisting;
 
-    public SetJobWhitelistedMessage(ProtoId<JobPrototype> job, bool whitelisting)
+    public SetJobWhitelistsMessage(List<ProtoId<JobPrototype>> jobs, bool whitelisting)
     {
-        Job = job;
+        Jobs = jobs;
         Whitelisting = whitelisting;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SetServerWhitelistedMessage : EuiMessageBase
+{
+    public bool Whitelisted;
+
+    public SetServerWhitelistedMessage(bool whitelisted)
+    {
+        Whitelisted = whitelisted;
     }
 }

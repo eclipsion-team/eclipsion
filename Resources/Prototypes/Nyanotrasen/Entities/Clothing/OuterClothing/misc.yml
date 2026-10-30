@@ -4,6 +4,7 @@
   name: blue letterman jacket
   description: It's a blue highschool jacket with a big '14' stitched onto the back.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: Nyanotrasen/Clothing/Misc/letterman_jacket_blue.rsi
   - type: Clothing
@@ -17,6 +18,7 @@
   name: red letterman jacket
   description: It's a red highschool jacket with a big '14' stitched onto the back.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: Nyanotrasen/Clothing/Misc/letterman_jacket_red.rsi
   - type: Clothing
@@ -55,6 +57,7 @@
   name: MNK black jacket
   description: A light MNK black jacket.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: Nyanotrasen/Clothing/Misc/black_jacket.rsi
   - type: Clothing

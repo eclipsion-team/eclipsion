@@ -66,8 +66,8 @@ namespace Content.IntegrationTests.Tests.Gravity
                 generatorUid = entityManager.SpawnEntity("WeightlessGravityGeneratorDummy", entityManager.GetComponent<TransformComponent>(human).Coordinates);
             });
 
-            // Let WeightlessSystem and GravitySystem tick
-            await pair.RunTicksSync(10);
+            // power nets only update every 0.5 s here
+            await pair.RunSeconds(1);
 
             await server.WaitAssertion(() =>
             {

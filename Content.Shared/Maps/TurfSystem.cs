@@ -16,6 +16,14 @@ public sealed class TurfSystem : EntitySystem
     [Dependency] private readonly SharedTransformSystem _transform = default!;
 
     /// <summary>
+    ///     Crescent: how much of a tile has to be covered before it counts as built over for taking the floor up
+    ///     (crowbar, RCD). A directional window or windoor covers a strip along one edge, about 11 % of the tile,
+    ///     which the default 10 % counted, so a floor with one on it could never be pried. Walls, tables and machines
+    ///     cover most of the tile and still block.
+    /// </summary>
+    public const float FloorRemovalBlockingArea = 0.25f;
+
+    /// <summary>
     ///     Returns true if a given tile is blocked by physics-enabled entities.
     /// </summary>
     public bool IsTileBlocked(TileRef turf, CollisionGroup mask, float minIntersectionArea = 0.1f)

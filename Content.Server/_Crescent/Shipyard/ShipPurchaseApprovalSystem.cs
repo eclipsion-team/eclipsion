@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Content.Server._Crescent.Overwatch;
 using Content.Server.Chat.Managers;
 using Content.Server.Crescent.Dispenser;
@@ -64,10 +64,14 @@ public sealed class ShipPurchaseApprovalSystem : EntitySystem
     /// </summary>
     public bool RequiresApproval(EntityUid station, int price, ShipyardConsoleComponent console)
     {
+        return RequiresApproval(_market.GetTreasury(station), price, console);
+    }
+
+    public bool RequiresApproval(int treasury, int price, ShipyardConsoleComponent console)
+    {
         if (console.ApprovalTreasuryFraction <= 0f)
             return false;
 
-        var treasury = _market.GetTreasury(station);
         if (treasury <= 0)
             return true;
 

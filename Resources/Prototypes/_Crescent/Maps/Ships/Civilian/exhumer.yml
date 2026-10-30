@@ -9,7 +9,7 @@
     LOADOUT: Armless
     SHIELD: Absent
     SPEED: 20 m/s
-  price: 26000
+  price: 29000
   category: Small
   group: Civilian
   path: /Maps/_Crescent/Shuttles/Civilian/exhumer.yml

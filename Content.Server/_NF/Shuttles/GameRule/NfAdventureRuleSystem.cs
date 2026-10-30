@@ -32,6 +32,8 @@ using Robust.Shared.Configuration;
 using Content.Shared.Telescope;
 using Robust.Shared.Utility;
 using Content.Shared._Crescent.SpaceBiomes;
+using Content.Server._Crescent.PoliticalMap;
+using Content.Server._Crescent.Territory;
 
 namespace Content.Server.GameTicking.Rules;
 
@@ -50,6 +52,8 @@ public sealed class NfAdventureRuleSystem : GameRuleSystem<AdventureRuleComponen
     [Dependency] private readonly IConsoleHost _console = default!;
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly ShuttleSystem _shuttle = default!;
+    [Dependency] private readonly PersistentPoiSaveSystem _persistentPoi = default!;
+    [Dependency] private readonly TerritoryProfileSystem _territoryProfiles = default!;
 
     /// <summary>
     /// How many times a ring element is re-rolled while looking for a spot that clears everything else.
@@ -133,36 +137,40 @@ public sealed class NfAdventureRuleSystem : GameRuleSystem<AdventureRuleComponen
     /// <param name="hideIFF">a boolean to set wether this is visible on the map screen or not</param>
     /// <param name="pinned">whether to nail the grid down so nothing can push it around</param>
     /// <param name="iffLabel">replaces the name the grid shows on radar, or null to keep the gameMap's own</param>
-    private void SpawnMapElementByID(MapId mapid, string gameMapID, Vector2 position, Color color, string? iffFaction, bool hideIFF, bool pinned, string? iffLabel)
+    private void SpawnMapElementByID(MapId mapid, string gameMapID, Vector2 position, Color color, string? iffFaction, bool hideIFF, bool pinned, string? iffLabel, bool persistent, int persistentVersion)
     {
         _sawmill.Info($"Attempting to spawn map element: {gameMapID} at ({position.X}, {position.Y})");
         if (_prototypeManager.TryIndex<GameMapPrototype>(gameMapID, out var stationProto))
         {
-            if (_map.TryLoadGrid(mapid, new ResPath(stationProto.MapPath.ToString()), out var stationGridUid, null, position))
+            if (TryLoadElementGrid(mapid, gameMapID, stationProto, position, persistent, persistentVersion) is { } stationGridUid)
             {
-                _station.InitializeNewStation(stationProto.Stations[gameMapID], [stationGridUid.Value.Owner]);
+                _station.InitializeNewStation(stationProto.Stations[gameMapID], [stationGridUid]);
 
                 // InitializeNewStation is what stamps the StationNameSetup name onto the grid, so the override
                 // has to come after it. Only the grid is touched: the station entity keeps its real name for the
                 // boarding announcement and for anyone reading the round from the admin side.
                 if (iffLabel != null)
-                    _meta.SetEntityName(stationGridUid.Value.Owner, iffLabel);
+                    _meta.SetEntityName(stationGridUid, iffLabel);
 
                 // setting color if applicable. if not, White is default
-                _shuttle.SetIFFColor(stationGridUid.Value.Owner, color);
+                _shuttle.SetIFFColor(stationGridUid, color);
 
                 // set IFFFaction if applicable. dont know if this does anything
                 if (iffFaction != null)
-                    _shuttle.SetIFFFaction(stationGridUid.Value.Owner, iffFaction);
+                {
+                    _shuttle.SetIFFFaction(stationGridUid, iffFaction);
+
+                    EnsureComp<PoliticalMapStationComponent>(stationGridUid).Faction = iffFaction;
+                }
 
                 // hide IFF if needed, like for derelicts or secrets
                 if (hideIFF)
-                    _shuttle.AddIFFFlag(stationGridUid.Value.Owner, IFFFlags.HideLabel);
+                    _shuttle.AddIFFFlag(stationGridUid, IFFFlags.HideLabel);
 
                 // Grids come out of the loader as enabled shuttles, so scenery drifts off the moment anything
                 // touches it. Disable() is what the game already uses to park a shuttle: static, no rotation.
                 if (pinned)
-                    _shuttle.Disable(stationGridUid.Value.Owner);
+                    _shuttle.Disable(stationGridUid);
             }
             else
             {
@@ -175,6 +183,22 @@ public sealed class NfAdventureRuleSystem : GameRuleSystem<AdventureRuleComponen
         }
     }
 
+    private EntityUid? TryLoadElementGrid(MapId mapid, string gameMapID, GameMapPrototype stationProto, Vector2 position, bool persistent, int persistentVersion)
+    {
+        var mapPath = new ResPath(stationProto.MapPath.ToString());
+
+        if (persistent)
+        {
+            return _persistentPoi.TryLoad(mapid, gameMapID, persistentVersion, mapPath, position, out var territory)
+                ? territory
+                : null;
+        }
+
+        return _map.TryLoadGrid(mapid, mapPath, out var grid, null, position)
+            ? grid.Value.Owner
+            : null;
+    }
+
     protected override void Added(EntityUid uid, AdventureRuleComponent component, GameRuleComponent gameRule, GameRuleAddedEvent args)
     {
         base.Added(uid, component, gameRule, args);
@@ -185,6 +209,16 @@ public sealed class NfAdventureRuleSystem : GameRuleSystem<AdventureRuleComponen
         // any override left over from a previous round.
         _configurationManager.SetCVar(CCVars.WorldgenConfig, component.WorldgenConfig);
         _sawmill.Info($"AdventureRule: worldgen config set to '{component.WorldgenConfig}' (worldgen.worldgen_config CVar).");
+
+        var factions = component.TerritoryFactions.Count > 0
+            ? component.TerritoryFactions
+            : component.GameMapsID.Values
+                .Select(element => element.IFFFaction)
+                .OfType<string>()
+                .Distinct()
+                .ToList();
+        _territoryProfiles.SetProfile(component.TerritoryProfile ?? MetaData(uid).EntityPrototype?.ID ?? TerritoryProfileSystem.DefaultProfile,
+            factions);
     }
 
     protected override void Started(EntityUid uid, AdventureRuleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
@@ -231,7 +265,9 @@ public sealed class NfAdventureRuleSystem : GameRuleSystem<AdventureRuleComponen
                                 element.IFFFaction,
                                 element.HideIFF,
                                 element.Pinned,
-                                element.IFFLabel);
+                                element.IFFLabel,
+                                element.Persistent,
+                                element.PersistentVersion);
         }
     }
 

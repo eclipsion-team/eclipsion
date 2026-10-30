@@ -473,7 +473,7 @@
   - type: EmpOnTrigger
     range: 2
     energyConsumption: 500000
-    disableDuration: 30
+    disableDuration: 10 # eclipsion - was 30
 
 - type: noiseChannel
   id: DensityGraveyard

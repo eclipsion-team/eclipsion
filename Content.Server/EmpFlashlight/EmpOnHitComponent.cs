@@ -15,5 +15,8 @@ public sealed partial class EmpOnHitComponent : Component
     public float EnergyConsumption;
 
     [DataField]
-    public float DisableDuration = 60f;
+    public float DisableDuration = 10f; // eclipsion - was 60
+
+    [DataField]
+    public float MaxDrainFraction = 0.5f; // eclipsion - see EmpOnTriggerComponent
 }

@@ -7,7 +7,7 @@
     LOADOUT: 1x Cyberdawn 60mm 'Haruspex' Rocket Pod
     SHIELD: Absent
     SPEED: 30 m/s
-  price: 21000
+  price: 23000
   category: Small
   group: None
   path: /Maps/_Crescent/Shuttles/TFSC/wreck.yml

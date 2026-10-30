@@ -1,0 +1,19 @@
+# The old chromite mine, back as one of the four outer fields past the political map's edge.
+# Its asteroids are the RatCrastersBelt biome (_Rat/World/basic.yml); this is only the outpost at its centre.
+- type: gameMap
+  id: Craster
+  mapName: 'Craster''s Belt'
+  mapPath: /Maps/_Crescent/Explorables/craster.yml
+  minPlayers: 0
+  stations:
+    Craster:
+      stationProto: StandardCrescentPOI
+      gridComponents:
+        - type: PreventPilot
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: asteroids
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Craster''s Belt'

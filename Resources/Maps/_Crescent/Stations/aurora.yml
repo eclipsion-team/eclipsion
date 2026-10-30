@@ -101827,6 +101827,13 @@ entities:
       bodyType: Static
 - proto: BoriaticGeneratorHercules
   entities:
+  - uid: 1366
+    components:
+    - type: Transform
+      parent: 1
+      pos: -26.5,-7.5
+- proto: BoriaticGeneratorHerculesShuttle
+  entities:
   - uid: 1364
     components:
     - type: Transform
@@ -101837,11 +101844,6 @@ entities:
     - type: Transform
       parent: 1
       pos: 3.5,-23.5
-  - uid: 1366
-    components:
-    - type: Transform
-      parent: 1
-      pos: -26.5,-7.5
 - proto: BoxBeaker
   entities:
   - uid: 1368

@@ -1,4 +1,5 @@
 <BoxContainer xmlns="https://spacestation14.io"
+               xmlns:cui="clr-namespace:Content.Client._Crescent.UI"
               xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
               Orientation="Vertical" Margin="6" VerticalExpand="True" HorizontalExpand="True">
 
@@ -16,7 +17,7 @@
         </BoxContainer>
     </PanelContainer>
 
-    <Label Text="{Loc 'payment-console-hint'}" StyleClasses="LabelSecondaryColor" Margin="2 0 0 6"/>
+    <cui:HintLabel Hint="{Loc 'payment-console-hint'}" Margin="2 0 0 6"/>
 
     <!-- Roster -->
     <PanelContainer VerticalExpand="True" HorizontalExpand="True">

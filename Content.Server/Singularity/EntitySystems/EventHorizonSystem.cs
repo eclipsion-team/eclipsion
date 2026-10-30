@@ -2,6 +2,7 @@ using System.Numerics;
 using Content.Server.Administration.Logs;
 using Content.Server.Singularity.Events;
 using Content.Server.Station.Components;
+using Content.Shared._Crescent.Territory;
 using Content.Shared.Database;
 using Content.Shared.Ghost;
 using Content.Shared.Mind.Components;
@@ -284,6 +285,9 @@ public sealed class EventHorizonSystem : SharedEventHorizonSystem
     /// </summary>
     public bool CanConsumeTile(EntityUid hungry, TileRef tile, Entity<MapGridComponent> grid, EventHorizonComponent eventHorizon)
     {
+        if (TryComp<PersistentPoiGridComponent>(grid, out var territory) && territory.ProtectsTile(tile.GridIndices))
+            return false;
+
         foreach (var blockingEntity in _mapSystem.GetAnchoredEntities(grid.Owner, grid.Comp, tile.GridIndices))
         {
             if (!CanConsumeEntity(hungry, blockingEntity, eventHorizon))

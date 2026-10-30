@@ -11,8 +11,10 @@ public enum MainframeTab : byte
 {
     Overwatch = 0,
     Diplomacy = 1,
-    Alert = 2,
-    Economy = 3,
-    Payment = 4,
-    Announcement = 5,
+    Politics = 2,
+    Alert = 3,
+    Economy = 4,
+    Territory = 5,
+    Payment = 6,
+    Announcement = 7,
 }

@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="tr">
+<html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Yabancı yıldız sistemi</title>
+<title>Alien star system</title>
 <style>
   :root { color-scheme:dark; font-family:system-ui,sans-serif; background:#0d0b17; color:#e1d8f5 }
   body { margin:0; min-height:100vh; display:grid; place-content:center; text-align:center; gap:20px }
@@ -12,14 +12,14 @@
   button,select { background:#21182f; color:#eee5ff; border:1px solid #675080; border-radius:8px; padding:10px 16px; font:inherit }
   .controls { display:flex; justify-content:center; align-items:center; gap:12px }
 </style>
-<h1>Yabancı yıldız sistemi</h1>
-<p>Mor bir güneşin çevresinde halkalı bir dev, parçalanmış dünyalar ve küçük uydular.</p>
-<canvas width="64" height="64" aria-label="Mor güneş çevresinde dönen beş gökcisminin hologram animasyonu"></canvas>
+<h1>Alien star system</h1>
+<p>A ringed giant, shattered worlds and small moons around a purple sun.</p>
+<canvas width="64" height="64" aria-label="Hologram animation of five bodies orbiting a purple sun"></canvas>
 <div class="controls">
-  <button id="pause" type="button">Duraklat</button>
-  <label>Hız <select id="speed"><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+  <button id="pause" type="button">Pause</button>
+  <label>Speed <select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
 </div>
-<p id="error" hidden>Görsel yüklenemedi. Bu dosyayı proje klasörünün içinden açın.</p>
+<p id="error" hidden>Could not load the image. Open this file from inside the project folder.</p>
 <script>
   const canvas = document.querySelector('canvas');
   const ctx = canvas.getContext('2d');
@@ -28,8 +28,8 @@
   let elapsed = 0, previous;
   const button = document.querySelector('#pause');
   const speed = document.querySelector('#speed');
-  button.textContent = paused ? 'Oynat' : 'Duraklat';
-  button.onclick = () => { paused = !paused; button.textContent = paused ? 'Oynat' : 'Duraklat'; };
+  button.textContent = paused ? 'Play' : 'Pause';
+  button.onclick = () => { paused = !paused; button.textContent = paused ? 'Play' : 'Pause'; };
   atlas.onerror = () => document.querySelector('#error').hidden = false;
   atlas.onload = () => requestAnimationFrame(draw);
   atlas.src = '../../../Resources/Textures/DeltaV/Structures/Decoration/shuttle_manipulator.rsi/holograph_star_system.png';

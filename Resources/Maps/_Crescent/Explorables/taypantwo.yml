@@ -2327,6 +2327,7 @@ entities:
       parent: 1
     - type: WarpPoint
       location: Taypan-2 asteroid belt
+      category: Asteroid
 - proto: WaterCooler
   entities:
   - uid: 76

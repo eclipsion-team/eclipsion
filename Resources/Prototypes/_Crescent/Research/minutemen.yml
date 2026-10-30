@@ -12,13 +12,12 @@
   id: MinutemenBoltRifle
   name: research-technology-minutemen-light-guns
   icon:
-    sprite: _Crescent/Objects/Weapons/Guns/nimrod.rsi
+    sprite: _Crescent/Objects/Weapons/Guns/mp5_cmm.rsi
     state: icon
   discipline: Minutemen
   tier: 1
   cost: 3000
   recipeUnlocks:
-  - WeaponRifleCMMNimrod
   - M14IncendiaryHandgrenade
   - M18SmokeHandgrenade
   - WeaponSubMachineGunCMMMP5
@@ -92,19 +91,6 @@
   cost: 6000
   recipeUnlocks:
   - ClothingOuterHardsuitMinutemenEnsign
-
-- type: technology
-  id: MinutemenAutomaticWeapons
-  name: research-technology-minutemen-automatic-weapons
-  icon:
-    sprite: _Crescent/Objects/Weapons/Guns/lecter_cmm.rsi
-    state: icon
-  discipline: Minutemen
-  tier: 2
-  cost: 8000
-  recipeUnlocks:
-  - WeaponRifleCMMLecter
-  - WeaponLightMachineGunCMMStratos
 
 - type: technology
   id: MinutemenHeavyDestroyer

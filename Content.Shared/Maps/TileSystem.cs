@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Numerics;
+using Content.Shared._Crescent.Territory;
 using Content.Shared.Coordinates.Helpers;
 using Content.Shared.Decals;
 using Robust.Shared.Map;
@@ -149,6 +150,13 @@ public sealed class TileSystem : EntitySystem
     {
         if (tileRef.Tile.IsEmpty)
             return false;
+
+        // Crescent: the floor around a persistent territory's standard is permanent ground. Nothing pries or digs it up.
+        if (TryComp<PersistentPoiGridComponent>(tileRef.GridUid, out var territory) &&
+            territory.ProtectsTile(tileRef.GridIndices))
+        {
+            return false;
+        }
 
         var tileDef = (ContentTileDefinition) _tileDefinitionManager[tileRef.Tile.TypeId];
 

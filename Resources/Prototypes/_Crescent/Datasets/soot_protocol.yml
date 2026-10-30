@@ -1,0 +1,11 @@
+- type: localizedDataset
+  id: SootProtocolNicePhrases
+  values:
+    prefix: soot-protocol-phrase-
+    count: 25
+
+- type: localizedDataset
+  id: SootProtocolAdminFunPhrases
+  values:
+    prefix: soot-protocol-fun-
+    count: 16

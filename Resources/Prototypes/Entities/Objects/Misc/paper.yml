@@ -385,6 +385,12 @@
     state: luxury_pen
   - type: Item
     heldPrefix: luxury_pen
+  - type: SignatureWriter # DeltaV
+    colorList:
+      black: "#2f4f4f"
+      blue: "#284283"
+      green: "#108473"
+      red: "#ac3235"
 
 - type: entity
   name: Cybersun pen
@@ -423,6 +429,22 @@
     sprite: Objects/Misc/bureaucracy.rsi
     heldPrefix: overpriced_pen
     size: Tiny
+  - type: SignatureWriter # DeltaV
+    fontList:
+      Noto Sans: Default
+      Comic Neue: ComicNeue
+      Hachi Maru Pop: HachiMaruPop
+      Kode Mono: KodeMono
+      Reenie Beanie: ReenieBeanie
+      Tangerine: Tangerine
+      UnifrakturMaguntia: UnifrakturMaguntia
+    colorList:
+      black: "#2f4f4f"
+      blue: "#284283"
+      green: "#108473"
+      red: "#ac3235"
+      command blue: "#1b67a5"
+      CentCom green: "#009100"
 
 - type: entity
   name: captain's fountain pen
@@ -437,6 +459,8 @@
     damage:
       types:
         Piercing: 8
+  - type: SignatureWriter # DeltaV
+    color: "#1b67a5"
 
 - type: entity
   name: CentCom pen
@@ -460,6 +484,8 @@
   - type: Sprite
     sprite: Objects/Misc/bureaucracy.rsi
     state: pen_hop
+  - type: SignatureWriter # DeltaV
+    color: "#1b67a5"
 
 - type: entity
   id: BoxFolderBase

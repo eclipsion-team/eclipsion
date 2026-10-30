@@ -1,4 +1,6 @@
 using Content.Shared._Crescent.Factions;
+using Content.Shared._Crescent.HullrotFaction;
+using Content.Shared.CaptureFlag;
 using Robust.Shared.GameStates;
 
 namespace Content.Shared._Crescent.Territory;
@@ -20,6 +22,23 @@ public static class PersistentTerritoryFactions
     public static bool IsSupported(string? faction)
     {
         return faction is "DSM" or "NCWL" or "TFSC" or "SHI";
+    }
+
+    public static string? GetTeam(IEntityManager entMan, EntityUid uid)
+    {
+        if (entMan.TryGetComponent(uid, out CaptureTeamComponent? captureTeam) &&
+            !string.IsNullOrWhiteSpace(captureTeam.Team))
+        {
+            return captureTeam.Team;
+        }
+
+        if (entMan.TryGetComponent(uid, out HullrotFactionComponent? faction) &&
+            !string.IsNullOrWhiteSpace(faction.Faction))
+        {
+            return faction.Faction;
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -103,6 +122,12 @@ public sealed partial class PersistentCaptureRegionComponent : Component
     [DataField]
     public int StockRewardDuration = 4;
 
+    [DataField]
+    public float ProtectedCoreRadius = 15f;
+
+    [DataField]
+    public int LevelsLostOnNeutralize;
+
     /// <summary>
     /// Last owner whose territory effects were applied. Runtime-only: persisted ownership lives in the system save.
     /// </summary>
@@ -123,6 +148,9 @@ public sealed partial class PersistentCaptureRegionComponent : Component
 
     [ViewVariables]
     public TimeSpan CaptureEndsAt;
+
+    [ViewVariables]
+    public TimeSpan NextAttackAlert;
 
     /// <summary>False when map validation rejected this region ID. Runtime-only.</summary>
     [ViewVariables]

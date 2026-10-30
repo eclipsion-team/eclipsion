@@ -48,6 +48,12 @@ namespace Content.Client.Options.UI.Tabs
         // The Walk keybind is forced to a held (State) binding on client startup
         // (see Content.Client EntryPoint.ForceHoldToSprint).
 
+        private void HandleSprintFire(BaseButton.ButtonToggledEventArgs args)
+        {
+            _cfg.SetCVar(CCVars.SprintFire, args.Pressed);
+            _cfg.SaveToFile();
+        }
+
         private void HandleHoldLookUp(BaseButton.ButtonToggledEventArgs args)
         {
             _cfg.SetCVar(CCVars.HoldLookUp, args.Pressed);
@@ -187,6 +193,7 @@ namespace Content.Client.Options.UI.Tabs
             AddButton(ContentKeyFunctions.AltActivateItemInWorld);
             AddButton(ContentKeyFunctions.Drop);
             AddButton(ContentKeyFunctions.ExamineEntity);
+            AddCheckBox("ui-options-function-sprint-fire", _cfg.GetCVar(CCVars.SprintFire), HandleSprintFire);
             AddButton(ContentKeyFunctions.SwapHands);
             AddButton(ContentKeyFunctions.MoveStoredItem);
             AddButton(ContentKeyFunctions.RotateStoredItem);

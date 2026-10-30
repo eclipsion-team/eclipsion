@@ -463,3 +463,31 @@
   - type: ConditionalSpawner
     prototypes:
     - MobSoldierAISRMGunner
+
+- type: entity
+  parent: SpawnMobSoldierAIBase
+  id: SpawnMobSoldierAIDerelictHunterRandom
+  name: derelict hunter spawner
+  suffix: Hostile to all, Random role
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSoldierAIDerelictHunter
+    - MobSoldierAIDerelictHunterShock
+    - MobSoldierAIDerelictHunterShotgunner
+    - MobSoldierAIDerelictHunterMarksman
+    - MobSoldierAIDerelictHunterGunner
+
+- type: entity
+  parent: SpawnMobSoldierAIDerelictHunterRandom
+  id: SpawnMobSoldierAIDerelictHunterChance
+  suffix: Hostile to all, Random role, 50%
+  components:
+  - type: ConditionalSpawner
+    chance: 0.5
+    prototypes:
+    - MobSoldierAIDerelictHunter
+    - MobSoldierAIDerelictHunterShock
+    - MobSoldierAIDerelictHunterShotgunner
+    - MobSoldierAIDerelictHunterMarksman
+    - MobSoldierAIDerelictHunterGunner

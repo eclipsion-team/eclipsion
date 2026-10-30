@@ -19,4 +19,9 @@ public sealed partial class AdventureRuleComponent : Component
     [DataField]
     public string WorldgenConfig = "RatWorld";
 
+    [DataField]
+    public string? TerritoryProfile;
+
+    [DataField]
+    public List<string> TerritoryFactions = new();
 }

@@ -22,6 +22,12 @@ public partial struct StampDisplayInfo
 
     [DataField("stampedColor")]
     public Color StampedColor;
+
+    [DataField("stampFont")]
+    public string? StampFont;
+
+    [DataField("borderless")]
+    public bool Borderless;
 };
 
 [RegisterComponent]

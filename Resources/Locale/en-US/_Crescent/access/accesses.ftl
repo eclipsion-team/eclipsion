@@ -66,6 +66,7 @@ id-card-access-level-antiquarian = Antiquarian
 id-card-access-level-gliess-admin = Gliessian Dockmaster
 id-card-access-level-gliess-sheriff = Gliessian Sheriff
 id-card-access-level-gliess-sheriff-command = Gliessian Sheriff's Office
+id-card-access-level-gliess-dockmaster-command = Gliessian Dockmaster's Office
 
 # tap
 

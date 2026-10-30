@@ -46,6 +46,12 @@
         NCWL: brown-ncwl
         SHI: charcoal-russet
         TFSC: burgundy-gold
+    - type: TerritoryDronePickets
+      drones:
+      - ValorDrone
+      - RocinanteDrone
+      - WaspDrone
+      - HornetDrone
 
 # Map these instead of a faction-specific anti-boarder turret in a capturable region. The territory system supplies
 # its faction when the map loads and whenever the flag changes hands.
@@ -60,3 +66,5 @@
     - type: NpcFactionMember
     - type: CaptureRegionDevice
       updateName: true
+    - type: PersistentPoiWorks
+      category: AntiBoarderTurret

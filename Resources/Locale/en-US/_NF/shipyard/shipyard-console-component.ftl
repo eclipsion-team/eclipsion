@@ -26,3 +26,9 @@ shipyard-console-approval-no-account = This terminal cannot file an approval req
 shipyard-approval-announce-request = {$buyer} requests approval to purchase {$vessel} for {$price} cr. Approve at a treasury console.
 shipyard-approval-buyer-approved = Your purchase of {$vessel} was approved by {$approver}. Return to the shipyard console to collect it.
 shipyard-approval-buyer-denied = Your purchase of {$vessel} was denied by {$approver}.
+
+# Crescent - faction yards let the buyer choose who pays
+shipyard-console-pay-from = Pay from:
+shipyard-console-pay-treasury = { $faction } ({ $balance } cr)
+shipyard-console-pay-personal = Personal ({ $balance } cr)
+shipyard-console-pay-personal-none = Personal (none)

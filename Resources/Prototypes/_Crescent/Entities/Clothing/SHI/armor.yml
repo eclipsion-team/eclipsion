@@ -491,6 +491,7 @@
   name: corporate suit jacket
   description: A silken suit jacket, worn by corporate goons everywhere.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _Crescent/Clothing/SHI/OuterClothing/suitjacket.rsi
   - type: Clothing
@@ -504,6 +505,7 @@
   name: corporate executive suit jacket
   description: A silken, luxurious suit jacket, worn by corporate bosses everywhere.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _Crescent/Clothing/SHI/OuterClothing/execsuitjacket.rsi
   - type: Clothing

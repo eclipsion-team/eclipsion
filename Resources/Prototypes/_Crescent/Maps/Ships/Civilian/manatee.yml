@@ -9,7 +9,7 @@
     LOADOUT: Armless
     SHIELD: Absent
     SPEED: 30 m/s
-  price: 38000
+  price: 41000
   category: Medium
   group: Civilian
   path: /Maps/_Crescent/Shuttles/Civilian/manatee.yml

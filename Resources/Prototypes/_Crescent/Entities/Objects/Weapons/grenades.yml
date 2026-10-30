@@ -52,13 +52,12 @@
       - id: TrollNadeProjectile
 
 - type: entity
+  abstract: true
   name: The concequences of your actions
   parent: GrenadeBase
   description: WHAT THE FUCK HAVE YOU DONE?????
-  categories: [ HideSpawnMenu ]
-  id: TrollNadeProjectile
+  id: TrollNadeProjectileBase
   components:
-  - type: TriggerOnSpawn
   - type: Sprite
     sprite: _Crescent/Objects/Fun/Plushies/troll.rsi
     scale: 0.5, 0.5
@@ -71,8 +70,29 @@
     damage:
       types:
         Blunt: 5000
+  - type: SoundOnTrigger
+    sound:
+      path: /Audio/_Crescent/Weapons/Grenades/troll_nade/trigger.ogg
+      params:
+        variation: 0.25
+
+# What the burst throws. It used to be another TrollNadeProjectile, which bursts again on spawn: 30^n
+# entities until the server dies. One generation is the joke.
+- type: entity
+  parent: TrollNadeProjectileBase
+  categories: [ HideSpawnMenu ]
+  id: TrollNadeShrapnel
+  components:
+  - type: DeleteOnTrigger
+
+- type: entity
+  parent: TrollNadeProjectileBase
+  categories: [ HideSpawnMenu, Spawner ] # bursts and deletes itself on spawn
+  id: TrollNadeProjectile
+  components:
+  - type: TriggerOnSpawn
   - type: ClusterGrenade
-    fillPrototype: TrollNadeProjectile
+    fillPrototype: TrollNadeShrapnel
     velocity: 30
     maxGrenadesCount: 30
     grenadeTriggerIntervalMax: 0.25
@@ -81,11 +101,6 @@
     randomSpread: true
   - type: OnUseTimerTrigger
     delay: 0.5
-  - type: SoundOnTrigger
-    sound:
-      path: /Audio/_Crescent/Weapons/Grenades/troll_nade/trigger.ogg
-      params:
-        variation: 0.25
   - type: TimerTriggerVisuals
     primingSound:
       path: /Audio/_Crescent/Weapons/Grenades/troll_nade/trigger.ogg

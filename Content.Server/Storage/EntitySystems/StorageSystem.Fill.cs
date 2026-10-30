@@ -19,6 +19,10 @@ public sealed partial class StorageSystem
 
         if (TryComp<StorageComponent>(uid, out var storageComp))
         {
+            // Loaded from a map that was saved already filled; filling again overflows or duplicates.
+            if (storageComp.Container.ContainedEntities.Count > 0)
+                return;
+
             FillStorage((uid, component, storageComp));
         }
         else if (TryComp<EntityStorageComponent>(uid, out var entityStorageComp))

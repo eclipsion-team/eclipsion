@@ -39,6 +39,9 @@
 - type: entity
   parent: SHIHG17SmartHandgrenade
   id: ExGrenade
+  components:
+  # Required by the short grenade case whitelist.
+  - type: WeaponCaseInsertable
 
 - type: entity
   parent: SHIHG7FlashbangHandgrenade

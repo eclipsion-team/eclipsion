@@ -30,7 +30,7 @@ borg-select-type-menu-title = Select Chassis Type
 borg-select-type-menu-bottom-text = Chassis selection is irreversible
 borg-select-type-menu-available = Available types
 borg-select-type-menu-information = Information
-borg-select-type-menu-select-type = Select type to view information
+borg-select-type-menu-select-type = Select a type for details
 borg-select-type-menu-confirm = Confirm selection
 borg-select-type-menu-guidebook = Guidebook
 

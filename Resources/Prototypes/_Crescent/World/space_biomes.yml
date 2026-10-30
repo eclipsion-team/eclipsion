@@ -197,6 +197,80 @@
   swapDuration: 2
   parallax: RatOrisParallax
 
+# craster's belt - north-east (7424, 7424)
+
+- type: entity
+  id: CrastersBeltBiomeSource
+  parent: BaseSpaceBiomeSource
+  name: craster's belt source
+  components:
+  - type: SpaceBiomeSource
+    biome: crastersbeltbiome
+    swapDistance: 500
+    priority: 2440
+
+- type: crescentFactionBiome
+  id: crastersbeltbiome
+  name: Craster's Belt
+  swapDuration: 2
+  parallax: RatOrisParallax
+  description: "The old chromite mine, past the edge of the charts. What is mined out here does not grow back."
+
+# crimson despair - south-west (-7424, -7424)
+
+- type: entity
+  id: CrimsonDespairBiomeSource
+  parent: BaseSpaceBiomeSource
+  name: crimson despair source
+  components:
+  - type: SpaceBiomeSource
+    biome: crimsondespairbiome
+    swapDistance: 500
+    priority: 2440
+
+- type: crescentFactionBiome
+  id: crimsondespairbiome
+  name: Crimson Despair
+  swapDuration: 2
+  parallax: RatOrisParallax
+  description: "A chromite belt past the edge of the charts. What is mined out here does not grow back."
+
+- type: entity
+  id: FourthBattalionGraveBiomeSource
+  parent: BaseSpaceBiomeSource
+  name: fourth battalion grave source
+  components:
+  - type: SpaceBiomeSource
+    biome: fourthbattaliongravebiome
+    swapDistance: 500
+    priority: 2440
+
+- type: crescentFactionBiome
+  id: fourthbattaliongravebiome
+  name: Imperial Fourth Defense Battalion Grave
+  swapDuration: 2
+  parallax: RatGraveyardParallax
+  description: "DSM and NCWL warships, left where they fell past the edge of the charts."
+
+# chengrdiz battalion grave - south-east (8064, -8064)
+
+- type: entity
+  id: ChengrdizBattalionGraveBiomeSource
+  parent: BaseSpaceBiomeSource
+  name: chengrdiz battalion grave source
+  components:
+  - type: SpaceBiomeSource
+    biome: chengrdizbattaliongravebiome
+    swapDistance: 500
+    priority: 2440
+
+- type: crescentFactionBiome
+  id: chengrdizbattaliongravebiome
+  name: Chengrdiz Battalion Grave
+  swapDuration: 2
+  parallax: RatGraveyardParallax
+  description: "DSM and NCWL warships, left where they fell far past the edge of the charts."
+
 # wilds
 
 - type: entity
@@ -403,7 +477,6 @@
   # TAP                 - 2480   - Tribal Hideout, RANGE 1,500
   # FACTION TERRITORY   - 2470   - DSM, NCWL, TFCF, SHI home stations, RANGE 2,500
   # TAYPAN CORE         - 2460   - Gliess Santo (0, 0), RANGE 2,000
-  # P.O.I.              - 2440   - ASTEROID FIELDS, P.O.I. AND SCRAPYARDS
   # TAYPAN WILDS        - 2430   - Gliess Santo, RANGE 6,500 (reaches just past the faction stations)
   # DEEPWILDS           - 2420   - Gliess Santo, RANGE 12,500 (the rest of the sector)
   # RECURRENCE BASIN    - 2400   - legacy, RANGE 1

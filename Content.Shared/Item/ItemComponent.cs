@@ -61,6 +61,10 @@ public sealed partial class ItemComponent : Component
     /// </summary>
     [DataField, AutoNetworkedField]
     public Vector2i StoredOffset;
+
+    // Mono
+    [DataField, AutoNetworkedField]
+    public bool PickupStatic;
 }
 
 /// <summary>

@@ -131,6 +131,7 @@ public sealed partial class NpcSquadSystem : EntitySystem
         SubscribeLocalEvent<NpcSquadLeaderComponent, NpcSquadMenuActionEvent>(OnMenuAction);
         SubscribeLocalEvent<NpcSquadLeaderComponent, AfterPointedAtEvent>(OnLeaderPointed);
         SubscribeLocalEvent<NpcSquadLeaderComponent, AfterPointedAtTileEvent>(OnLeaderPointedAtTile);
+        SubscribeLocalEvent<NpcSquadLeaderComponent, BoundUserInterfaceMessageAttempt>(OnUiMessageAttempt);
 
         Subs.BuiEvents<NpcSquadLeaderComponent>(NpcSquadUiKey.Key, subs =>
         {
@@ -673,6 +674,12 @@ public sealed partial class NpcSquadSystem : EntitySystem
         htn.PlanningToken = null;
 
         _htn.Replan(htn);
+    }
+
+    private void OnUiMessageAttempt(Entity<NpcSquadLeaderComponent> ent, ref BoundUserInterfaceMessageAttempt args)
+    {
+        if (!args.Cancelled && NpcSquadUiKey.Key.Equals(args.UiKey) && args.Actor != ent.Owner)
+            args.Cancel();
     }
 
     private void OnOrderMessage(Entity<NpcSquadLeaderComponent> ent, ref NpcSquadOrderMessage args)

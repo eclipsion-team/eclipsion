@@ -1,0 +1,52 @@
+<BoxContainer xmlns="https://spacestation14.io"
+              Orientation="Vertical" Margin="8" SeparationOverride="6"
+              VerticalExpand="True" HorizontalExpand="True">
+    <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+        <BoxContainer Orientation="Vertical" SeparationOverride="6" HorizontalExpand="True">
+
+            <RichTextLabel Name="CommandNote" HorizontalExpand="True" Visible="False"/>
+
+            <Label Text="{Loc 'territory-console-command-defence'}" StyleClasses="LabelHeading"/>
+            <RichTextLabel Name="DefenceNote" HorizontalExpand="True" Visible="False"/>
+            <BoxContainer Name="DefenceBox" Orientation="Vertical" SeparationOverride="4">
+                <BoxContainer Orientation="Horizontal" SeparationOverride="16">
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                        <Label Name="FireControlLabel" ClipText="True"/>
+                        <Label Name="MannedLabel" ClipText="True"/>
+                        <Label Name="TargetLabel" ClipText="True"/>
+                    </BoxContainer>
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                        <Label Name="GunsLabel" ClipText="True"/>
+                        <Label Name="TurretsLabel" ClipText="True"/>
+                    </BoxContainer>
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" SeparationOverride="8" Margin="0 4 0 0">
+                    <Button Name="RemoteFireButton" Text="{Loc 'territory-console-command-remote-fire'}"
+                            StyleClasses="OpenBoth" MinWidth="220"/>
+                    <Label Name="RemoteFireHint" StyleClasses="LabelSecondaryColor" VerticalAlignment="Center"
+                           HorizontalExpand="True" ClipText="True"/>
+                </BoxContainer>
+                <BoxContainer Name="OrdersBox" Orientation="Vertical" SeparationOverride="4" Margin="0 4 0 0"/>
+            </BoxContainer>
+
+            <PanelContainer StyleClasses="LowDivider" HorizontalExpand="True" SetHeight="2" Margin="0 6"/>
+
+            <Label Text="{Loc 'territory-console-command-name'}" StyleClasses="LabelHeading"/>
+            <RichTextLabel Name="NameHint" HorizontalExpand="True"/>
+            <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                <Label Name="PrefixLabel" StyleClasses="LabelHeading" VerticalAlignment="Center"/>
+                <LineEdit Name="NameEdit" HorizontalExpand="True"
+                          PlaceHolder="{Loc 'territory-console-command-name-placeholder'}"/>
+                <Button Name="RenameButton" Text="{Loc 'territory-console-command-rename'}" StyleClasses="OpenRight"/>
+                <Button Name="ResetNameButton" Text="{Loc 'territory-console-command-reset-name'}" StyleClasses="OpenLeft"/>
+            </BoxContainer>
+
+            <PanelContainer StyleClasses="LowDivider" HorizontalExpand="True" SetHeight="2" Margin="0 6"/>
+
+            <Label Text="{Loc 'territory-console-command-abandon-heading'}" StyleClasses="LabelHeading"/>
+            <RichTextLabel Name="AbandonDescription" HorizontalExpand="True"/>
+            <Button Name="AbandonButton" Text="{Loc 'territory-console-command-abandon'}" StyleClasses="Caution"
+                    HorizontalAlignment="Left" MinWidth="220"/>
+        </BoxContainer>
+    </ScrollContainer>
+</BoxContainer>

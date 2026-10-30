@@ -9,7 +9,7 @@
     LOADOUT: Armless
     SHIELD: Absent
     SPEED: 40 m/s
-  price: 10000
+  price: 20000
   category: Small
   group: None
   path: /Maps/_Crescent/Shuttles/NCWL/sabre.yml

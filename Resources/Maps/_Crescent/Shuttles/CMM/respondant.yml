@@ -1480,8 +1480,6 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 6
-      configurators:
-      - invalid
 - proto: APCBasic
   entities:
   - uid: 22
@@ -2946,8 +2944,6 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 6
-      configurators:
-      - invalid
     - type: AtmosPipeColor
       color: '#0055CCFF'
 - proto: GasVentScrubber
@@ -2972,8 +2968,6 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 6
-      configurators:
-      - invalid
     - type: AtmosPipeColor
       color: '#990000FF'
   - uid: 247

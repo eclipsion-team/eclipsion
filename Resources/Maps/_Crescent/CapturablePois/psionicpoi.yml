@@ -1,11 +1,11 @@
 meta:
   format: 7
   category: Grid
-  engineVersion: 288.1.0
+  engineVersion: 289.0.3
   forkId: ""
   forkVersion: ""
-  time: 09/05/2026 09:06:19
-  entityCount: 1468
+  time: 10/24/2026 13:19:22
+  entityCount: 1471
 maps: []
 grids:
 - 1
@@ -724,74 +724,74 @@ entities:
       - 593
 - proto: AirlockMaint
   entities:
-  - uid: 30
+  - uid: 27
     components:
     - type: Transform
       parent: 1
       pos: 30.5,-13.5
-  - uid: 31
+  - uid: 28
     components:
     - type: Transform
       parent: 1
       pos: 28.5,-13.5
-  - uid: 32
+  - uid: 29
     components:
     - type: Transform
       parent: 1
       pos: 17.5,-18.5
-  - uid: 33
+  - uid: 30
     components:
     - type: Transform
       parent: 1
       pos: 22.5,-14.5
-  - uid: 34
+  - uid: 31
     components:
     - type: Transform
       parent: 1
       pos: 21.5,-18.5
-  - uid: 35
+  - uid: 32
     components:
     - type: Transform
       parent: 1
       pos: 15.5,-18.5
-  - uid: 36
+  - uid: 33
     components:
     - type: Transform
       parent: 1
       pos: 19.5,-18.5
-  - uid: 37
+  - uid: 34
     components:
     - type: Transform
       parent: 1
       pos: 14.5,-14.5
-  - uid: 38
+  - uid: 35
     components:
     - type: Transform
       parent: 1
       pos: 17.5,-14.5
-  - uid: 40
+  - uid: 36
     components:
     - type: Transform
       parent: 1
       pos: 19.5,-14.5
-  - uid: 41
+  - uid: 37
     components:
     - type: Transform
       parent: 1
       pos: 13.5,-18.5
-  - uid: 42
+  - uid: 38
     components:
     - type: Transform
       parent: 1
       pos: 23.5,-18.5
-  - uid: 43
+  - uid: 39
     components:
     - type: Transform
       parent: 1
       pos: 29.5,-18.5
 - proto: AirlockMaintHorizontal
   entities:
-  - uid: 27
+  - uid: 40
     components:
     - type: Transform
       parent: 1
@@ -800,7 +800,7 @@ entities:
     - type: DeviceLinkSink
       links:
       - 737
-  - uid: 28
+  - uid: 41
     components:
     - type: Transform
       parent: 1
@@ -809,7 +809,7 @@ entities:
     - type: DeviceLinkSink
       links:
       - 737
-  - uid: 29
+  - uid: 42
     components:
     - type: Transform
       parent: 1
@@ -818,7 +818,7 @@ entities:
     - type: DeviceLinkSink
       links:
       - 737
-  - uid: 39
+  - uid: 43
     components:
     - type: Transform
       parent: 1
@@ -4452,8 +4452,6 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 21
-      configurators:
-      - invalid
 - proto: GeneratorRTG
   entities:
   - uid: 600
@@ -4992,6 +4990,9 @@ entities:
     - type: Transform
       parent: 1
       pos: 24.5,-8.5
+    - type: PersistentCaptureRegion
+      regionId: crystal-sanctum
+      baseName: Crystal Sanctum
 - proto: PlastitaniumWindow
   entities:
   - uid: 662
@@ -5489,16 +5490,16 @@ entities:
         196:
         - - Pressed
           - Toggle
-        28:
+        41:
         - - Pressed
           - DoorBolt
-        27:
+        40:
         - - Pressed
           - DoorBolt
-        39:
+        43:
         - - Pressed
           - DoorBolt
-        29:
+        42:
         - - Pressed
           - DoorBolt
   - uid: 738
@@ -5630,6 +5631,20 @@ entities:
     - type: Transform
       parent: 1
       pos: 26.5,-7.5
+- proto: SpawnMobSoldierAIDerelictHunterChance
+  entities:
+  - uid: 1471
+    components:
+    - type: Transform
+      parent: 1
+      pos: 18.5,-3.5
+- proto: SpawnMobSoldierAIDerelictHunterRandom
+  entities:
+  - uid: 1470
+    components:
+    - type: Transform
+      parent: 1
+      pos: 19.5,-16.5
 - proto: StasisBed
   entities:
   - uid: 753
@@ -9564,6 +9579,15 @@ entities:
     - type: Transform
       parent: 1
       pos: 40.5,-13.5
+- proto: WarpPoint
+  entities:
+  - uid: 1469
+    components:
+    - type: Transform
+      parent: 1
+      pos: 24.5,-8.5
+    - type: WarpPoint
+      location: Crystal Sanctum
 - proto: WaterCooler
   entities:
   - uid: 1462

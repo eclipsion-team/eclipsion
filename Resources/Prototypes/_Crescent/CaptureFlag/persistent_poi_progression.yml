@@ -1,0 +1,109 @@
+#
+#
+#
+#
+# all numbers here are a first pass meant to be tuned
+
+- type: persistentPoiLevel
+  id: PersistentPoiLevel1
+  level: 1
+  limits:
+    TargetingConsole: 1
+    ProductionConsole: 1
+    AdministrationConsole: 1
+    RadarConsole: 1
+    ShuttleConsole: 1
+    PointDefence: 4
+    AntiBoarderTurret: 2
+    Factory: 2
+    Shipyard: 0
+    DockingPort: 2
+    Generator: 2
+  productionSpeed: 1
+  extraStorage: 0
+  stockRewardMultiplier: 1
+
+- type: persistentPoiLevel
+  id: PersistentPoiLevel2
+  level: 2
+  upgradeCost:
+    Steel: 1500
+    Glass: 600
+    Plasteel: 600
+    Gold: 150
+    Silver: 150
+    AdvancedElectronics: 2
+    NanotrasenElectronics: 2
+  limits:
+    TargetingConsole: 1
+    ProductionConsole: 1
+    AdministrationConsole: 1
+    RadarConsole: 1
+    ShuttleConsole: 1
+    PointDefence: 6
+    AntiBoarderTurret: 3
+    Factory: 3
+    Shipyard: 1
+    DockingPort: 4
+    Generator: 4
+  productionSpeed: 1.25
+  extraStorage: 1
+  stockRewardMultiplier: 1.5
+
+- type: persistentPoiLevel
+  id: PersistentPoiLevel3
+  level: 3
+  upgradeCost:
+    Steel: 3000
+    Glass: 1200
+    Plasteel: 1500
+    Gold: 400
+    Silver: 400
+    Uranium: 300
+    AdvancedElectronics: 5
+    NanotrasenElectronics: 5
+  limits:
+    TargetingConsole: 1
+    ProductionConsole: 1
+    AdministrationConsole: 1
+    RadarConsole: 1
+    ShuttleConsole: 1
+    PointDefence: 8
+    AntiBoarderTurret: 4
+    Factory: 4
+    Shipyard: 1
+    DockingPort: 6
+    Generator: 6
+  productionSpeed: 1.5
+  extraStorage: 2
+  stockRewardMultiplier: 2
+
+- type: persistentPoiCapability
+  id: GeneralOre
+  name: persistent-poi-capability-general-ore
+  description: persistent-poi-capability-general-ore-desc
+  priority: 0
+
+- type: persistentPoiCapability
+  id: TargetedOre
+  name: persistent-poi-capability-targeted-ore
+  description: persistent-poi-capability-targeted-ore-desc
+  priority: 1
+
+- type: persistentPoiCapability
+  id: Textiles
+  name: persistent-poi-capability-textiles
+  description: persistent-poi-capability-textiles-desc
+  priority: 2
+
+- type: persistentPoiCapability
+  id: Materials
+  name: persistent-poi-capability-materials
+  description: persistent-poi-capability-materials-desc
+  priority: 3
+
+- type: persistentPoiCapability
+  id: TradeGoods
+  name: persistent-poi-capability-trade-goods
+  description: persistent-poi-capability-trade-goods-desc
+  priority: 4

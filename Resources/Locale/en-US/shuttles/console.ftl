@@ -39,6 +39,9 @@ shuttle-console-map-beacons = Show beacons
 
 shuttle-console-no-signal = No signal
 
+shuttle-console-zoom-in = Zoom in
+shuttle-console-zoom-out = Zoom out
+
 shuttle-console-map-objects = Sector objects
 shuttle-console-map-sector-crescent = Sector Crescent
 

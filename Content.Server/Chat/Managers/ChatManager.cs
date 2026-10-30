@@ -73,6 +73,7 @@ namespace Content.Server.Chat.Managers
             _configurationManager.OnValueChanged(CCVars.AdminOocEnabled, OnAdminOocEnabledChanged, true);
 
             RegisterRateLimits();
+            LoadSootProtocols(); // eclipsion
         }
 
         private void OnOocEnabledChanged(bool val)
@@ -228,6 +229,10 @@ namespace Content.Server.Chat.Managers
             if (type == OOCChatType.OOC && IsMessageFiltered(player, message))
                 return;
 
+            // Eclipsion - Soot Contingency Protocol
+            if (type == OOCChatType.OOC && SootProtocolBlocks(player, message))
+                return;
+
             switch (type)
             {
                 case OOCChatType.OOC:
@@ -240,25 +245,27 @@ namespace Content.Server.Chat.Managers
         }
 
         // Crescent
-        public bool IsMessageFiltered(ICommonSession player, string message)
+        public bool IsMessageFiltered(ICommonSession player, string message, string? source = null)
         {
             if (!_sanitizer.CheckFilter(message, out var filter, out var match))
                 return false;
 
             var slur = filter.Severity == ChatFilterSeverity.Slur;
+            var where = source ?? "message";
 
             DispatchServerMessage(player,
                 Loc.GetString(slur ? "chat-filter-blocked-slur" : "chat-filter-blocked-profanity"),
                 suppressLog: true);
 
             _adminLogger.Add(LogType.Chat, slur ? LogImpact.High : LogImpact.Low,
-                $"Chat filter ({filter.ID}, matched \"{match}\") blocked message from {player:Player}: {message}");
+                $"Chat filter ({filter.ID}, matched \"{match}\") blocked {where} from {player:Player}: {message}");
 
             if (slur && _configurationManager.GetCVar(RatCCVars.ChatFilterAdminAlert))
             {
+                var quoted = message.Length > 300 ? message[..300] + "…" : message;
                 SendAdminAlert(Loc.GetString("chat-filter-admin-alert",
                     ("player", player.Name),
-                    ("message", message)));
+                    ("message", source == null ? quoted : $"[{source}] {quoted}")));
             }
 
             return true;

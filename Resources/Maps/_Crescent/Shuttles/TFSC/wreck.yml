@@ -290,7 +290,7 @@ entities:
       rot: 3.141592653589793 rad
       pos: 3.5,-2.5
       parent: 1
-- proto: AirlockSyndicateLockedTFSCRamzi
+- proto: AirlockShuttle
   entities:
   - uid: 4
     components:

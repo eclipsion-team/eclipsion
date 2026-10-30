@@ -4514,8 +4514,6 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 21
-      configurators:
-      - invalid
 - proto: GeneratorRTG
   entities:
   - uid: 603

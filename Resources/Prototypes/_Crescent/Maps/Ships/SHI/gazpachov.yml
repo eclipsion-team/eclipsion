@@ -6,7 +6,7 @@
     LOADOUT: Armless
     SHIELD: Absent
     SPEED: 25 m/s
-  price: 45000
+  price: 51000
   category: Small
   group: Civilian
   path: /Maps/_Crescent/Shuttles/SHI/gazpachov.yml

@@ -1,3 +1,4 @@
+using Content.Shared._Crescent.Territory;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Charges.Components;
 using Content.Shared.Charges.Systems;
@@ -501,7 +502,7 @@ public class RCDSystem : EntitySystem
             }
 
             // The tile has a structure sitting on it
-            if (_turf.IsTileBlocked(mapGridData.Tile, CollisionGroup.MobMask))
+            if (_turf.IsTileBlocked(mapGridData.Tile, CollisionGroup.MobMask, TurfSystem.FloorRemovalBlockingArea))
             {
                 if (popMsgs)
                     _popup.PopupClient(Loc.GetString("rcd-component-tile-obstructed-message"), uid, user);
@@ -512,7 +513,9 @@ public class RCDSystem : EntitySystem
             // The tile cannot be destroyed
             var tileDef = (ContentTileDefinition) _tileDefMan[mapGridData.Tile.Tile.TypeId];
 
-            if (tileDef.Indestructible)
+            if (tileDef.Indestructible ||
+                TryComp<PersistentPoiGridComponent>(mapGridData.GridUid, out var territory) &&
+                territory.ProtectsTile(mapGridData.Position))
             {
                 if (popMsgs)
                     _popup.PopupClient(Loc.GetString("rcd-component-tile-indestructible-message"), uid, user);
@@ -524,6 +527,14 @@ public class RCDSystem : EntitySystem
         // Attempt to deconstruct an object
         else
         {
+            if (HasComp<PersistentPoiStructureComponent>(target))
+            {
+                if (popMsgs)
+                    _popup.PopupClient(Loc.GetString("rcd-component-deconstruct-target-not-on-whitelist-message"), uid, user);
+
+                return false;
+            }
+
             // The object is not in the RPD whitelist
             if (!TryComp<RCDDeconstructableComponent>(target, out var deconstructible) || !deconstructible.RpdDeconstructable && component.IsRpd)
             {

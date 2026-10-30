@@ -1,4 +1,4 @@
-﻿using Robust.Shared.Configuration;
+using Robust.Shared.Configuration;
 
 namespace Content.Shared.CCVar;
 
@@ -19,6 +19,9 @@ public sealed partial class CCVars
     /// </summary>
     public static readonly CVarDef<bool> DefaultWalk =
         CVarDef.Create("control.default_walk", true, CVar.CLIENT | CVar.REPLICATED | CVar.ARCHIVE); // WWDP
+
+    public static readonly CVarDef<bool> SprintFire =
+        CVarDef.Create("control.sprint_fire", false, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     // The rationale behind the default limit is simply that I can easily get to 7 interactions per second by just
     // trying to spam toggle a light switch or lever (though the UseDelay component limits the actual effect of the

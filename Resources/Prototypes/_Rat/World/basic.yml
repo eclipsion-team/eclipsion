@@ -20,7 +20,7 @@
   minX: -23
   maxX: -9
   minY: -23
-  maxY: -9
+  maxY: -14
   noiseRanges: {}
   chunkComponents:
   - type: DebrisFeaturePlacerController
@@ -512,11 +512,109 @@
     - id: ExhumerGag
       prob: 0.01
 
-# Reuse the reduced wreck population around the abandoned station at (2000, 2000).
 - type: spaceBiome
   id: RatAbandonedStationWrecks
   parent: RatGraveyardWrecks
   minX: 9
   maxX: 23
-  minY: 9
+  minY: 13
   maxY: 23
+
+- type: spaceBiome
+  id: RatFourthBattalionGrave
+  priority: 9000
+  minX: -60
+  maxX: -57
+  minY: 56
+  maxY: 59
+  noiseRanges: {}
+  chunkComponents:
+  - type: DebrisFeaturePlacerController
+    densityNoiseChannel: Density
+    randomCancelChance: 0.75 # A handful of hulls, not a second Ship Graveyard.
+    safetyZoneRadius: 100
+    regenerate: false
+  - type: SimpleDebrisSelector
+    debrisTable:
+    # DSM
+    - id: TriumWreck1
+      prob: 1
+    - id: TriumWreck2
+      prob: 1
+    - id: SuzWreck1
+      prob: 1
+    - id: SuzWreck2
+      prob: 1
+    - id: SuzWreck3
+      prob: 1
+    - id: NemWreck1
+      prob: 1
+    - id: NemWreck2
+      prob: 1
+    - id: PraxWreck1
+      prob: 1
+    # NCWL
+    - id: GargutWreckFull
+      prob: 1
+    - id: ClemWreck1
+      prob: 1
+    - id: ClemWreck2
+      prob: 1
+    - id: ClemWreck3
+      prob: 1
+    - id: IvarWreck1
+      prob: 1
+    - id: HindWreck1
+      prob: 1
+    - id: LodkWreck
+      prob: 1
+    - id: MoloWreck1
+      prob: 1
+    - id: SternWreck1
+      prob: 1
+
+- type: spaceBiome
+  id: RatChengrdizBattalionGrave
+  parent: RatFourthBattalionGrave
+  minX: 61
+  maxX: 64
+  minY: -65
+  maxY: -62
+
+- type: spaceBiome
+  id: RatCrastersBelt
+  priority: 9000
+  minX: 56
+  maxX: 59
+  minY: 56
+  maxY: 59
+  noiseRanges: {}
+  chunkComponents:
+  - type: DebrisFeaturePlacerController
+    densityNoiseChannel: Density
+    randomCancelChance: 0.7 # The Taypan belts cancel 0.1.
+    regenerate: false
+  - type: SimpleDebrisSelector
+    debrisTable:
+    - id: AsteroidDebrisNFChromiteMedium
+      prob: 0.4
+    - id: AsteroidDebrisNFChromiteLarge
+      prob: 0.45
+    - id: AsteroidDebrisNFChromiteLarger
+      prob: 0.15
+    - id: AsteroidDebrisNFChromiteHuge
+      prob: 0.04
+    - id: AsteroidSalvageNFChromiteSmall
+      prob: 0.08
+    - id: AsteroidSalvageNFChromiteMedium
+      prob: 0.04
+    - id: ExhumerGag
+      prob: 0.01
+
+- type: spaceBiome
+  id: RatCrimsonDespair
+  parent: RatCrastersBelt
+  minX: -60
+  maxX: -57
+  minY: -60
+  maxY: -57

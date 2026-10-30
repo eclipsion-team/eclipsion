@@ -17,6 +17,9 @@
   components:
   - type: Sprite
     state: painting0
+  - type: Construction # Mono
+    graph: RandomPainting
+    node: emptyPainting
 
 - type: entity
   parent: PaintingBase

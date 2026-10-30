@@ -9,7 +9,7 @@
     LOADOUT: 2x 48mm 'Shortbow' SRM
     SHIELD: Absent
     SPEED: 40 m/s
-  price: 10000
+  price: 16000
   category: Small
   group: None
   path: /Maps/_Crescent/Shuttles/NCWL/rapier.yml

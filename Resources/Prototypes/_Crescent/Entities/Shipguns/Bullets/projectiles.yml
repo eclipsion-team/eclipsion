@@ -231,6 +231,8 @@
     range: 2
     energyConsumption: 1000
     disableDuration: 6
+    hitsToDisable: 3 # eclipsion - ship rounds drain first, enough hits in a row shut it down
+    maxDrainFraction: 0.2
   - type: PointLight
     radius: 3.5
     color: blue
@@ -431,6 +433,8 @@
     range: 8
     energyConsumption: 3000
     disableDuration: 14
+    hitsToDisable: 2 # eclipsion - ship rounds drain first, enough hits in a row shut it down
+    maxDrainFraction: 0.3
   - type: Explosive
     explosionType: Shipgun
     totalIntensity: 10000
@@ -787,6 +791,8 @@
     energyConsumption: 500
     range: 3
     disableDuration: 1
+    hitsToDisable: 3 # eclipsion - ship rounds drain first, enough hits in a row shut it down
+    maxDrainFraction: 0.2
   - type: PointLight
     radius: 3.5
     color: blue
@@ -1518,6 +1524,8 @@
     range: 3
     energyConsumption: 250
     disableDuration: 1
+    hitsToDisable: 3 # eclipsion - ship rounds drain first, enough hits in a row shut it down
+    maxDrainFraction: 0.2
   - type: PointLight
     radius: 3.5
     color: orange
@@ -1744,6 +1752,8 @@
     range: 5
     energyConsumption: 5000
     disableDuration: 8
+    hitsToDisable: 2 # eclipsion - ship rounds drain first, enough hits in a row shut it down
+    maxDrainFraction: 0.3
   - type: Ammo
     muzzleFlash: null
   - type: PointLight

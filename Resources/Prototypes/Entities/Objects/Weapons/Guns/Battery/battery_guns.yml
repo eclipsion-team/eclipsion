@@ -830,6 +830,10 @@
   id: WeaponAdvancedLaser
   description: An experimental high-energy laser pistol with a self-charging nuclear battery.
   components:
+  - type: Tag # Mono
+    tags:
+    - Sidearm
+    - AdvancedLaserPistol
   - type: Item
     size: Normal  # Intentionally larger than other pistols
   - type: Sprite

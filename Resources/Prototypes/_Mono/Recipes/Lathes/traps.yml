@@ -1,0 +1,21 @@
+# Unlocked by MonoTrapEngineering, printed on the pristine microforge.
+# The crafted versions in the construction menu stay available, these just skip the scavenged parts.
+
+- type: latheRecipe
+  id: ShotgunTrapPacked
+  result: ShotgunTrapPacked
+  category: Weapons
+  completetime: 10
+  materials:
+    Steel: 900 # modular receiver + pipe + the trap's own steel
+    Plastic: 300
+    Glass: 100
+
+- type: latheRecipe
+  id: SignalTimerItem
+  result: SignalTimerItem
+  category: Parts
+  completetime: 2
+  materials:
+    Steel: 300
+    Plastic: 100

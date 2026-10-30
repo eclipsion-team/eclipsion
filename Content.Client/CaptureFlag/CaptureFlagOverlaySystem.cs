@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared._Crescent.Territory;
 using Content.Shared.CaptureFlag;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
@@ -46,6 +47,9 @@ public sealed class CaptureFlagOverlay : Overlay
         while (query.MoveNext(out var uid, out var flag, out var xform))
         {
             if (xform.MapID != args.MapId)
+                continue;
+
+            if (_entMan.HasComponent<PersistentCaptureRegionComponent>(uid))
                 continue;
 
             var worldPos = _xform.GetWorldPosition(uid);

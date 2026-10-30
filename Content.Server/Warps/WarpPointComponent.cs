@@ -1,3 +1,5 @@
+using Content.Shared.Ghost;
+
 namespace Content.Server.Warps
 {
     /// <summary>
@@ -21,5 +23,8 @@ namespace Content.Server.Warps
         [ViewVariables(VVAccess.ReadWrite)]
         [DataField("useStationName")]
         public bool UseStationName;
+
+        [DataField]
+        public GhostWarpCategory? Category;
     }
 }

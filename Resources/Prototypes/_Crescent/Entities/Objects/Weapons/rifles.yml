@@ -156,8 +156,8 @@
 - type: entity
   parent: [BaseWeaponSniper, BaseGunWieldable, StreeCredRedeemable]
   id: WeaponRifleCMMNimrod
-  name: CMM M32 Nimrod 7.62x51mm
-  description: An cheap-to-make hunting rifle, design modernized by gliessian milita for gliessian milita. Chambered in 7.62x51mm.
+  name: CMM M-28 Homesteader 7.62x51mm
+  description: A cheap-to-make lever-action rifle descended from the Shinohara M28 Nimrod, modernized by Gliessian militia for Gliessian militia. Every homestead along the Taypani routes keeps one over the door for the day the patrol ships run late. Chambered in 7.62x51mm.
   components:
   - type: Item
     shape:

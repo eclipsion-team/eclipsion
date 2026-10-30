@@ -21,6 +21,7 @@ public sealed class AnomalyStationRule : StationEventSystem<AnomalyStationRuleCo
     [Dependency] private readonly GameTicker _gameTicker = default!;
     [Dependency] private readonly MapLoaderSystem _loader = default!;
     [Dependency] private readonly AnomalySystem _anomaly = default!;
+    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
 
     protected override void Added(EntityUid uid, AnomalyStationRuleComponent component, GameRuleComponent gameRule, GameRuleAddedEvent args)
     {
@@ -52,6 +53,13 @@ public sealed class AnomalyStationRule : StationEventSystem<AnomalyStationRuleCo
      GameRuleStartedEvent args)
     {
         base.Started(uid, comp, gameRule, args);
+
+        // No round map yet (lobby, or the rule spawned on its own).
+        if (!_mapSystem.MapExists(_gameTicker.DefaultMap))
+        {
+            ForceEndSelf(uid, gameRule);
+            return;
+        }
 
         SpawnAnomalyStation(comp);
     }

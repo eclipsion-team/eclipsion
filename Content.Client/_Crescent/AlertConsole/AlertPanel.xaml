@@ -1,4 +1,5 @@
 <BoxContainer xmlns="https://spacestation14.io"
+               xmlns:cui="clr-namespace:Content.Client._Crescent.UI"
               xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
               xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
               Orientation="Vertical" Margin="6" VerticalExpand="True" HorizontalExpand="True">
@@ -29,7 +30,7 @@
                 <Label Name="CooldownValueLabel" StyleClasses="ConsoleText" Text="60 sec" Margin="6 0 0 0"
                        MinSize="70 0" VerticalAlignment="Center"/>
             </BoxContainer>
-            <Label Text="{Loc 'alert-console-cooldown-hint'}" StyleClasses="LabelSecondaryColor"/>
+            <cui:HintLabel Hint="{Loc 'alert-console-cooldown-hint'}"/>
         </BoxContainer>
     </PanelContainer>
 
@@ -51,7 +52,7 @@
 
             <Label Text="{Loc 'alert-console-station-msg-label'}" StyleClasses="ConsoleText" Margin="0 0 0 2"/>
             <LineEdit Name="StationMessageEdit" Margin="0 0 0 2"/>
-            <Label Text="{Loc 'alert-console-vars-hint'}" Margin="0 0 0 6" StyleClasses="LabelSecondaryColor"/>
+            <cui:HintLabel Hint="{Loc 'alert-console-vars-hint'}" Margin="0 0 0 6"/>
 
             <controls:MonotoneCheckBox Name="BroadcastCheck" Text="{Loc 'alert-console-broadcast'}" Margin="0 0 0 4"/>
 

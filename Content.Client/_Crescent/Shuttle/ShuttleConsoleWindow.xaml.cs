@@ -25,6 +25,9 @@ public sealed partial class ShuttleConsoleWindow : Content.Client._KS14.UI.KsBas
     {
         CrewManagementButton.OnPressed += CrewPressed;
         CrewManagementButton.Group = group;
+
+        PoliticsModeButton.OnPressed += _ => SwitchMode(ShuttleConsoleMode.Politics);
+        PoliticsModeButton.Group = group;
     }
 
     private void CrewPressed(BaseButton.ButtonEventArgs obj)

@@ -930,3 +930,78 @@
   - type: Loadout
     prototypes:
     - SoldierAIGearSRMGunner
+
+
+# Derelict garrisons
+#
+#
+
+- type: entity
+  parent: MobSoldierAISRMRifleman
+  id: MobSoldierAIDerelictHunter
+  name: derelict hunter
+  description: A Hunter holed up in a derelict, hardsuited and carrying a Hunter DMR. Answers to nobody any more, and spares no one.
+  components:
+  - type: NpcGarrisonDormancy
+  - type: NpcFactionMember
+    factions:
+    - SRMHunt
+  - type: Loadout
+    prototypes:
+    - SoldierAIGearDerelictRifleman
+
+- type: entity
+  parent: MobSoldierAISRMShock
+  id: MobSoldierAIDerelictHunterShock
+  name: derelict hunter stalker
+  description: A Hunter holed up in a derelict, hardsuited and carrying a Beetle. Answers to nobody any more, and spares no one.
+  components:
+  - type: NpcGarrisonDormancy
+  - type: NpcFactionMember
+    factions:
+    - SRMHunt
+  - type: Loadout
+    prototypes:
+    - SoldierAIGearDerelictShock
+
+- type: entity
+  parent: MobSoldierAISRMShotgunner
+  id: MobSoldierAIDerelictHunterShotgunner
+  name: derelict hunter breacher
+  description: A Hunter holed up in a derelict, hardsuited and carrying a Reno. Answers to nobody any more, and spares no one.
+  components:
+  - type: NpcGarrisonDormancy
+  - type: NpcFactionMember
+    factions:
+    - SRMHunt
+  - type: Loadout
+    prototypes:
+    - SoldierAIGearDerelictShotgunner
+
+- type: entity
+  parent: MobSoldierAISRMMarksman
+  id: MobSoldierAIDerelictHunterMarksman
+  name: derelict hunter marksman
+  description: A Hunter holed up in a derelict, hardsuited and carrying an Imperator. Answers to nobody any more, and spares no one.
+  components:
+  - type: NpcGarrisonDormancy
+  - type: NpcFactionMember
+    factions:
+    - SRMHunt
+  - type: Loadout
+    prototypes:
+    - SoldierAIGearDerelictMarksman
+
+- type: entity
+  parent: MobSoldierAISRMGunner
+  id: MobSoldierAIDerelictHunterGunner
+  name: derelict hunter machinegunner
+  description: A Hunter holed up in a derelict, hardsuited and carrying a Dominion. Answers to nobody any more, and spares no one.
+  components:
+  - type: NpcGarrisonDormancy
+  - type: NpcFactionMember
+    factions:
+    - SRMHunt
+  - type: Loadout
+    prototypes:
+    - SoldierAIGearDerelictGunner

@@ -1,67 +1,40 @@
-﻿parse-minutes-fail = Unable to parse '{$minutes}' as minutes
-parse-session-fail = Did not find session for '{$username}'
+﻿cmd-playtime-desc = Opens the playtime panel, where any player's playtime is looked up, added to, set or topped up to a job's requirements
+cmd-playtime-help = Usage: {$command} [name or user guid]
+    The player can also be picked inside the panel.
+    playtime_addoverall, playertime and timeadd all open this same panel.
+cmd-playtime-hint-player = [name or user guid]
 
-## Role Timer Commands
+admin-player-actions-window-playtime = Playtime
 
-# - playtime_addoverall
-cmd-playtime_addoverall-desc = Adds the specified minutes to a player's overall playtime
-cmd-playtime_addoverall-help = Usage: {$command} <user name> <minutes>
-cmd-playtime_addoverall-succeed = Increased overall time for {$username} to {TOSTRING($time, "dddd\\:hh\\:mm")}
-cmd-playtime_addoverall-arg-user = <user name>
-cmd-playtime_addoverall-arg-minutes = <minutes>
-cmd-playtime_addoverall-error-args = Expected exactly two arguments
+playtime-window-title = Playtime
+playtime-window-no-player = No player picked
+playtime-window-loading = Loading...
+playtime-window-online = Online, changes apply right away
+playtime-window-offline = Offline, changes apply when they next connect
+playtime-window-player-not-found = No player named '{$player}' was found
+playtime-window-still-loading = The player is still connecting, try again in a moment
+playtime-window-nothing-changed = Nothing changed, the selected trackers already have that time
 
-# - playtime_addrole
-cmd-playtime_addrole-desc = Adds the specified minutes to a player's role playtime
-cmd-playtime_addrole-help = Usage: {$command} <user name> <role> <minutes>
-cmd-playtime_addrole-succeed = Increased role playtime for {$username} / \'{$role}\' to {TOSTRING($time, "dddd\\:hh\\:mm")}
-cmd-playtime_addrole-arg-user = <user name>
-cmd-playtime_addrole-arg-role = <role>
-cmd-playtime_addrole-arg-minutes = <minutes>
-cmd-playtime_addrole-error-args = Expected exactly three arguments
-
-# - playtime_getoverall
-cmd-playtime_getoverall-desc = Gets the specified minutes for a player's overall playtime
-cmd-playtime_getoverall-help = Usage: {$command} <user name>
-cmd-playtime_getoverall-success = Overall time for {$username} is {TOSTRING($time, "dddd\\:hh\\:mm")}.
-cmd-playtime_getoverall-arg-user = <user name>
-cmd-playtime_getoverall-error-args = Expected exactly one argument
-
-# - GetRoleTimer
-cmd-playtime_getrole-desc = Gets all or one role timers from a player
-cmd-playtime_getrole-help = Usage: {$command} <user name> [role]
-cmd-playtime_getrole-no = Found no role timers
-cmd-playtime_getrole-role = Role: {$role}, Playtime: {$time}
-cmd-playtime_getrole-overall = Overall playtime is {$time}
-cmd-playtime_getrole-succeed = Playtime for {$username} is: {TOSTRING($time, "dddd\\:hh\\:mm")}.
-cmd-playtime_getrole-arg-user = <user name>
-cmd-playtime_getrole-arg-role = <role|'Overall'>
-cmd-playtime_getrole-error-args = Expected exactly one or two arguments
-
-# - playtime_save
-cmd-playtime_save-desc = Saves the player's playtimes to the DB
-cmd-playtime_save-help = Usage: {$command} <user name>
-cmd-playtime_save-succeed = Saved playtime for {$username}
-cmd-playtime_save-arg-user = <user name>
-cmd-playtime_save-error-args = Expected exactly one argument
-
-## 'playtime_flush' command'
-
-cmd-playtime_flush-desc = Flush active trackers to stored in playtime tracking.
-cmd-playtime_flush-help = Usage: {$command} [user name]
-    This causes a flush to the internal storage only, it does not flush to DB immediately.
-    If a user is provided, only that user is flushed.
-
-cmd-playtime_flush-error-args = Expected zero or one arguments
-cmd-playtime_flush-arg-user = [user name]
-
-## ``playtime_unlock`` command
-
-cmd-playtime_unlock-desc = Unlock the playtime requirement for specific jobs. 
-cmd-playtime_unlock-help = Usage: {$command} [user name] [trackers...]
-    This command unlocks the playtime requirements for specific jobs for a user.
-cmd-playtime_unlock-arg-user = [user name]
-cmd-playtime_unlock-arg-job = [job id]
-cmd-playtime_unlock-error-args = Expected zero or one arguments
-cmd-playtime_unlock-error-job = Expected a valid JobPrototype for the second argument, but got {$invalidJob}.
-cmd-playtime_unlock-error-no-requirements = No CharacterPlaytimeRequirements or CharacterDepartmentTime requirements found.
+playtime-window-find-placeholder = Name or user ID, online or not...
+playtime-window-find = Find
+playtime-window-overall = Overall playtime
+playtime-window-time-placeholder = 90, 1h30m, 2d or -45m
+playtime-window-time-invalid = Not a time
+playtime-window-time-help = A bare number is minutes. Units: y, mo, w, d, h, m. A leading minus takes time away.
+playtime-window-add = Add to selected
+playtime-window-set = Set selected
+playtime-window-meet = Meet requirements
+playtime-window-meet-tooltip = Gives the selected jobs exactly the playtime their requirements are still missing, and nothing more.
+playtime-window-search = Search jobs...
+playtime-window-select-shown = Select all shown
+playtime-window-clear = Clear selection
+playtime-window-selected = {$count} selected
+playtime-window-other = Other
+playtime-window-job = {$job}: {$time}
+playtime-window-time = {$hours}h {$minutes}m
+playtime-window-no-tracker = This job has no playtime tracker of its own. Only its requirements can be met.
+playtime-window-shared = Shares its playtime with: {$jobs}
+playtime-window-requirements = Requires: {$requirements}
+playtime-window-requirement-tracker = {$time} as {$job}
+playtime-window-requirement-overall = {$time} overall
+playtime-window-requirement-department = {$time} in {$department}

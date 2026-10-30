@@ -36,7 +36,7 @@ public sealed class EmpOnHitSystem : EntitySystem
             return;
 
         foreach (var affected in args.HitEntities)
-            _emp.EmpPulse(_transform.GetMapCoordinates(affected), comp.Range, comp.EnergyConsumption, comp.DisableDuration);
+            _emp.EmpPulse(_transform.GetMapCoordinates(affected), comp.Range, comp.EnergyConsumption, comp.DisableDuration, comp.MaxDrainFraction);
 
         args.Handled = true;
     }

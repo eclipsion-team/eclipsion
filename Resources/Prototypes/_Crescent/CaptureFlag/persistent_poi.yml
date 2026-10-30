@@ -1,0 +1,1374 @@
+- type: entity
+  id: ActionPersistentPoiBuild
+  name: Build territory works
+  description: Raise defences, production works and everything a base needs - power, air, walls and furniture - on ground your faction holds.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    itemIconStyle: NoItem
+    temporary: true
+    icon:
+      sprite: _Crescent/Structures/medieval_pole_banners.rsi
+      state: neutral-white
+    event: !type:PersistentPoiBuildActionEvent
+    useDelay: 0.5
+  - type: PersistentPoiBuildMenu
+    categories:
+    - name: persistent-poi-build-category-command
+      icon:
+        sprite: _Crescent/Structures/Machines/computers.rsi
+        state: command
+      recipes:
+      - PersistentPoiAdministrationConsole
+      - PersistentPoiProductionConsole
+      - PersistentPoiRadarConsole
+      - PersistentPoiShuttleConsole
+    - name: persistent-poi-build-category-defence
+      icon:
+        sprite: _Crescent/Structures/hardpoints.rsi
+        state: Small
+      recipes:
+      - PersistentPoiTargetingConsole
+      - PersistentPoiPointDefenceEmplacement
+      - PersistentPoiAntiBoarderTurret
+    - name: persistent-poi-build-category-power
+      icon:
+        sprite: Structures/Power/Generation/portable_generator.rsi
+        state: portgen0
+      recipes:
+      - PersistentPoiGenerator
+      - PersistentPoiSmes
+      - PersistentPoiSubstation
+      - PersistentPoiApc
+      - PersistentPoiLight
+      - PersistentPoiSmallLight
+    - name: persistent-poi-build-category-atmos
+      icon:
+        sprite: Structures/Storage/canister.rsi
+        state: grey
+      recipes:
+      - PersistentPoiAirCanister
+      - PersistentPoiConnectorPort
+      - PersistentPoiAirVent
+      - PersistentPoiAirScrubber
+      - PersistentPoiPassiveVent
+      - PersistentPoiGasPipeStraight
+      - PersistentPoiGasPipeBend
+      - PersistentPoiGasPipeTJunction
+      - PersistentPoiGasPipeFourway
+      - PersistentPoiAirAlarm
+    - name: persistent-poi-build-category-doors
+      icon:
+        sprite: Structures/Doors/Airlocks/Standard/command.rsi
+        state: closed
+      recipes:
+      - PersistentPoiAirlock
+      - PersistentPoiAirlockGlass
+      - PersistentPoiAirlockPublic
+      - PersistentPoiDockingPort
+    - name: persistent-poi-build-category-structure
+      icon:
+        sprite: Structures/Walls/solid.rsi
+        state: rgeneric
+      recipes:
+      - PersistentPoiWall
+      - PersistentPoiWallReinforced
+      - PersistentPoiWindow
+      - PersistentPoiWindowGlass
+    - name: persistent-poi-build-category-furniture
+      icon:
+        sprite: Structures/Furniture/chairs.rsi
+        state: comfy
+      recipes:
+      - PersistentPoiChair
+      - PersistentPoiComfyChair
+      - PersistentPoiOfficeChair
+      - PersistentPoiOfficeChairDark
+      - PersistentPoiBarStool
+      - PersistentPoiBench
+      - PersistentPoiTable
+      - PersistentPoiTableReinforced
+      - PersistentPoiCounter
+      - PersistentPoiBed
+      - PersistentPoiMedicalBed
+      - PersistentPoiCloset
+      - PersistentPoiRack
+      - PersistentPoiSink
+      - PersistentPoiShower
+      - PersistentPoiToilet
+    - name: persistent-poi-build-category-production
+      icon:
+        sprite: _Crescent/Structures/factorystructures.rsi
+        state: makina
+      recipes:
+      - PersistentPoiMixedOreRig
+      - PersistentPoiExtractionRig
+      - PersistentPoiTextileMill
+      - PersistentPoiFoundry
+      - PersistentPoiTradeWorks
+    - name: persistent-poi-build-category-shipyard
+      icon:
+        sprite: _NF/Structures/Machines/computers.rsi
+        state: shipyard
+      recipes:
+      - PersistentPoiShipyardDSM
+      - PersistentPoiShipyardNCWL
+      - PersistentPoiShipyardTFSC
+      - PersistentPoiShipyardSHI
+      - PersistentPoiDockingPort
+
+- type: entity
+  parent: ComputerTargetingCapturable
+  id: ComputerTargetingPersistentPoi
+  suffix: Persistent territory, built
+  description: Fire control for a territory's guns. Unattended, it fights on its own against anyone at war with its holder.
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: targetingConsole
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 2
+            max: 4
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+# the territory grid can't be flown or jumped, so these only ever look
+- type: entity
+  parent: ComputerRadar
+  id: ComputerRadarPersistentPoi
+  name: territorial radar console
+  suffix: Persistent territory, built
+  description: Watches the space around the territory.
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: RadarConsole
+  - type: FactionMachine
+    faction: ""
+    explicit: true
+    restrictAccess: true
+    normalizeFaction: false
+  - type: CaptureRegionDevice
+    updateName: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: radarConsole
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 2
+            max: 4
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: ComputerShuttle
+  id: ComputerShuttlePersistentPoi
+  name: territorial shuttle console
+  suffix: Persistent territory, built
+  description: A shuttle console wired into ground that doesn't move. Good for the radar, the sector map and the political map, not for flying.
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: ShuttleConsole
+  - type: FactionMachine
+    faction: ""
+    explicit: true
+    restrictAccess: true
+    normalizeFaction: false
+  - type: CaptureRegionDevice
+    updateName: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: shuttleConsole
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 2
+            max: 4
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: WeaponTurretAutoPDCapturable
+  id: WeaponTurretAutoPDPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: antiBoarderTurret
+
+# equipment: when either is destroyed, the other goes too, leaving one clean tile to build on again.
+- type: entity
+  parent: AAAHardpointSmallEnergy
+  id: HardpointPersistentPoiLaserEmplacement
+  name: territorial point-defence emplacement
+  suffix: Persistent territory, built
+  description: An energy hardpoint bolted into permanent ground, its 150cc pulse laser answering to the territory's fire-control console. The laser runs off the territory's power.
+  components:
+  - type: PersistentPoiStructure
+    spawnOnBuild:
+    - WeaponTurretRetributionPersistentPoi
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: pdLaserEmplacement
+
+- type: entity
+  parent: WeaponTurretRetribution
+  id: WeaponTurretRetributionPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: pdLaser
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 900
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+# the old machinegun emplacement, no longer built. kept so saved territories still load
+- type: entity
+  parent: AAAHardpointSmallBallistic
+  id: HardpointPersistentPoiEmplacement
+  name: territorial point-defence emplacement
+  suffix: Persistent territory, built
+  description: A ballistic hardpoint bolted into permanent ground, its twin machinegun answering to the territory's fire-control console.
+  components:
+  - type: PersistentPoiStructure
+    spawnOnBuild:
+    - WeaponTurretPDTPersistentPoi
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: pdEmplacement
+
+- type: entity
+  parent: WeaponTurretPDT
+  id: WeaponTurretPDTPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: pdGun
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 375
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: RatCountsmanMothershipComputer
+  id: ComputerPersistentPoiShipyardDSM
+  name: territorial imperial shipyard
+  suffix: Persistent territory, built
+  description: Sells the Imperial fleet's ships to its own people, and docks them right here.
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: Shipyard
+  - type: FactionMachine
+    faction: DSM
+    explicit: true
+    restrictAccess: true
+    normalizeFaction: false
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: shipyardDSM
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 4
+            max: 8
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: RatNCWLMothershipComputer
+  id: ComputerPersistentPoiShipyardNCWL
+  name: territorial NCWL shipyard
+  suffix: Persistent territory, built
+  description: Sells the Workers' League's ships to its own people, and docks them right here.
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: Shipyard
+  - type: FactionMachine
+    faction: NCWL
+    explicit: true
+    restrictAccess: true
+    normalizeFaction: false
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: shipyardNCWL
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 4
+            max: 8
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: RatJackalMothershipComputer
+  id: ComputerPersistentPoiShipyardTFSC
+  name: territorial TFCF shipyard
+  suffix: Persistent territory, built
+  description: Sells the Free Companies' ships to their own people, and docks them right here.
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: Shipyard
+  - type: FactionMachine
+    faction: TFSC
+    explicit: true
+    restrictAccess: true
+    normalizeFaction: false
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: shipyardTFSC
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 4
+            max: 8
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: RatTatsumotoMothershipComputer
+  id: ComputerPersistentPoiShipyardSHI
+  name: territorial Shinohara shipyard
+  suffix: Persistent territory, built
+  description: Sells Shinohara's ships to its own people, and docks them right here.
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: Shipyard
+  - type: FactionMachine
+    faction: SHI
+    explicit: true
+    restrictAccess: true
+    normalizeFaction: false
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: shipyardSHI
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 4
+            max: 8
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: AirlockShuttle
+  id: AirlockPersistentPoiDock
+  name: territorial external airlock
+  suffix: Docking, Persistent territory, built
+  description: The docking airlock every ship uses, bolted into permanent ground. Only the territory holder's people get through it.
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: DockingPort
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: dockingPort
+  - type: TerritoryAccess
+  - type: FactionMachine
+    explicit: true
+    normalizeFaction: false
+    deniedPopup: null
+  - type: CaptureRegionDevice
+    updateNpcFaction: false
+
+- type: entity
+  parent: AirlockCommand
+  id: AirlockPersistentPoi
+  name: territorial airlock
+  suffix: Persistent territory, built
+  description: An airlock bolted into permanent ground. It opens only for the people of the faction holding the territory.
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: airlock
+  - type: TerritoryAccess
+  - type: FactionMachine
+    explicit: true
+    normalizeFaction: false
+    deniedPopup: null
+  - type: CaptureRegionDevice
+    updateNpcFaction: false
+
+- type: entity
+  parent: AirlockCommandGlass
+  id: AirlockGlassPersistentPoi
+  name: territorial glass airlock
+  suffix: Persistent territory, built
+  description: A glass airlock bolted into permanent ground. It opens only for the people of the faction holding the territory.
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: airlockGlass
+  - type: TerritoryAccess
+  - type: FactionMachine
+    explicit: true
+    normalizeFaction: false
+    deniedPopup: null
+  - type: CaptureRegionDevice
+    updateNpcFaction: false
+
+- type: entity
+  parent: Airlock
+  id: AirlockPublicPersistentPoi
+  name: public airlock
+  suffix: Persistent territory, built
+  description: An ordinary airlock bolted into permanent ground. It opens for anyone.
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: airlockPublic
+
+# Structure
+
+- type: entity
+  parent: WallSolid
+  id: WallSolidPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: wall
+
+- type: entity
+  parent: WallReinforced
+  id: WallReinforcedPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: wallReinforced
+
+- type: entity
+  parent: ReinforcedWindow
+  id: ReinforcedWindowPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: window
+
+- type: entity
+  parent: Window
+  id: WindowPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: windowGlass
+
+- type: entity
+  parent: BoriaticGeneratorHercules
+  id: BoriaticGeneratorPersistentPoi
+  name: territorial boriatic generator
+  suffix: Persistent territory, built
+  description: |-
+    A loud, foulsmelling, toxic generator bolted into permanent ground.
+    Runs off corrosive Boriatic fuel and is rated for up to 50 kW.
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: Generator
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: boriaticGenerator
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:SolutionExplosionBehavior
+        solution: tank
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:TankLeakBehavior
+        solution: tank
+        leaksToAdd: 1
+
+- type: entity
+  parent: GeneratorRTG
+  id: GeneratorRTGPersistentPoi
+  name: territorial RTG
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: Generator
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: generator
+
+- type: entity
+  parent: SubstationBasic
+  id: SubstationPersistentPoi
+  name: territorial substation
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: substation
+
+- type: entity
+  parent: APCBasic
+  id: APCPersistentPoi
+  name: territorial APC
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: apc
+
+- type: entity
+  parent: Poweredlight
+  id: PoweredlightPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: light
+
+- type: entity
+  parent: PoweredSmallLight
+  id: PoweredSmallLightPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: smallLight
+
+- type: entity
+  parent: SMESBasic
+  id: SMESPersistentPoi
+  name: territorial SMES
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Battery
+    startingCharge: 0
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: smes
+
+- type: entity
+  parent: GasVentPump
+  id: GasVentPumpPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: airVent
+
+- type: entity
+  parent: GasVentScrubber
+  id: GasVentScrubberPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: airScrubber
+
+- type: entity
+  parent: GasPassiveVent
+  id: GasPassiveVentPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: passiveVent
+
+- type: entity
+  parent: GasPort
+  id: GasPortPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: connectorPort
+
+- type: entity
+  parent: GasPipeStraight
+  id: GasPipeStraightPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: gasPipeStraight
+
+- type: entity
+  parent: GasPipeBend
+  id: GasPipeBendPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: gasPipeBend
+
+- type: entity
+  parent: GasPipeTJunction
+  id: GasPipeTJunctionPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: gasPipeTJunction
+
+- type: entity
+  parent: GasPipeFourway
+  id: GasPipeFourwayPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: gasPipeFourway
+
+- type: entity
+  parent: AirCanister
+  id: AirCanisterPersistentPoi
+  name: territorial air canister
+  suffix: Persistent territory, built
+  description: A canister of breathable air bolted into permanent ground. Stood on a connector port it joins the pipe; opened, it fills the room. Only the territory holder's people can work it.
+  components:
+  - type: PersistentPoiStructure
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: airCanister
+  - type: AccessReader
+    access: []
+  - type: FactionMachine
+    faction: ""
+    explicit: true
+    restrictAccess: true
+    normalizeFaction: false
+    deniedPopup: null
+  - type: CaptureRegionDevice
+    updateNpcFaction: false
+
+- type: entity
+  parent: AirAlarm
+  id: AirAlarmPersistentPoi
+  name: territorial air alarm
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: airAlarm
+  - type: AccessReader
+    access: []
+  - type: FactionMachine
+    faction: ""
+    explicit: true
+    restrictAccess: true
+    normalizeFaction: false
+    deniedPopup: null
+  - type: CaptureRegionDevice
+    updateNpcFaction: false
+
+- type: entity
+  parent: Chair
+  id: ChairPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: chair
+
+- type: entity
+  parent: ChairOfficeLight
+  id: ChairOfficeLightPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: officeChair
+  - type: SpawnItemsAtLocationOnUse
+    items:
+    - id: ChairOfficeLightRollingPersistentPoi
+
+- type: entity
+  parent: ChairOfficeLightRolling
+  id: ChairOfficeLightRollingPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: officeChairRolling
+  - type: SpawnItemsAtLocationOnUse
+    items:
+    - id: ChairOfficeLightPersistentPoi
+
+- type: entity
+  parent: ChairOfficeDark
+  id: ChairOfficeDarkPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: officeChairDark
+  - type: SpawnItemsAtLocationOnUse
+    items:
+    - id: ChairOfficeDarkRollingPersistentPoi
+
+- type: entity
+  parent: ChairOfficeDarkRolling
+  id: ChairOfficeDarkRollingPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: officeChairDarkRolling
+  - type: SpawnItemsAtLocationOnUse
+    items:
+    - id: ChairOfficeDarkPersistentPoi
+
+- type: entity
+  parent: ToiletEmpty
+  id: ToiletPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: toilet
+
+- type: entity
+  parent: ComfyChair
+  id: ComfyChairPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: comfyChair
+
+- type: entity
+  parent: StoolBar
+  id: StoolBarPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: barStool
+
+- type: entity
+  parent: SteelBench
+  id: SteelBenchPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: bench
+
+- type: entity
+  parent: Table
+  id: TablePersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: table
+
+- type: entity
+  parent: TableReinforced
+  id: TableReinforcedPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: tableReinforced
+
+- type: entity
+  parent: TableCounterMetal
+  id: TableCounterMetalPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: counter
+
+- type: entity
+  parent: Bed
+  id: BedPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: bed
+
+- type: entity
+  parent: MedicalBed
+  id: MedicalBedPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: medicalBed
+
+- type: entity
+  parent: ClosetSteelBase
+  id: ClosetPersistentPoi
+  name: territorial closet
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Physics
+    bodyType: Static
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: closet
+
+- type: entity
+  parent: Rack
+  id: RackPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: rack
+
+- type: entity
+  parent: Sink
+  id: SinkPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: sink
+
+- type: entity
+  parent: Shower
+  id: ShowerPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: shower
+
+# Frames: territory works half put together. The ghost is raised as one of these with the recipe's first material,
+
+- type: entity
+  abstract: true
+  parent: BaseStructure
+  id: PersistentPoiFrameBase
+  name: territorial works frame
+  description: Territory works half put together. Examine it to see what goes in next, then use that on it.
+  suffix: Persistent territory, frame
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/parts.rsi
+    state: box_1
+  - type: InteractionOutline
+  - type: PersistentPoiStructure
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 150
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  abstract: true
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiConsoleFrameBase
+  name: territorial console frame
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/parts.rsi
+    state: "0"
+
+- type: entity
+  abstract: true
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiDoorFrameBase
+  name: territorial airlock assembly
+  components:
+  - type: Sprite
+    sprite: Structures/Doors/Airlocks/Standard/basic.rsi
+    state: assembly
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 60
+        mask:
+        - FullTileMask
+        layer:
+        - AirlockLayer
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameAdministrationConsole
+  name: administration console frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: administrationConsoleFrame
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameProductionConsole
+  name: production console frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: productionConsoleFrame
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameRadarConsole
+  name: radar console frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: radarConsoleFrame
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameShuttleConsole
+  name: shuttle console frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: shuttleConsoleFrame
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameTargetingConsole
+  name: point-defence console frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: targetingConsoleFrame
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameEmplacement
+  name: point-defence emplacement frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: pdEmplacementFrame
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameTurret
+  name: anti-boarder turret frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: antiBoarderTurretFrame
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameMixedOreRig
+  name: ore extraction rig frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: mixedOreRigFrame
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameExtractionRig
+  name: targeted extraction rig frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: extractionRigFrame
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameTextileMill
+  name: textile mill frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: textileMillFrame
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameFoundry
+  name: foundry frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: foundryFrame
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameTradeWorks
+  name: trade works frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: tradeWorksFrame
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameShipyardDSM
+  name: imperial shipyard frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: shipyardDSMFrame
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameShipyardNCWL
+  name: NCWL shipyard frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: shipyardNCWLFrame
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameShipyardTFSC
+  name: TFCF shipyard frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: shipyardTFSCFrame
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameShipyardSHI
+  name: Shinohara shipyard frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: shipyardSHIFrame
+
+- type: entity
+  parent: PersistentPoiDoorFrameBase
+  id: PersistentPoiFrameDockingPort
+  name: external airlock assembly
+  components:
+  - type: Sprite
+    sprite: Structures/Doors/Airlocks/Standard/shuttle.rsi
+    state: assembly
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: dockingPortFrame
+
+- type: entity
+  parent: PersistentPoiDoorFrameBase
+  id: PersistentPoiFrameAirlock
+  name: territorial airlock assembly
+  components:
+  - type: Sprite
+    sprite: Structures/Doors/Airlocks/Standard/command.rsi
+    state: assembly
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: airlockFrame
+
+- type: entity
+  parent: PersistentPoiDoorFrameBase
+  id: PersistentPoiFrameAirlockGlass
+  name: territorial glass airlock assembly
+  components:
+  - type: Sprite
+    sprite: Structures/Doors/Airlocks/Glass/command.rsi
+    state: assembly
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: airlockGlassFrame
+
+- type: entity
+  parent: PersistentPoiDoorFrameBase
+  id: PersistentPoiFrameAirlockPublic
+  name: public airlock assembly
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: airlockPublicFrame
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiGirder
+  name: territorial girder
+  description: The steel bones of a reinforced wall. Plate it with plasteel to finish it.
+  components:
+  - type: Sprite
+    sprite: Structures/Walls/solid.rsi
+    state: wall_girder
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: wallReinforcedGirder
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameGenerator
+  name: RTG frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: generatorFrame
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameBoriaticGenerator
+  name: boriatic generator frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: boriaticGeneratorFrame
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameSubstation
+  name: substation frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: substationFrame
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameSmes
+  name: SMES frame
+  components:
+  - type: Sprite
+    sprite: Structures/Power/smes.rsi
+    state: smes-open
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: smesFrame
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameBed
+  name: bed frame
+  components:
+  - type: Sprite
+    sprite: Structures/Furniture/furniture.rsi
+    state: rack
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: bedFrame
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameMedicalBed
+  name: medical bed frame
+  components:
+  - type: Sprite
+    sprite: Structures/Furniture/furniture.rsi
+    state: rack
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: medicalBedFrame
+
+- type: entity
+  id: PersistentPoiFrameApc
+  name: territorial APC frame
+  description: An APC with no wiring yet. Use cable on it to finish it.
+  suffix: Persistent territory, frame
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    drawdepth: WallMountedItems
+    sprite: Structures/Power/apc.rsi
+    state: frame
+  - type: WallMount
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: apcFrame
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 50
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: PersistentPoiFrameApc
+  id: PersistentPoiFrameAirAlarm
+  name: territorial air alarm frame
+  description: An air alarm with no wiring yet. Use cable on it to finish it.
+  components:
+  - type: Sprite
+    sprite: Structures/Wallmounts/air_monitors.rsi
+    state: alarm_b1
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: airAlarmFrame

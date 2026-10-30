@@ -6,6 +6,7 @@ using Robust.Shared.Physics.Systems;
 using Robust.Shared.Physics.Collision.Shapes;
 using Robust.Shared.Physics.Components;
 using Robust.Server.GameObjects;
+using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Random;
@@ -26,8 +27,6 @@ public sealed partial class ShipShieldsSystem : EntitySystem
     //private const float DeflectionSpread = 25f;
     private const float EmitterUpdateRate = 1f; //mlg changed this to 1.5. setting it back to 1
 
-    [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
-
     [Dependency] private readonly FixtureSystem _fixtureSystem = default!;
 
     [Dependency] private readonly PhysicsSystem _physicsSystem = default!;
@@ -42,6 +41,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
     // pooled Contact[] hands a live contact back to the pool mid-iteration.
     private readonly List<(EntityUid Emitter, EntityUid Deflected)> _pendingDeflections = new();
     private readonly List<(EntityUid Emitter, EntityUid Deflected)> _processingDeflections = new();
+    private readonly List<EntityUid> _strayShields = new();
 
     public override void Update(float frameTime)
     {
@@ -180,7 +180,13 @@ public sealed partial class ShipShieldsSystem : EntitySystem
                 && shield.Shielded == uid;
 
             if (shieldValid)
+            {
+                // a hull split moves loose children by tile, so the shield can leave with the debris
+                if (Transform(shieldedComp.Shield).ParentUid != uid)
+                    _strayShields.Add(uid);
+
                 continue;
+            }
 
             emitter.Shield = null;
             emitter.Shielded = null;
@@ -188,6 +194,41 @@ public sealed partial class ShipShieldsSystem : EntitySystem
 
             UnshieldEntity(uid, shieldedComp);
         }
+
+        foreach (var grid in _strayShields)
+        {
+            RefitShield(grid);
+        }
+
+        _strayShields.Clear();
+    }
+
+    // puts a fresh shield around what is left of the hull, without the power down/up cycle
+    private void RefitShield(EntityUid grid)
+    {
+        if (!TryComp<ShipShieldedComponent>(grid, out var shielded)
+            || shielded.Source is not { } source
+            || !TryComp<ShipShieldEmitterComponent>(source, out var emitter))
+        {
+            return;
+        }
+
+        RemoveEmitterShield(source, emitter);
+
+        // emitter went with the debris, its own update brings the shield up over there
+        if (Transform(source).GridUid == grid)
+        {
+            var shield = ShieldEntity(grid, source: source);
+            if (shield != EntityUid.Invalid
+                && TryComp<ShipShieldComponent>(shield, out var shieldComp)
+                && shieldComp.Source == source)
+            {
+                emitter.Shield = shield;
+                emitter.Shielded = grid;
+            }
+        }
+
+        Dirty(source, emitter);
     }
     public override void Initialize()
     {
@@ -310,15 +351,13 @@ public sealed partial class ShipShieldsSystem : EntitySystem
 
         var prototype = ShipShieldPrototype;
 
-        var shield = Spawn(prototype, Transform(entity).Coordinates);
-        var shieldPhysics = AddComp<PhysicsComponent>(shield);
+        // spawned straight onto the grid. going through map coords only worked when the grid origin sat on a
+        // tile, otherwise the shield ended up wherever the ship was relative to the map origin
+        var shield = Spawn(prototype, new EntityCoordinates(entity, mapGrid.LocalAABB.Center));
+        var shieldPhysics = EnsureComp<PhysicsComponent>(shield);
         var shieldComp = EnsureComp<ShipShieldComponent>(shield);
         shieldComp.Shielded = entity;
         shieldComp.Source = source;
-
-        _transformSystem.SetLocalPosition(shield, mapGrid.LocalAABB.Center);
-        _transformSystem.SetWorldRotation(shield, _transformSystem.GetWorldRotation(entity));
-        _transformSystem.SetParent(shield, entity);
 
         var chain = GenerateOvalFixture(shield, "shield", shieldPhysics, mapGrid);
 

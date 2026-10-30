@@ -1,0 +1,38 @@
+- type: constructionGraph
+  id: PressurePlateGraph
+  start: start
+  graph:
+    - node: start
+      edges:
+        - to: PressurePlateNode
+          steps:
+            - material: Cable
+              amount: 4
+              doAfter: 2
+            - material: Steel
+              amount: 2
+              doAfter: 1
+            - tag: RemoteSignaller
+              name: remote signaller
+              icon:
+                sprite: Objects/Devices/signaller.rsi
+                state: signaller
+              doAfter: 2
+    - node: PressurePlateNode
+      entity: PressurePlate
+      edges:
+        # it can't be unanchored, so this is the only way to get rid of one without setting it off
+        - to: start
+          completed:
+            - !type:SpawnPrototype
+              prototype: SheetSteel1
+              amount: 2
+            - !type:SpawnPrototype
+              prototype: CableApcStack1
+              amount: 4
+            - !type:SpawnPrototype
+              prototype: RemoteSignaller
+            - !type:DeleteEntity {}
+          steps:
+            - tool: Prying
+              doAfter: 4

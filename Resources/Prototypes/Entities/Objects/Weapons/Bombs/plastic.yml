@@ -41,6 +41,8 @@
   parent: BasePlasticExplosive
   id: C4
   components:
+  # Required by the short C4 case whitelist.
+  - type: WeaponCaseInsertable
   - type: Sprite
     sprite: Objects/Weapons/Bombs/c4.rsi
     state: icon

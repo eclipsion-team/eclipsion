@@ -1,5 +1,6 @@
 <!-- Ratgore Start -->
 <controls:FancyWindow xmlns="https://spacestation14.io"
+               xmlns:cui="clr-namespace:Content.Client._Crescent.UI"
                     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
                     Title="{Loc hardliner-fire-control-window-title}"
                     SetSize="560 480"
@@ -13,9 +14,9 @@
                    FontColorOverride="#7fe8ff"
                    Align="Center"/>
         </controls:StripeBack>
-        <Label Name="HintLabel"
-               Text="{Loc hardliner-fire-control-window-hint}"
-               FontColorOverride="#9aa7b5"
+        <cui:HintLabel Name="HintLabel"
+               Hint="{Loc hardliner-fire-control-window-hint}"
+               HintColor="#9aa7b5"
                Margin="0,6,0,8"/>
         <!-- Eclipsion - permanent empty-state label, so the panel list itself is only ever reused. -->
         <Label Name="NoWeaponsLabel"

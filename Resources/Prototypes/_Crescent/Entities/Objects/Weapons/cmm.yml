@@ -1,13 +1,12 @@
 # Colonial Minutemen weapons.
-# Licensed SHI and NT designs, produced in Minutemen workshops and refinished in Minutemen blue.
 
 #SHI-derived
 
 - type: entity
-  name: CMM M215 Hound 5.56x45mm
+  name: CMM M-215 Warrant 5.56x45mm
   parent: WeaponRifleHoundMarksman
   id: WeaponRifleCMMHound
-  description: A licensed copy of the Shinohara M215 marksman's rifle, produced in Minutemen workshops and refinished in Minutemen blue. It's extended barrel allows it to perform well even at longer ranges.
+  description: Shinohara's M215 marksman rifle, built under license in the Gliess Santo workshops and refinished in Minutemen blue. Minutemen say a warrant is served at whatever range the suspect chooses; the extended barrel makes sure it still arrives.
   components:
   - type: Sprite
     sprite: _Crescent/Objects/Weapons/Guns/hound_cmm.rsi
@@ -18,10 +17,10 @@
       - WeaponRifleCMMHound
 
 - type: entity
-  name: CMM M931c Lecter 5.56x45mm
+  name: CMM M-931 Constable 5.56x45mm
   parent: WeaponRifleLecter
   id: WeaponRifleCMMLecter
-  description: A licensed copy of the Shinohara M931c rifle, produced in Minutemen workshops and refinished in Minutemen blue. The standard automatic rifle of Minutemen line units.
+  description: A Shinohara M931c rifle assembled from licensed parts kits and refinished in Minutemen blue. Line units carried it on public patrol when Analiesse still flew; few Minutemen armories have been allowed to keep one since.
   components:
   - type: Sprite
     sprite: _Crescent/Objects/Weapons/Guns/lecter_cmm.rsi
@@ -33,10 +32,10 @@
       - WeaponRifleCMMLecter
 
 - type: entity
-  name: CMM L6SAW Stratos 5.56x45mm
+  name: CMM L-6 Rampart 5.56x45mm
   parent: WeaponLightMachineGunL6
   id: WeaponLightMachineGunCMMStratos
-  description: A licensed copy of the Shinohara L6SAW light machinegun, produced in Minutemen workshops and refinished in Minutemen blue. Chambered in 5.56x45mm Imperial.
+  description: A Shinohara L6SAW light machinegun, licensed for Minutemen convoy escorts and refinished in Minutemen blue. One Rampart and a patient gunner on a dock's edge can hold a Taypani route open. Chambered in 5.56x45mm Imperial.
   components:
   - type: Sprite
     sprite: _Crescent/Objects/Weapons/Guns/l6saw_cmm.rsi
@@ -48,10 +47,10 @@
       - WeaponLightMachineGunCMMStratos
 
 - type: entity
-  name: CMM M135 Double-Barrel 12g
+  name: CMM M-135 Posse 12g
   parent: WeaponShotgunSHIDoubleBarreled4g
   id: WeaponShotgunCMMDoubleBarreled
-  description: A licensed copy of the Shinohara M135 BudgetArms shotgun, produced in Minutemen workshops and refinished in Minutemen blue. Cheap, loud and handed out to whoever is left on the rack. Chambered in 12g shells.
+  description: A Shinohara BudgetArms M135 shotgun, bought by the crate and refinished in Minutemen blue. When a Marshal raises a posse, this is what the volunteers are handed off the rack. Cheap, loud and chambered in 12g shells.
   components:
   - type: Sprite
     sprite: _Crescent/Objects/Weapons/Guns/dbshotgun_cmm.rsi
@@ -61,13 +60,13 @@
     size: Huge
     sprite: _Crescent/Objects/Weapons/Guns/dbshotgun_cmm.rsi
 
-#NT-derived
+# NT-derived, reissued under Shinohara license
 
 - type: entity
-  name: CMM MP5 9x19mm
+  name: CMM M-50 Summons 9x19mm
   parent: WeaponSubMachineGunMP5
   id: WeaponSubMachineGunCMMMP5
-  description: A Minutemen-built copy of the old NanoTrasen MP5, refinished in Minutemen blue. Light, reliable and favored by Minutemen boarding teams.
+  description: The old NanoTrasen MP5, reissued under Shinohara license after NT's patents passed to SHI, and refinished in Minutemen blue. Boarding teams favor it for serving summons through an airlock. Light, reliable and short enough for the corridors.
   components:
   - type: Sprite
     sprite: _Crescent/Objects/Weapons/Guns/mp5_cmm.rsi
@@ -75,19 +74,19 @@
     sprite: _Crescent/Objects/Weapons/Guns/mp5_cmm.rsi
 
 - type: entity
-  name: CMM MX-32 Lockwell 9x19mm
+  name: CMM M-32 Oath 9x19mm
   parent: WeaponPistolHKUSP
   id: WeaponPistolCMMLockwell
-  description: The standard Minutemen service pistol. A mass-produced copy of an antiquated NanoTrasen design, refinished in Minutemen blue.
+  description: The standard Minutemen service pistol. A mass-produced Shinohara reissue of an antiquated NanoTrasen design, refinished in Minutemen blue. Recruits receive it on the day they swear to keep the routes public and refuse every bribe.
   components:
   - type: Sprite
     sprite: _Crescent/Objects/Weapons/Guns/lockwell_cmm.rsi
 
 - type: entity
-  name: CMM-6R Bulldog .327
+  name: CMM M-6R Magistrate .327
   parent: WeaponRevolverSnubnose
   id: WeaponRevolverCMMBulldog
-  description: A bulky, short-barreled snubnose revolver issued to Minutemen officers. A Minutemen-built copy of the NanoTrasen NT-6R, refinished in Minutemen blue. Chambered in .327 Imperial.
+  description: A bulky, short-barreled snubnose revolver issued to Minutemen officers. A Shinohara-licensed reissue of the NanoTrasen NT-6R, refinished in Minutemen blue. Officers joke that it's the only magistrate in Taypan nobody has bought. Chambered in .327 Imperial.
   components:
   - type: Sprite
     sprite: _Crescent/Objects/Weapons/Guns/bulldog_cmm.rsi

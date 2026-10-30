@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="tr">
+<html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Turning · Taypan Core</title>
@@ -15,11 +15,11 @@
   #error {color:#ff9cae}
 </style>
 <h1>The Turning</h1>
-<p>Taypan’ın tek gezegeni, zamanın iki hâli arasında gidip geliyor.</p>
-<canvas width="512" height="512" aria-label="Beyaz gezegenin morlaşıp parçalanması ve yeniden birleşmesi"></canvas>
+<p>Taypan's single planet shifts between two states of time.</p>
+<canvas width="512" height="512" aria-label="The white planet turning purple, shattering and reassembling"></canvas>
 <div class="controls">
-  <button id="pause" type="button">Duraklat</button>
-  <label>Zaman <input id="time" type="range" min="0" max="23.99" step="0.01" value="0"></label>
+  <button id="pause" type="button">Pause</button>
+  <label>Time <input id="time" type="range" min="0" max="23.99" step="0.01" value="0"></label>
   <output id="state"></output>
 </div>
 <p id="error" hidden></p>
@@ -34,7 +34,7 @@ const gl = canvas.getContext('webgl', {alpha:true, premultipliedAlpha:false, pre
 let elapsed = Number(new URLSearchParams(location.search).get('time') || 0), previous;
 let paused = new URLSearchParams(location.search).has('time') || matchMedia('(prefers-reduced-motion: reduce)').matches;
 function fail(message) {error.hidden=false;error.textContent=message;document.body.dataset.validation='failed';throw new Error(message)}
-if (!gl) fail('WebGL bu tarayıcıda kullanılamıyor.');
+if (!gl) fail('WebGL is not available in this browser.');
 function compile(type, text) {
   const shader=gl.createShader(type);gl.shaderSource(shader,text);gl.compileShader(shader);
   if (!gl.getShaderParameter(shader,gl.COMPILE_STATUS)) fail(gl.getShaderInfoLog(shader));
@@ -57,30 +57,30 @@ function render(t){gl.uniform1f(timeUniform,t);gl.drawArrays(gl.TRIANGLES,0,6)}
 function fingerprint(t) {
   render(t);const pixels=new Uint8Array(512*512*4);gl.readPixels(0,0,512,512,gl.RGBA,gl.UNSIGNED_BYTE,pixels);
   let hash=2166136261,opaque=0;for(let i=0;i<pixels.length;i++){hash=Math.imul(hash^pixels[i],16777619);if(i%4===3&&pixels[i]>0)opaque++}
-  if(pixels[3]!==0||opaque===0)fail('Şeffaflık doğrulaması başarısız.');return hash>>>0;
+  if(pixels[3]!==0||opaque===0)fail('Transparency check failed.');return hash>>>0;
 }
 const atlas=new Image();
-atlas.onerror=()=>fail('Gezegen görseli yüklenemedi.');
+atlas.onerror=()=>fail('Could not load the planet image.');
 atlas.onload=()=>{
   const texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,atlas);
   const frames=[0,8,12,18,20,24].map(fingerprint);
-  if(frames[0]!==frames[5]||new Set(frames.slice(0,5)).size!==5)fail('Animasyon döngüsü doğrulanamadı.');
-  if(gl.getError()!==gl.NO_ERROR)fail('WebGL çizim hatası.');
+  if(frames[0]!==frames[5]||new Set(frames.slice(0,5)).size!==5)fail('Could not verify the animation loop.');
+  if(gl.getError()!==gl.NO_ERROR)fail('WebGL draw error.');
   document.body.dataset.validation='passed';document.body.dataset.frames=frames.join(',');
   requestAnimationFrame(draw);
 };
 atlas.src='data:image/png;base64,__ATLAS_BASE64__';
-function updateButton(){button.textContent=paused?'Oynat':'Duraklat'}
+function updateButton(){button.textContent=paused?'Play':'Pause'}
 button.onclick=()=>{paused=!paused;updateButton()};
 slider.oninput=()=>{elapsed=Number(slider.value);paused=true;updateButton()};
 updateButton();
 function draw(now){
   if(previous!==undefined&&!paused)elapsed=(elapsed+Math.min(now-previous,100)/1000)%24;
   previous=now;render(elapsed);slider.value=elapsed;
-  const state=elapsed<7||elapsed>=21?'Beyaz · sağlam':elapsed<9?'Morlaşma':elapsed<11?'Zamanda kırılma':elapsed<17?'Mor · parçalanmış':elapsed<19?'Yeniden birleşme':'Beyaza dönüş';
+  const state=elapsed<7||elapsed>=21?'White · intact':elapsed<9?'Turning violet':elapsed<11?'Temporal tearing':elapsed<17?'Purple · shattered':elapsed<19?'Reassembling':'Returning to white';
   output.textContent=state+' · '+elapsed.toFixed(1)+' s';requestAnimationFrame(draw);
 }
 </script>

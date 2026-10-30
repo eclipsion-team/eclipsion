@@ -1,0 +1,65 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                      Title="{Loc 'persistent-poi-build-ui-title'}"
+                      MinSize="760 480"
+                      SetSize="900 600">
+    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="6">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="10">
+            <TextureRect Name="BannerIcon" SetSize="40 40" Stretch="KeepAspectCentered" VerticalAlignment="Center"/>
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center">
+                <Label Name="TerritoryLabel" StyleClasses="LabelHeading" ClipText="True"/>
+                <Label Name="SummaryLabel" StyleClasses="LabelSubText" ClipText="True"/>
+            </BoxContainer>
+            <LineEdit Name="SearchBar" MinWidth="230" VerticalAlignment="Center"
+                      PlaceHolder="{Loc 'persistent-poi-build-ui-search'}"/>
+        </BoxContainer>
+        <PanelContainer StyleClasses="LowDivider"/>
+
+        <BoxContainer Orientation="Horizontal" VerticalExpand="True" SeparationOverride="8">
+            <BoxContainer Orientation="Vertical" MinWidth="200" SeparationOverride="2">
+                <BoxContainer Name="CategoryList" Orientation="Vertical" SeparationOverride="2"/>
+                <Control VerticalExpand="True"/>
+                <Button Name="PaintButton" StyleClasses="OpenBoth" ToolTip="{Loc 'persistent-poi-build-ui-paint-tooltip'}">
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                        <TextureRect Name="PaintIcon" SetSize="24 24" Stretch="KeepAspectCentered"/>
+                        <Label Text="{Loc 'persistent-poi-build-decals'}" VerticalAlignment="Center" ClipText="True" HorizontalExpand="True"/>
+                    </BoxContainer>
+                </Button>
+            </BoxContainer>
+
+            <PanelContainer MinWidth="2" VerticalExpand="True">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#3D3D46"/>
+                </PanelContainer.PanelOverride>
+            </PanelContainer>
+
+            <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+                <BoxContainer Name="RecipeList" Orientation="Vertical" SeparationOverride="3" HorizontalExpand="True"/>
+            </ScrollContainer>
+
+            <PanelContainer MinWidth="300" SetWidth="300" StyleClasses="BackgroundDark">
+                <BoxContainer Orientation="Vertical" Margin="10" SeparationOverride="6">
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                        <Control Name="DetailIcon" SetSize="64 64"/>
+                        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center">
+                            <RichTextLabel Name="DetailName"/>
+                            <RichTextLabel Name="DetailStatus"/>
+                        </BoxContainer>
+                    </BoxContainer>
+                    <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+                        <BoxContainer Orientation="Vertical" SeparationOverride="6" HorizontalExpand="True">
+                            <RichTextLabel Name="DetailDescription"/>
+                            <Label Name="StagesHeader" Text="{Loc 'persistent-poi-build-ui-stages'}" StyleClasses="LabelKeyText"/>
+                            <BoxContainer Name="DetailStages" Orientation="Vertical" SeparationOverride="4"/>
+                            <RichTextLabel Name="DetailLimit"/>
+                        </BoxContainer>
+                    </ScrollContainer>
+                    <Button Name="BuildButton" Text="{Loc 'persistent-poi-build-ui-place'}" StyleClasses="OpenBoth" MinHeight="34"/>
+                </BoxContainer>
+            </PanelContainer>
+        </BoxContainer>
+
+        <RichTextLabel Name="FooterLabel" HorizontalExpand="True"/>
+    </BoxContainer>
+</controls:FancyWindow>

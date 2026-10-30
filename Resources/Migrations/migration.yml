@@ -418,3 +418,6 @@ CardDeckBlack: null
 CardDeckNanotrasen: null
 CardDeckSyndicate: null
 CardHandBase: null
+
+# 2026-10-22 AAC tablet removed
+AACTablet: null

@@ -12458,6 +12458,7 @@ entities:
       parent: 1
     - type: WarpPoint
       location: The Graveyard
+      category: Wreck
 - proto: WeaponCapacitorRecharger
   entities:
   - uid: 1649

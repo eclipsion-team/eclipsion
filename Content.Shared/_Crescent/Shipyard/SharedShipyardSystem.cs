@@ -42,6 +42,14 @@ namespace Content.Shared.Shipyard
         /// </summary>
         public readonly bool CanSell;
 
+        public string? TreasuryFaction;
+
+        public long TreasuryBalance;
+
+        public bool HasPersonalAccount;
+
+        public long PersonalBalance;
+
         public ShipyardConsoleInterfaceState(
             long balance,
             bool accessGranted,

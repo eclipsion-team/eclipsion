@@ -20,6 +20,7 @@ using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Systems;
 using Content.Shared.Throwing;
 using Content.Shared._Crescent.Shuttles.Components;
+using Content.Shared._Crescent.Territory;
 using Content.Shared._Crescent.World;
 using JetBrains.Annotations;
 using Robust.Server.GameObjects;
@@ -392,6 +393,9 @@ public sealed partial class ShuttleSystem : SharedShuttleSystem
     public void Enable(EntityUid uid, FixturesComponent? manager = null, PhysicsComponent? component = null, ShuttleComponent? shuttle = null)
     {
         if (!Resolve(uid, ref manager, ref component, ref shuttle, false))
+            return;
+
+        if (HasComp<PersistentPoiGridComponent>(uid))
             return;
 
         _physics.SetBodyType(uid, BodyType.Dynamic, manager: manager, body: component);

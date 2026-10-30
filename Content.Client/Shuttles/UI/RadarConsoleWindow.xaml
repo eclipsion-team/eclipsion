@@ -1,12 +1,32 @@
-<controls:FancyWindow xmlns="https://spacestation14.io"
-                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-                      xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
-                      Title="{Loc 'radar-console-window-title'}"
-                      SetSize="658 678"
-                      MinSize="256 256">
-    <ui:ShuttleNavControl Name="RadarScreen"
-                     Margin="4"
-                     HorizontalExpand = "True"
-                     VerticalExpand = "True"/>
-</controls:FancyWindow>
+<!--
+  KS14: the instrument shell the shuttle and targeting consoles wear - flat bezel, VT323 title bar in
+  the amber shell colours - around the same radar screen as before.
+-->
+<ksui:KsBaseWindow xmlns="https://spacestation14.io"
+                   xmlns:ksui="clr-namespace:Content.Client._KS14.UI"
+                   xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
+                   MouseFilter="Stop"
+                   SetSize="658 708"
+                   MinSize="256 286">
+    <PanelContainer Name="Bezel"/>
+    <BoxContainer Orientation="Vertical" Margin="2">
+        <PanelContainer Name="TitleBar">
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="8 2 4 2">
+                <Label Name="TitleLabel"
+                       StyleClasses="KsInstrumentTitle"
+                       HorizontalExpand="True"
+                       VAlign="Center"
+                       Text="{Loc 'radar-console-window-title'}"/>
+                <Button Name="CloseChromeButton"
+                        StyleClasses="KsInstrumentAction"
+                        VerticalAlignment="Center"
+                        Text="{Loc 'ks-instrument-window-close'}"/>
+            </BoxContainer>
+        </PanelContainer>
+        <ui:ShuttleNavControl Name="RadarScreen"
+                              Margin="4"
+                              HorizontalExpand="True"
+                              VerticalExpand="True"/>
+    </BoxContainer>
+</ksui:KsBaseWindow>
 <!-- SetSize has to be changed in the above because if you do not the window is not wide or tall enough. -->

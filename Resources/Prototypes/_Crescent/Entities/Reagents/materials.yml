@@ -230,7 +230,7 @@
 
 - type: material
   id: SilkFilament
-  stackEntity: SilkFilament
+  stackEntity: SilkFilament1
   name: Mothroach Silk
   unit: materials-unit-web
   icon: { sprite: _Crescent/Objects/Materials/materials.rsi, state: silkthread }
@@ -238,7 +238,7 @@
 
 - type: material
   id: HideMothroach
-  stackEntity: HideMothroach
+  stackEntity: HideMothroach1
   name: Mothroach Pelt
   unit: materials-unit-sheet
   icon: { sprite: Nyanotrasen/Objects/Materials/mothroach.rsi, state: mothroachhide }

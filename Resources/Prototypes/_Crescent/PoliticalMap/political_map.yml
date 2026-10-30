@@ -1,0 +1,21 @@
+#
+#
+# Who rules a hex:
+#   - whoever holds the most capturable territories (PersistentCaptureRegion flags) in it - a tie leaves it contested;
+#   - failing that, the faction whose home station (a map element spawned with an IFFFaction) stands in it;
+#   - otherwise nobody.
+
+- type: politicalMap
+  id: Default
+  origin: 0, 0
+  size: 10000, 10000
+  columnSpacing: 2500
+  rowSpacing: 2500
+  factionColors:
+    DSM: "#bd7aff"
+    NCWL: "#ff9944"
+    SHI: "#d4d4d4"
+    TFSC: "#ff5555"
+    TAP: "#72cf8c"
+    SRM: "#9ba8b8"
+    CMM: "#78b7ff"

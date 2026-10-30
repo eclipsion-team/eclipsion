@@ -57,7 +57,7 @@ psionic-burns-up = {CAPITALIZE(THE($item))} burns up with arcs of strange energy
 psionic-burn-resist = Strange arcs dance across {THE($item)}!
 
 action-name-noospheric-zap = Noospheric Zap
-action-description-noospheric-zap = Shocks the conciousness of the target and leaves them stunned and stuttering.
+action-description-noospheric-zap = Shocks the conciousness of the target, draining most of their stamina and leaving them stuttering.
 
 action-name-pyrokinesis = Pyrokinesis
 action-description-pyrokinesis = Light a flammable target on fire.

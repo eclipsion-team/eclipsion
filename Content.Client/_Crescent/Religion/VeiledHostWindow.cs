@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Client._Crescent.UI;
 using Content.Client.Stylesheets;
 using Content.Shared._Crescent.Religion;
 using Robust.Client.UserInterface;
@@ -18,7 +19,7 @@ public sealed class VeiledHostWindow : DefaultWindow
     private static readonly Color DeadColor = Color.FromHex("#9F3344");
 
     private readonly BoxContainer _members;
-    private readonly Label _empty;
+    private readonly HintLabel _empty;
 
     public event Action<NetEntity>? OnChastise;
     public event Action? OnRefresh;
@@ -49,13 +50,11 @@ public sealed class VeiledHostWindow : DefaultWindow
         header.AddChild(refresh);
         root.AddChild(header);
 
-        _empty = new Label
+        _empty = new HintLabel
         {
-            Text = Loc.GetString("religion-veiled-host-empty"),
-            HorizontalAlignment = HAlignment.Center,
+            Hint = Loc.GetString("religion-veiled-host-empty"),
             VerticalAlignment = VAlignment.Center,
             VerticalExpand = true,
-            StyleClasses = { StyleBase.StyleClassLabelSubText },
         };
         root.AddChild(_empty);
 

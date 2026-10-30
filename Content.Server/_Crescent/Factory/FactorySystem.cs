@@ -1,4 +1,6 @@
+using System.Numerics;
 using Content.Shared.Inventory;
+using Content.Shared.Maps;
 using JetBrains.Annotations;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Physics.Systems;
@@ -14,6 +16,7 @@ using System.Linq;
 using Content.Server.Stack;
 using Content.Shared.Stacks;
 using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.GameObjects;
 using Robust.Server.GameObjects;
@@ -50,9 +53,19 @@ namespace Content.Server.Factory.EntitySystems
         [Dependency] private readonly AudioSystem _sounds = default!;
         [Dependency] private readonly VerbSystem _verbs = default!;
         [Dependency] private readonly IPrototypeManager _proto = default!;
+        [Dependency] private readonly SharedMapSystem _map = default!;
+        [Dependency] private readonly TurfSystem _turf = default!;
 
 
         const string FactoryFixture = "FactoryFixture";
+
+        private static readonly Vector2[] OutputOffsets =
+        {
+            new(0f, 0.8f),
+            new(0.8f, 0f),
+            new(-0.8f, 0f),
+            new(0f, -0.8f),
+        };
 
         private float _internalClock = 0f;
 
@@ -250,6 +263,26 @@ namespace Content.Server.Factory.EntitySystems
             RemComp<FactoryTrackingComponent>(uid);
             Untrack(uid, component);
         }
+        private Vector2 GetOutputOffset(EntityUid uid, TransformComponent xform)
+        {
+            if (xform.GridUid is not { } gridUid || !TryComp<MapGridComponent>(gridUid, out var grid))
+                return OutputOffsets[0];
+
+            foreach (var offset in OutputOffsets)
+            {
+                var indices = _map.TileIndicesFor(gridUid, grid, new EntityCoordinates(uid, offset));
+                if (!_map.TryGetTile(grid, indices, out var tile) || tile.IsEmpty)
+                    continue;
+
+                if (_turf.IsTileBlocked(gridUid, indices, CollisionGroup.ItemMask, grid))
+                    continue;
+
+                return offset;
+            }
+
+            return OutputOffsets[0];
+        }
+
         private void OnPowerChanged(EntityUid uid, FactoryComponent component, ref PowerChangedEvent args)
         {
             component.Powered = args.Powered;
@@ -423,7 +456,7 @@ namespace Content.Server.Factory.EntitySystems
                         if (chosenRecipe is null)
                             continue;
 
-                        var factoryRot = factoryTransform.LocalRotation;
+                        var outputCoords = new EntityCoordinates(uid, GetOutputOffset(uid, factoryTransform));
                         /// RECIPE OUTPUT
                         if (comp.SoundOnProduce is not null)
                             _sounds.PlayPvs(comp.SoundOnProduce, uid);
@@ -432,9 +465,7 @@ namespace Content.Server.Factory.EntitySystems
                             var amount = factoryPair.Value;
                             while (amount > 0)
                             {
-                                EntityUid product = EntityManager.SpawnAtPosition(factoryPair.Key,
-                                    new EntityCoordinates(uid, (float) Math.Sin((Math.PI / 180) * factoryRot) * 0.8f,
-                                        (float) Math.Cos((Math.PI / 180) * factoryRot) * 0.8f));
+                                EntityUid product = EntityManager.SpawnAtPosition(factoryPair.Key, outputCoords);
                                 if (TryComp<StackComponent>(product, out var productComp))
                                 {
                                     _stacks.SetCount(product, amount, productComp);

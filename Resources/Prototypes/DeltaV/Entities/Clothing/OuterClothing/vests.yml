@@ -4,6 +4,7 @@
   name: flak jacket
   description: A dusty and weathered flak jacket.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: DeltaV/Clothing/OuterClothing/Vests/flak.rsi
   - type: Clothing
@@ -24,6 +25,7 @@
   name: flak jacket (press)
   description: A flak jacket for reporters in wartorn zones.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: DeltaV/Clothing/OuterClothing/Vests/flakpress.rsi
   - type: Clothing

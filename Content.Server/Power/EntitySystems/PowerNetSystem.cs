@@ -346,6 +346,7 @@ namespace Content.Server.Power.EntitySystems
 
 
             CollectDirtyFromSolver();
+            CollectRecalculatingReceivers(); // eclipsion
 
             PowerNetworkCountGauge.Set(_powerState.Networks.Count);
             PowerLoadCountGauge.Set(_powerState.Loads.Count);
@@ -357,6 +358,18 @@ namespace Content.Server.Power.EntitySystems
             UpdateApcPowerReceivers((float) _updateInterval.TotalSeconds); // Mono
             UpdatePowerConsumers();
             UpdateNetworkBatteries();
+        }
+
+        // eclipsion - NeedsPower gets flipped straight on the component (glimmer, artifact analyzer, admin verb) and only
+        // raises Recalculate. the solver never sees that change, so without this those receivers kept their old state
+        private void CollectRecalculatingReceivers()
+        {
+            var query = EntityQueryEnumerator<ApcPowerReceiverComponent>();
+            while (query.MoveNext(out var uid, out var receiver))
+            {
+                if (receiver.Recalculate)
+                    _dirtyApcReceivers.Add(uid);
+            }
         }
 
         private void CollectDirtyFromSolver()

@@ -1,0 +1,2213 @@
+#
+#
+
+- type: constructionGraph
+  id: PersistentPoiStructures
+  start: start
+  graph:
+  - node: start
+    edges:
+    # Command
+    - to: administrationConsoleFrame
+      steps:
+      - material: Steel
+        amount: 10
+        doAfter: 2
+    - to: productionConsoleFrame
+      steps:
+      - material: Steel
+        amount: 10
+        doAfter: 2
+    - to: radarConsoleFrame
+      steps:
+      - material: Steel
+        amount: 10
+        doAfter: 2
+    - to: shuttleConsoleFrame
+      steps:
+      - material: Steel
+        amount: 10
+        doAfter: 2
+    # Defences
+    - to: targetingConsoleFrame
+      steps:
+      - material: Steel
+        amount: 10
+        doAfter: 2
+    - to: pdEmplacementFrame
+      steps:
+      - material: Plasteel
+        amount: 10
+        doAfter: 3
+    - to: antiBoarderTurretFrame
+      steps:
+      - material: Steel
+        amount: 15
+        doAfter: 3
+    # Production
+    - to: mixedOreRigFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: extractionRigFrame
+      steps:
+      - material: Steel
+        amount: 25
+        doAfter: 3
+    - to: textileMillFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: foundryFrame
+      steps:
+      - material: Steel
+        amount: 30
+        doAfter: 3
+    - to: tradeWorksFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    # Shipyard and dockyard
+    - to: shipyardDSMFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: shipyardNCWLFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: shipyardTFSCFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: shipyardSHIFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: dockingPortFrame
+      steps:
+      - material: Steel
+        amount: 10
+        doAfter: 2
+    # Doors
+    - to: airlockFrame
+      steps:
+      - material: Steel
+        amount: 4
+        doAfter: 2
+    - to: airlockGlassFrame
+      steps:
+      - material: Steel
+        amount: 4
+        doAfter: 2
+    - to: airlockPublicFrame
+      steps:
+      - material: Steel
+        amount: 4
+        doAfter: 2
+    # Structure
+    - to: wall
+      steps:
+      - material: Steel
+        amount: 5
+        doAfter: 2
+    - to: wallReinforcedGirder
+      steps:
+      - material: Steel
+        amount: 4
+        doAfter: 2
+    - to: window
+      steps:
+      - material: ReinforcedGlass
+        amount: 4
+        doAfter: 2
+    - to: windowGlass
+      steps:
+      - material: Glass
+        amount: 4
+        doAfter: 2
+    # Power and light
+    - to: boriaticGeneratorFrame
+      steps:
+      - material: Steel
+        amount: 15
+        doAfter: 3
+    - to: substationFrame
+      steps:
+      - material: Steel
+        amount: 10
+        doAfter: 2
+    - to: smesFrame
+      steps:
+      - material: Steel
+        amount: 10
+        doAfter: 3
+    - to: apcFrame
+      steps:
+      - material: Steel
+        amount: 3
+        doAfter: 2
+    - to: light
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+    - to: smallLight
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+    # Atmospherics
+    - to: airVent
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+    - to: airScrubber
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+    - to: passiveVent
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+    - to: connectorPort
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+    - to: airCanister
+      steps:
+      - material: Steel
+        amount: 15
+        doAfter: 3
+    - to: gasPipeStraight
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+    - to: gasPipeBend
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+    - to: gasPipeTJunction
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+    - to: gasPipeFourway
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+    - to: airAlarmFrame
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 2
+    # Furniture
+    - to: chair
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+    - to: comfyChair
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+    - to: officeChair
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+    - to: officeChairDark
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+    - to: barStool
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+    - to: bench
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+    - to: table
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+    - to: tableReinforced
+      steps:
+      - material: Plasteel
+        amount: 2
+        doAfter: 2
+    - to: counter
+      steps:
+      - material: Steel
+        amount: 3
+        doAfter: 1
+    - to: bedFrame
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+    - to: medicalBedFrame
+      steps:
+      - material: Plasteel
+        amount: 2
+        doAfter: 2
+    - to: closet
+      steps:
+      - material: Steel
+        amount: 4
+        doAfter: 2
+    - to: rack
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+    - to: sink
+      steps:
+      - material: Steel
+        amount: 3
+        doAfter: 2
+    - to: shower
+      steps:
+      - material: Steel
+        amount: 5
+        doAfter: 2
+    - to: toilet
+      steps:
+      - material: Steel
+        amount: 5
+        doAfter: 2
+
+  # Command
+
+  - node: administrationConsoleFrame
+    entity: PersistentPoiFrameAdministrationConsole
+    edges:
+    - to: administrationConsoleGlazed
+      steps:
+      - material: Glass
+        amount: 5
+        doAfter: 1
+  - node: administrationConsoleGlazed
+    edges:
+    - to: administrationConsole
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: AdministrationConsole
+  - node: administrationConsole
+    entity: ComputerPersistentPoiAdministration
+
+  - node: productionConsoleFrame
+    entity: PersistentPoiFrameProductionConsole
+    edges:
+    - to: productionConsoleGlazed
+      steps:
+      - material: Glass
+        amount: 5
+        doAfter: 1
+  - node: productionConsoleGlazed
+    edges:
+    - to: productionConsole
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: ProductionConsole
+  - node: productionConsole
+    entity: ComputerPersistentPoiProduction
+
+  - node: radarConsoleFrame
+    entity: PersistentPoiFrameRadarConsole
+    edges:
+    - to: radarConsoleGlazed
+      steps:
+      - material: Glass
+        amount: 5
+        doAfter: 1
+  - node: radarConsoleGlazed
+    edges:
+    - to: radarConsole
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: RadarConsole
+  - node: radarConsole
+    entity: ComputerRadarPersistentPoi
+
+  - node: shuttleConsoleFrame
+    entity: PersistentPoiFrameShuttleConsole
+    edges:
+    - to: shuttleConsoleGlazed
+      steps:
+      - material: Glass
+        amount: 5
+        doAfter: 1
+  - node: shuttleConsoleGlazed
+    edges:
+    - to: shuttleConsole
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: ShuttleConsole
+  - node: shuttleConsole
+    entity: ComputerShuttlePersistentPoi
+
+  # Defences
+
+  - node: targetingConsoleFrame
+    entity: PersistentPoiFrameTargetingConsole
+    edges:
+    - to: targetingConsoleGlazed
+      steps:
+      - material: Glass
+        amount: 5
+        doAfter: 1
+  - node: targetingConsoleGlazed
+    edges:
+    - to: targetingConsole
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: TargetingConsole
+  - node: targetingConsole
+    entity: ComputerTargetingPersistentPoi
+
+  - node: pdEmplacementFrame
+    entity: PersistentPoiFrameEmplacement
+    edges:
+    - to: pdEmplacementPlated
+      steps:
+      - material: Steel
+        amount: 15
+        doAfter: 2
+  - node: pdEmplacementPlated
+    edges:
+    - to: pdLaserEmplacement
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: PointDefence
+  - node: pdLaserEmplacement
+    entity: HardpointPersistentPoiLaserEmplacement
+
+  # never built directly: it comes up with its emplacement
+  - node: pdLaser
+    entity: WeaponTurretRetributionPersistentPoi
+
+  # old machinegun emplacement, only left for saved territories
+  - node: pdEmplacement
+    entity: HardpointPersistentPoiEmplacement
+  - node: pdGun
+    entity: WeaponTurretPDTPersistentPoi
+
+  - node: antiBoarderTurretFrame
+    entity: PersistentPoiFrameTurret
+    edges:
+    - to: antiBoarderTurret
+      steps:
+      - material: Cable
+        amount: 5
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: AntiBoarderTurret
+  - node: antiBoarderTurret
+    entity: WeaponTurretAutoPDPersistentPoi
+
+  # Production
+
+  - node: mixedOreRigFrame
+    entity: PersistentPoiFrameMixedOreRig
+    edges:
+    - to: mixedOreRigPlated
+      steps:
+      - material: Plasteel
+        amount: 5
+        doAfter: 3
+  - node: mixedOreRigPlated
+    edges:
+    - to: mixedOreRig
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: Factory
+  - node: mixedOreRig
+    entity: PersistentPoiMixedOreRig
+
+  - node: extractionRigFrame
+    entity: PersistentPoiFrameExtractionRig
+    edges:
+    - to: extractionRigPlated
+      steps:
+      - material: Plasteel
+        amount: 10
+        doAfter: 3
+  - node: extractionRigPlated
+    edges:
+    - to: extractionRig
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: Factory
+  - node: extractionRig
+    entity: PersistentPoiExtractionRig
+
+  - node: textileMillFrame
+    entity: PersistentPoiFrameTextileMill
+    edges:
+    - to: textileMillStrung
+      steps:
+      - material: Cloth
+        amount: 10
+        doAfter: 2
+  - node: textileMillStrung
+    edges:
+    - to: textileMill
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: Factory
+  - node: textileMill
+    entity: PersistentPoiTextileMill
+
+  - node: foundryFrame
+    entity: PersistentPoiFrameFoundry
+    edges:
+    - to: foundryPlated
+      steps:
+      - material: Plasteel
+        amount: 10
+        doAfter: 3
+  - node: foundryPlated
+    edges:
+    - to: foundry
+      steps:
+      - material: Cable
+        amount: 15
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: Factory
+  - node: foundry
+    entity: PersistentPoiFoundry
+
+  - node: tradeWorksFrame
+    entity: PersistentPoiFrameTradeWorks
+    edges:
+    - to: tradeWorksGlazed
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 2
+  - node: tradeWorksGlazed
+    edges:
+    - to: tradeWorks
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: Factory
+  - node: tradeWorks
+    entity: PersistentPoiTradeWorks
+
+  - node: shipyardDSMFrame
+    entity: PersistentPoiFrameShipyardDSM
+    edges:
+    - to: shipyardDSMHull
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+  - node: shipyardDSMHull
+    edges:
+    - to: shipyardDSMPlated
+      steps:
+      - material: Plasteel
+        amount: 20
+        doAfter: 4
+  - node: shipyardDSMPlated
+    edges:
+    - to: shipyardDSMGlazed
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 2
+  - node: shipyardDSMGlazed
+    edges:
+    - to: shipyardDSM
+      steps:
+      - material: Cable
+        amount: 20
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: Shipyard
+  - node: shipyardDSM
+    entity: ComputerPersistentPoiShipyardDSM
+
+  - node: shipyardNCWLFrame
+    entity: PersistentPoiFrameShipyardNCWL
+    edges:
+    - to: shipyardNCWLHull
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+  - node: shipyardNCWLHull
+    edges:
+    - to: shipyardNCWLPlated
+      steps:
+      - material: Plasteel
+        amount: 20
+        doAfter: 4
+  - node: shipyardNCWLPlated
+    edges:
+    - to: shipyardNCWLGlazed
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 2
+  - node: shipyardNCWLGlazed
+    edges:
+    - to: shipyardNCWL
+      steps:
+      - material: Cable
+        amount: 20
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: Shipyard
+  - node: shipyardNCWL
+    entity: ComputerPersistentPoiShipyardNCWL
+
+  - node: shipyardTFSCFrame
+    entity: PersistentPoiFrameShipyardTFSC
+    edges:
+    - to: shipyardTFSCHull
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+  - node: shipyardTFSCHull
+    edges:
+    - to: shipyardTFSCPlated
+      steps:
+      - material: Plasteel
+        amount: 20
+        doAfter: 4
+  - node: shipyardTFSCPlated
+    edges:
+    - to: shipyardTFSCGlazed
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 2
+  - node: shipyardTFSCGlazed
+    edges:
+    - to: shipyardTFSC
+      steps:
+      - material: Cable
+        amount: 20
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: Shipyard
+  - node: shipyardTFSC
+    entity: ComputerPersistentPoiShipyardTFSC
+
+  - node: shipyardSHIFrame
+    entity: PersistentPoiFrameShipyardSHI
+    edges:
+    - to: shipyardSHIHull
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+  - node: shipyardSHIHull
+    edges:
+    - to: shipyardSHIPlated
+      steps:
+      - material: Plasteel
+        amount: 20
+        doAfter: 4
+  - node: shipyardSHIPlated
+    edges:
+    - to: shipyardSHIGlazed
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 2
+  - node: shipyardSHIGlazed
+    edges:
+    - to: shipyardSHI
+      steps:
+      - material: Cable
+        amount: 20
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: Shipyard
+  - node: shipyardSHI
+    entity: ComputerPersistentPoiShipyardSHI
+
+  - node: dockingPortFrame
+    entity: PersistentPoiFrameDockingPort
+    edges:
+    - to: dockingPortPlated
+      steps:
+      - material: Plasteel
+        amount: 5
+        doAfter: 3
+  - node: dockingPortPlated
+    edges:
+    - to: dockingPort
+      steps:
+      - material: Cable
+        amount: 5
+        doAfter: 1
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: DockingPort
+  - node: dockingPort
+    entity: AirlockPersistentPoiDock
+
+  # Doors
+
+  - node: airlockFrame
+    entity: PersistentPoiFrameAirlock
+    edges:
+    - to: airlock
+      steps:
+      - material: Cable
+        amount: 5
+        doAfter: 2
+  - node: airlock
+    entity: AirlockPersistentPoi
+
+  - node: airlockGlassFrame
+    entity: PersistentPoiFrameAirlockGlass
+    edges:
+    - to: airlockGlassGlazed
+      steps:
+      - material: ReinforcedGlass
+        amount: 2
+        doAfter: 1
+  - node: airlockGlassGlazed
+    edges:
+    - to: airlockGlass
+      steps:
+      - material: Cable
+        amount: 5
+        doAfter: 2
+  - node: airlockGlass
+    entity: AirlockGlassPersistentPoi
+
+  - node: airlockPublicFrame
+    entity: PersistentPoiFrameAirlockPublic
+    edges:
+    - to: airlockPublic
+      steps:
+      - material: Cable
+        amount: 5
+        doAfter: 2
+  - node: airlockPublic
+    entity: AirlockPublicPersistentPoi
+
+  # Structure
+
+  - node: wall
+    entity: WallSolidPersistentPoi
+
+  - node: wallReinforcedGirder
+    entity: PersistentPoiGirder
+    edges:
+    - to: wallReinforced
+      steps:
+      - material: Plasteel
+        amount: 3
+        doAfter: 2
+  - node: wallReinforced
+    entity: WallReinforcedPersistentPoi
+
+  - node: window
+    entity: ReinforcedWindowPersistentPoi
+
+  - node: windowGlass
+    entity: WindowPersistentPoi
+
+  - node: boriaticGeneratorFrame
+    entity: PersistentPoiFrameBoriaticGenerator
+    edges:
+    - to: boriaticGeneratorCased
+      steps:
+      - material: Plastic
+        amount: 10
+        doAfter: 2
+  - node: boriaticGeneratorCased
+    edges:
+    - to: boriaticGeneratorPlumbed
+      steps:
+      - material: Gold
+        amount: 5
+        doAfter: 2
+  - node: boriaticGeneratorPlumbed
+    edges:
+    - to: boriaticGenerator
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: Generator
+  - node: boriaticGenerator
+    entity: BoriaticGeneratorPersistentPoi
+
+  - node: generatorFrame
+    entity: PersistentPoiFrameGenerator
+    edges:
+    - to: generatorFuelled
+      steps:
+      - material: Uranium
+        amount: 10
+        doAfter: 3
+  - node: generatorFuelled
+    edges:
+    - to: generator
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: Generator
+  - node: generator
+    entity: GeneratorRTGPersistentPoi
+
+  - node: substationFrame
+    entity: PersistentPoiFrameSubstation
+    edges:
+    - to: substation
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+  - node: substation
+    entity: SubstationPersistentPoi
+
+  - node: smesFrame
+    entity: PersistentPoiFrameSmes
+    edges:
+    - to: smesPlated
+      steps:
+      - material: Plasteel
+        amount: 5
+        doAfter: 2
+  - node: smesPlated
+    edges:
+    - to: smes
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+  - node: smes
+    entity: SMESPersistentPoi
+
+  - node: apcFrame
+    entity: PersistentPoiFrameApc
+    edges:
+    - to: apc
+      steps:
+      - material: Cable
+        amount: 5
+        doAfter: 2
+  - node: apc
+    entity: APCPersistentPoi
+
+  - node: light
+    entity: PoweredlightPersistentPoi
+
+  - node: smallLight
+    entity: PoweredSmallLightPersistentPoi
+
+  # Atmospherics
+
+  - node: airVent
+    entity: GasVentPumpPersistentPoi
+
+  - node: airScrubber
+    entity: GasVentScrubberPersistentPoi
+
+  - node: passiveVent
+    entity: GasPassiveVentPersistentPoi
+
+  - node: connectorPort
+    entity: GasPortPersistentPoi
+
+  - node: airCanister
+    entity: AirCanisterPersistentPoi
+
+  - node: gasPipeStraight
+    entity: GasPipeStraightPersistentPoi
+
+  - node: gasPipeBend
+    entity: GasPipeBendPersistentPoi
+
+  - node: gasPipeTJunction
+    entity: GasPipeTJunctionPersistentPoi
+
+  - node: gasPipeFourway
+    entity: GasPipeFourwayPersistentPoi
+
+  - node: airAlarmFrame
+    entity: PersistentPoiFrameAirAlarm
+    edges:
+    - to: airAlarm
+      steps:
+      - material: Cable
+        amount: 5
+        doAfter: 2
+  - node: airAlarm
+    entity: AirAlarmPersistentPoi
+
+  # Furniture
+
+  - node: chair
+    entity: ChairPersistentPoi
+
+  - node: comfyChair
+    entity: ComfyChairPersistentPoi
+
+  - node: officeChair
+    entity: ChairOfficeLightPersistentPoi
+
+  - node: officeChairDark
+    entity: ChairOfficeDarkPersistentPoi
+
+  - node: officeChairRolling
+    entity: ChairOfficeLightRollingPersistentPoi
+
+  - node: officeChairDarkRolling
+    entity: ChairOfficeDarkRollingPersistentPoi
+
+  - node: barStool
+    entity: StoolBarPersistentPoi
+
+  - node: bench
+    entity: SteelBenchPersistentPoi
+
+  - node: table
+    entity: TablePersistentPoi
+
+  - node: tableReinforced
+    entity: TableReinforcedPersistentPoi
+
+  - node: counter
+    entity: TableCounterMetalPersistentPoi
+
+  - node: bedFrame
+    entity: PersistentPoiFrameBed
+    edges:
+    - to: bed
+      steps:
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+  - node: bed
+    entity: BedPersistentPoi
+
+  - node: medicalBedFrame
+    entity: PersistentPoiFrameMedicalBed
+    edges:
+    - to: medicalBed
+      steps:
+      - material: Durathread
+        amount: 2
+        doAfter: 1
+  - node: medicalBed
+    entity: MedicalBedPersistentPoi
+
+  - node: closet
+    entity: ClosetPersistentPoi
+
+  - node: rack
+    entity: RackPersistentPoi
+
+  - node: sink
+    entity: SinkPersistentPoi
+
+  - node: shower
+    entity: ShowerPersistentPoi
+
+  - node: toilet
+    entity: ToiletPersistentPoi
+
+# Command
+
+- type: construction
+  id: PersistentPoiAdministrationConsole
+  name: territorial administration console
+  description: Shows what the territory is developed to and what that allows, and takes the materials that raise it a level. One per territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: administrationConsole
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Machines/computers.rsi
+    state: command
+  layers:
+  - sprite: Structures/Machines/computers.rsi
+    state: computer
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: _Crescent/Structures/Machines/computers.rsi
+    state: command
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keys
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: AdministrationConsole
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiProductionConsole
+  name: territorial production console
+  description: Tools the territory for a line of production, then runs and empties its works. Without one, they all stand idle. One per territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: productionConsole
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Machines/computers.rsi
+    state: mining
+  layers:
+  - sprite: Structures/Machines/computers.rsi
+    state: computer
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: Structures/Machines/computers.rsi
+    state: mining
+  - sprite: Structures/Machines/computers.rsi
+    state: mining_key
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: ProductionConsole
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiRadarConsole
+  name: territorial radar console
+  description: A mass scanner for watching the space around the territory. One per territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: radarConsole
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Machines/computers.rsi
+    state: solar_screen
+  layers:
+  - sprite: Structures/Machines/computers.rsi
+    state: computer
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: Structures/Machines/computers.rsi
+    state: solar_screen
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keys
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: RadarConsole
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiShuttleConsole
+  name: territorial shuttle console
+  description: Radar, sector map and political map. The territory is fixed in place, so it never flies anywhere. One per territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: shuttleConsole
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Machines/computers.rsi
+    state: shuttle
+  layers:
+  - sprite: Structures/Machines/computers.rsi
+    state: computer
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: _Crescent/Structures/Machines/computers.rsi
+    state: shuttle
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keys
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: ShuttleConsole
+  - !type:TileNotBlocked
+
+# Defences
+
+- type: construction
+  id: PersistentPoiTargetingConsole
+  name: territorial point-defence console
+  description: Fire control for the territory's guns. Unattended, it fights on its own against anyone at war with its holder. One per territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: targetingConsole
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Machines/computers.rsi
+    state: targeting
+  layers:
+  - sprite: Structures/Machines/computers.rsi
+    state: computer
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: _Crescent/Structures/Machines/computers.rsi
+    state: targeting
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keys
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: TargetingConsole
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiPointDefenceEmplacement
+  name: territorial point-defence emplacement
+  description: An energy hardpoint with a 150cc 'Retribution' pulse laser on it, for the fire-control console to aim. It goes down as one piece and needs power to fire. The territory's level caps how many guns its fire control can reach.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: pdLaserEmplacement
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Objects/Turrets/Laser/retribution.rsi
+    state: retribution
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: PointDefence
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiAntiBoarderTurret
+  name: territorial anti-boarder turret
+  description: Shoots everyone the holder is hostile to. Unclaimed, it shoots nobody.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: antiBoarderTurret
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Objects/ShuttleWeapons/autoPD.rsi
+    state: syndie_lethal
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: AntiBoarderTurret
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiMixedOreRig
+  name: territorial ore extraction rig
+  description: Brings up a mix of ores. General ore extraction line.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: mixedOreRig
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Automining/mixed.rsi
+    state: base_machine
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiCapabilityRequired
+    capability: GeneralOre
+  - !type:PersistentPoiWithinLimit
+    category: Factory
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiExtractionRig
+  name: territorial targeted extraction rig
+  description: Brings up a lot of one chosen ore. Targeted ore extraction line.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: extractionRig
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Automining/steel.rsi
+    state: base_machine
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiCapabilityRequired
+    capability: TargetedOre
+  - !type:PersistentPoiWithinLimit
+    category: Factory
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiTextileMill
+  name: territorial textile mill
+  description: Spins cotton and weaves cloth and durathread. Textile line.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: textileMill
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/factorystructures.rsi
+    state: autoloom
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiCapabilityRequired
+    capability: Textiles
+  - !type:PersistentPoiWithinLimit
+    category: Factory
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiFoundry
+  name: territorial foundry
+  description: Casts steel, glass, plastic and plasteel. Materials line.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: foundry
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/furnacefactory.rsi
+    state: furnace
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiCapabilityRequired
+    capability: Materials
+  - !type:PersistentPoiWithinLimit
+    category: Factory
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiTradeWorks
+  name: territorial trade works
+  description: Crates trade goods for export. Trade goods line.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: tradeWorks
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/factorystructures.rsi
+    state: makina
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiCapabilityRequired
+    capability: TradeGoods
+  - !type:PersistentPoiWithinLimit
+    category: Factory
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiShipyardDSM
+  name: territorial imperial shipyard
+  description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a developed territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: shipyardDSM
+  category: construction-category-structures
+  icon:
+    sprite: _NF/Structures/Machines/computers.rsi
+    state: shipyard
+  layers:
+  - sprite: _NF/Structures/Machines/computers.rsi
+    state: computer
+  - sprite: _NF/Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: _Crescent/Structures/Machines/shipyard_console.rsi
+    state: screen
+  - sprite: _NF/Structures/Machines/computers.rsi
+    state: telesci_key
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiFactionRequired
+    faction: DSM
+  - !type:PersistentPoiWithinLimit
+    category: Shipyard
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiShipyardNCWL
+  name: territorial NCWL shipyard
+  description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a developed territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: shipyardNCWL
+  category: construction-category-structures
+  icon:
+    sprite: _NF/Structures/Machines/computers.rsi
+    state: shipyard
+  layers:
+  - sprite: _NF/Structures/Machines/computers.rsi
+    state: computer
+  - sprite: _NF/Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: _Crescent/Structures/Machines/shipyard_console.rsi
+    state: screen
+  - sprite: _NF/Structures/Machines/computers.rsi
+    state: telesci_key
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiFactionRequired
+    faction: NCWL
+  - !type:PersistentPoiWithinLimit
+    category: Shipyard
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiShipyardTFSC
+  name: territorial TFCF shipyard
+  description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a developed territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: shipyardTFSC
+  category: construction-category-structures
+  icon:
+    sprite: _NF/Structures/Machines/computers.rsi
+    state: shipyard
+  layers:
+  - sprite: _NF/Structures/Machines/computers.rsi
+    state: computer
+  - sprite: _NF/Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: _Crescent/Structures/Machines/shipyard_console.rsi
+    state: screen
+  - sprite: _NF/Structures/Machines/computers.rsi
+    state: telesci_key
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiFactionRequired
+    faction: TFSC
+  - !type:PersistentPoiWithinLimit
+    category: Shipyard
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiShipyardSHI
+  name: territorial Shinohara shipyard
+  description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a developed territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: shipyardSHI
+  category: construction-category-structures
+  icon:
+    sprite: _NF/Structures/Machines/computers.rsi
+    state: shipyard
+  layers:
+  - sprite: _NF/Structures/Machines/computers.rsi
+    state: computer
+  - sprite: _NF/Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: _Crescent/Structures/Machines/shipyard_console.rsi
+    state: screen
+  - sprite: _NF/Structures/Machines/computers.rsi
+    state: telesci_key
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiFactionRequired
+    faction: SHI
+  - !type:PersistentPoiWithinLimit
+    category: Shipyard
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiDockingPort
+  name: territorial external airlock
+  description: The docking airlock every ship uses, for the territory's edge. Ships bought at its shipyard dock here, and so can anyone visiting - but only the holder's people get through it. Build it facing out into space.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: dockingPort
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Doors/Airlocks/Standard/shuttle.rsi
+    state: closed
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: DockingPort
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiAirlock
+  name: territorial airlock
+  description: Opens only for the people of the faction holding the territory - whoever that is - and for anybody while it is unclaimed.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: airlock
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Doors/Airlocks/Standard/command.rsi
+    state: closed
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiAirlockGlass
+  name: territorial glass airlock
+  description: A territorial airlock you can see through. Opens only for the people of the faction holding the territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: airlockGlass
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Doors/Airlocks/Glass/command.rsi
+    state: closed
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiAirlockPublic
+  name: public airlock
+  description: An ordinary airlock that opens for anyone, for the parts of the territory visitors may walk into.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: airlockPublic
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Doors/Airlocks/Standard/basic.rsi
+    state: closed
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+# Structure
+
+- type: construction
+  id: PersistentPoiWall
+  name: territorial wall
+  description: A plain steel wall.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: wall
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Walls/solid.rsi
+    state: full
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiWallReinforced
+  name: territorial reinforced wall
+  description: A steel girder plated over with plasteel. Takes a great deal more to bring down.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: wallReinforced
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Walls/solid.rsi
+    state: rgeneric
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiWindow
+  name: territorial reinforced window
+  description: A full-tile pane of reinforced glass.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: window
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Windows/reinforced_window.rsi
+    state: full
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiWindowGlass
+  name: territorial window
+  description: A full-tile pane of plain glass. Cheaper than reinforced, and a great deal easier to break.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: windowGlass
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Windows/window.rsi
+    state: full
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiGenerator
+  name: territorial boriatic generator
+  description: A boriatic generator rated for 50 kW, feeding high-voltage cable (or medium, switched with a multitool). It is built with an empty tank - fill it with boriatic fuel and start it. Put a substation after it for the works. A full tank goes up like a bomb when it is wrecked. The territory's level caps how many it can run.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: boriaticGenerator
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Power/Generation/portable_generator.rsi
+    state: portgen0
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: Generator
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiSubstation
+  name: territorial substation
+  description: Steps high-voltage power down onto medium-voltage cable, which the works and APCs draw from.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: substation
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Power/substation.rsi
+    state: substation
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiSmes
+  name: territorial SMES
+  description: Banks power off high-voltage cable and hands it back when the generators fall short or run dry. Goes between the generators and the substation. Built empty.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: smes
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Power/smes.rsi
+    state: smes
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiApc
+  name: territorial APC
+  description: Feeds the consoles and lights around it from medium-voltage cable. Mounted on a wall.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: apc
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Power/apc.rsi
+    state: base
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:WallmountCondition
+
+- type: construction
+  id: PersistentPoiLight
+  name: territorial wall light
+  description: A wall light, tube included. Build it against a wall, facing into the room.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: light
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Wallmounts/Lighting/light_tube.rsi
+    state: base
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: true
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiSmallLight
+  name: territorial small light
+  description: A small wall light, bulb included, for corridors and corners. Build it against a wall, facing into the room.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: smallLight
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Wallmounts/Lighting/light_small.rsi
+    state: base
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: true
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiAirVent
+  name: territorial air vent
+  description: Pumps air from its pipe into the room, up to normal pressure.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: airVent
+  category: construction-category-utilities
+  icon:
+    sprite: Structures/Piping/Atmospherics/vent.rsi
+    state: vent_off
+  layers:
+  - sprite: Structures/Piping/Atmospherics/pipe.rsi
+    state: pipeHalf
+  - sprite: Structures/Piping/Atmospherics/vent.rsi
+    state: vent_off
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:NoUnstackableInTile
+
+- type: construction
+  id: PersistentPoiAirScrubber
+  name: territorial air scrubber
+  description: Draws stale gas out of the room into its pipe. Lead that pipe to a passive vent or a canister.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: airScrubber
+  category: construction-category-utilities
+  icon:
+    sprite: Structures/Piping/Atmospherics/scrubber.rsi
+    state: scrub_off
+  layers:
+  - sprite: Structures/Piping/Atmospherics/pipe.rsi
+    state: pipeHalf
+  - sprite: Structures/Piping/Atmospherics/scrubber.rsi
+    state: scrub_off
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:NoUnstackableInTile
+
+- type: construction
+  id: PersistentPoiPassiveVent
+  name: territorial passive vent
+  description: An open pipe end. Put it outside to vent the scrubbers' waste into space.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: passiveVent
+  category: construction-category-utilities
+  icon:
+    sprite: Structures/Piping/Atmospherics/vent.rsi
+    state: vent_off
+  layers:
+  - sprite: Structures/Piping/Atmospherics/pipe.rsi
+    state: pipeHalf
+  - sprite: Structures/Piping/Atmospherics/vent.rsi
+    state: vent_off
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:NoUnstackableInTile
+
+- type: construction
+  id: PersistentPoiConnectorPort
+  name: territorial connector port
+  description: Joins a canister standing on it to the pipe. Build it first, then the air canister on top.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: connectorPort
+  category: construction-category-utilities
+  icon:
+    sprite: Structures/Piping/Atmospherics/gascanisterport.rsi
+    state: gasCanisterPort
+  layers:
+  - sprite: Structures/Piping/Atmospherics/pipe.rsi
+    state: pipeHalf
+  - sprite: Structures/Piping/Atmospherics/gascanisterport.rsi
+    state: gasCanisterPort
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:NoUnstackableInTile
+
+- type: construction
+  id: PersistentPoiAirCanister
+  name: territorial air canister
+  description: A canister full of breathable air, bolted down. Build it on a connector port to feed the vents, or open its valve to fill the room around it. Only the holder's people can work its valve.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: airCanister
+  category: construction-category-utilities
+  icon:
+    sprite: Structures/Storage/canister.rsi
+    state: grey
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiGasPipeStraight
+  name: territorial gas pipe
+  description: A straight length of gas pipe. It can run under walls.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: gasPipeStraight
+  category: construction-category-utilities
+  icon:
+    sprite: Structures/Piping/Atmospherics/pipe.rsi
+    state: pipeStraight
+  placementMode: SnapgridCenter
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+
+- type: construction
+  id: PersistentPoiGasPipeBend
+  name: territorial gas pipe bend
+  description: A gas pipe turning a corner. It can run under walls.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: gasPipeBend
+  category: construction-category-utilities
+  icon:
+    sprite: Structures/Piping/Atmospherics/pipe.rsi
+    state: pipeBend
+  placementMode: SnapgridCenter
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+
+- type: construction
+  id: PersistentPoiGasPipeTJunction
+  name: territorial gas pipe T junction
+  description: A gas pipe splitting three ways. It can run under walls.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: gasPipeTJunction
+  category: construction-category-utilities
+  icon:
+    sprite: Structures/Piping/Atmospherics/pipe.rsi
+    state: pipeTJunction
+  placementMode: SnapgridCenter
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+
+- type: construction
+  id: PersistentPoiGasPipeFourway
+  name: territorial gas pipe four-way
+  description: A gas pipe crossing four ways. It can run under walls.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: gasPipeFourway
+  category: construction-category-utilities
+  icon:
+    sprite: Structures/Piping/Atmospherics/pipe.rsi
+    state: pipeFourway
+  placementMode: SnapgridCenter
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+
+- type: construction
+  id: PersistentPoiAirAlarm
+  name: territorial air alarm
+  description: Watches the room's air and sets the vents and scrubbers linked to it with a multitool. Anyone can read it; only the holder's people can change it. Mounted on a wall, off an APC.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: airAlarm
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Wallmounts/air_monitors.rsi
+    state: alarm0
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: true
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:WallmountCondition
+
+- type: construction
+  id: PersistentPoiChair
+  name: territorial chair
+  description: A plain steel chair.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: chair
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/chairs.rsi
+    state: chair
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiComfyChair
+  name: territorial comfy chair
+  description: A padded armchair.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: comfyChair
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/chairs.rsi
+    state: comfy
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiBarStool
+  name: territorial bar stool
+  description: A tall stool for a counter.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: barStool
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/chairs.rsi
+    state: bar
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiBench
+  name: territorial steel bench
+  description: A long steel bench.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: bench
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/chairs.rsi
+    state: steel-bench
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiTable
+  name: territorial table
+  description: A square steel table.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: table
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/Tables/generic.rsi
+    state: full
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiTableReinforced
+  name: territorial reinforced table
+  description: A plasteel table that takes a beating.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: tableReinforced
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/Tables/reinforced.rsi
+    state: full
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiCounter
+  name: territorial counter
+  description: A metal counter, for a bar, a canteen or a front desk.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: counter
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/Tables/countermetal.rsi
+    state: full
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiBed
+  name: territorial bed
+  description: A steel bed frame with a cloth mattress.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: bed
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/furniture.rsi
+    state: bed
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiMedicalBed
+  name: territorial medical bed
+  description: A hospital bed. Resting in it slowly heals.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: medicalBed
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/furniture.rsi
+    state: bed-MED
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiCloset
+  name: territorial closet
+  description: A steel closet. Whatever is left in it when the round ends is cleared out.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: closet
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Storage/closet.rsi
+    state: generic_icon
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiRack
+  name: territorial rack
+  description: A steel rack to set things down on. Whatever is left on it when the round ends is cleared away.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: rack
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/furniture.rsi
+    state: rack
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiSink
+  name: territorial sink
+  description: A sink that slowly fills itself with water. Build it against a wall.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: sink
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/sink.rsi
+    state: sink_stem
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: true
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiShower
+  name: territorial shower
+  description: A shower head with its own water. Build it against a wall, facing into the room.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: shower
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/shower.rsi
+    state: shower
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: true
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiOfficeChair
+  name: territorial office chair
+  description: A white office chair. Unlock its wheels to roll it about.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: officeChair
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/chairs.rsi
+    state: office-white
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiOfficeChairDark
+  name: territorial dark office chair
+  description: A dark office chair. Unlock its wheels to roll it about.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: officeChairDark
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/chairs.rsi
+    state: office-dark
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiToilet
+  name: territorial toilet
+  description: A toilet, flushing into disposals if it is piped to them. Anything hidden in its cistern is cleared away when the round ends.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: toilet
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/toilet.rsi
+    state: disposal
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: true
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked

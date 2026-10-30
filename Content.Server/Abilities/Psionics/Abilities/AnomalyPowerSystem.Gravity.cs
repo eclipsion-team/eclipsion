@@ -1,4 +1,5 @@
 using Content.Shared.Crescent.Psionics;
+using Content.Shared._Crescent.Territory;
 using Content.Shared.Abilities.Psionics;
 using Content.Shared.Actions.Events;
 using Robust.Shared.Physics.Components;
@@ -35,7 +36,11 @@ public sealed partial class AnomalyPowerSystem
                 new Circle(worldPos, gravity.SpaceRange))
             .ToArray();
 
-        var tiles = tileref.Select(t => (t.GridIndices, Tile.Empty)).ToList();
+        TryComp<PersistentPoiGridComponent>(xform.GridUid, out var territory);
+        var tiles = tileref
+            .Where(t => territory == null || !territory.ProtectsTile(t.GridIndices))
+            .Select(t => (t.GridIndices, Tile.Empty))
+            .ToList();
         _mapSystem.SetTiles(xform.GridUid.Value, grid, tiles);
 
         var range = gravity.MaxThrowRange * component.CurrentDampening;

@@ -195,7 +195,7 @@ public sealed partial class MapScreen : BoxContainer
                 {
                     ourShuttleObject = gridObj;
                 }
-                else if (!isBeaconMap && (iffComp == null || (iffComp.Flags & IFFFlags.Hide) == 0x0))
+                else if (!isBeaconMap && (iffComp == null || (iffComp.Flags & (IFFFlags.Hide | IFFFlags.HideOnMap)) == 0x0))
                 {
                     mapGrids.Add(gridObj);
                 }

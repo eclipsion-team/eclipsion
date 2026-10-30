@@ -1,6 +1,7 @@
 using Content.Server.Body.Systems;
 using Content.Server.Polymorph.Components;
 using Content.Server.Popups;
+using Content.Shared._Crescent.Territory;
 using Content.Shared.Body.Components;
 using Content.Shared.Damage;
 using Content.Shared.Examine;
@@ -39,6 +40,12 @@ public sealed class ImmovableRodSystem : EntitySystem
 
             if (!TryComp<MapGridComponent>(trans.GridUid, out var grid))
                 continue;
+
+            if (TryComp<PersistentPoiGridComponent>(trans.GridUid, out var territory) &&
+                territory.ProtectsTile(_mapSystemCompat.TileIndicesFor(trans.GridUid.Value, grid, trans.Coordinates)))
+            {
+                continue;
+            }
 
             _mapSystemCompat.SetTile(trans.GridUid.Value, grid, trans.Coordinates, Tile.Empty);
         }

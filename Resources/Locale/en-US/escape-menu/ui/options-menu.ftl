@@ -149,7 +149,7 @@ ui-options-function-move-up = Move Up
 ui-options-function-move-left = Move Left
 ui-options-function-move-down = Move Down
 ui-options-function-move-right = Move Right
-ui-options-function-walk = Change Speed
+ui-options-function-walk = Sprint (hold)
 
 ui-options-function-camera-rotate-left = Rotate left
 ui-options-function-camera-rotate-right = Rotate right
@@ -337,3 +337,4 @@ cmd-options-help = Usage: options [tab]
 ui-options-function-look-up = Look up/Take aim
 ui-options-function-auto-get-up = Automatically get up after falling
 ui-options-function-hold-look-up = Hold down the key to aim
+ui-options-function-sprint-fire = Shift + left click fires a gun in combat mode instead of examining (shoot while sprinting)

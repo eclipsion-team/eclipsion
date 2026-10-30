@@ -746,6 +746,16 @@
         - !type:MappingTemplatePrototype
           id: PersistentCaptureRegionFlag
         - !type:MappingTemplatePrototype
+          id: ComputerTargetingPersistentPoi
+        - !type:MappingTemplatePrototype
+          id: HardpointPersistentPoiLaserEmplacement
+        - !type:MappingTemplatePrototype
+          id: WeaponTurretAutoPDPersistentPoi
+        - !type:MappingTemplatePrototype
+          id: ComputerPersistentPoiProduction
+        - !type:MappingTemplatePrototype
+          id: ComputerPersistentPoiAdministration
+        - !type:MappingTemplatePrototype
           id: WarpPointShip
         - !type:MappingTemplatePrototype
           id: StationMap

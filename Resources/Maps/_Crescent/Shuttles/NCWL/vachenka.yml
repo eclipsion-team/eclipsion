@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 02/28/2026 09:18:42
-  entityCount: 870
+  entityCount: 871
 maps: []
 grids:
 - 1
@@ -1385,6 +1385,22 @@ entities:
     - type: Transform
       pos: 0.5,6.5
       parent: 1
+    - type: AmeController
+      injecting: True
+    - type: ContainerContainer
+      containers:
+        fuelSlot: !type:ContainerSlot
+          ent: 871
+          showEnts: False
+          occludes: True
+- proto: AmeJar
+  entities:
+  - uid: 871
+    components:
+    - type: Transform
+      parent: 47
+    - type: Physics
+      canCollide: False
 - proto: AmeShielding
   entities:
   - uid: 48

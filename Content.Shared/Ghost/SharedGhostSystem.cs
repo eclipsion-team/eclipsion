@@ -88,6 +88,22 @@ namespace Content.Shared.Ghost
     {
     }
 
+    [Serializable, NetSerializable]
+    public enum GhostWarpCategory : byte
+    {
+        Station,
+
+        Territory,
+
+        Asteroid,
+
+        Wreck,
+
+        Other,
+
+        Player,
+    }
+
     /// <summary>
     /// An individual place a ghost can warp to.
     /// This is used as part of <see cref="GhostWarpsResponseEvent"/>
@@ -95,12 +111,16 @@ namespace Content.Shared.Ghost
     [Serializable, NetSerializable]
     public struct GhostWarp
     {
-        public GhostWarp(NetEntity entity, string displayName, bool isWarpPoint)
+        public GhostWarp(NetEntity entity, string displayName, bool isWarpPoint,
+            GhostWarpCategory category = GhostWarpCategory.Other)
         {
             Entity = entity;
             DisplayName = displayName;
             IsWarpPoint = isWarpPoint;
+            Category = isWarpPoint ? category : GhostWarpCategory.Player;
         }
+
+        public GhostWarpCategory Category { get; }
 
         /// <summary>
         /// The entity representing the warp point.

@@ -9,7 +9,7 @@
     LOADOUT: 2x 48mm 'Shortbow' SRM, 1x 35mm 'Scout' Autocannon, 3x 150cc 'Retribution' Pulse Laser, 1x 20mm 'Screamer' Rotary Cannon, 1x 200cc 'Starburst' Plasma Gatling
     SHIELD: Absent
     SPEED: 30 m/s
-  price: 70000 #appraisegrid of 60k~
+  price: 76000
   category: Medium
   group: None
   path: /Maps/_Crescent/Shuttles/TFSC/hyena.yml

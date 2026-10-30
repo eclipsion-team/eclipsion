@@ -14,6 +14,12 @@ ghost-gui-toggle-hearing-popup-off = You can now only hear radio and nearby mess
 ghost-target-window-title = Ghost Warp
 ghost-target-window-current-button = Warp: {$name}
 ghost-target-window-warp-to-most-followed = Warp to Most Followed
+ghost-target-window-category-station = Stations
+ghost-target-window-category-territory = Territories
+ghost-target-window-category-asteroid = Asteroid belts
+ghost-target-window-category-wreck = Wrecks
+ghost-target-window-category-other = Other locations
+ghost-target-window-category-player = Players
 
 ghost-roles-window-title = Ghost Roles
 ghost-roles-window-join-raffle-button = Join raffle

@@ -83,6 +83,7 @@
   name: leather jacket
   description: Rock'n'roll, babe!
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _NF/Clothing/OuterClothing/Coats/jacket_leather.rsi
   - type: Clothing
@@ -94,6 +95,7 @@
   name: biker jacket
   description: Made out of toughest synthleather for toughest badasses.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _NF/Clothing/OuterClothing/Coats/jacket_biker.rsi
   - type: Clothing
@@ -105,6 +107,7 @@
   name: jamrock blazer
   description: Welcome to jamrock.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _NF/Clothing/OuterClothing/Coats/blazer_jamrock.rsi
   - type: Clothing
@@ -127,6 +130,7 @@
   name: blue letterman jacket
   description: Where is your lacrosse stick?
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _NF/Clothing/OuterClothing/Coats/jacket_letterman_blue.rsi
   - type: Clothing
@@ -138,6 +142,7 @@
   name: brown letterman jacket
   description: Where is your lacrosse stick?
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _NF/Clothing/OuterClothing/Coats/jacket_letterman_brown.rsi
   - type: Clothing
@@ -149,6 +154,7 @@
   name: red letterman jacket
   description: Where is your lacrosse stick?
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _NF/Clothing/OuterClothing/Coats/jacket_letterman_red.rsi
   - type: Clothing
@@ -160,6 +166,7 @@
   name: magenta letterman jacket
   description: Where is your holocrosse joystick?
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _NF/Clothing/OuterClothing/Coats/jacket_letterman_magenta.rsi
   - type: Clothing
@@ -171,6 +178,7 @@
   name: bomber jacket
   description: Oi! Whatcha lookin' at?
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _NF/Clothing/OuterClothing/Coats/bomber_pinksleeves.rsi
   - type: Clothing
@@ -184,6 +192,7 @@
   description: Oi! Whatcha lookin' at?
   suffix: Random visuals
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _NF/Clothing/OuterClothing/Coats/jacket_procedural.rsi
     layers:
@@ -232,6 +241,7 @@
   description: Where is your holocrosse joystick?
   suffix: Random visuals
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _NF/Clothing/OuterClothing/Coats/jacket_procedural.rsi
     layers:

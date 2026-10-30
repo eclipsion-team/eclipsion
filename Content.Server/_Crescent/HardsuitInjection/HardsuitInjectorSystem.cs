@@ -3,6 +3,7 @@ using Content.Server.Administration;
 using Content.Shared._Crescent.HardsuitInjection;
 using Content.Shared.Actions;
 using Content.Shared.Administration.Logs;
+using Content.Shared.Alert;
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
@@ -14,11 +15,13 @@ using Content.Shared.Examine;
 using Content.Shared.FixedPoint;
 using Content.Shared.Forensics;
 using Content.Shared.Inventory;
+using Content.Shared.Inventory.Events;
 using Content.Shared.Mobs;
 using Content.Shared.Popups;
 using Content.Shared.Verbs;
 using Robust.Server.Audio;
 using Robust.Shared.Audio;
+using Robust.Shared.Containers;
 using Robust.Shared.Player;
 
 namespace Content.Server._Crescent.HardsuitInjection;
@@ -30,6 +33,7 @@ public sealed class HardsuitInjectorSystem : EntitySystem
     [Dependency] private readonly ActionContainerSystem _actionContainer = default!;
     [Dependency] private readonly SharedActionsSystem _actions = default!;
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
+    [Dependency] private readonly AlertsSystem _alerts = default!;
     [Dependency] private readonly AudioSystem _audio = default!;
     [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
@@ -49,7 +53,54 @@ public sealed class HardsuitInjectorSystem : EntitySystem
         SubscribeLocalEvent<HardsuitInjectorComponent, HardsuitInjectActionEvent>(OnInjectAction);
         SubscribeLocalEvent<HardsuitInjectorComponent, GetVerbsEvent<AlternativeVerb>>(OnGetVerbs);
         SubscribeLocalEvent<HardsuitInjectorComponent, ExaminedEvent>(OnExamined);
+        SubscribeLocalEvent<HardsuitInjectorComponent, GotEquippedEvent>(OnEquipped);
+        SubscribeLocalEvent<HardsuitInjectorComponent, GotUnequippedEvent>(OnUnequipped);
+        SubscribeLocalEvent<HardsuitInjectorComponent, EntInsertedIntoContainerMessage>(OnContainerChanged);
+        SubscribeLocalEvent<HardsuitInjectorComponent, EntRemovedFromContainerMessage>(OnContainerChanged);
         SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChanged);
+    }
+
+    private void OnEquipped(Entity<HardsuitInjectorComponent> ent, ref GotEquippedEvent args)
+    {
+        if ((args.SlotFlags & SlotFlags.OUTERCLOTHING) == 0)
+            return;
+
+        UpdateMissingAlert(ent, args.Equipee);
+    }
+
+    private void OnUnequipped(Entity<HardsuitInjectorComponent> ent, ref GotUnequippedEvent args)
+    {
+        if ((args.SlotFlags & SlotFlags.OUTERCLOTHING) == 0)
+            return;
+
+        _alerts.ClearAlert(args.Equipee, ent.Comp.MissingInjectorAlert);
+    }
+
+    private void OnContainerChanged<T>(Entity<HardsuitInjectorComponent> ent, ref T args) where T : ContainerModifiedMessage
+    {
+        if (!IsInjectorSlot(args.Container.ID) || !TryGetWearer(ent.Owner, out var wearer))
+            return;
+
+        UpdateMissingAlert(ent, wearer);
+    }
+
+    private void UpdateMissingAlert(Entity<HardsuitInjectorComponent> ent, EntityUid wearer)
+    {
+        if (HasUsableInjector(ent.Owner, HardsuitInjectorComponent.SlotOneId) &&
+            HasUsableInjector(ent.Owner, HardsuitInjectorComponent.SlotTwoId))
+        {
+            _alerts.ClearAlert(wearer, ent.Comp.MissingInjectorAlert);
+            return;
+        }
+
+        _alerts.ShowAlert(wearer, ent.Comp.MissingInjectorAlert);
+    }
+
+    private bool HasUsableInjector(EntityUid suit, string slotId)
+    {
+        return TryGetInjectorSource(suit, slotId, out var source) &&
+               TryGetSourceSolution(source, out _, out var solution, out _) &&
+               solution.Volume > 0;
     }
 
     private void OnMapInit(Entity<HardsuitInjectorComponent> ent, ref MapInitEvent args)
@@ -174,6 +225,7 @@ public sealed class HardsuitInjectorSystem : EntitySystem
             return false;
 
         _audio.PlayPvs(injectSound, wearer);
+        UpdateMissingAlert(suit, wearer);
 
         var dna = new TransferDnaEvent { Donor = wearer, Recipient = source };
         RaiseLocalEvent(wearer, ref dna);

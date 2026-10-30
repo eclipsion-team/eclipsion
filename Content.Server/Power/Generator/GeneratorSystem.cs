@@ -37,6 +37,7 @@ public sealed class GeneratorSystem : SharedGeneratorSystem
         SubscribeLocalEvent<FuelGeneratorComponent, PortableGeneratorSetTargetPowerMessage>(OnTargetPowerSet);
         SubscribeLocalEvent<FuelGeneratorComponent, PortableGeneratorEjectFuelMessage>(OnEjectFuel);
         SubscribeLocalEvent<FuelGeneratorComponent, AnchorStateChangedEvent>(OnAnchorStateChanged);
+        SubscribeLocalEvent<FuelGeneratorComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SolidFuelGeneratorAdapterComponent, GeneratorGetFuelEvent>(SolidGetFuel);
         SubscribeLocalEvent<SolidFuelGeneratorAdapterComponent, GeneratorUseFuel>(SolidUseFuel);
         SubscribeLocalEvent<SolidFuelGeneratorAdapterComponent, GeneratorEmpty>(SolidEmpty);
@@ -48,12 +49,19 @@ public sealed class GeneratorSystem : SharedGeneratorSystem
 
     private void OnAnchorStateChanged(EntityUid uid, FuelGeneratorComponent component, ref AnchorStateChangedEvent args)
     {
-        // Turn off generator if unanchored while running.
-
-        if (!component.On)
+        // Turn off generator if unanchored while running. Anchored entities also raise this on startup,
+        // which used to switch off every generator a map was saved with running.
+        if (!component.On || args.Anchored)
             return;
 
         SetFuelGeneratorOn(uid, false, component);
+    }
+
+    private void OnMapInit(EntityUid uid, FuelGeneratorComponent component, MapInitEvent args)
+    {
+        // Saved running: sync visuals, sound and anchoring.
+        if (component.On)
+            SetFuelGeneratorOn(uid, Transform(uid).Anchored, component);
     }
 
     private void OnEjectFuel(EntityUid uid, FuelGeneratorComponent component, PortableGeneratorEjectFuelMessage args)

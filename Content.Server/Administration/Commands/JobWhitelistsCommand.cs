@@ -8,8 +8,6 @@ using Robust.Server.Player;
 namespace Content.Server.Administration.Commands;
 
 /// <summary>
-/// Opens the job whitelists panel for editing player whitelists.
-/// To use this ingame it's easiest to first open the player panel, then hit Job Whitelists.
 /// </summary>
 [AdminCommand(AdminFlags.Whitelist)]
 public sealed class JobWhitelistsCommand : LocalizedCommands
@@ -28,14 +26,15 @@ public sealed class JobWhitelistsCommand : LocalizedCommands
             return;
         }
 
-        if (args.Length != 1)
+        if (args.Length == 0)
         {
-            shell.WriteLine(Loc.GetString("cmd-ban-invalid-arguments"));
+            shell.WriteError(Loc.GetString("shell-need-minimum-one-argument"));
             shell.WriteLine(Help);
+            return;
         }
 
         var playerarg = string.Join(' ', args).Trim();
-        var located = await _locator.LookupIdByNameAsync(playerarg);
+        var located = await _locator.LookupIdByNameOrIdAsync(playerarg);
         if (located is null)
         {
             shell.WriteError(Loc.GetString("cmd-jobwhitelists-player-err"));

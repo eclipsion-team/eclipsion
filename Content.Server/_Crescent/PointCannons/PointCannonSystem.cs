@@ -5,6 +5,7 @@ using Content.Server.Administration;
 using Content.Server.Popups;
 using Content.Server.Shuttles.Systems;
 using Content.Server.Weapons.Ranged.Systems;
+using Content.Shared.Examine;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.PointCannons;
@@ -22,6 +23,8 @@ using Robust.Shared.Physics.Components;
 using Robust.Shared.Player;
 using System;
 using Content.Server._Crescent.Hardpoint;
+using Content.Server._Crescent.Territory;
+using Content.Shared._Crescent.Territory;
 using Content.Server.Power.Components;
 using Content.Shared._Crescent.CCvars;
 using Content.Shared._Crescent.Hardpoints;
@@ -48,6 +51,7 @@ public sealed class PointCannonSystem : EntitySystem
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IGameTiming _timing = default!; // +NEW
     [Dependency] private readonly ShipWeaponTargetingSystem _shipTargeting = default!;
+    [Dependency] private readonly PersistentPoiLevelSystem _territoryLevels = default!;
 
     private float _accumulatedFrameTime;
     private float _uiTps;
@@ -123,6 +127,9 @@ public sealed class PointCannonSystem : EntitySystem
         SubscribeLocalEvent<PointCannonComponent, AnchorStateChangedEvent>(OnCannonAnchorChanged);
         SubscribeLocalEvent<PointCannonComponent, ComponentInit>(OnCannonInit);
         SubscribeLocalEvent<PointCannonComponent, ComponentRemove>(OnCannonRemoved);
+        SubscribeLocalEvent<PointCannonComponent, ExaminedEvent>(OnCannonExamined);
+
+        SubscribeLocalEvent<PersistentPoiDevelopmentChangedEvent>(OnTerritoryDevelopmentChanged);
 
         _cannonQuery = GetEntityQuery<PointCannonComponent>();
         _consoleQuery = GetEntityQuery<TargetingConsoleComponent>();
@@ -150,6 +157,19 @@ public sealed class PointCannonSystem : EntitySystem
     private void OnCannonRemoved(EntityUid uid, PointCannonComponent comp, ComponentRemove args)
     {
         InvalidateGridCache(uid);
+    }
+
+    private void OnCannonExamined(Entity<PointCannonComponent> ent, ref ExaminedEvent args)
+    {
+        if (!args.IsInDetailsRange ||
+            !_xformQuery.TryGetComponent(ent, out var xform) ||
+            !xform.Anchored ||
+            IsUnderFireControl(ent))
+        {
+            return;
+        }
+
+        args.PushMarkup(Loc.GetString("point-cannon-examine-outside-fire-control"));
     }
 
     /// <summary>
@@ -253,7 +273,65 @@ public sealed class PointCannonSystem : EntitySystem
         }
 
         cache.CacheDirty = false;
+        cache.Revision++;
         return cache.CachedCannons;
+    }
+
+    public bool IsUnderFireControl(EntityUid cannonUid)
+    {
+        if (!_xformQuery.TryGetComponent(cannonUid, out var xform) || xform.GridUid is not { } gridUid)
+            return true;
+
+        return GetFireControlLimit(gridUid) is not { } limit || GetFireControlled(gridUid, limit).Contains(cannonUid);
+    }
+
+    public int? GetFireControlLimit(EntityUid gridUid)
+    {
+        return TryComp<PersistentPoiGridComponent>(gridUid, out var territory)
+            ? _territoryLevels.GetLimit(territory, PersistentPoiWorksCategory.PointDefence)
+            : null;
+    }
+
+    private HashSet<EntityUid> GetFireControlled(EntityUid gridUid, int limit)
+    {
+        var cannons = GetGridCannons(gridUid);
+        var cache = EnsureComp<GridCannonCacheComponent>(gridUid);
+
+        if (cache.ControlledRevision == cache.Revision && cache.ControlledLimit == limit)
+            return cache.ControlledCannons;
+
+        cache.ControlledCannons.Clear();
+        foreach (var cannon in cannons
+                     .Where(uid => _xformQuery.TryGetComponent(uid, out var xform) && xform.Anchored)
+                     .OrderBy(uid => uid.Id)
+                     .Take(Math.Max(0, limit)))
+        {
+            cache.ControlledCannons.Add(cannon);
+        }
+
+        cache.ControlledRevision = cache.Revision;
+        cache.ControlledLimit = limit;
+        return cache.ControlledCannons;
+    }
+
+    private int CountUncontrolledCannons(EntityUid gridUid)
+    {
+        if (GetFireControlLimit(gridUid) is not { } limit)
+            return 0;
+
+        var anchored = 0;
+        foreach (var cannon in GetGridCannons(gridUid))
+        {
+            if (_xformQuery.TryGetComponent(cannon, out var xform) && xform.Anchored)
+                anchored++;
+        }
+
+        return Math.Max(0, anchored - limit);
+    }
+
+    private void OnTerritoryDevelopmentChanged(ref PersistentPoiDevelopmentChangedEvent args)
+    {
+        InvalidateGridCannons(args.Grid);
     }
 
     private void RefreshDirtyGridCaches()
@@ -286,7 +364,10 @@ public sealed class PointCannonSystem : EntitySystem
         }
 
         foreach (var cache in _dirtyGridScratch.Values)
+        {
             cache.CacheDirty = false;
+            cache.Revision++;
+        }
     }
 
     public override void Update(float frameTime)
@@ -348,9 +429,9 @@ public sealed class PointCannonSystem : EntitySystem
         }
 
         var mounted = new HashSet<EntityUid>();
-        foreach (var cannonUid in GetGridCannons(gridUid.Value))
+        foreach (var cannonUid in GetGridCannons(gridUid.Value).ToList())
         {
-            if (IsCannonMounted(cannonUid))
+            if (IsCannonMounted(cannonUid) && IsUnderFireControl(cannonUid))
                 mounted.Add(cannonUid);
         }
 
@@ -495,11 +576,11 @@ public sealed class PointCannonSystem : EntitySystem
         if (gridUid is null)
             return;
 
-        var cachedCannons = GetGridCannons(gridUid.Value);
+        var cachedCannons = GetGridCannons(gridUid.Value).ToList();
 
         foreach (var cannonUid in cachedCannons)
         {
-            if (!IsCannonMounted(cannonUid))
+            if (!IsCannonMounted(cannonUid) || !IsUnderFireControl(cannonUid))
                 continue;
             LinkCannon(cannonUid, console, comp, MetaData(cannonUid).EntityName);
         }
@@ -680,12 +761,22 @@ public sealed class PointCannonSystem : EntitySystem
 
         List<string>? groups = console.RegenerateCannons ? console.CannonGroups.Keys.ToList() : null;
 
+        int? fireControlLimit = null;
+        var uncontrolled = 0;
+        if (_xformQuery.TryGetComponent(uid, out var consoleXform) && consoleXform.GridUid is { } consoleGrid)
+        {
+            fireControlLimit = GetFireControlLimit(consoleGrid);
+            uncontrolled = CountUncontrolledCannons(consoleGrid);
+        }
+
         var consoleState = new TargetingConsoleBoundUserInterfaceState(
             navState,
             iffState,
             groups,
             GetNetEntityList(console.CurrentGroup),
-            console.ActiveGroups.ToList()); // KS14: lights the selected groups on the console
+            console.ActiveGroups.ToList(),
+            fireControlLimit,
+            uncontrolled);
         console.RegenerateCannons = false;
         console.PrevState = consoleState;
         _uiSys.SetUiState(uid, TargetingConsoleUiKey.Key, consoleState);
@@ -892,7 +983,6 @@ public sealed class PointCannonSystem : EntitySystem
 
     /// <summary>
     ///     Crescent - the standing conditions <see cref="TryFireCannon"/> needs before a gun will fire at all:
-    ///     mounted on a hardpoint, and that hardpoint powered while ship power draw is on. Deliberately leaves out
     ///     the transient ones (cooldown, having a map) so that anything reasoning about what a hull can bring to
     ///     bear - the ship AI's arc solver - counts exactly the guns this system will actually shoot.
     /// </summary>
@@ -908,6 +998,9 @@ public sealed class PointCannonSystem : EntitySystem
         // The hardpoint must not reintroduce a power requirement while ship-weapon power is opted out.
         if (_shipPowerDrawEnabled &&
             (!_powerQuery.TryGetComponent(mount, out var powerComp) || !powerComp.Powered))
+            return false;
+
+        if (!IsUnderFireControl(cannonUid))
             return false;
 
         hardpoint = mount;

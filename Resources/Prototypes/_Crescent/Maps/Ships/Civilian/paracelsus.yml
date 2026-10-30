@@ -9,7 +9,7 @@
     LOADOUT: Armless
     SHIELD: Absent
     SPEED: 30 m/s
-  price: 47000
+  price: 50000
   category: Small
   group: Civilian
   path: /Maps/_Crescent/Shuttles/Civilian/paracelsus.yml

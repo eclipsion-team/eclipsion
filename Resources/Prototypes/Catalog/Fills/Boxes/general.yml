@@ -237,7 +237,7 @@
   description: A box of flares. Fits in your pocket!
   components:
   - type: Item
-    size: Tiny #so it can fit in pockets
+    size: Small # pockets take Small; Tiny was smaller than the flare gun it holds
     shape:
     - 0,0,1,1
   - type: StorageFill

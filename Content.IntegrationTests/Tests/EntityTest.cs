@@ -264,6 +264,14 @@ namespace Content.IntegrationTests.Tests
 
             await pair.RunTicksSync(3);
 
+            // The first shipyard console creates the shared shipyard map, which then lives for the round.
+            var shipyardConsole = protoIds.FirstOrDefault(id => server.ProtoMan.Index<EntityPrototype>(id).Components.ContainsKey("ShipyardConsole"));
+            if (shipyardConsole != null)
+            {
+                await server.WaitPost(() => server.EntMan.DeleteEntity(server.EntMan.SpawnEntity(shipyardConsole, coords)));
+                await pair.RunTicksSync(3);
+            }
+
             // We consider only non-audio entities, as some entities will just play sounds when they spawn.
             int Count(IEntityManager ent) =>  ent.EntityCount - ent.Count<AudioComponent>();
 

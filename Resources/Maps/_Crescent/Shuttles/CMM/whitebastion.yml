@@ -5171,7 +5171,7 @@ entities:
         gun_magazine: !type:ContainerSlot
           showEnts: False
           occludes: True
-          ent: invalid
+          ent: null
         gun_chamber: !type:ContainerSlot
           showEnts: False
           occludes: True
@@ -5213,7 +5213,7 @@ entities:
         gun_magazine: !type:ContainerSlot
           showEnts: False
           occludes: True
-          ent: invalid
+          ent: null
         gun_chamber: !type:ContainerSlot
           showEnts: False
           occludes: True

@@ -222,7 +222,6 @@
     - OrdnancemanCMM
     - PhysicianCMM
 
-# Gliess Santo's terminal, run by the Gliess Sheriff alone. Recruits into the CMM (the Gliess posts are CMM), but
 # only to the sheriff's office: Sheriff and Deputy. Minutemen roles stay on the Minutemen terminal above.
 - type: entity
   parent: FactionRecruitmentConsoleCMM
@@ -231,7 +230,7 @@
   suffix: Gliess Sheriff
   components:
   - type: AccessReader
-    access: [["GliessSheriffCommand"]]
+    access: [["GliessSheriffCommand"], ["GliessDockmasterCommand"]]
   - type: FactionRecruitmentConsole
     faction: CMM
     roles:

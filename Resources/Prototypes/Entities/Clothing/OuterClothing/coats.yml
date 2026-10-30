@@ -4,6 +4,7 @@
   name: bomber jacket
   description: A thick, well-worn WW2 leather bomber jacket.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: Clothing/OuterClothing/Coats/bomber.rsi
   - type: Clothing
@@ -336,6 +337,7 @@
   name: warden's armored jacket
   description: A sturdy, utilitarian jacket designed to protect a warden from any brig-bound threats.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: Clothing/OuterClothing/Coats/warden.rsi
   - type: Clothing

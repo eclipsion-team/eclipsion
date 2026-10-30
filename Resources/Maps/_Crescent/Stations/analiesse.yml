@@ -13528,7 +13528,7 @@ entities:
     - type: Transform
       parent: 1
       pos: 2.5,19.5
-- proto: PortableGeneratorPacman
+- proto: PortableGeneratorPacmanShuttle
   entities:
   - uid: 1900
     components:

@@ -2,10 +2,29 @@
         xmlns="https://spacestation14.io"
         xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
         Title="{Loc player-panel-job-whitelists}" MinSize="750 600">
-    <BoxContainer Orientation="Vertical">
-	    <Label Name="PlayerName" Margin="4"/>
-    	<ScrollContainer VerticalExpand="True">
-    	    <BoxContainer Name="Departments" Orientation="Vertical"/> <!-- Populated with DepartmentWhitelistPanel -->
-	    </ScrollContainer>
+    <BoxContainer Orientation="Vertical" Margin="4">
+        <BoxContainer Orientation="Horizontal">
+            <Label Name="PlayerName" StyleClasses="LabelHeading" HorizontalExpand="True"/>
+            <Label Name="Summary" StyleClasses="LabelSubText" VerticalAlignment="Center"/>
+        </BoxContainer>
+
+        <PanelContainer StyleClasses="BackgroundDark" Margin="0 4">
+            <BoxContainer Orientation="Horizontal" Margin="4">
+                <CheckBox Name="ServerWhitelist" Text="{Loc job-whitelists-window-server}"
+                          ToolTip="{Loc job-whitelists-window-server-tooltip}" Disabled="True"/>
+            </BoxContainer>
+        </PanelContainer>
+
+        <BoxContainer Orientation="Horizontal" Margin="0 0 0 4">
+            <LineEdit Name="Search" PlaceHolder="{Loc job-whitelists-window-search}" HorizontalExpand="True"/>
+            <CheckBox Name="OnlyRequired" Text="{Loc job-whitelists-window-only-required}" Pressed="True" Margin="8 0"/>
+            <Button Name="GrantShown" Text="{Loc job-whitelists-window-grant-shown}" StyleClasses="OpenRight" Disabled="True"/>
+            <controls:ConfirmButton Name="RevokeShown" Text="{Loc job-whitelists-window-revoke-shown}"
+                                    StyleClasses="OpenLeft" Disabled="True"/>
+        </BoxContainer>
+
+        <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+            <BoxContainer Name="Departments" Orientation="Vertical"/> <!-- Populated with DepartmentWhitelistPanel -->
+        </ScrollContainer>
     </BoxContainer>
 </controls:FancyWindow>

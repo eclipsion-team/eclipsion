@@ -26,6 +26,7 @@
   suffix: Zavodskoi
   description: A shell jacket worn by security staff contracted from Zavodskoi Interstellar
   components:
+    - type: OverArmorJacket
     - type: Sprite
       sprite: _Crescent/Clothing/Zavodskoi/OuterClothing/zav_jacket_security.rsi
     - type: Clothing
@@ -47,6 +48,7 @@
   suffix: Zavodskoi, alt
   description: A shell jacket worn by security staff contracted from Zavodskoi Interstellar
   components:
+    - type: OverArmorJacket
     - type: Sprite
       sprite: _Crescent/Clothing/Zavodskoi/OuterClothing/zav_jacket_security_alt.rsi
     - type: Clothing

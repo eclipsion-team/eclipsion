@@ -126,7 +126,6 @@ entities:
     - type: RadiationGridResistance
     - type: BecomesStation
       id: Battery
-    - type: StationEmpImmune
 - proto: AirlockExternal
   entities:
   - uid: 3

@@ -1,3 +1,4 @@
+using Content.Shared._Crescent.Economy;
 using Content.Shared.Shipyard.Prototypes;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
@@ -32,9 +33,12 @@ public sealed class ShipyardConsolePurchaseMessage : BoundUserInterfaceMessage
     public readonly ProtoId<VesselPrototype> Vessel;
     public readonly string? CustomName;
 
-    public ShipyardConsolePurchaseMessage(string vessel, string? customName = null)
+    public readonly PaymentSource Source;
+
+    public ShipyardConsolePurchaseMessage(string vessel, string? customName = null, PaymentSource source = PaymentSource.Faction)
     {
         Vessel = vessel;
         CustomName = customName;
+        Source = source;
     }
 }

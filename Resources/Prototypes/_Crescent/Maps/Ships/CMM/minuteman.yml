@@ -9,7 +9,7 @@
     LOADOUT: 1x 95mm 'Arbalest' Medium Missile System, 2x 48mm 'Shortbow' SRM
     SHIELD: Absent
     SPEED: 30 m/s
-  price: 45000
+  price: 55000
   category: Small
   group: None
   path: /Maps/_Crescent/Shuttles/CMM/minuteman.yml

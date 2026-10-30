@@ -1,0 +1,13 @@
+<PanelContainer
+        xmlns="https://spacestation14.io"
+        StyleClasses="BackgroundDark"
+        HorizontalExpand="True"
+        Margin="0 0 0 4">
+    <BoxContainer Orientation="Vertical" Margin="4">
+        <BoxContainer Orientation="Horizontal">
+            <CheckBox Name="Department" HorizontalExpand="True"/> <!-- Selects every shown job in the department at once -->
+            <Label Name="Count" StyleClasses="LabelSubText"/>
+        </BoxContainer>
+        <GridContainer Name="JobsContainer" Columns="2" Margin="16 0 0 0"/> <!-- Populated with each job to select individually -->
+    </BoxContainer>
+</PanelContainer>

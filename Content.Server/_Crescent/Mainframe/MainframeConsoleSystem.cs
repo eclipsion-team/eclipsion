@@ -3,6 +3,8 @@ using Content.Shared._Crescent.Diplomacy;
 using Content.Shared._Crescent.Mainframe;
 using Content.Shared._Crescent.Overwatch;
 using Content.Shared._Crescent.Payment;
+using Content.Shared._Crescent.PoliticalMap;
+using Content.Shared._Crescent.Territory;
 using Content.Shared.Cargo;
 using Content.Shared.Communications;
 using Robust.Server.GameObjects;
@@ -32,6 +34,8 @@ public sealed class MainframeConsoleSystem : EntitySystem
         EconomicConsoleUiKey.Key,
         PaymentConsoleUiKey.Key,
         CommunicationsConsoleUiKey.Key,
+        TerritoryConsoleUiKey.Key,
+        PoliticalMapUiKey.Key,
     };
 
     public override void Initialize()

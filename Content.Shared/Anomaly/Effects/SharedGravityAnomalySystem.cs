@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Shared._Crescent.Territory;
 using Content.Shared.Anomaly.Components;
 using Content.Shared.Anomaly.Effects.Components;
 using Content.Shared.Ghost;
@@ -58,7 +59,11 @@ public abstract class SharedGravityAnomalySystem : EntitySystem
                 new Circle(worldPos, component.SpaceRange))
             .ToArray();
 
-        var tiles = tileref.Select(t => (t.GridIndices, Tile.Empty)).ToList();
+        TryComp<PersistentPoiGridComponent>(xform.GridUid, out var territory);
+        var tiles = tileref
+            .Where(t => territory == null || !territory.ProtectsTile(t.GridIndices))
+            .Select(t => (t.GridIndices, Tile.Empty))
+            .ToList();
         _mapSystem.SetTiles(xform.GridUid.Value, grid, tiles);
 
         var range = component.MaxThrowRange * 2 * args.PowerModifier;

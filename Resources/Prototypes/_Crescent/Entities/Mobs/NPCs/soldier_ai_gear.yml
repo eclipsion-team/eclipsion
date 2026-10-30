@@ -462,3 +462,60 @@
   components:
   - type: Stack
     count: 2
+
+- type: entity
+  parent: ClothingOuterHardsuitHunterSoldierAI
+  id: ClothingOuterHardsuitHunterDerelictAI
+  suffix: Soldier AI, Derelict
+  components:
+  - type: ClothingAddFaction
+    faction: SRMHunt
+
+- type: startingGear
+  id: SoldierAIGearDerelictHunter
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitHunter
+    outerClothing: ClothingOuterHardsuitHunterDerelictAI
+    head: ClothingHeadHelmetHardsuitHunter
+    mask: ClothingMaskImperialCombatGasmask
+    gloves: ClothingHandsGlovesHunter
+    shoes: ClothingShoesBootsMagDSM
+    suitstorage: JetpackSoldierAIFilled
+    pocket1: DoubleEmergencyOxygenTankFilled
+    belt: ClothingBeltMilitaryWebbingSoldierAIFilled
+    back: ClothingBackpackSRM
+
+- type: startingGear
+  id: SoldierAIGearDerelictRifleman
+  subGear:
+  - SoldierAIGearDerelictHunter
+  inhand:
+  - WeaponRifleHunter
+
+- type: startingGear
+  id: SoldierAIGearDerelictShock
+  subGear:
+  - SoldierAIGearDerelictHunter
+  inhand:
+  - WeaponSubMachineGunBeetle
+
+- type: startingGear
+  id: SoldierAIGearDerelictShotgunner
+  subGear:
+  - SoldierAIGearDerelictHunter
+  inhand:
+  - WeaponShotgunReno
+
+- type: startingGear
+  id: SoldierAIGearDerelictMarksman
+  subGear:
+  - SoldierAIGearDerelictHunter
+  inhand:
+  - WeaponSniperImperator
+
+- type: startingGear
+  id: SoldierAIGearDerelictGunner
+  subGear:
+  - SoldierAIGearDerelictHunter
+  inhand:
+  - WeaponLightMachineGunDSMDominion

@@ -6,7 +6,7 @@
     LOADOUT: 2x 350c "Compakt" hybrid energy gatling, 4x 20mm PTA "Operator" gatling turret
     SHIELD: Absent
     SPEED: 30 m/s
-  price: 8000
+  price: 34000
   category: Small
   group: None
   path: /Maps/_Crescent/Shuttles/DSM/rolling_reverie.yml

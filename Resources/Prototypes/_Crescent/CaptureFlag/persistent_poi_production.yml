@@ -1,0 +1,430 @@
+# persistent territory production and administration
+#
+#
+#
+
+- type: entity
+  abstract: true
+  parent: BaseComputer
+  id: BaseComputerPersistentPoi
+  components:
+  - type: PersistentPoiStructure
+  - type: FactionMachine
+    faction: ""
+    explicit: true
+    restrictAccess: true
+    normalizeFaction: false
+  - type: CaptureRegionDevice
+    updateName: true
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 2
+            max: 4
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: BaseComputerPersistentPoi
+  id: ComputerPersistentPoiProduction
+  name: territorial production console
+  suffix: Persistent territory, built
+  description: Tools the territory for a line of production, then runs and empties every works on it. Without it, they all stand idle.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: mining
+    - map: ["computerLayerKeys"]
+      state: mining_key
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: PointLight
+    color: "#b89f25"
+  - type: PersistentPoiWorks
+    category: ProductionConsole
+  - type: PersistentPoiProductionConsole
+  - type: ActivatableUI
+    key: enum.PersistentPoiProductionUiKey.Key
+    singleUser: true
+  - type: UserInterface
+    interfaces:
+      enum.PersistentPoiProductionUiKey.Key:
+        type: PersistentPoiProductionBoundUserInterface
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: productionConsole
+
+- type: entity
+  parent: BaseComputerPersistentPoi
+  id: ComputerPersistentPoiAdministration
+  name: territorial administration console
+  suffix: Persistent territory, built
+  description: Records what the territory is developed to and what that allows. Feed it the materials it asks for to raise the territory a level.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      sprite: _Crescent/Structures/Machines/computers.rsi
+      state: command
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: PointLight
+    color: "#5fa0d8"
+  - type: PersistentPoiWorks
+    category: AdministrationConsole
+  - type: PersistentPoiAdministrationConsole
+  - type: ActivatableUI
+    key: enum.PersistentPoiAdministrationUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.PersistentPoiAdministrationUiKey.Key:
+        type: PersistentPoiAdministrationBoundUserInterface
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: administrationConsole
+
+- type: entity
+  abstract: true
+  parent: BaseMachine
+  id: BasePersistentPoiWorks
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: Factory
+  - type: AmbientSound
+    enabled: false
+    range: 5
+    volume: -6
+    sound:
+      path: /Audio/Ambience/Objects/engine_hum.ogg
+  - type: PowerConsumer
+    voltage: Medium
+    drawRate: 0
+  - type: NodeContainer
+    examinable: true
+    nodes:
+      power:
+        !type:CableDeviceNode
+        nodeGroupID: MVPower
+
+# General ore
+
+- type: entity
+  parent: BasePersistentPoiWorks
+  id: PersistentPoiMixedOreRig
+  name: territorial ore extraction rig
+  suffix: Persistent territory, built
+  description: A deep-core drill sunk into permanent ground. It brings up a mix of whatever ore lies below.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Automining/mixed.rsi
+    snapCardinals: true
+    layers:
+    - state: base_machine
+  - type: PersistentPoiProductionMachine
+    powerDraw: 25000
+    capability: GeneralOre
+    maxStored: 4
+    recipes:
+    - PersistentPoiExtractMixedOre
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: mixedOreRig
+
+# Targeted ore
+
+- type: entity
+  parent: BasePersistentPoiWorks
+  id: PersistentPoiExtractionRig
+  name: territorial targeted extraction rig
+  suffix: Persistent territory, built
+  description: A deep-core drill calibrated to one seam at a time. Slower to set up than a mixed rig, but it brings up a lot of what you ask for.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Automining/steel.rsi
+    snapCardinals: true
+    layers:
+    - state: base_machine
+  - type: PersistentPoiProductionMachine
+    powerDraw: 30000
+    capability: TargetedOre
+    maxStored: 4
+    recipes:
+    - PersistentPoiExtractSteelOre
+    - PersistentPoiExtractCopperOre
+    - PersistentPoiExtractPlasmaOre
+    - PersistentPoiExtractSilverOre
+    - PersistentPoiExtractGoldOre
+    - PersistentPoiExtractTungstenOre
+    - PersistentPoiExtractQuartz
+    - PersistentPoiExtractUraniumOre
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: extractionRig
+
+# Textiles
+
+- type: entity
+  parent: BasePersistentPoiWorks
+  id: PersistentPoiTextileMill
+  name: territorial textile mill
+  suffix: Persistent territory, built
+  description: Spins, weaves and treats fabric without anyone at the loom - durathread included.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/factorystructures.rsi
+    snapCardinals: true
+    layers:
+    - state: autoloom
+  - type: PointLight
+    radius: 1.5
+    energy: 1.6
+    color: "#9dc5c9"
+  - type: PersistentPoiProductionMachine
+    powerDraw: 20000
+    capability: Textiles
+    maxStored: 4
+    recipes:
+    - PersistentPoiSpinCotton
+    - PersistentPoiWeaveCloth
+    - PersistentPoiWeaveDurathread
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: textileMill
+
+# Materials
+
+- type: entity
+  parent: BasePersistentPoiWorks
+  id: PersistentPoiFoundry
+  name: territorial foundry
+  suffix: Persistent territory, built
+  description: Smelts, rolls and casts finished building materials straight from the territory's own stock.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/furnacefactory.rsi
+    snapCardinals: true
+    layers:
+    - state: furnace
+  - type: PointLight
+    radius: 1.5
+    energy: 1.6
+    color: "#e8862c"
+  - type: PersistentPoiProductionMachine
+    powerDraw: 35000
+    capability: Materials
+    maxStored: 3
+    recipes:
+    - PersistentPoiCastSteel
+    - PersistentPoiCastGlass
+    - PersistentPoiCastPlastic
+    - PersistentPoiCastPlasteel
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: foundry
+
+# Trade goods
+
+- type: entity
+  parent: BasePersistentPoiWorks
+  id: PersistentPoiTradeWorks
+  name: territorial trade works
+  suffix: Persistent territory, built
+  description: An assembly line that crates the territory's own output into goods worth shipping out.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/factorystructures.rsi
+    snapCardinals: true
+    layers:
+    - state: makina
+  - type: PointLight
+    radius: 1.5
+    energy: 1.6
+    color: "#9dc5c9"
+  - type: PersistentPoiProductionMachine
+    powerDraw: 25000
+    capability: TradeGoods
+    maxStored: 3
+    recipes:
+    - PersistentPoiAssembleAlloys
+    - PersistentPoiAssembleGunparts
+    - PersistentPoiAssembleAmmo
+    - PersistentPoiAssemblePlasma
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: tradeWorks
+
+# Recipes: general ore
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiExtractMixedOre
+  name: persistent-poi-recipe-mixed-ore
+  duration: 300
+  outputs:
+    SteelOre1: 10
+    CopperOre1: 6
+    Coal1: 6
+    PlasmaOre1: 3
+    SilverOre1: 2
+    GoldOre1: 1
+
+# Recipes: targeted ore
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiExtractSteelOre
+  name: persistent-poi-recipe-steel-ore
+  duration: 300
+  outputs:
+    SteelOre1: 25
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiExtractCopperOre
+  name: persistent-poi-recipe-copper-ore
+  duration: 300
+  outputs:
+    CopperOre1: 20
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiExtractPlasmaOre
+  name: persistent-poi-recipe-plasma-ore
+  duration: 300
+  outputs:
+    PlasmaOre1: 12
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiExtractSilverOre
+  name: persistent-poi-recipe-silver-ore
+  duration: 360
+  outputs:
+    SilverOre1: 10
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiExtractGoldOre
+  name: persistent-poi-recipe-gold-ore
+  duration: 480
+  outputs:
+    GoldOre1: 8
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiExtractTungstenOre
+  name: persistent-poi-recipe-tungsten-ore
+  duration: 420
+  outputs:
+    TungstenOre1: 8
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiExtractQuartz
+  name: persistent-poi-recipe-quartz
+  duration: 300
+  outputs:
+    SpaceQuartz1: 12
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiExtractUraniumOre
+  name: persistent-poi-recipe-uranium-ore
+  duration: 600
+  outputs:
+    UraniumOre1: 6
+
+# Recipes: textiles
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiSpinCotton
+  name: persistent-poi-recipe-cotton
+  duration: 240
+  outputs:
+    MaterialCotton1: 20
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiWeaveCloth
+  name: persistent-poi-recipe-cloth
+  duration: 240
+  outputs:
+    MaterialCloth1: 20
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiWeaveDurathread
+  name: persistent-poi-recipe-durathread
+  duration: 480
+  outputs:
+    MaterialDurathread1: 10
+
+# Recipes: materials
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiCastSteel
+  name: persistent-poi-recipe-steel
+  duration: 300
+  outputs:
+    SheetSteel1: 30
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiCastGlass
+  name: persistent-poi-recipe-glass
+  duration: 300
+  outputs:
+    SheetGlass1: 30
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiCastPlastic
+  name: persistent-poi-recipe-plastic
+  duration: 360
+  outputs:
+    SheetPlastic1: 20
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiCastPlasteel
+  name: persistent-poi-recipe-plasteel
+  duration: 600
+  outputs:
+    SheetPlasteel1: 10
+
+# Recipes: trade goods
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiAssembleAlloys
+  name: persistent-poi-recipe-alloys
+  duration: 900
+  outputs:
+    TradeGoodAlloys: 1
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiAssembleGunparts
+  name: persistent-poi-recipe-gunparts
+  duration: 900
+  outputs:
+    TradeGoodGunparts: 1
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiAssembleAmmo
+  name: persistent-poi-recipe-ammo
+  duration: 900
+  outputs:
+    TradeGoodAmmo: 1
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiAssemblePlasma
+  name: persistent-poi-recipe-plasma
+  duration: 900
+  outputs:
+    TradeGoodPlasma: 1

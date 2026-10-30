@@ -8,6 +8,7 @@
                    xmlns:ksui="clr-namespace:Content.Client._KS14.UI"
                    xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
                    xmlns:shuttle="clr-namespace:Content.Client._Crescent.Shuttle"
+                   xmlns:politics="clr-namespace:Content.Client._Crescent.PoliticalMap"
                    MouseFilter="Stop"
                    SetSize="960 762"
                    MinSize="960 762">
@@ -52,6 +53,12 @@
                     StyleClasses="KsInstrumentTab"
                     ToggleMode="True"
                     Text="{Loc 'ks-instrument-tab-crew'}"/>
+            <!-- Crescent: the sector's political map. -->
+            <Label Name="Sep4" StyleClasses="KsInstrumentStrong" Text="{Loc 'ks-instrument-tab-separator'}" Margin="6 0 6 0"/>
+            <Button Name="PoliticsModeButton"
+                    StyleClasses="KsInstrumentTab"
+                    ToggleMode="True"
+                    Text="{Loc 'ks-instrument-tab-politics'}"/>
         </BoxContainer>
         <!-- Contents box -->
         <BoxContainer Name="Contents"
@@ -62,6 +69,7 @@
             <ui:MapScreen Name="MapContainer" Visible="False"/>
             <ui:DockingScreen Name="DockContainer" Visible="False"/>
             <shuttle:CrewScreen Name="CrewContainer" Visible="False"/>
+            <politics:PoliticalMapPanel Name="PoliticsContainer" Visible="False"/>
         </BoxContainer>
         <!-- KS14 shell: the always-on status strip. Deliberately fine print - it sits under
              every tab so the crew never has to go looking for it, without competing with

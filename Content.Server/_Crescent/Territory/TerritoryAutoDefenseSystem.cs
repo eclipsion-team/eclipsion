@@ -90,7 +90,8 @@ public sealed class TerritoryAutoDefenseSystem : EntitySystem
                 !this.IsPowered(consoleUid, EntityManager) ||
                 _iffDiplomacy.GetGridFaction(ownGrid) is not { } ownFaction ||
                 !string.Equals(_factionMachines.GetFaction(consoleUid), ownFaction, StringComparison.Ordinal) ||
-                AnotherConsoleOwnsAutomaticControl(consoleUid, ownGrid))
+                AnotherConsoleOwnsAutomaticControl(consoleUid, ownGrid) ||
+                TryComp<PersistentPoiGridComponent>(ownGrid, out var territory) && !territory.AutoDefense)
             {
                 ClearTarget(defense);
                 continue;
@@ -259,7 +260,9 @@ public sealed class TerritoryAutoDefenseSystem : EntitySystem
         // exclusion zone to warn anybody off. Broadcasting a perimeter threat it will never carry out put a
         // radio call on the Common channel for every non-allied hull in acquisition range, every fifteen
         // seconds, from every territory in the sector. Disabling warOnly opts into the real exclusion zone.
-        if (defense.WarOnly)
+        var warOnly = defense.WarOnly &&
+                      !(TryComp<PersistentPoiGridComponent>(ownGrid, out var territory) && territory.ExclusionZone);
+        if (warOnly)
         {
             targetGrid = default;
             return TargetDisposition.Ignore;

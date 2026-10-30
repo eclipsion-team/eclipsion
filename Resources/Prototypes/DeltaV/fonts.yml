@@ -1,0 +1,25 @@
+# Signature fonts, ported from DeltaV via Funky Station.
+
+- type: font
+  id: ComicNeue
+  path: /Fonts/DeltaV/ComicNeue/ComicNeue-Regular.ttf
+
+- type: font
+  id: HachiMaruPop
+  path: /Fonts/DeltaV/HachiMaruPop/HachiMaruPop-Regular.ttf
+
+- type: font
+  id: KodeMono
+  path: /Fonts/DeltaV/KodeMono/KodeMono-Regular.ttf
+
+- type: font
+  id: ReenieBeanie
+  path: /Fonts/DeltaV/ReenieBeanie/ReenieBeanie-Regular.ttf
+
+- type: font
+  id: Tangerine
+  path: /Fonts/DeltaV/Tangerine/Tangerine_Regular.ttf
+
+- type: font
+  id: UnifrakturMaguntia
+  path: /Fonts/DeltaV/UnifrakturMaguntia/UnifrakturMaguntia-Regular.ttf

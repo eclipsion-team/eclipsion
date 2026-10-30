@@ -51,6 +51,10 @@ public sealed partial class TargetingConsoleWindow : KsBaseWindow, IComputerWind
     private int _ammoValue;
     private int _ammoMax;
 
+    // crescent: territory fire-control cap, from the server
+    private int _uncontrolledCannons;
+    private int? _fireControlLimit;
+
     /// <summary>KS14: the hull this console rides, resolved from the nav state, for the shield readout.</summary>
     private EntityUid? _statusGrid;
 
@@ -87,6 +91,9 @@ public sealed partial class TargetingConsoleWindow : KsBaseWindow, IComputerWind
             UpdateGroupSelector(state.CannonGroups);
 
         UpdateActiveGroups(state.ActiveGroups); // KS14
+
+        _uncontrolledCannons = state.UncontrolledCannons;
+        _fireControlLimit = state.FireControlLimit;
     }
 
     public void UpdateGroupSelector(List<string> groups)
@@ -321,6 +328,16 @@ public sealed partial class TargetingConsoleWindow : KsBaseWindow, IComputerWind
         StatusLabel.FontColorOverride = _cannonCount > 0
             ? KsInstrumentPalette.Shell.Text
             : KsInstrumentPalette.Shell.TextDim;
+
+        if (_uncontrolledCannons > 0)
+        {
+            AlertLabel.Visible = true;
+            AlertLabel.SetTextIfChanged(Loc.GetString("targeting-console-alert-fire-control-overload",
+                ("count", _uncontrolledCannons),
+                ("limit", _fireControlLimit ?? 0)));
+            AlertLabel.FontColorOverride = KsInstrumentPalette.Shell.Warning;
+            return;
+        }
 
         // Dry only counts when there are guns to be dry: an unlinked console reads 0/0.
         var dry = _cannonCount > 0 && _ammoValue == 0;

@@ -23,6 +23,11 @@ public sealed class ActionGunSystem : EntitySystem
             return;
 
         _actions.AddAction(ent, ref ent.Comp.ActionEntity, ent.Comp.Action);
+
+        // MapInit can reach us twice; a second gun would never be cleaned up.
+        if (ent.Comp.Gun is { } existing && !TerminatingOrDeleted(existing))
+            return;
+
         ent.Comp.Gun = Spawn(ent.Comp.GunProto);
     }
 

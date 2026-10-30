@@ -158,6 +158,7 @@
   name: doktor's armored jacket
   description: A communard paramedic's jacket. Layered with kevlar nanoweave.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _Crescent/Clothing/NCWL/OuterClothing/doktorlabcoat.rsi
   - type: Clothing
@@ -237,6 +238,7 @@
   name: dockmaster's armored jacket
   description: A communard jacket. Layered with kevlar nanoweave.
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _Crescent/Clothing/NCWL/OuterClothing/engijacket.rsi
   - type: Clothing
@@ -276,6 +278,7 @@
   name: coordinator's armored jacket
   description: A communard jacket. Layered with kevlar nanoweave. Boss around your fellow proletariat in style and comfort!
   components:
+  - type: OverArmorJacket
   - type: Sprite
     sprite: _Crescent/Clothing/NCWL/OuterClothing/engijacket.rsi
   - type: Clothing

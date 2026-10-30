@@ -49,6 +49,7 @@ public sealed partial class NFLateJoinGui : FancyWindow
         _characterRequirements = EntitySystem.Get<CharacterRequirementsSystem>();
         _factionBalance = EntitySystem.Get<FactionBalanceSystem>();
         _factionBalance.Updated += OnFactionBalanceUpdated;
+        _playManager.Updated += OnRequirementsUpdated;
         VesselSelection.VesselItemList.OnItemSelected += args =>
         {
             UpdateUi(_gameTicker.JobsAvailable);
@@ -84,6 +85,7 @@ public sealed partial class NFLateJoinGui : FancyWindow
 
         _gameTicker.LobbyJobsAvailableUpdated -= UpdateUi;
         _factionBalance.Updated -= OnFactionBalanceUpdated;
+        _playManager.Updated -= OnRequirementsUpdated;
         // This one used to be a lambda that was never unsubscribed, so a closed window kept rebuilding
         // its job list every time the player switched character slot in the lobby.
         _prefs.SlotSelected -= OnSlotSelected;
@@ -95,6 +97,11 @@ public sealed partial class NFLateJoinGui : FancyWindow
     }
 
     private void OnFactionBalanceUpdated()
+    {
+        UpdateUi(_gameTicker.JobsAvailable);
+    }
+
+    private void OnRequirementsUpdated()
     {
         UpdateUi(_gameTicker.JobsAvailable);
     }

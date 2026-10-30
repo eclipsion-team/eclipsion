@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._Crescent.Factions;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.Utility;
 
 namespace Content.Client._Crescent.Factions;
 
@@ -15,7 +16,7 @@ public sealed class FactionRecruitmentWindow : FancyWindow
 {
     private readonly BoxContainer _targetList;
     private readonly BoxContainer _rolePanel;
-    private readonly Label _selectedLabel;
+    private readonly RichTextLabel _selectedLabel;
 
     private List<FactionRecruitmentOption> _options = new();
     private NetEntity? _selected;
@@ -81,11 +82,8 @@ public sealed class FactionRecruitmentWindow : FancyWindow
             VerticalExpand = true,
             Margin = new(8, 0, 0, 0),
         };
-        _selectedLabel = new Label
-        {
-            Text = Loc.GetString("faction-recruitment-select-prompt"),
-            StyleClasses = { "LabelHeading" },
-        };
+        _selectedLabel = new RichTextLabel { HorizontalExpand = true };
+        SetSelectedText(Loc.GetString("faction-recruitment-select-prompt"));
         right.AddChild(_selectedLabel);
 
         var roleScroll = new ScrollContainer { HorizontalExpand = true, VerticalExpand = true };
@@ -152,11 +150,11 @@ public sealed class FactionRecruitmentWindow : FancyWindow
         var selected = _selected != null ? state.Targets.Find(t => t.Entity == _selected) : null;
         if (selected == null)
         {
-            _selectedLabel.Text = Loc.GetString("faction-recruitment-select-prompt");
+            SetSelectedText(Loc.GetString("faction-recruitment-select-prompt"));
             return;
         }
 
-        _selectedLabel.Text = Loc.GetString("faction-recruitment-selected", ("name", selected.Name));
+        SetSelectedText(Loc.GetString("faction-recruitment-selected", ("name", selected.Name)));
 
         if (_options.Count == 0)
         {
@@ -210,5 +208,10 @@ public sealed class FactionRecruitmentWindow : FancyWindow
             dismiss.OnPressed += _ => OnDismiss?.Invoke(target);
             _rolePanel.AddChild(dismiss);
         }
+    }
+
+    private void SetSelectedText(string text)
+    {
+        _selectedLabel.SetMessage(FormattedMessage.FromMarkupOrThrow($"[bold]{FormattedMessage.EscapeText(text)}[/bold]"));
     }
 }

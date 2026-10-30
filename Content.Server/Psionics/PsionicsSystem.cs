@@ -79,6 +79,9 @@ public sealed class PsionicsSystem : EntitySystem
 
     private void OnStartup(EntityUid uid, PsionicComponent component, MapInitEvent args)
     {
+        // Not on ComponentStartup: during map load the saved action isn't started yet, and maps
+        // saved before MapInit would otherwise carry a stray action entity.
+        _skillTreeSystem.InitializeTreeAction(uid, component);
         CheckPowerCost(uid, component);
         GenerateAvailablePowers(component);
     }
@@ -148,7 +151,6 @@ public sealed class PsionicsSystem : EntitySystem
 
     private void OnInit(EntityUid uid, PsionicComponent component, ComponentStartup args)
     {
-        _skillTreeSystem.InitializeTreeAction(uid, component);
         component.AmplificationSources.Add(BaselineAmplification, _random.NextFloat(component.BaselineAmplification.Item1, component.BaselineAmplification.Item2));
         component.DampeningSources.Add(BaselineDampening, _random.NextFloat(component.BaselineDampening.Item1, component.BaselineDampening.Item2));
 

@@ -36,14 +36,20 @@ public sealed class EmpSystem : SharedEmpSystem
     /// <param name="range">The range of the EMP pulse.</param>
     /// <param name="energyConsumption">The amount of energy consumed by the EMP pulse.</param>
     /// <param name="duration">The duration of the EMP effects.</param>
-    public void EmpPulse(MapCoordinates coordinates, float range, float energyConsumption, float duration)
+    /// <param name="maxDrainFraction">Most of a battery's max charge one pulse can take.</param>
+    /// <param name="hitsToDisable">Pulses within <see cref="BuildupWindow"/> before a target gets disabled.</param>
+    public void EmpPulse(MapCoordinates coordinates, float range, float energyConsumption, float duration,
+        float maxDrainFraction = 1f, int hitsToDisable = 1)
     {
         foreach (var uid in _lookup.GetEntitiesInRange(coordinates, range))
         {
-            TryEmpEffects(uid, energyConsumption, duration);
+            TryEmpEffects(uid, energyConsumption, duration, maxDrainFraction, hitsToDisable);
         }
         Spawn(EmpPulseEffectPrototype, coordinates);
     }
+
+    // eclipsion - hits further apart than this start the count over
+    public static readonly TimeSpan BuildupWindow = TimeSpan.FromSeconds(20);
 
     /// <summary>
     ///    Attempts to apply the effects of an EMP pulse onto an entity by first raising an <see cref="EmpAttemptEvent"/>, followed by raising a <see cref="EmpPulseEvent"/> on it.
@@ -51,14 +57,15 @@ public sealed class EmpSystem : SharedEmpSystem
     /// <param name="uid">The entity to apply the EMP effects on.</param>
     /// <param name="energyConsumption">The amount of energy consumed by the EMP.</param>
     /// <param name="duration">The duration of the EMP effects.</param>
-    public void TryEmpEffects(EntityUid uid, float energyConsumption, float duration)
+    public void TryEmpEffects(EntityUid uid, float energyConsumption, float duration,
+        float maxDrainFraction = 1f, int hitsToDisable = 1)
     {
         var attemptEv = new EmpAttemptEvent();
         RaiseLocalEvent(uid, attemptEv);
         if (attemptEv.Cancelled)
             return;
 
-        DoEmpEffects(uid, energyConsumption, duration);
+        DoEmpEffects(uid, energyConsumption, duration, maxDrainFraction, hitsToDisable);
     }
 
     /// <summary>
@@ -67,27 +74,34 @@ public sealed class EmpSystem : SharedEmpSystem
     /// <param name="uid">The entity to apply the EMP effects on.</param>
     /// <param name="energyConsumption">The amount of energy consumed by the EMP.</param>
     /// <param name="duration">The duration of the EMP effects.</param>
-    public void DoEmpEffects(EntityUid uid, float energyConsumption, float duration)
+    public void DoEmpEffects(EntityUid uid, float energyConsumption, float duration,
+        float maxDrainFraction = 1f, int hitsToDisable = 1)
     {
         TimeSpan delay = TimeSpan.FromSeconds(duration);
 
-        var ev = new EmpPulseEvent(energyConsumption, false, false, delay);
+        var ev = new EmpPulseEvent(energyConsumption, false, false, delay) { MaxDrainFraction = maxDrainFraction };
         RaiseLocalEvent(uid, ref ev);
         if (ev.Affected)
         {
             Spawn(EmpDisabledEffectPrototype, Transform(uid).Coordinates);
         }
-        if (ev.Disabled)
+        if (ev.Disabled && BuildUp(uid, hitsToDisable))
         {
             var disabled = EnsureComp<EmpDisabledComponent>(uid);
-            // couldnt use null-coalescing operator here sadge
+            var until = Timing.CurTime + delay;
+            // eclipsion - postponing added the whole delay on every hit, so a burst of rounds kept things dead for
+            // minutes. a new hit now only pushes the end out to its own duration
             if (disabled.LastDelayedEvent != null)
-                _eventScheduler.TryPostponeDelayedEvent(disabled.LastDelayedEvent, delay);
+            {
+                if (until > disabled.TargetTime && _eventScheduler.TryRescheduleDelayedEvent(disabled.LastDelayedEvent, until))
+                    disabled.TargetTime = until;
+            }
             else
             {
 
                 var dEv = new EmpDisabledRemoved();
                 disabled.LastDelayedEvent = _eventScheduler.DelayEvent(uid, ref dEv, delay);
+                disabled.TargetTime = until;
             }
 
             /// i tried my best to go through the Pow3r server code but i literally couldn't find in relation to PowerNetworkBatteryComponent that uses the event system
@@ -97,6 +111,24 @@ public sealed class EmpSystem : SharedEmpSystem
                 powerNetBattery.CanCharge = false;
             }
         }
+    }
+
+    // true once this hit is the one that shuts the target down
+    private bool BuildUp(EntityUid uid, int hitsToDisable)
+    {
+        if (hitsToDisable <= 1 || HasComp<EmpDisabledComponent>(uid))
+            return true;
+
+        var buildup = EnsureComp<EmpBuildupComponent>(uid);
+        if (Timing.CurTime - buildup.LastHit > BuildupWindow)
+            buildup.Hits = 0;
+
+        buildup.LastHit = Timing.CurTime;
+        if (++buildup.Hits < hitsToDisable)
+            return false;
+
+        RemComp<EmpBuildupComponent>(uid);
+        return true;
     }
 
     private void OnEmpDisabledRemoved(EntityUid uid, EmpDisabledComponent component, EmpDisabledRemoved args)
@@ -118,7 +150,8 @@ public sealed class EmpSystem : SharedEmpSystem
 
     private void HandleEmpTrigger(EntityUid uid, EmpOnTriggerComponent comp, TriggerEvent args)
     {
-        EmpPulse(_transform.GetMapCoordinates(uid), comp.Range, comp.EnergyConsumption, comp.DisableDuration);
+        EmpPulse(_transform.GetMapCoordinates(uid), comp.Range, comp.EnergyConsumption, comp.DisableDuration,
+            comp.MaxDrainFraction, comp.HitsToDisable);
         args.Handled = true;
     }
 
@@ -141,7 +174,11 @@ public sealed partial class EmpAttemptEvent : CancellableEntityEventArgs
 }
 
 [ByRefEvent]
-public record struct EmpPulseEvent(float EnergyConsumption, bool Affected, bool Disabled, TimeSpan Duration);
+public record struct EmpPulseEvent(float EnergyConsumption, bool Affected, bool Disabled, TimeSpan Duration)
+{
+    // eclipsion - most of a battery's max charge this pulse may take
+    public float MaxDrainFraction { get; init; } = 1f;
+}
 
 [ByRefEvent]
 public record struct EmpDisabledRemoved();

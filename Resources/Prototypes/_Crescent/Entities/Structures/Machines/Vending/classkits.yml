@@ -226,19 +226,19 @@
       choices: { CMWeapon: 1 }
       entries:
       - id: WeaponShotgunCMMDoubleBarreled
-        name: CMM M135 Double-Barrel 12g
+        name: CMM M-135 Posse 12g
       - id: WeaponRifleCMMNimrod
-        name: CMM M32 Nimrod 7.62x51mm
+        name: CMM M-28 Homesteader 7.62x51mm
         recommended: true
       - id: WeaponSubMachineGunCMMMP5
-        name: CMM MP5 9x19mm
+        name: CMM M-50 Summons 9x19mm
     - name: Secondary Weapon
       choices: { CMPistol: 1 }
       entries:
       - id: WeaponRevolverCMMBulldog
-        name: CMM-6R Bulldog .327
+        name: CMM M-6R Magistrate .327
       - id: WeaponPistolCMMLockwell
-        name: CMM MX-32 Lockwell 9x19mm
+        name: CMM M-32 Oath 9x19mm
         recommended: true
     - name: Utilities
       choices: { CMUtilities: 2 }
@@ -301,19 +301,19 @@
       choices: { CMWeapon: 1 }
       entries:
       - id: WeaponShotgunCMMDoubleBarreled
-        name: CMM M135 Double-Barrel 12g
+        name: CMM M-135 Posse 12g
       - id: WeaponRifleCMMNimrod
-        name: CMM M32 Nimrod 7.62x51mm
+        name: CMM M-28 Homesteader 7.62x51mm
         recommended: true
       - id: WeaponSubMachineGunCMMMP5
-        name: CMM MP5 9x19mm
+        name: CMM M-50 Summons 9x19mm
     - name: Secondary Weapon
       choices: { CMPistol: 1 }
       entries:
       - id: WeaponRevolverCMMBulldog
-        name: CMM-6R Bulldog .327
+        name: CMM M-6R Magistrate .327
       - id: WeaponPistolCMMLockwell
-        name: CMM MX-32 Lockwell 9x19mm
+        name: CMM M-32 Oath 9x19mm
         recommended: true
     - name: Utilities
       choices: { CMUtilities: 2 }

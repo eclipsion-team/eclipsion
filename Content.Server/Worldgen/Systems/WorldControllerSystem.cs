@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Content.Server.Worldgen.Components;
 using Content.Shared.Ghost;
 using Content.Shared.Mind.Components;
@@ -18,6 +18,8 @@ public sealed class WorldControllerSystem : EntitySystem
     [Dependency] private readonly IGameTiming _gameTiming = default!;
     [Dependency] private readonly ILogManager _logManager = default!;
     [Dependency] private readonly MetaDataSystem _metaData = default!;
+
+    public const int MaxChunkCoordinate = 65;
 
     private const int PlayerLoadRadius = 2;
     private float _updateTimer = 0f;
@@ -224,7 +226,7 @@ public sealed class WorldControllerSystem : EntitySystem
             throw new Exception($"Tried to use {ToPrettyString(map)} as a world map, without actually being one.");
 
 		// Rat-start
-        if (Math.Abs(chunk.X) > 40 || Math.Abs(chunk.Y) > 40)
+        if (Math.Abs(chunk.X) > MaxChunkCoordinate || Math.Abs(chunk.Y) > MaxChunkCoordinate)
             return null;
 		// Rat-end
 

@@ -9,7 +9,7 @@
     LOADOUT: Armless
     SHIELD: Absent
     SPEED: 25 m/s
-  price: 16000
+  price: 19000
   category: Small
   group: Civilian
   path: /Maps/_Crescent/Shuttles/Civilian/pear.yml

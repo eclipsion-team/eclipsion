@@ -19,8 +19,15 @@ public sealed class WeaponAttachmentSystem : SharedWeaponAttachmentSystem
         if (!TryComp<SpriteComponent>(uid, out var sprite))
             return;
 
-        sprite.LayerSetVisible(WeaponVisualLayers.Bayonet, component.BayonetAttached);
-        sprite.LayerSetVisible(WeaponVisualLayers.FlightOff, component.LightAttached && !component.LightOn);
-        sprite.LayerSetVisible(WeaponVisualLayers.FlightOn, component.LightAttached && component.LightOn);
+        SetLayerVisible(sprite, WeaponVisualLayers.Bayonet, component.BayonetAttached);
+        SetLayerVisible(sprite, WeaponVisualLayers.FlightOff, component.LightAttached && !component.LightOn);
+        SetLayerVisible(sprite, WeaponVisualLayers.FlightOn, component.LightAttached && component.LightOn);
+    }
+
+    // Not every gun that takes attachments draws every attachment layer (the sawn-off PKA has none).
+    private static void SetLayerVisible(SpriteComponent sprite, WeaponVisualLayers key, bool visible)
+    {
+        if (sprite.LayerMapTryGet(key, out var layer))
+            sprite.LayerSetVisible(layer, visible);
     }
 }

@@ -22,6 +22,8 @@ public sealed class ClusterGrenadeSystem : EntitySystem
     [Dependency] private readonly TransformSystem _transformSystem = default!;
     [Dependency] private readonly ContainerSystem _containerSystem = default!;
 
+    private readonly List<(EntityUid Uid, ClusterGrenadeComponent Comp)> _toRelease = new();
+
     public override void Initialize()
     {
         base.Initialize();
@@ -73,50 +75,58 @@ public sealed class ClusterGrenadeSystem : EntitySystem
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
-        var query = EntityQueryEnumerator<ClusterGrenadeComponent>();
 
+        // Collect first: releasing spawns grenades (which may be cluster grenades) and deletes the shell.
+        _toRelease.Clear();
+        var query = EntityQueryEnumerator<ClusterGrenadeComponent>();
         while (query.MoveNext(out var uid, out var clug))
         {
             if (clug.CountDown && clug.UnspawnedCount > 0)
+                _toRelease.Add((uid, clug));
+        }
+
+        foreach (var (uid, clug) in _toRelease)
+        {
+            if (TerminatingOrDeleted(uid))
+                continue;
+
+            var grenadesInserted = clug.GrenadesContainer.ContainedEntities.Count + clug.UnspawnedCount;
+            var thrownCount = 0;
+            var segmentAngle = 360 / grenadesInserted;
+            var grenadeDelay = 0f;
+
+            while (TryGetGrenade(uid, clug, out var grenade))
             {
-                var grenadesInserted = clug.GrenadesContainer.ContainedEntities.Count + clug.UnspawnedCount;
-                var thrownCount = 0;
-                var segmentAngle = 360 / grenadesInserted;
-                var grenadeDelay = 0f;
+                // var distance = random.NextFloat() * _throwDistance;
+                var angleMin = segmentAngle * thrownCount;
+                var angleMax = segmentAngle * (thrownCount + 1);
+                var angle = Angle.FromDegrees(_random.Next(angleMin, angleMax));
+                if (clug.RandomAngle)
+                    angle = _random.NextAngle();
+                thrownCount++;
 
-                while (TryGetGrenade(uid, clug, out var grenade))
+                switch (clug.GrenadeType)
                 {
-                    // var distance = random.NextFloat() * _throwDistance;
-                    var angleMin = segmentAngle * thrownCount;
-                    var angleMax = segmentAngle * (thrownCount + 1);
-                    var angle = Angle.FromDegrees(_random.Next(angleMin, angleMax));
-                    if (clug.RandomAngle)
-                        angle = _random.NextAngle();
-                    thrownCount++;
-
-                    switch (clug.GrenadeType)
-                    {
-                        case GrenadeType.Shoot:
-                            ShootProjectile(grenade, angle, clug, uid);
-                            break;
-                        case GrenadeType.Throw:
-                            ThrowGrenade(grenade, angle, clug);
-                            break;
-                    }
-
-                    // give an active timer trigger to the contained grenades when they get launched
-                    if (clug.TriggerGrenades)
-                    {
-                        grenadeDelay += _random.NextFloat(clug.GrenadeTriggerIntervalMin, clug.GrenadeTriggerIntervalMax);
-                        var grenadeTimer = EnsureComp<ActiveTimerTriggerComponent>(grenade);
-                        grenadeTimer.TimeRemaining = (clug.BaseTriggerDelay + grenadeDelay);
-                        var ev = new ActiveTimerTriggerEvent(grenade, uid);
-                        RaiseLocalEvent(uid, ref ev);
-                    }
+                    case GrenadeType.Shoot:
+                        ShootProjectile(grenade, angle, clug, uid);
+                        break;
+                    case GrenadeType.Throw:
+                        ThrowGrenade(grenade, angle, clug);
+                        break;
                 }
-                // delete the empty shell of the clusterbomb
-                Del(uid);
+
+                // give an active timer trigger to the contained grenades when they get launched
+                if (clug.TriggerGrenades)
+                {
+                    grenadeDelay += _random.NextFloat(clug.GrenadeTriggerIntervalMin, clug.GrenadeTriggerIntervalMax);
+                    var grenadeTimer = EnsureComp<ActiveTimerTriggerComponent>(grenade);
+                    grenadeTimer.TimeRemaining = (clug.BaseTriggerDelay + grenadeDelay);
+                    var ev = new ActiveTimerTriggerEvent(grenade, uid);
+                    RaiseLocalEvent(uid, ref ev);
+                }
             }
+            // delete the empty shell of the clusterbomb
+            Del(uid);
         }
     }
 

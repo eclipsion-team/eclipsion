@@ -9,7 +9,7 @@
     LOADOUT: 1x 35mm 'Scout' Autocannon
     SHIELD: Absent
     SPEED: 30 m/s
-  price: 21000
+  price: 24000
   category: Small
   group: None
   path: /Maps/_Crescent/Shuttles/TFSC/mercurymk2.yml

@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Content.Server.Chat.Managers;
 using Content.Server.Database;
 using Content.Shared.CCVar;
 using Content.Shared.Preferences;
@@ -29,6 +30,8 @@ namespace Content.Server.Preferences.Managers
         [Dependency] private readonly ILogManager _log = default!;
         [Dependency] private readonly UserDbDataManager _userDb = default!;
         [Dependency] private readonly IPrototypeManager _protos = default!;
+        [Dependency] private readonly IChatSanitizationManager _chatFilter = default!; // crescent
+        [Dependency] private readonly IChatManager _chat = default!; // crescent
 
         // Cache player prefs on the server so we don't need as much async hell related to them.
         private readonly Dictionary<NetUserId, PlayerPrefData> _cachedPlayerPrefs =
@@ -190,6 +193,14 @@ namespace Content.Server.Preferences.Managers
                 var session = _playerManager.GetSessionById(userId);
 
                 profile.EnsureValid(session, _dependencies);
+
+                profile = FilterProfile(profile, out var cleaned);
+                if (cleaned.Count > 0)
+                {
+                    _chat.DispatchServerMessage(session, Loc.GetString("chat-filter-profile-cleaned",
+                        ("fields", string.Join(", ", cleaned.Select(field => Loc.GetString(field))))));
+                    _sawmill.Info($"Removed filtered words from {session.Name}'s character in slot {slot}.");
+                }
 
                 if (profile is HumanoidCharacterProfile)
                 {
@@ -454,13 +465,40 @@ namespace Content.Server.Preferences.Managers
             return prefs;
         }
 
+        private ICharacterProfile FilterProfile(ICharacterProfile profile, out List<string> cleaned)
+        {
+            cleaned = new List<string>();
+            if (profile is not HumanoidCharacterProfile humanoid)
+                return profile;
+
+            if (_chatFilter.CheckFilter(humanoid.Name, out _, out _))
+            {
+                humanoid = humanoid.WithName(HumanoidCharacterProfile.GetName(humanoid.Species, humanoid.Gender));
+                cleaned.Add("chat-filter-profile-field-name");
+            }
+
+            if (_chatFilter.CheckFilter(humanoid.FlavorText, out _, out _))
+            {
+                humanoid = humanoid.WithFlavorText(string.Empty);
+                cleaned.Add("chat-filter-profile-field-flavor");
+            }
+
+            if (_chatFilter.CheckFilter(humanoid.Customspeciename, out _, out _))
+            {
+                humanoid = humanoid.WithCustomSpeciesName(string.Empty);
+                cleaned.Add("chat-filter-profile-field-species");
+            }
+
+            return humanoid;
+        }
+
         private PlayerPreferences SanitizePreferences(ICommonSession session, PlayerPreferences prefs,
             IDependencyCollection collection)
         {
             // Clean up preferences in case of changes to the game,
             // such as removed jobs still being selected.
             var characters = prefs.Characters
-                .Select(p => new KeyValuePair<int, ICharacterProfile>(p.Key, p.Value.Validated(session, collection)))
+                .Select(p => new KeyValuePair<int, ICharacterProfile>(p.Key, FilterProfile(p.Value.Validated(session, collection), out _)))
                 .ToList();
 
             // The selected slot is loaded straight out of the DB and was never checked against the profile rows

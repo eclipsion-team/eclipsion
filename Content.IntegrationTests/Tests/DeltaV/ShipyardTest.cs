@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Content.Server.Cargo.Systems;
 using Content.Server.Shipyard;
 using Content.Server.Shuttles.Components;
@@ -12,6 +13,29 @@ namespace Content.IntegrationTests.Tests.DeltaV;
 [TestOf(typeof(ShipyardSystem))]
 public sealed class ShipyardTest
 {
+    // Fog autonomous platforms: hostile encounters carrying salvage loot, only obtainable through
+    // admin-spawned fabprint disks. The larger ones are sealed hulls with no exterior airlock.
+    private static readonly HashSet<string> FogPlatforms = new()
+    {
+        "Alpha",
+        "Autoscout",
+        "Beta",
+        "Gamma",
+        "Fulgur",
+        "Radiant",
+        "Brilliant",
+    };
+
+    private static readonly HashSet<string> NoDockVessels = new()
+    {
+        "Fulgur",
+        "Radiant",
+        "Brilliant",
+    };
+
+    // Never sold: Playerbuilt is the station template for player-built ships.
+    private static readonly HashSet<string> NotForSale = new(FogPlatforms) { "Playerbuilt" };
+
     [Test]
     public async Task NoShipyardArbitrage()
     {
@@ -29,6 +53,10 @@ public sealed class ShipyardTest
             {
                 foreach (var vessel in proto.EnumeratePrototypes<VesselPrototype>())
                 {
+                    // Unionfall hulls are priced against the war mode's team budget, where nothing is resold.
+                    if (NotForSale.Contains(vessel.ID) || vessel.ID.StartsWith("Unionfall"))
+                        continue;
+
                     var shuttle = shipyard.TryCreateShuttle(vessel.Path.ToString());
                     Assert.That(shuttle, Is.Not.Null, $"Failed to spawn shuttle {vessel.ID}!");
 
@@ -66,7 +94,8 @@ public sealed class ShipyardTest
                     Assert.That(console, Is.True, $"Shuttle {vessel.ID} had no shuttle console or drone control!");
 
                     var dock = FindComponent<DockingComponent>(entities, shuttle.Value);
-                    Assert.That(dock, Is.True, $"Shuttle {vessel.ID} had no shuttle dock!");
+                    if (!NoDockVessels.Contains(vessel.ID))
+                        Assert.That(dock, Is.True, $"Shuttle {vessel.ID} had no shuttle dock!");
 
                     entities.DeleteEntity(shuttle);
                 }

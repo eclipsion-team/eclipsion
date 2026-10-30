@@ -20,7 +20,8 @@ public sealed partial class PlayerPanel : FancyWindow
     public event Action<NetUserId?>? OnAhelp;
     public event Action<string?>? OnKick;
     public event Action<NetUserId?>? OnOpenBanPanel;
-    public event Action<NetUserId?, bool>? OnWhitelistToggle;
+    public event Action<NetUserId?>? OnOpenWhitelists;
+    public event Action<NetUserId?>? OnOpenPlaytime;
     public event Action? OnFreezeAndMuteToggle;
     public event Action? OnFreeze;
     public event Action? OnLogs;
@@ -29,7 +30,6 @@ public sealed partial class PlayerPanel : FancyWindow
 
     public NetUserId? TargetPlayer;
     public string? TargetUsername;
-    private bool _isWhitelisted;
 
     public PlayerPanel(IClientAdminManager adminManager)
     {
@@ -42,11 +42,8 @@ public sealed partial class PlayerPanel : FancyWindow
             NotesButton.OnPressed += _ => OnOpenNotes?.Invoke(TargetPlayer);
             ShowBansButton.OnPressed += _ => OnOpenBans?.Invoke(TargetPlayer);
             AhelpButton.OnPressed += _ => OnAhelp?.Invoke(TargetPlayer);
-            WhitelistToggle.OnPressed += _ =>
-            {
-                OnWhitelistToggle?.Invoke(TargetPlayer, _isWhitelisted);
-                SetWhitelisted(!_isWhitelisted);
-            };
+            WhitelistsButton.OnPressed += _ => OnOpenWhitelists?.Invoke(TargetPlayer);
+            PlaytimeButton.OnPressed += _ => OnOpenPlaytime?.Invoke(TargetPlayer);
             FreezeButton.OnPressed += _ => OnFreeze?.Invoke();
             FreezeAndMuteToggleButton.OnPressed += _ => OnFreezeAndMuteToggle?.Invoke();
             LogsButton.OnPressed += _ => OnLogs?.Invoke();
@@ -62,18 +59,10 @@ public sealed partial class PlayerPanel : FancyWindow
 
     public void SetWhitelisted(bool? whitelisted)
     {
-        if (whitelisted == null)
-        {
-            Whitelisted.Text = null;
-            WhitelistToggle.Visible = false;
-        }
-        else
-        {
-            Whitelisted.Text = Loc.GetString("player-panel-whitelisted");
-            WhitelistToggle.Text = whitelisted.Value.ToString();
-            WhitelistToggle.Visible = true;
-            _isWhitelisted = whitelisted.Value;
-        }
+        Whitelisted.Text = whitelisted == null
+            ? null
+            : Loc.GetString("player-panel-whitelisted",
+                ("whitelisted", Loc.GetString(whitelisted.Value ? "player-panel-true" : "player-panel-false")));
     }
 
     public void SetBans(int? totalBans, int? totalRoleBans)
@@ -123,8 +112,8 @@ public sealed partial class PlayerPanel : FancyWindow
         KickButton.Disabled = !_adminManager.CanCommand("kick");
         NotesButton.Disabled = !_adminManager.CanCommand("adminnotes");
         ShowBansButton.Disabled = !_adminManager.CanCommand("banlist");
-        WhitelistToggle.Disabled =
-            !(_adminManager.CanCommand("addwhitelist") && _adminManager.CanCommand("removewhitelist"));
+        WhitelistsButton.Disabled = !_adminManager.CanCommand("jobwhitelists");
+        PlaytimeButton.Disabled = !_adminManager.CanCommand("playertime");
         LogsButton.Disabled = !_adminManager.CanCommand("adminlogs");
         RejuvenateButton.Disabled = !_adminManager.HasFlag(AdminFlags.Debug);
         DeleteButton.Disabled = !_adminManager.HasFlag(AdminFlags.Debug);

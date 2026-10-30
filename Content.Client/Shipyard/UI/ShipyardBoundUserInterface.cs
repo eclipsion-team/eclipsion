@@ -1,3 +1,4 @@
+using Content.Shared._Crescent.Economy;
 using Content.Shared.Access.Systems;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Shipyard;
@@ -81,6 +82,6 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
 
     private void Purchase(string id, string? customName)
     {
-        SendMessage(new ShipyardConsolePurchaseMessage(id, customName));
+        SendMessage(new ShipyardConsolePurchaseMessage(id, customName, _menu?.Source ?? PaymentSource.Faction));
     }
 }

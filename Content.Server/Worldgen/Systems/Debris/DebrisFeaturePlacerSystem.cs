@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Numerics;
 using Content.Server.Worldgen.Components;
 using Content.Server.Worldgen.Components.Debris;
@@ -110,12 +110,12 @@ public sealed class DebrisFeaturePlacerSystem : BaseWorldSystem
     }
 
     /// <summary>
-    ///     Queues all debris owned by the placer for garbage collection.
     /// </summary>
     private void OnChunkUnloaded(EntityUid uid, DebrisFeaturePlacerControllerComponent component,
         ref WorldChunkUnloadedEvent args)
     {
-        component.DoSpawns = true;
+        if (component.Regenerate)
+            component.DoSpawns = true;
     }
 
     /// <summary>

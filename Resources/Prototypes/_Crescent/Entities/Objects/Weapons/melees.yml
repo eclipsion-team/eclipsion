@@ -102,6 +102,9 @@
     state: icon
   - type: Item
     sprite: _Crescent/Objects/Weapons/Melee/machete.rsi
+  - type: Construction
+    graph: IndependentMachete
+    node: machete
 
 - type: entity
   name: noble's rapier

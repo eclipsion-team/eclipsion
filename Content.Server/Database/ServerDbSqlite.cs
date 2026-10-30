@@ -31,6 +31,8 @@ namespace Content.Server.Database
 
         private int _msDelay;
 
+        private readonly bool _inMemory; // eclipsion
+
         public ServerDbSqlite(
             Func<DbContextOptions<SqliteServerDbContext>> options,
             bool inMemory,
@@ -40,6 +42,7 @@ namespace Content.Server.Database
             : base(opsLog)
         {
             _options = options;
+            _inMemory = inMemory;
 
             var prefsCtx = new SqliteServerDbContext(options());
 
@@ -537,6 +540,28 @@ namespace Content.Server.Database
         {
             DebugTools.Assert(time.Kind == DateTimeKind.Unspecified);
             return DateTime.SpecifyKind(time, DateTimeKind.Utc);
+        }
+
+        // eclipsion - sqlite keeps freed pages inside the file, so pruning alone never makes preferences.db smaller
+        public override async Task<bool> Compact()
+        {
+            if (_inMemory)
+                return false;
+
+            await using var db = await GetDbImpl();
+            var database = db.SqliteDbContext.Database;
+
+            var pages = await database.SqlQueryRaw<long>("SELECT page_count AS Value FROM pragma_page_count()").SingleAsync();
+            var free = await database.SqlQueryRaw<long>("SELECT freelist_count AS Value FROM pragma_freelist_count()").SingleAsync();
+            if (pages == 0 || free < pages / 4)
+                return false;
+
+            // rewrites the whole file, a multi gigabyte one takes a while
+            database.SetCommandTimeout(TimeSpan.FromHours(1));
+            await database.ExecuteSqlRawAsync("VACUUM");
+            // wal mode: the rewritten pages sit in the -wal file until a checkpoint, the main file only shrinks after it
+            await database.ExecuteSqlRawAsync("PRAGMA wal_checkpoint(TRUNCATE)");
+            return true;
         }
 
         private async Task<DbGuardImpl> GetDbImpl(

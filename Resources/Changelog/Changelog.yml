@@ -1479,3 +1479,225 @@ Entries:
     id: 6124
     time: '2026-09-26T00:00:00.0000000+00:00'
     url: null
+  - author: TheSoupDisaster
+    changes:
+      - message: Albert Wesker's punches now throw people back and knock them down for a second.
+        type: Tweak
+    id: 6125
+    time: '2026-09-26T00:00:00.0000000+00:00'
+    url: null
+  - author: Taleryn
+    changes:
+      - message: Added a Notes button to the lobby. Anything you write there is kept on your computer and is still there next round.
+        type: Add
+      - message: Squad leaders can now pick a formation for their soldiers to keep while following, loose, column, staggered, line, wedge or circle.
+        type: Add
+      - message: Added the Build cade squad order. The squad barricades the 3x3 square around you with its own steel, leaving one way in, and holds inside it.
+        type: Add
+      - message: While holding fire, pointing at a spot within 10 tiles moves the holding soldiers there. Pointing at someone sets the squad on them, and on their whole faction for a while.
+        type: Add
+      - message: Soldier NPCs knocked out into space now light the jetpack they wear and fly back to where they stood, or to their squad leader.
+        type: Add
+      - message: Added Saint's Militia hunt NPCs. They spare each other and SRM players and go for everyone else.
+        type: Add
+      - message: Soldier NPCs only open their internals when the air around them is unbreathable, and move to their fullest tank when one runs low, so mapped garrisons no longer run dry before a fight.
+        type: Tweak
+      - message: Shooting or hitting a soldier NPC of your own side makes it fight back until you are down. After that it forgives you.
+        type: Tweak
+      - message: Mapped NPC garrisons no longer walk off their grid into space or onto a docked ship while chasing someone.
+        type: Tweak
+      - message: Soldier NPCs leave anti-boarder PD turrets alone until a turret hurts one of them.
+        type: Tweak
+      - message: Light machine guns slow you down less.
+        type: Tweak
+      - message: The Shinohara budget arms vendor now sells the silver, gold, colonial and NLF Fishbed hardsuits.
+        type: Add
+      - message: Gun executions no longer give a free kill with an empty gun, tell you when the gun can't be fired like this, no longer let burst-fire guns keep shooting afterwards, and stop their sound if the weapon is deleted.
+        type: Fix
+      - message: Fixed a server hitch about two minutes after every round restart or destroyed ship.
+        type: Fix
+      - message: Fixed biome music, parallax and zone banners stopping for every player after certain grids were deleted.
+        type: Fix
+      - message: Fixed several errors that could stop power networks, ship shields or projectiles from updating when a grid split or was destroyed.
+        type: Fix
+      - message: Bodies that can't be damaged no longer lose limbs to explosions.
+        type: Fix
+    id: 6126
+    time: '2026-09-28T00:00:00.0000000+00:00'
+    url: null
+  - author: Taleryn
+    changes:
+      - message: Added the Great Hunt game mode, Saint's Militia against the Taypani-Atyrian Pact. Both sides start walled in at their home bases while a tide passes, then race for the Great Altar in the Hall of Prays. Hold it for 10 unbroken minutes to win. Losing it resets the clock.
+        type: Add
+      - message: Claiming the Great Altar takes a kneeling rite with spoken prayers. Each side hears its own announcements, preparation has its own music, and the altar moves between several spots from round to round.
+        type: Add
+      - message: Added Great Hunt Blades. The same hunt, but the armories hand out no guns, ammunition or explosives and every blow lands at half strength.
+        type: Add
+      - message: Great Hunt home bases only sell unarmed hulls, which leave the yard already cloaked with an IFF cloak that never overheats.
+        type: Add
+      - message: Added religions. Pick a faith in the character editor, from the Returning Tide, the Four Great Saints, Common Hands, the Golden Ledger, the Infernal Exchange, the Veiled Mother, the Unbroken Pattern and the Last Watch, or stay unaffiliated. Some faiths are closed to some factions, and faction leaders are bound to their faction's faith.
+        type: Add
+      - message: Joining a faith happens at its altar and needs one of its leaders there to accept you, followed by a short rite. Believers can kneel and pray at their own altar.
+        type: Add
+      - message: Faith figures can call out to their faith. Every believer nearby answers aloud, so whoever stays silent gives themselves away.
+        type: Add
+      - message: Added the Prophet, a whitelisted TAP role. The Prophet binds the lost to the Veiled Mother on a Veiled Eye drawn on the floor, keeps track of everyone in the Host and can bring a straying member to their knees.
+        type: Add
+      - message: Saint's Militia members lose any psionics and gain Hunter's Sense, Scrutiny and Null Ward to find psions and cut them off from the noosphere.
+        type: Add
+      - message: The CMM can bring the Analiesse back into the sector as a crewable station by turning in the Analiesse key at their directive terminal.
+        type: Add
+      - message: The network configurator has a link buffer. Collect several devices and link them all at once, and the link menu was reworked.
+        type: Add
+      - message: Soldier NPCs can now see and fight mechs and the pilots inside them.
+        type: Add
+      - message: Squad leaders can switch their soldiers to kill-all, so they attack anyone who is neither on their side nor wearing an allied faction's ID.
+        type: Add
+      - message: Anti-boarder guns and soldier NPCs now judge you by the faction ID card you are wearing.
+        type: Tweak
+      - message: Lathe-printed goods no longer sell for more than the materials they are printed from.
+        type: Tweak
+      - message: Independent hulls bought at Gliess Santo's civilian yards no longer fly CMM colours.
+        type: Tweak
+      - message: Ships redeemed from free vouchers can no longer be sold back for money.
+        type: Tweak
+      - message: New bounty contracts are rate limited with a text cap, and only their creator can take them down.
+        type: Tweak
+      - message: Life insurance payouts follow the game mode's respawn time.
+        type: Tweak
+      - message: Returning to your dead body no longer resets your respawn timer.
+        type: Fix
+    id: 6127
+    time: '2026-10-04T00:00:00.0000000+00:00'
+    url: null
+  - author: Taleryn
+    changes:
+      - message: Shields no longer break. Their plating wears down as it blocks and is welded back. Examine a shield to see how much of each hit it catches held and raised.
+        type: Tweak
+      - message: AMEs and the Unionfall cloner databases now go off as nuclear blasts that gib everyone and erase everything within 28 tiles. The main objective databases survive a neighbour's blast.
+        type: Tweak
+      - message: Mech weapons fire slower, and the mech HE cannon round now properly hurts people instead of scratching them.
+        type: Tweak
+      - message: Drone carriers have hangar space, and heavy drones take up more of it. The NCWL Hornet is now a heavy fighter drone with a plasma caster that takes two slots.
+        type: Tweak
+      - message: Gliess now has its own Shinohara budget arms and Taypani surplus vendors.
+        type: Add
+      - message: Turning a good in at a station's chute no longer pays more than a vendor on that station sells it for.
+        type: Tweak
+      - message: Ships bought with faction treasury money sell back into the treasury, never into a personal account.
+        type: Tweak
+      - message: The TAP Harba fires faster, and the SHI-30J Paperwork sets fewer fire stacks per hit.
+        type: Tweak
+      - message: Mandate soldier roles are human only. Other species serve as Oathbound.
+        type: Tweak
+      - message: Fixed ship lasers stopping on the floor under their own gun, and energy weapons not marking the floor they hit.
+        type: Fix
+      - message: Fixed factories using one input less than the recipe asked and staying busy with nothing on them.
+        type: Fix
+      - message: Fixed the Hierophant losing its attacks after re-aggro or teleporting to the map origin, and tendrils no longer stop spawning.
+        type: Fix
+      - message: Fixed raw message ids showing for ship alert levels, ghost role rules, some materials, faction stamps and armor damage types.
+        type: Fix
+      - message: Custom ID card job titles now show up for everyone.
+        type: Fix
+      - message: Fixed several typos in weapon and stamp names.
+        type: Fix
+    id: 6128
+    time: '2026-10-11T00:00:00.0000000+00:00'
+    url: null
+  - author: Taleryn
+    changes:
+      - message: Added the Psionic Church. It spawns 2 to 3 km out from Gliess Santo, in a different direction every round, with an Oracle whose fountain refills itself.
+        type: Add
+    id: 6129
+    time: '2026-10-15T00:00:00.0000000+00:00'
+    url: null
+  - author: Emre D
+    changes:
+      - message: Faction tax rates are now kept between rounds and shared by every station of the faction.
+        type: Tweak
+      - message: Fixed faction relations talked down from war going back to war after a server restart.
+        type: Fix
+    id: 6130
+    time: '2026-10-19T00:00:00.0000000+00:00'
+    url: null
+  - author: Taleryn
+    changes:
+      - message: Added capturable territories. Points of interest across the sector can be captured, and a territory and everything built on it is kept between rounds.
+        type: Add
+      - message: Holders build on their territory from its build menu, walls, doors, power, atmospherics, furniture, consoles, factories, defences, docking ports and a shipyard. Works go up in stages, one material at a time.
+        type: Add
+      - message: Territory levels 2 and 3 are raised at the administration console with rare parts and a lot of materials. Higher levels allow more turrets, generators, docking ports and a shipyard.
+        type: Add
+      - message: Each territory runs one manufacturing line, picked at its production console. Factories draw heavy power, and paid Rush and Overtime orders speed them up.
+        type: Add
+      - message: The command mainframe has a Territories tab to watch your faction's territories, run their production, set their standing defence orders, fire their guns remotely, rename or abandon them.
+        type: Add
+      - message: Added the political map, on the mainframe and on the shuttle console's POLITICS tab. The sector is split into hexes coloured by the faction that rules them.
+        type: Add
+      - message: Neutral territories start the round guarded by hunter AIs and drone pickets that attack everyone.
+        type: Add
+      - message: Territory holders can paint tile decals in their faction and department colours.
+        type: Add
+      - message: The floor within 15 tiles of a territory's flag can't be destroyed, by weapons, ramming, drills, singularities or anomalies. Everything standing on it can.
+        type: Tweak
+      - message: Faction shipyards let you choose whether the faction treasury or your own account pays.
+        type: Add
+      - message: Added four fields past the edge of the map, the Imperial Fourth Defense Battalion Grave, Craster's Belt, Crimson Despair and the Chengrdiz Battalion Grave. They never refill.
+        type: Add
+      - message: The ghost warp menu is split into stations, territories, asteroid belts, wrecks and players.
+        type: Tweak
+      - message: Every territory now sits at its hex's centre, away from asteroid belts and wreck fields.
+        type: Tweak
+    id: 6131
+    time: '2026-10-30T00:00:00.0000000+00:00'
+    url: null
+  - author: Taleryn
+    changes:
+      - message: Added new things to the construction menu, a shotgun trap, pressure plate, timer, bottle, nail and pyrogel bombs, googly eyes, a high-frequency blade, handrails, shooting targets and random posters and paintings.
+        type: Add
+      - message: Added the Trap Engineering research, which lets microforges print the packed shotgun trap and the timer.
+        type: Add
+      - message: Coats and jackets can now be worn over armor and hardsuits through a Jacket slot.
+        type: Add
+      - message: Added signature fonts as a trait. Some pens also let you pick the font and ink colour you sign with.
+        type: Add
+      - message: Added the saveblueprint command, which saves the ship or station you are standing on to your computer.
+        type: Add
+      - message: Hardsuits now warn you when one of their medipen slots is empty.
+        type: Add
+      - message: Monastic robes have hoods you can raise.
+        type: Add
+      - message: The shuttle console has zoom buttons, and the radar console now uses the same instrument look as the shuttle and targeting consoles.
+        type: Tweak
+      - message: Shift and left click examines again. Firing a gun while sprinting with shift and left click is now an option you can turn on.
+        type: Tweak
+      - message: Minutemen guns were renamed to the Warrant, Constable, Rampart, Posse, Summons, Oath, Magistrate and Homesteader. The Constable and Rampart can no longer be printed.
+        type: Tweak
+      - message: Noospheric zap now drains most of the target's stamina instead of stunning them.
+        type: Tweak
+      - message: The hat slot under a hardsuit helmet only takes headwear.
+        type: Tweak
+      - message: Slurs are now filtered from chat, paper and any other written text, character names included.
+        type: Tweak
+      - message: Game mode votes are back on and the restart vote is off.
+        type: Tweak
+      - message: Factories put their products down on a free tile next to them.
+        type: Tweak
+      - message: Only the squad leader can use their squad window.
+        type: Tweak
+      - message: Removed the AAC tablet and its quick phrases.
+        type: Remove
+      - message: Removed the AKs and rifle magazines from the TAP Lucifer.
+        type: Remove
+      - message: The floor under directional windows and windoors can be pried up again.
+        type: Fix
+      - message: Fixed text running out of many windows, among them the passport, DNA database, faction recruitment, cloning, network configurator, generator and borg type windows.
+        type: Fix
+      - message: The late join list now updates when your playtime unlocks a job.
+        type: Fix
+      - message: Fixed a server error when a docked ship was deleted.
+        type: Fix
+    id: 6132
+    time: '2026-10-30T00:00:00.0000000+00:00'
+    url: null

@@ -76,5 +76,14 @@ namespace Content.Shared._Crescent.CCVar
         /// </summary>
         public static readonly CVarDef<bool> ChatFilterAdminAlert =
             CVarDef.Create("chat.filter_admin_alert", true, CVar.SERVERONLY);
+
+        public static readonly CVarDef<bool> GridBlueprintEnabled =
+            CVarDef.Create("blueprint.enabled", true, CVar.SERVERONLY | CVar.ARCHIVE);
+
+        public static readonly CVarDef<float> GridBlueprintCooldown =
+            CVarDef.Create("blueprint.cooldown", 120f, CVar.SERVERONLY | CVar.ARCHIVE);
+
+        public static readonly CVarDef<int> GridBlueprintMaxSizeKb =
+            CVarDef.Create("blueprint.max_size_kb", 4096, CVar.SERVERONLY | CVar.ARCHIVE);
     }
 }

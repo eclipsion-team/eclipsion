@@ -12,7 +12,8 @@ public sealed class JobWhitelistsEui : BaseEui
     {
         Window = new JobWhitelistsWindow();
         Window.OnClose += () => SendMessage(new CloseEuiMessage());
-        Window.OnSetJob += (id, whitelisted) => SendMessage(new SetJobWhitelistedMessage(id, whitelisted));
+        Window.OnSetJobs += (jobs, whitelisting) => SendMessage(new SetJobWhitelistsMessage(jobs, whitelisting));
+        Window.OnSetServerWhitelisted += whitelisted => SendMessage(new SetServerWhitelistedMessage(whitelisted));
     }
 
     public override void HandleState(EuiStateBase state)

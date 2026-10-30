@@ -262547,7 +262547,7 @@ entities:
     - type: Transform
       parent: 1
       pos: -8.5,33.5
-- proto: BoriaticGeneratorHercules
+- proto: BoriaticGeneratorHerculesShuttle
   entities:
   - uid: 608
     components:

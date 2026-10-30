@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 12/02/2025 01:48:53
-  entityCount: 191
+  entityCount: 185
 maps: []
 grids:
 - 1
@@ -1164,14 +1164,11 @@ entities:
           showEnts: False
           occludes: True
           ents:
-          - 12
-          - 13
           - 11
           - 8
           - 9
           - 10
           - 7
-          - 14
         paper_label: !type:ContainerSlot
           showEnts: False
           occludes: True
@@ -1187,9 +1184,6 @@ entities:
           showEnts: False
           occludes: True
           ents:
-          - 22
-          - 21
-          - 23
           - 20
           - 17
           - 18
@@ -1199,36 +1193,6 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: MagazineRifle
-  entities:
-  - uid: 12
-    components:
-    - type: Transform
-      parent: 6
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 13
-    components:
-    - type: Transform
-      parent: 6
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 21
-    components:
-    - type: Transform
-      parent: 15
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 22
-    components:
-    - type: Transform
-      parent: 15
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
 - proto: NFHolopadShip
   entities:
   - uid: 191
@@ -1625,22 +1589,6 @@ entities:
     - type: Transform
       pos: -0.5,7.5
       parent: 1
-- proto: WeaponRifleAk
-  entities:
-  - uid: 14
-    components:
-    - type: Transform
-      parent: 6
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 23
-    components:
-    - type: Transform
-      parent: 15
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
 - proto: WindowReinforcedDirectional
   entities:
   - uid: 189

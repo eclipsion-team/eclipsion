@@ -12,6 +12,12 @@
                     Text="{Loc 'shipyard-console-no-bank'}" />
             </BoxContainer>
         </BoxContainer>
+        <!-- Crescent: faction yards let the buyer choose who pays. -->
+        <BoxContainer Name="PaymentRow" Orientation="Horizontal" SeparationOverride="4" Visible="False" Margin="0 2 0 2">
+            <Label Text="{Loc 'shipyard-console-pay-from'}" StyleClasses="LabelKeyText" VerticalAlignment="Center"/>
+            <Button Name="TreasuryButton" ToggleMode="True" StyleClasses="OpenRight" HorizontalExpand="True" ClipText="True"/>
+            <Button Name="PersonalButton" ToggleMode="True" StyleClasses="OpenLeft" HorizontalExpand="True" ClipText="True"/>
+        </BoxContainer>
         <BoxContainer Orientation="Vertical">
             <BoxContainer Orientation="Horizontal">
                 <Label Text="{Loc 'shipyard-console-appraisal-label'}"

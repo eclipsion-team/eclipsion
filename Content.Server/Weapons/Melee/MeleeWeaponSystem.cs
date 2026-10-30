@@ -1,3 +1,4 @@
+using Content.Server.Chat.Managers;
 using Content.Server.Chat.Systems;
 using Content.Server.CombatMode.Disarm;
 using Content.Server.Movement.Systems;
@@ -34,6 +35,7 @@ public sealed class MeleeWeaponSystem : SharedMeleeWeaponSystem
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
+    [Dependency] private readonly IChatManager _chatManager = default!;
     [Dependency] private readonly DamageExamineSystem _damageExamine = default!;
     [Dependency] private readonly LagCompensationSystem _lag = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
@@ -220,6 +222,11 @@ public sealed class MeleeWeaponSystem : SharedMeleeWeaponSystem
         if (!args.IsHit || !args.HitEntities.Any() || comp.Battlecry is null)
             return;
 
-        _chat.TrySendInGameICMessage(args.User, comp.Battlecry, InGameICChatType.Speak, true, true, checkRadioPrefix: false);  //Speech that isn't sent to chat or adminlogs
+        // eclipsion - sent without a player, so the soot protocol never saw battlecries
+        var battlecry = comp.Battlecry;
+        if (TryComp<ActorComponent>(args.User, out var actor) && _chatManager.IsUnderSootProtocol(actor.PlayerSession))
+            battlecry = _chat.PickSootProtocolPhrase(actor.PlayerSession);
+
+        _chat.TrySendInGameICMessage(args.User, battlecry, InGameICChatType.Speak, true, true, checkRadioPrefix: false);  //Speech that isn't sent to chat or adminlogs
     }
 }
