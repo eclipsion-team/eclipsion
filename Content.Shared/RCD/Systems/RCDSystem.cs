@@ -515,7 +515,8 @@ public class RCDSystem : EntitySystem
 
             if (tileDef.Indestructible ||
                 TryComp<PersistentPoiGridComponent>(mapGridData.GridUid, out var territory) &&
-                territory.ProtectsTile(mapGridData.Position))
+                territory.ProtectsTile(mapGridData.Position) &&
+                !PersistentTerritoryFactions.Holds(EntityManager, user, territory))
             {
                 if (popMsgs)
                     _popup.PopupClient(Loc.GetString("rcd-component-tile-indestructible-message"), uid, user);

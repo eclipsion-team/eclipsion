@@ -25,6 +25,9 @@ public enum PersistentPoiWorksCategory : byte
 
     RadarConsole,
     ShuttleConsole,
+
+    SpawnBeacon,
+    GearRack,
 }
 
 [Prototype("persistentPoiLevel")]

@@ -217,6 +217,8 @@ Frames cannot be taken apart, only shot down.
 | Production       | one works per line of production      | see below; other lines are greyed out              | 20-30 steel, then plasteel/cloth/glass, cable |
 | Shipyard         | territorial (faction) shipyard        | `ComputerPersistentPoiShipyard<DSM/NCWL/TFSC/SHI>` | 20 steel, 20 steel, 20 plasteel, 10 glass, 20 cable |
 | Shipyard         | territorial external airlock          | the same recipe as under Doors & airlocks          |                                            |
+| Deployment       | territorial cryo spawner              | `PersistentPoiCryoSpawner`                         | 20 steel, 20 plasteel, 10 glass, 20 cable  |
+| Deployment       | territorial (faction) equipment rack  | `PersistentPoiGearRack<DSM/NCWL/TFSC/SHI>`         | 20 steel, 10 plasteel, 10 cable            |
 
 **Floor markings** has a button of its own under the pages; see below.
 
@@ -267,6 +269,18 @@ personal ones to the seller. A yard stamped with its own faction (`FactionMachin
 that faction's treasury and issues hulls in its colours, whoever holds the ground it stands on. Civilian yards always
 bill the buyer.
 
+**Deployment.** A level 3 territory can take a **cryo spawner** (one) and up to two **equipment racks**. While the
+spawner is anchored, powered off an APC (5 kW) and its ground is held at level 3, the late-join window offers the
+holder's people a *Deploy at* choice next to the job list: their home station, or the territory by name. They still
+sign on with a home-station job and get its records and gear; only where they wake up changes. The choice is
+checked again as they spawn, against the faction read off the new body, and anyone the spawner can no longer take
+wakes up at home with a chat line saying so. The server pushes the list of live spawners
+(`TerritoryDeployPointsEvent`) every 2 seconds when it changes, and `joingame <job> <station> [spawner]` carries the
+pick (`TerritorySpawnBeaconSystem`). Examining a spawner says whether it is online. The equipment racks are each
+faction's home armoury rack (class kit, armour, primary weapon, utilities, ammunition, drawn once per life), open to
+any member of that faction - no armoury access needed - but only while that faction holds the ground
+(`TerritoryHolderOnly` on top of `FactionMachine`). Like the shipyards, the menu shows a holder only their own rack.
+
 Built equipment cannot be unanchored or deconstructed, but it can be shot to pieces, which is how the next holder gets
 to build their own. An emplacement is one piece: its hardpoint and gun go down together. Emplacements built before
 the switch to the laser keep their machinegun (`HardpointPersistentPoiEmplacement`, `WeaponTurretPDTPersistentPoi`);
@@ -296,15 +310,15 @@ the box:
 | Level | Costs to reach                                                                                          | Fire control | Factories | Anti-boarder turrets | Production | Bank | Stock reward |
 |-------|---------------------------------------------------------------------------------------------------------|--------------|-----------|----------------------|------------|------|--------------|
 | 1     | -                                                                                                       | 4 guns       | 2         | 2                    | 1x         | +0   | 1x           |
-| 2     | 1500 steel, 600 glass, 600 plasteel, 150 gold, 150 silver, 2 advanced + 2 precursor electronic parts      | 6 guns       | 3         | 3                    | 1.25x      | +1   | 1.5x         |
-| 3     | 3000 steel, 1200 glass, 1500 plasteel, 400 gold, 400 silver, 300 uranium, 5 advanced + 5 precursor parts | 8 guns       | 4         | 4                    | 1.5x       | +2   | 2x           |
+| 2     | 1500 steel, 600 glass, 600 plasteel, 150 gold, 150 silver, 2 advanced + 2 precursor electronic parts      | 6 guns       | 3         | 3                    | 1.5x       | +3   | 1.5x         |
+| 3     | 3000 steel, 1200 glass, 1500 plasteel, 400 gold, 400 silver, 300 uranium, 5 advanced + 5 precursor parts | 8 guns       | 4         | 4                    | 2x         | +6   | 2x           |
 
 Precursor electronic parts (`NanotrasenElectronics`) are salvage only - nothing makes them any more - which is what
 makes the top level a real prize. Anti-boarder turrets never go past four.
 
 Every level allows one console of each kind - fire control, production, administration - counting mapped ones.
 A territorial shipyard needs level 2 (one at levels 2 and 3), external airlocks go 2 / 4 / 6, and so do territorial
-generators.
+generators. The cryo spawner (one) and equipment racks (two) need level 3.
 
 **Fire control is capped by level.** Every anchored ship gun on the territory counts, whoever put it there. Past the
 cap, the newest guns are left out of fire control entirely: no console links them and they will not fire, whatever
@@ -451,8 +465,8 @@ campaign's `persistent_pois/`, one file per gameMap plus the previous round's co
 of the same campaign that spawns the same gameMap shares one territory, and other campaigns keep their own copy.
 
 Before saving, the round is cleared off the grid. Players, ghosts and anything with a mind never travel with it, docked
-ships are cast off, and the following are deleted: corpses, mobs that were not there when the territory first loaded,
-spills, rounds in flight, and anything carried in during play that was left loose on the deck or stashed in storage.
+ships are cast off, and the following are deleted: corpses, mobs that were not there when the territory first loaded
+(built works such as the anti-boarder turret carry MobState but are kept), spills, rounds in flight, and anything carried in during play that was left loose on the deck or stashed in storage.
 Anchored construction and machine internals stay. Loot the territory came with stays until somebody takes it.
 
 Bump `persistentVersion` after editing the map file. A save made against an older version is set aside and the

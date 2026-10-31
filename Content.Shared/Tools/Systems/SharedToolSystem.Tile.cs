@@ -53,7 +53,7 @@ public abstract partial class SharedToolSystem
         if (comp.RequiresUnobstructed && _turfs.IsTileBlocked(gridUid.Value, tileRef.GridIndices, CollisionGroup.MobMask, minIntersectionArea: TurfSystem.FloorRemovalBlockingArea))
             return;
 
-        if (!TryDeconstructWithToolQualities(tileRef, tool.Qualities))
+        if (!TryDeconstructWithToolQualities(tileRef, tool.Qualities, args.User))
             return;
 
         AdminLogger.Add(LogType.LatticeCut, LogImpact.Medium,
@@ -81,7 +81,9 @@ public abstract partial class SharedToolSystem
         if (string.IsNullOrWhiteSpace(tileDef.BaseTurf))
             return false;
 
-        if (TryComp<PersistentPoiGridComponent>(gridUid, out var territory) && territory.ProtectsTile(tileRef.GridIndices))
+        if (TryComp<PersistentPoiGridComponent>(gridUid, out var territory) &&
+            territory.ProtectsTile(tileRef.GridIndices) &&
+            !PersistentTerritoryFactions.Holds(EntityManager, user, territory))
         {
             _popup.PopupClient(Loc.GetString("persistent-poi-floor-tool-denied"), user, user);
             return false;
@@ -99,13 +101,13 @@ public abstract partial class SharedToolSystem
         return true;
     }
 
-    public bool TryDeconstructWithToolQualities(TileRef tileRef, IReadOnlySet<ProtoId<ToolQualityPrototype>> withToolQualities)
+    public bool TryDeconstructWithToolQualities(TileRef tileRef, IReadOnlySet<ProtoId<ToolQualityPrototype>> withToolQualities, EntityUid? user = null)
     {
         var tileDef = (ContentTileDefinition) _tileDefManager[tileRef.Tile.TypeId];
         if (withToolQualities.Overlaps(tileDef.DeconstructTools))
         {
             // don't do this on the client or else the tile entity spawn mispredicts and looks horrible
-            return _net.IsClient || _tiles.DeconstructTile(tileRef);
+            return _net.IsClient || _tiles.DeconstructTile(tileRef, user);
         }
         return false;
     }

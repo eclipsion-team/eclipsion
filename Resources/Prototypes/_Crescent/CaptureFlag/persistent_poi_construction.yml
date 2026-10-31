@@ -91,6 +91,32 @@
       - material: Steel
         amount: 20
         doAfter: 3
+    # Deployment
+    - to: cryoSpawnerFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: gearRackDSMFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: gearRackNCWLFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: gearRackTFSCFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: gearRackSHIFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
     - to: dockingPortFrame
       steps:
       - material: Steel
@@ -989,6 +1015,118 @@
 
   - node: toilet
     entity: ToiletPersistentPoi
+
+  - node: cryoSpawnerFrame
+    entity: PersistentPoiFrameCryoSpawner
+    edges:
+    - to: cryoSpawnerPlated
+      steps:
+      - material: Plasteel
+        amount: 20
+        doAfter: 4
+  - node: cryoSpawnerPlated
+    edges:
+    - to: cryoSpawnerGlazed
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 2
+  - node: cryoSpawnerGlazed
+    edges:
+    - to: cryoSpawner
+      steps:
+      - material: Cable
+        amount: 20
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: SpawnBeacon
+  - node: cryoSpawner
+    entity: PersistentPoiCryoSpawner
+
+  - node: gearRackDSMFrame
+    entity: PersistentPoiFrameGearRackDSM
+    edges:
+    - to: gearRackDSMPlated
+      steps:
+      - material: Plasteel
+        amount: 10
+        doAfter: 3
+  - node: gearRackDSMPlated
+    edges:
+    - to: gearRackDSM
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: GearRack
+  - node: gearRackDSM
+    entity: PersistentPoiGearRackDSM
+
+  - node: gearRackNCWLFrame
+    entity: PersistentPoiFrameGearRackNCWL
+    edges:
+    - to: gearRackNCWLPlated
+      steps:
+      - material: Plasteel
+        amount: 10
+        doAfter: 3
+  - node: gearRackNCWLPlated
+    edges:
+    - to: gearRackNCWL
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: GearRack
+  - node: gearRackNCWL
+    entity: PersistentPoiGearRackNCWL
+
+  - node: gearRackTFSCFrame
+    entity: PersistentPoiFrameGearRackTFSC
+    edges:
+    - to: gearRackTFSCPlated
+      steps:
+      - material: Plasteel
+        amount: 10
+        doAfter: 3
+  - node: gearRackTFSCPlated
+    edges:
+    - to: gearRackTFSC
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: GearRack
+  - node: gearRackTFSC
+    entity: PersistentPoiGearRackTFSC
+
+  - node: gearRackSHIFrame
+    entity: PersistentPoiFrameGearRackSHI
+    edges:
+    - to: gearRackSHIPlated
+      steps:
+      - material: Plasteel
+        amount: 10
+        doAfter: 3
+  - node: gearRackSHIPlated
+    edges:
+    - to: gearRackSHI
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: GearRack
+  - node: gearRackSHI
+    entity: PersistentPoiGearRackSHI
 
 # Command
 
@@ -2210,4 +2348,139 @@
   hide: true
   conditions:
   - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+# Deployment
+
+- type: construction
+  id: PersistentPoiCryoSpawner
+  name: territorial cryo spawner
+  description: Lets your faction's people wake up here when they join, instead of at home. Needs power and a fully developed territory. One per territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: cryoSpawner
+  category: construction-category-structures
+  icon:
+    sprite: _NF/Structures/Machines/cryopod.rsi
+    state: closed
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: SpawnBeacon
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiGearRackDSM
+  name: territorial imperial equipment rack
+  description: Your faction's standard kits - armour, a primary weapon, ammunition and utilities - drawn once per life. Only your faction can use it, and only while it holds the ground. Needs a fully developed territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: gearRackDSM
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Machines/Vendors/armory_dsm.rsi
+    state: "off"
+  layers:
+  - sprite: _Crescent/Structures/Machines/Vendors/armory_dsm.rsi
+    state: "off"
+  - sprite: _Crescent/Structures/Machines/Vendors/armory_dsm.rsi
+    state: normal-unshaded
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiFactionRequired
+    faction: DSM
+  - !type:PersistentPoiWithinLimit
+    category: GearRack
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiGearRackNCWL
+  name: territorial NCWL equipment rack
+  description: Your faction's standard kits - armour, a primary weapon, ammunition and utilities - drawn once per life. Only your faction can use it, and only while it holds the ground. Needs a fully developed territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: gearRackNCWL
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Machines/Vendors/armory_ncwl.rsi
+    state: "off"
+  layers:
+  - sprite: _Crescent/Structures/Machines/Vendors/armory_ncwl.rsi
+    state: "off"
+  - sprite: _Crescent/Structures/Machines/Vendors/armory_ncwl.rsi
+    state: normal-unshaded
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiFactionRequired
+    faction: NCWL
+  - !type:PersistentPoiWithinLimit
+    category: GearRack
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiGearRackTFSC
+  name: territorial TFCF equipment rack
+  description: Your faction's standard kits - armour, a primary weapon, ammunition and utilities - drawn once per life. Only your faction can use it, and only while it holds the ground. Needs a fully developed territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: gearRackTFSC
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Machines/Vendors/armory_tfsc.rsi
+    state: "off"
+  layers:
+  - sprite: _Crescent/Structures/Machines/Vendors/armory_tfsc.rsi
+    state: "off"
+  - sprite: _Crescent/Structures/Machines/Vendors/armory_tfsc.rsi
+    state: normal-unshaded
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiFactionRequired
+    faction: TFSC
+  - !type:PersistentPoiWithinLimit
+    category: GearRack
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiGearRackSHI
+  name: territorial Shinohara equipment rack
+  description: Your faction's standard kits - armour, a primary weapon, ammunition and utilities - drawn once per life. Only your faction can use it, and only while it holds the ground. Needs a fully developed territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: gearRackSHI
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Machines/Vendors/armory_shi.rsi
+    state: "off"
+  layers:
+  - sprite: _Crescent/Structures/Machines/Vendors/armory_shi.rsi
+    state: "off"
+  - sprite: _Crescent/Structures/Machines/Vendors/armory_shi.rsi
+    state: normal-unshaded
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiFactionRequired
+    faction: SHI
+  - !type:PersistentPoiWithinLimit
+    category: GearRack
   - !type:TileNotBlocked

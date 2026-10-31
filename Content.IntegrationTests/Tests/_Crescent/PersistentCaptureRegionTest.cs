@@ -14,6 +14,7 @@ using Content.Shared.NPC.Prototypes;
 using Content.Shared.Roles;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Crescent;
@@ -317,6 +318,72 @@ public sealed class PersistentCaptureRegionTest
 
             // Leave nothing of this test behind in the persistence file.
             Assert.That(territory.ForgetRegion(regionId), Is.True);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task LevelSurvivesRoundAndReload()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var mapSystem = server.System<SharedMapSystem>();
+
+        var campaign = $"LevelTest{Guid.NewGuid():N}";
+        var regionId = $"integration-test-{Guid.NewGuid():N}";
+        EntityUid gridUid = default;
+
+        async Task SpawnTerritory()
+        {
+            await server.WaitPost(() =>
+            {
+                mapSystem.CreateMap(out var mapId);
+                var grid = mapSystem.CreateGridEntity(mapId);
+                mapSystem.SetTile(grid, Vector2i.Zero, new Tile(1));
+                gridUid = grid.Owner;
+
+                var flag = entMan.CreateEntityUninitialized("PersistentCaptureRegionFlag", new EntityCoordinates(gridUid, 0.5f, 0.5f));
+                entMan.GetComponent<PersistentCaptureRegionComponent>(flag).RegionId = regionId;
+                entMan.InitializeAndStartEntity(flag);
+            });
+            await server.WaitRunTicks(2);
+        }
+
+        await server.WaitPost(() => server.System<TerritoryProfileSystem>().SetProfile(campaign, null));
+        await SpawnTerritory();
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(server.System<PersistentCaptureRegionSystem>().SetOwner(regionId, "TFCF"), Is.True);
+            server.System<PersistentPoiProgressionSystem>().SetLevel(regionId, 2);
+            Assert.That(entMan.GetComponent<PersistentPoiGridComponent>(gridUid).Level, Is.EqualTo(2));
+            entMan.DeleteEntity(entMan.GetComponent<TransformComponent>(gridUid).MapUid);
+        });
+
+        await SpawnTerritory();
+        await server.WaitAssertion(() =>
+            Assert.That(entMan.GetComponent<PersistentPoiGridComponent>(gridUid).Level, Is.EqualTo(2),
+                "The level was lost when the territory was spawned again."));
+
+        await server.WaitPost(() =>
+        {
+            entMan.DeleteEntity(entMan.GetComponent<TransformComponent>(gridUid).MapUid);
+            var profiles = server.System<TerritoryProfileSystem>();
+            profiles.SetProfile(TerritoryProfileSystem.DefaultProfile, null);
+            profiles.SetProfile(campaign, null);
+        });
+
+        await SpawnTerritory();
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(server.System<PersistentPoiProgressionSystem>().GetLevel(regionId), Is.EqualTo(2),
+                "The level did not come back from the save file.");
+            Assert.That(entMan.GetComponent<PersistentPoiGridComponent>(gridUid).Level, Is.EqualTo(2));
+            entMan.DeleteEntity(entMan.GetComponent<TransformComponent>(gridUid).MapUid);
+            server.System<TerritoryProfileSystem>().ArchiveProfile(campaign);
+            server.System<TerritoryProfileSystem>().SetProfile(TerritoryProfileSystem.DefaultProfile, null);
         });
 
         await pair.CleanReturnAsync();

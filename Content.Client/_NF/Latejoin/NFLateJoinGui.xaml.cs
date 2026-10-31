@@ -4,6 +4,8 @@ using Content.Client.Lobby;
 using Content.Client.Players.PlayTimeTracking;
 using Content.Client.UserInterface.Controls;
 using Content.Client._Crescent.Factions;
+using Content.Client._Crescent.Territory;
+using Content.Shared._Crescent.Territory;
 using Content.Shared.Customization.Systems;
 using Content.Shared.Players.PlayTimeTracking;
 using Content.Shared.Preferences;
@@ -36,9 +38,15 @@ public sealed partial class NFLateJoinGui : FancyWindow
     private CharacterRequirementsSystem _characterRequirements;
     private FactionBalanceSystem _factionBalance;
 
+    private TerritoryDeploySystem _deploy;
+
     private NetEntity _lastSelection;
 
     private readonly Dictionary<string, NewFrontierLateJoinJobButton> _buttons = new();
+
+    // index 0 is the home station
+    private readonly List<TerritoryDeployPoint?> _deployChoices = new();
+    private NetEntity? _deploySelected;
 
     public NFLateJoinGui()
     {
@@ -49,6 +57,13 @@ public sealed partial class NFLateJoinGui : FancyWindow
         _characterRequirements = EntitySystem.Get<CharacterRequirementsSystem>();
         _factionBalance = EntitySystem.Get<FactionBalanceSystem>();
         _factionBalance.Updated += OnFactionBalanceUpdated;
+        _deploy = EntitySystem.Get<TerritoryDeploySystem>();
+        _deploy.Updated += OnDeployPointsUpdated;
+        DeployOption.OnItemSelected += args =>
+        {
+            DeployOption.SelectId(args.Id);
+            _deploySelected = _deployChoices[args.Id]?.Beacon;
+        };
         _playManager.Updated += OnRequirementsUpdated;
         VesselSelection.VesselItemList.OnItemSelected += args =>
         {
@@ -85,6 +100,7 @@ public sealed partial class NFLateJoinGui : FancyWindow
 
         _gameTicker.LobbyJobsAvailableUpdated -= UpdateUi;
         _factionBalance.Updated -= OnFactionBalanceUpdated;
+        _deploy.Updated -= OnDeployPointsUpdated;
         _playManager.Updated -= OnRequirementsUpdated;
         // This one used to be a lambda that was never unsubscribed, so a closed window kept rebuilding
         // its job list every time the player switched character slot in the lobby.
@@ -106,6 +122,69 @@ public sealed partial class NFLateJoinGui : FancyWindow
         UpdateUi(_gameTicker.JobsAvailable);
     }
 
+    private void OnDeployPointsUpdated()
+    {
+        UpdateUi(_gameTicker.JobsAvailable);
+    }
+
+    /// <summary>
+    /// Offers the territory spawn beacons held by any faction this station hires for.
+    /// </summary>
+    private void UpdateDeployOptions(Dictionary<string, uint?>? jobs)
+    {
+        _deployChoices.Clear();
+        DeployOption.Clear();
+
+        var factions = new HashSet<string>();
+        if (jobs != null)
+        {
+            foreach (var jobId in jobs.Keys)
+            {
+                if (_factionBalance.TryGetJobFaction(jobId, out var faction))
+                    factions.Add(faction);
+            }
+        }
+
+        _deployChoices.Add(null);
+        DeployOption.AddItem(Loc.GetString("late-join-deploy-home"), 0);
+
+        var selected = 0;
+        foreach (var point in _deploy.Points)
+        {
+            if (!factions.Contains(point.Faction))
+                continue;
+
+            if (point.Beacon == _deploySelected)
+                selected = _deployChoices.Count;
+
+            DeployOption.AddItem(point.Name, _deployChoices.Count);
+            _deployChoices.Add(point);
+        }
+
+        DeployOption.SelectId(selected);
+        _deploySelected = _deployChoices[selected]?.Beacon;
+        DeployRow.Visible = _deployChoices.Count > 1;
+    }
+
+    private string JoinCommand(NetEntity station, string jobId)
+    {
+        var command = $"joingame {CommandParsing.Escape(jobId)} {station}";
+
+        // the beacon has to belong to the faction this job signs you up with
+        foreach (var point in _deployChoices)
+        {
+            if (point != null &&
+                point.Beacon == _deploySelected &&
+                _factionBalance.TryGetJobFaction(jobId, out var faction) &&
+                faction == point.Faction)
+            {
+                return $"{command} {point.Beacon}";
+            }
+        }
+
+        return command;
+    }
+
     public void UpdateUi(IReadOnlyDictionary<NetEntity, Dictionary<string, uint?>> obj)
     {
         if (VesselSelection.Selected is null)
@@ -114,6 +193,7 @@ public sealed partial class NFLateJoinGui : FancyWindow
             // No vessel means no roles; leaving the old list up would offer jobs on a ship that is gone.
             JobList.DisposeAllChildren();
             _buttons.Clear();
+            UpdateDeployOptions(null);
             return;
         }
 
@@ -126,6 +206,7 @@ public sealed partial class NFLateJoinGui : FancyWindow
         {
             JobList.DisposeAllChildren();
             _buttons.Clear();
+            UpdateDeployOptions(null);
             return;
         }
 
@@ -135,6 +216,7 @@ public sealed partial class NFLateJoinGui : FancyWindow
         _buttons.Clear();
 
         _lastSelection = station;
+        UpdateDeployOptions(jobs);
 
         foreach (var (departmentName, departmentJobs) in GroupJobsByDepartment(jobs))
         {
@@ -219,7 +301,7 @@ public sealed partial class NFLateJoinGui : FancyWindow
         newButton.OnPressed += args =>
         {
             Logger.InfoS("latejoin", $"Late joining as ID: {jobId}");
-            _consoleHost.ExecuteCommand($"joingame {CommandParsing.Escape(jobId)} {station}");
+            _consoleHost.ExecuteCommand(JoinCommand(station, jobId));
             Close();
         };
 

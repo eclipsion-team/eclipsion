@@ -317,6 +317,12 @@
   id: WeaponPulsePistol
   description: A state of the art energy pistol favoured as a sidearm by the NT operatives.
   components:
+  - type: Multishot # dual wield, much worse aim
+    spreadMultiplier: 2.5
+    fireRateMultiplier: 1
+    angleIncreaseMultiplier: 2
+    extraMinAngle: 8
+    extraMaxAngle: 15
   - type: Sprite
     sprite: Objects/Weapons/Guns/Battery/pulse_pistol.rsi
     layers:
@@ -666,6 +672,12 @@
   id: WeaponDisablerSMG
   description: Advanced weapon that exhausts organic targets, weakening them until they collapse.
   components:
+  - type: Multishot # dual wield, much worse aim
+    spreadMultiplier: 2.5
+    fireRateMultiplier: 1
+    angleIncreaseMultiplier: 2
+    extraMinAngle: 8
+    extraMaxAngle: 15
   - type: Item
     size: Large
   - type: Tag
@@ -875,6 +887,12 @@
   id: WeaponPistolCHIMP
   description: Just because it's a little C.H.I.M.P. doesn't mean it can't punch like an A.P.E.
   components:
+  - type: Multishot # dual wield, much worse aim
+    spreadMultiplier: 2.5
+    fireRateMultiplier: 1
+    angleIncreaseMultiplier: 2
+    extraMinAngle: 8
+    extraMaxAngle: 15
   - type: Sprite
     sprite: Objects/Weapons/Guns/Revolvers/chimp.rsi
     layers:

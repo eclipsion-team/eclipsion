@@ -116,6 +116,16 @@
       - PersistentPoiShipyardTFSC
       - PersistentPoiShipyardSHI
       - PersistentPoiDockingPort
+    - name: persistent-poi-build-category-deployment
+      icon:
+        sprite: _NF/Structures/Machines/cryopod.rsi
+        state: closed
+      recipes:
+      - PersistentPoiCryoSpawner
+      - PersistentPoiGearRackDSM
+      - PersistentPoiGearRackNCWL
+      - PersistentPoiGearRackTFSC
+      - PersistentPoiGearRackSHI
 
 - type: entity
   parent: ComputerTargetingCapturable
@@ -466,6 +476,9 @@
   - type: Construction
     graph: PersistentPoiStructures
     node: dockingPort
+  # The territory graph never fits door electronics, and an empty board slot refuses every ID.
+  - type: AccessReader
+    containerAccessProvider: null
   - type: TerritoryAccess
   - type: FactionMachine
     explicit: true
@@ -485,6 +498,8 @@
   - type: Construction
     graph: PersistentPoiStructures
     node: airlock
+  - type: AccessReader
+    containerAccessProvider: null
   - type: TerritoryAccess
   - type: FactionMachine
     explicit: true
@@ -504,6 +519,8 @@
   - type: Construction
     graph: PersistentPoiStructures
     node: airlockGlass
+  - type: AccessReader
+    containerAccessProvider: null
   - type: TerritoryAccess
   - type: FactionMachine
     explicit: true
@@ -523,6 +540,8 @@
   - type: Construction
     graph: PersistentPoiStructures
     node: airlockPublic
+  - type: AccessReader
+    containerAccessProvider: null
 
 # Structure
 
@@ -1372,3 +1391,203 @@
   - type: Construction
     graph: PersistentPoiStructures
     node: airAlarmFrame
+
+# level 3 deployment: holders late-join here instead of at home while it has power
+- type: entity
+  parent: BaseStructure
+  id: PersistentPoiCryoSpawner
+  name: territorial cryo spawner
+  suffix: Persistent territory, built
+  description: A cryo pod wired into the territory. While it has power, the holding faction's people can choose to wake up here when they join, instead of at home.
+  components:
+  - type: Sprite
+    sprite: _NF/Structures/Machines/cryopod.rsi
+    state: closed
+    noRot: true
+  - type: InteractionOutline
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MobLayer
+  - type: TerritorySpawnBeacon
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: SpawnBeacon
+  - type: ApcPowerReceiver
+    powerLoad: 5000
+  - type: ExtensionCableReceiver
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: cryoSpawner
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 4
+            max: 8
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+# territorial gear racks: the faction's own class kits, only for that faction while it holds the ground
+- type: entity
+  abstract: true
+  id: PersistentPoiGearRackBase
+  components:
+  - type: TerritoryHolderOnly
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: GearRack
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 4
+            max: 8
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: [ PersistentPoiGearRackBase, ColMarTechEquipmentDSM ]
+  id: PersistentPoiGearRackDSM
+  name: territorial imperial equipment rack
+  suffix: Persistent territory, built
+  description: The Empire's standard kits, racked at the front. Only the Empire's own can draw from it, and only while the Empire holds the ground.
+  components:
+  - type: AccessReader
+    access: []
+  - type: FactionMachine
+    faction: DSM
+    explicit: true
+    restrictAccess: true
+    normalizeFaction: false
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: gearRackDSM
+
+- type: entity
+  parent: [ PersistentPoiGearRackBase, ColMarTechEquipmentNCWL ]
+  id: PersistentPoiGearRackNCWL
+  name: territorial NCWL equipment rack
+  suffix: Persistent territory, built
+  description: The League's standard kits, racked at the front. Only the League's own can draw from it, and only while the League holds the ground.
+  components:
+  - type: AccessReader
+    access: []
+  - type: FactionMachine
+    faction: NCWL
+    explicit: true
+    restrictAccess: true
+    normalizeFaction: false
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: gearRackNCWL
+
+- type: entity
+  parent: [ PersistentPoiGearRackBase, ColMarTechEquipmentInterdyne ]
+  id: PersistentPoiGearRackTFSC
+  name: territorial TFCF equipment rack
+  suffix: Persistent territory, built
+  description: The Free Companies' standard kits, racked at the front. Only the Companies' own can draw from it, and only while they hold the ground.
+  components:
+  - type: AccessReader
+    access: []
+  - type: FactionMachine
+    faction: TFSC
+    explicit: true
+    restrictAccess: true
+    normalizeFaction: false
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: gearRackTFSC
+
+- type: entity
+  parent: [ PersistentPoiGearRackBase, ColMarTechEquipmentSHI ]
+  id: PersistentPoiGearRackSHI
+  name: territorial Shinohara equipment rack
+  suffix: Persistent territory, built
+  description: Shinohara's standard security kits, racked at the front. Only Shinohara's own can draw from it, and only while Shinohara holds the ground.
+  components:
+  - type: AccessReader
+    access: []
+  - type: FactionMachine
+    faction: SHI
+    explicit: true
+    restrictAccess: true
+    normalizeFaction: false
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: gearRackSHI
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameCryoSpawner
+  name: cryo spawner frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: cryoSpawnerFrame
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameGearRackDSM
+  name: imperial equipment rack frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: gearRackDSMFrame
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameGearRackNCWL
+  name: NCWL equipment rack frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: gearRackNCWLFrame
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameGearRackTFSC
+  name: TFCF equipment rack frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: gearRackTFSCFrame
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameGearRackSHI
+  name: Shinohara equipment rack frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: gearRackSHIFrame

@@ -16,6 +16,24 @@ public sealed partial class MultishotComponent : Component
     public float SpreadMultiplier = 1.5f;
 
     /// <summary>
+    /// Fire rate divisor while dual wielding. Falls back to <see cref="SpreadMultiplier"/> when null.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float? FireRateMultiplier;
+
+    [DataField, AutoNetworkedField]
+    public float AngleIncreaseMultiplier = 1f;
+
+    /// <summary>
+    /// Flat spread in degrees added after the multiplier, so accurate guns still get worse.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float ExtraMinAngle;
+
+    [DataField, AutoNetworkedField]
+    public float ExtraMaxAngle;
+
+    /// <summary>
     /// Uid of related weapon
     /// </summary>
     [DataField, AutoNetworkedField]

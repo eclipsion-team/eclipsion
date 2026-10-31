@@ -146,14 +146,15 @@ public sealed class TileSystem : EntitySystem
         return true;
     }
 
-    public bool DeconstructTile(TileRef tileRef)
+    public bool DeconstructTile(TileRef tileRef, EntityUid? user = null)
     {
         if (tileRef.Tile.IsEmpty)
             return false;
 
-        // Crescent: the floor around a persistent territory's standard is permanent ground. Nothing pries or digs it up.
+        // Crescent: the floor around a persistent territory's standard is permanent ground. Only its holders pry it up.
         if (TryComp<PersistentPoiGridComponent>(tileRef.GridUid, out var territory) &&
-            territory.ProtectsTile(tileRef.GridIndices))
+            territory.ProtectsTile(tileRef.GridIndices) &&
+            (user is not { } holder || !PersistentTerritoryFactions.Holds(EntityManager, holder, territory)))
         {
             return false;
         }

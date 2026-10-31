@@ -56,9 +56,10 @@ public sealed partial class SharedMultishotSystem : EntitySystem
         if (comp.RelatedWeapon == null)
             return;
 
-        args.MaxAngle *= comp.SpreadMultiplier;
-        args.MinAngle *= comp.SpreadMultiplier;
-        args.FireRate /= comp.SpreadMultiplier;
+        args.MaxAngle = args.MaxAngle * comp.SpreadMultiplier + Angle.FromDegrees(comp.ExtraMaxAngle);
+        args.MinAngle = args.MinAngle * comp.SpreadMultiplier + Angle.FromDegrees(comp.ExtraMinAngle);
+        args.AngleIncrease *= comp.AngleIncreaseMultiplier;
+        args.FireRate /= comp.FireRateMultiplier ?? comp.SpreadMultiplier;
     }
 
     private void OnEquipWeapon(Entity<MultishotComponent> multishotWeapon, ref GotEquippedHandEvent args)

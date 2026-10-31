@@ -24,6 +24,7 @@ using Robust.Shared.Timing;
 using Content.Shared.StatusEffect;
 using Content.Shared.Stunnable;
 using Robust.Shared.Audio;
+using Content.Shared._Goobstation.Weapons.Multishot;
 
 namespace Content.Shared.Wieldable;
 
@@ -87,6 +88,10 @@ public sealed class WieldableSystem : EntitySystem
 
     private void OnShootAttempt(EntityUid uid, GunRequiresWieldComponent component, ref ShotAttemptedEvent args)
     {
+        // Dual wielding replaces the wield requirement.
+        if (TryComp<MultishotComponent>(uid, out var multishot) && multishot.RelatedWeapon != null)
+            return;
+
         if (TryComp<WieldableComponent>(uid, out var wieldable) &&
             !wieldable.Wielded)
         {

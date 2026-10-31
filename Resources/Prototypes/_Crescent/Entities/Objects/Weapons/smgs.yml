@@ -5,6 +5,12 @@
   id: WeaponSubMachineGunMilitant
   description: A 9x39 submachinegun designed for the NCWL internal police, comes with a huge suppressor that makes it a pain in the ass to holster.
   components:
+  - type: Multishot # dual wield, much worse aim
+    spreadMultiplier: 2.5
+    fireRateMultiplier: 1
+    angleIncreaseMultiplier: 2
+    extraMinAngle: 8
+    extraMaxAngle: 15
   - type: Item
     shape:
     - 0,0,5,1
@@ -547,6 +553,12 @@
   parent: BaseItem
   description: A C20 SMG for use by cyborgs. Creates 11 mm Pistol ammo on the fly from an internal ammo fabricator, which slowly self-charges.
   components:
+  - type: Multishot # dual wield, much worse aim
+    spreadMultiplier: 2.5
+    fireRateMultiplier: 1
+    angleIncreaseMultiplier: 2
+    extraMinAngle: 8
+    extraMaxAngle: 15
   - type: Gun
     minAngle: 15
     maxAngle: 25

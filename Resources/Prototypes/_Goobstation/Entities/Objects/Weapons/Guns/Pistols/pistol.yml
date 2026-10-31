@@ -48,6 +48,10 @@
     - WeaponPistolDualetta
   - type: Multishot
     spreadMultiplier: 1.25
+    fireRateMultiplier: 1.25 # keep its own tuning, not the base pistol penalty
+    angleIncreaseMultiplier: 1
+    extraMinAngle: 0
+    extraMaxAngle: 0
   - type: RequiresDualWield
     whitelist:
       tags:
@@ -96,4 +100,9 @@
   - type: ContainerContainer
     containers:
       ballistic-ammo: !type:Container
-  - type: Multishot
+  - type: Multishot # dual wield, much worse aim
+    spreadMultiplier: 2.5
+    fireRateMultiplier: 1
+    angleIncreaseMultiplier: 2
+    extraMinAngle: 8
+    extraMaxAngle: 15

@@ -19,6 +19,8 @@
     Shipyard: 0
     DockingPort: 2
     Generator: 2
+    SpawnBeacon: 0
+    GearRack: 0
   productionSpeed: 1
   extraStorage: 0
   stockRewardMultiplier: 1
@@ -46,8 +48,10 @@
     Shipyard: 1
     DockingPort: 4
     Generator: 4
-  productionSpeed: 1.25
-  extraStorage: 1
+    SpawnBeacon: 0
+    GearRack: 0
+  productionSpeed: 1.5
+  extraStorage: 3
   stockRewardMultiplier: 1.5
 
 - type: persistentPoiLevel
@@ -74,8 +78,10 @@
     Shipyard: 1
     DockingPort: 6
     Generator: 6
-  productionSpeed: 1.5
-  extraStorage: 2
+    SpawnBeacon: 1
+    GearRack: 2
+  productionSpeed: 2
+  extraStorage: 6
   stockRewardMultiplier: 2
 
 - type: persistentPoiCapability

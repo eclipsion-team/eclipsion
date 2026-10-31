@@ -41,6 +41,12 @@ public static class PersistentTerritoryFactions
         return null;
     }
 
+    public static bool Holds(IEntityManager entMan, EntityUid user, PersistentPoiGridComponent territory)
+    {
+        return territory.Owner != null &&
+               string.Equals(GetTeam(entMan, user), territory.Owner, StringComparison.Ordinal);
+    }
+
     /// <summary>
     /// Removes an owner prefix from a radar name, whichever spelling wrote it. Names saved or mapped before a
     /// faction's abbreviation changed still carry the old one, so both have to be recognized or the prefix stacks.

@@ -257,6 +257,12 @@
   id: WeaponPistolFlintlock
   description: A pirate's companion. Yarrr! Uses musket cartridges. # Delta V - Ditto the above
   components:
+  - type: Multishot # dual wield, much worse aim
+    spreadMultiplier: 2.5
+    fireRateMultiplier: 1
+    angleIncreaseMultiplier: 2
+    extraMinAngle: 8
+    extraMaxAngle: 15
   - type: Gun
     minAngle: 0
     maxAngle: 30 #miss him entirely because the barrel is smoothbore

@@ -12,6 +12,10 @@
         <cc:VSeparator StyleClasses="LowDivider"/>
         <BoxContainer Orientation="Vertical" Margin="4 4" HorizontalExpand="True" SizeFlagsStretchRatio="1">
             <Button Name="CrewManifestButton" Text="{Loc 'late-join-manifest'}" HorizontalAlignment="Center" Visible="False"/>
+            <BoxContainer Name="DeployRow" Orientation="Horizontal" Margin="0 4" Visible="False">
+                <Label Text="{Loc 'late-join-deploy-label'}" Margin="0 0 6 0"/>
+                <OptionButton Name="DeployOption" HorizontalExpand="True"/>
+            </BoxContainer>
             <!-- A ship with a lot of roles used to run straight off the bottom of the window. -->
             <ScrollContainer VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False">
                 <BoxContainer Name="JobList" Orientation="Vertical" HorizontalExpand="True"/>

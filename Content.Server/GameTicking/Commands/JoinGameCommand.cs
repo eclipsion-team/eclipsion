@@ -1,3 +1,4 @@
+using Content.Server._Crescent.Territory;
 using Content.Server.Station.Systems;
 using Content.Shared.Administration;
 using Content.Shared.GameTicking;
@@ -23,7 +24,8 @@ namespace Content.Server.GameTicking.Commands
         }
         public void Execute(IConsoleShell shell, string argStr, string[] args)
         {
-            if (args.Length != 2)
+            // Eclipsion: optional third arg is a territory spawn beacon to wake up at
+            if (args.Length is not (2 or 3))
             {
                 shell.WriteError(Loc.GetString("shell-wrong-arguments-number"));
                 return;
@@ -67,7 +69,17 @@ namespace Content.Server.GameTicking.Commands
                     shell.WriteLine($"{jobPrototype.LocalizedName} has no available slots.");
                     return;
                 }
-                ticker.MakeJoinGame(player, station, id);
+                var beacons = _entManager.System<TerritorySpawnBeaconSystem>();
+                NetEntity? beacon = args.Length == 3 && int.TryParse(args[2], out var bid) ? new NetEntity(bid) : null;
+                beacons.SetRequest(player, beacon);
+                try
+                {
+                    ticker.MakeJoinGame(player, station, id);
+                }
+                finally
+                {
+                    beacons.SetRequest(player, null);
+                }
                 return;
             }
 

@@ -144,7 +144,7 @@
   - type: PersistentPoiProductionMachine
     powerDraw: 25000
     capability: GeneralOre
-    maxStored: 4
+    maxStored: 10
     recipes:
     - PersistentPoiExtractMixedOre
   - type: Construction
@@ -168,7 +168,7 @@
   - type: PersistentPoiProductionMachine
     powerDraw: 30000
     capability: TargetedOre
-    maxStored: 4
+    maxStored: 10
     recipes:
     - PersistentPoiExtractSteelOre
     - PersistentPoiExtractCopperOre
@@ -203,7 +203,7 @@
   - type: PersistentPoiProductionMachine
     powerDraw: 20000
     capability: Textiles
-    maxStored: 4
+    maxStored: 10
     recipes:
     - PersistentPoiSpinCotton
     - PersistentPoiWeaveCloth
@@ -233,7 +233,7 @@
   - type: PersistentPoiProductionMachine
     powerDraw: 35000
     capability: Materials
-    maxStored: 3
+    maxStored: 10
     recipes:
     - PersistentPoiCastSteel
     - PersistentPoiCastGlass
@@ -264,7 +264,7 @@
   - type: PersistentPoiProductionMachine
     powerDraw: 25000
     capability: TradeGoods
-    maxStored: 3
+    maxStored: 10
     recipes:
     - PersistentPoiAssembleAlloys
     - PersistentPoiAssembleGunparts
@@ -279,152 +279,152 @@
 - type: persistentPoiProductionRecipe
   id: PersistentPoiExtractMixedOre
   name: persistent-poi-recipe-mixed-ore
-  duration: 300
+  duration: 240
   outputs:
-    SteelOre1: 10
-    CopperOre1: 6
-    Coal1: 6
-    PlasmaOre1: 3
-    SilverOre1: 2
-    GoldOre1: 1
+    SteelOre1: 20
+    CopperOre1: 12
+    Coal1: 12
+    PlasmaOre1: 6
+    SilverOre1: 4
+    GoldOre1: 2
 
 # Recipes: targeted ore
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiExtractSteelOre
   name: persistent-poi-recipe-steel-ore
-  duration: 300
+  duration: 240
   outputs:
-    SteelOre1: 25
+    SteelOre1: 50
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiExtractCopperOre
   name: persistent-poi-recipe-copper-ore
-  duration: 300
+  duration: 240
   outputs:
-    CopperOre1: 20
+    CopperOre1: 40
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiExtractPlasmaOre
   name: persistent-poi-recipe-plasma-ore
-  duration: 300
+  duration: 240
   outputs:
-    PlasmaOre1: 12
+    PlasmaOre1: 25
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiExtractSilverOre
   name: persistent-poi-recipe-silver-ore
-  duration: 360
+  duration: 300
   outputs:
-    SilverOre1: 10
+    SilverOre1: 20
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiExtractGoldOre
   name: persistent-poi-recipe-gold-ore
-  duration: 480
+  duration: 360
   outputs:
-    GoldOre1: 8
+    GoldOre1: 16
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiExtractTungstenOre
   name: persistent-poi-recipe-tungsten-ore
-  duration: 420
+  duration: 360
   outputs:
-    TungstenOre1: 8
+    TungstenOre1: 16
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiExtractQuartz
   name: persistent-poi-recipe-quartz
-  duration: 300
+  duration: 240
   outputs:
-    SpaceQuartz1: 12
+    SpaceQuartz1: 25
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiExtractUraniumOre
   name: persistent-poi-recipe-uranium-ore
-  duration: 600
+  duration: 480
   outputs:
-    UraniumOre1: 6
+    UraniumOre1: 12
 
 # Recipes: textiles
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiSpinCotton
   name: persistent-poi-recipe-cotton
-  duration: 240
+  duration: 200
   outputs:
-    MaterialCotton1: 20
+    MaterialCotton1: 40
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiWeaveCloth
   name: persistent-poi-recipe-cloth
-  duration: 240
+  duration: 200
   outputs:
-    MaterialCloth1: 20
+    MaterialCloth1: 40
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiWeaveDurathread
   name: persistent-poi-recipe-durathread
-  duration: 480
+  duration: 400
   outputs:
-    MaterialDurathread1: 10
+    MaterialDurathread1: 20
 
 # Recipes: materials
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiCastSteel
   name: persistent-poi-recipe-steel
-  duration: 300
+  duration: 240
   outputs:
-    SheetSteel1: 30
+    SheetSteel1: 60
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiCastGlass
   name: persistent-poi-recipe-glass
-  duration: 300
+  duration: 240
   outputs:
-    SheetGlass1: 30
+    SheetGlass1: 60
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiCastPlastic
   name: persistent-poi-recipe-plastic
-  duration: 360
+  duration: 280
   outputs:
-    SheetPlastic1: 20
+    SheetPlastic1: 40
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiCastPlasteel
   name: persistent-poi-recipe-plasteel
-  duration: 600
+  duration: 480
   outputs:
-    SheetPlasteel1: 10
+    SheetPlasteel1: 25
 
 # Recipes: trade goods
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiAssembleAlloys
   name: persistent-poi-recipe-alloys
-  duration: 900
+  duration: 600
   outputs:
     TradeGoodAlloys: 1
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiAssembleGunparts
   name: persistent-poi-recipe-gunparts
-  duration: 900
+  duration: 600
   outputs:
     TradeGoodGunparts: 1
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiAssembleAmmo
   name: persistent-poi-recipe-ammo
-  duration: 900
+  duration: 600
   outputs:
     TradeGoodAmmo: 1
 
 - type: persistentPoiProductionRecipe
   id: PersistentPoiAssemblePlasma
   name: persistent-poi-recipe-plasma
-  duration: 900
+  duration: 600
   outputs:
     TradeGoodPlasma: 1

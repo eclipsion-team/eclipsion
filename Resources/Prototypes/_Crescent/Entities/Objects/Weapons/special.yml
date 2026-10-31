@@ -382,6 +382,12 @@
   id: WeaponPistolPaperwork
   description: A sick joke by Shinohara higherups. Fires pre-printed job applications with reinforced edges that stick into those hit, causing both emotional and physical damage. Outlawed in most of Taypan.
   components:
+    - type: Multishot # dual wield, much worse aim
+      spreadMultiplier: 2.5
+      fireRateMultiplier: 1
+      angleIncreaseMultiplier: 2
+      extraMinAngle: 8
+      extraMaxAngle: 15
     - type: Sprite
       sprite: _Crescent/Objects/Weapons/Guns/compliance.rsi
       layers:

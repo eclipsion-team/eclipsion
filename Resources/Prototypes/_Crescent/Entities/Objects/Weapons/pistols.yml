@@ -56,6 +56,12 @@
   id: WeaponPistolLiquidator
   description: An integrally suppressed 11mm pistol, commonly used in ethical contract termination procedures. Incredibly quiet, the only sound anyone might hear is the manual cycling of the action.
   components:
+  - type: Multishot # dual wield, much worse aim
+    spreadMultiplier: 2.5
+    fireRateMultiplier: 1
+    angleIncreaseMultiplier: 2
+    extraMinAngle: 8
+    extraMaxAngle: 15
   - type: Sprite
     sprite: _Crescent/Objects/Weapons/Guns/liquidator.rsi
     layers:
@@ -194,6 +200,10 @@
     - DualWield
   - type: Multishot
     spreadMultiplier: 1
+    fireRateMultiplier: 1 # keep its own tuning, not the base pistol penalty
+    angleIncreaseMultiplier: 1
+    extraMinAngle: 0
+    extraMaxAngle: 0
   - type: RequiresDualWield
     whitelist:
       tags:
@@ -390,6 +400,12 @@
   description: A rooty tooty point and shooty.
   abstract: true
   components:
+  - type: Multishot # dual wield, much worse aim
+    spreadMultiplier: 2.5
+    fireRateMultiplier: 1
+    angleIncreaseMultiplier: 2
+    extraMinAngle: 8
+    extraMaxAngle: 15
   - type: Sprite
     layers:
       - state: base

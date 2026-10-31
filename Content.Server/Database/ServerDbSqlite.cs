@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -32,6 +33,7 @@ namespace Content.Server.Database
         private int _msDelay;
 
         private readonly bool _inMemory; // eclipsion
+        private readonly ISawmill _log;
 
         public ServerDbSqlite(
             Func<DbContextOptions<SqliteServerDbContext>> options,
@@ -43,6 +45,7 @@ namespace Content.Server.Database
         {
             _options = options;
             _inMemory = inMemory;
+            _log = opsLog;
 
             var prefsCtx = new SqliteServerDbContext(options());
 
@@ -556,12 +559,66 @@ namespace Content.Server.Database
             if (pages == 0 || free < pages / 4)
                 return false;
 
+            // vacuum builds the new copy in sqlite's temp dir, then writes it back through the wal next to the db
+            var pageSize = await database.SqlQueryRaw<long>("SELECT page_size AS Value FROM pragma_page_size()").SingleAsync();
+            if (!HasRoomToVacuum(database.GetDbConnection().DataSource, (pages - free) * pageSize))
+                return false;
+
             // rewrites the whole file, a multi gigabyte one takes a while
             database.SetCommandTimeout(TimeSpan.FromHours(1));
             await database.ExecuteSqlRawAsync("VACUUM");
             // wal mode: the rewritten pages sit in the -wal file until a checkpoint, the main file only shrinks after it
             await database.ExecuteSqlRawAsync("PRAGMA wal_checkpoint(TRUNCATE)");
             return true;
+        }
+
+        private bool HasRoomToVacuum(string dbPath, long needed)
+        {
+            try
+            {
+                var dbDir = Path.GetDirectoryName(Path.GetFullPath(dbPath))!;
+                var tempDir = SqliteTempDir();
+                var dbDrive = GetDrive(dbDir);
+                var tempDrive = GetDrive(tempDir);
+
+                var sameDrive = dbDrive.TotalSize == tempDrive.TotalSize && dbDrive.DriveFormat == tempDrive.DriveFormat;
+                var dbNeeded = sameDrive ? needed * 2 : needed;
+                const long mb = 1024 * 1024;
+
+                if (dbDrive.AvailableFreeSpace >= dbNeeded && tempDrive.AvailableFreeSpace >= needed)
+                    return true;
+
+                _log.Warning($"Skipping vacuum: needs {needed / mb} MB in {tempDir} ({tempDrive.AvailableFreeSpace / mb} MB free) " +
+                             $"and {dbNeeded / mb} MB in {dbDir} ({dbDrive.AvailableFreeSpace / mb} MB free). " +
+                             "Free up disk or point SQLITE_TMPDIR at a bigger one.");
+                return false;
+            }
+            catch (Exception e)
+            {
+                _log.Warning($"Couldn't check free space before vacuum, trying anyway: {e.Message}");
+                return true;
+            }
+        }
+
+        // same order sqlite's unix vfs checks
+        private static string SqliteTempDir()
+        {
+            if (OperatingSystem.IsWindows())
+                return Path.GetTempPath();
+
+            foreach (var dir in new[] { Environment.GetEnvironmentVariable("SQLITE_TMPDIR"), Environment.GetEnvironmentVariable("TMPDIR"), "/var/tmp", "/usr/tmp", "/tmp" })
+            {
+                if (!string.IsNullOrEmpty(dir) && Directory.Exists(dir))
+                    return dir;
+            }
+
+            return ".";
+        }
+
+        // unix statvfs takes any path, so this lands on the right mount
+        private static DriveInfo GetDrive(string dir)
+        {
+            return new DriveInfo(OperatingSystem.IsWindows() ? Path.GetPathRoot(dir)! : dir);
         }
 
         private async Task<DbGuardImpl> GetDbImpl(

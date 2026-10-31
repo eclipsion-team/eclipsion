@@ -5,6 +5,12 @@
   description: A rooty tooty point and shooty.
   abstract: true
   components:
+  - type: Multishot # dual wield, much worse aim
+    spreadMultiplier: 2.5
+    fireRateMultiplier: 1
+    angleIncreaseMultiplier: 2
+    extraMinAngle: 8
+    extraMaxAngle: 15
   - type: GunCameraShake
     magnitude: 0.04
   - type: Sprite

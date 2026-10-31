@@ -1,6 +1,6 @@
 # # Permanent territory ground
 
-persistent-poi-floor-tool-denied = The floor around the territory's standard is permanent ground. It will not come up.
+persistent-poi-floor-tool-denied = The floor around the territory's standard is permanent ground. Only its holders can pry it up.
 persistent-poi-structure-examine = [color=goldenrod]Territory works: it stays where it was built until it is destroyed or decommissioned.[/color]
 persistent-poi-structure-unanchor-denied = Territory works are bolted into permanent ground.
 
@@ -33,6 +33,8 @@ persistent-poi-category-factory = Production works
 persistent-poi-category-generator = Generators
 persistent-poi-category-radarconsole = Radar consoles
 persistent-poi-category-shuttleconsole = Shuttle consoles
+persistent-poi-category-spawnbeacon = Cryo spawners
+persistent-poi-category-gearrack = Equipment racks
 
 persistent-poi-admin-not-holder = Only the territory's holder can develop it.
 persistent-poi-admin-max-level = The territory is already fully developed.
@@ -217,6 +219,7 @@ territory-decal-grid-full = The territory is covered in markings. Scrub some bef
 # # Shipyard and dockyard
 
 persistent-poi-build-category-shipyard = Shipyard & dockyard
+persistent-poi-build-category-deployment = Deployment
 persistent-poi-category-shipyard = Shipyards
 persistent-poi-category-dockingport = External airlocks
 construction-condition-persistent-poi-faction = Only its own faction can build this.
@@ -299,3 +302,13 @@ persistent-poi-build-ui-limit-unlimited = { $category }: { $count }, no limit
 
 territory-access-examine-open = [color=goldenrod]A territorial door. The ground is unclaimed, so it opens for anybody.[/color]
 territory-access-examine-held = [color=goldenrod]A territorial door. It opens only for { $faction }.[/color]
+
+# # Deployment
+
+territory-holder-only-denied = Only the faction holding this ground can use this.
+territory-spawn-beacon-examine-online = [color=green]Online.[/color] Your faction's people can choose to wake up here when they join.
+territory-spawn-beacon-examine-offline = [color=red]Offline.[/color] It needs power, a fully developed territory and a holder.
+territory-spawn-beacon-unavailable = The territory's cryo spawner could not take you, so you woke up at home instead.
+territory-spawn-beacon-arrived = You wake up in the cryo spawner at { $territory }.
+late-join-deploy-label = Deploy at:
+late-join-deploy-home = Home station

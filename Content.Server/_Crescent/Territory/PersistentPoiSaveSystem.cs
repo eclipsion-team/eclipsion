@@ -443,8 +443,9 @@ public sealed class PersistentPoiSaveSystem : EntitySystem
 
         var native = HasComp<PersistentPoiNativeComponent>(uid);
 
+        // built turrets carry MobState too
         if (TryComp<MobStateComponent>(uid, out var mobState))
-            return !native || _mobState.IsDead(uid, mobState);
+            return !native && !HasComp<PersistentPoiStructureComponent>(uid) || _mobState.IsDead(uid, mobState);
 
         if (native)
             return false;

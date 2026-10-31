@@ -184,6 +184,12 @@
   id: WeaponEnergyGunPistol
   description: A military grade sidearm, used by many militia forces throughout the local sector.
   components:
+  - type: Multishot # dual wield, much worse aim
+    spreadMultiplier: 2.5
+    fireRateMultiplier: 1
+    angleIncreaseMultiplier: 2
+    extraMinAngle: 8
+    extraMaxAngle: 15
   - type: Sprite
     sprite: DeltaV/Objects/Weapons/Guns/Battery/energygun_pistol.rsi
     layers:
