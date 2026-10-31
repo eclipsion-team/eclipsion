@@ -56,6 +56,10 @@ public sealed partial class TerritoryDronePicketsComponent : Component
 
     [ViewVariables]
     public bool Dormant;
+
+    // who the picket flies for, set when it goes up; null shoots everyone
+    [ViewVariables]
+    public string? Faction;
 }
 
 [RegisterComponent, Access(typeof(TerritoryDronePicketSystem))]

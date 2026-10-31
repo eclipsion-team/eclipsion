@@ -186,6 +186,7 @@ Frames cannot be taken apart, only shot down.
 | Command          | territorial production console        | `ComputerPersistentPoiProduction`                  | 10 steel, 5 glass, 10 cable                |
 | Command          | territorial radar console             | `ComputerRadarPersistentPoi` (holder only)         | 10 steel, 5 glass, 10 cable                |
 | Command          | territorial shuttle console           | `ComputerShuttlePersistentPoi` (holder only)       | 10 steel, 5 glass, 10 cable                |
+| Command          | territorial recruitment console       | `ComputerPersistentPoiRecruitment` (holder only)   | 10 steel, 5 glass, 10 cable                |
 | Defences         | territorial point-defence console     | `ComputerTargetingPersistentPoi`                   | 10 steel, 5 glass, 10 cable                |
 | Defences         | territorial point-defence emplacement | `HardpointPersistentPoiLaserEmplacement` + its 150cc 'Retribution' laser (needs power) | 10 plasteel, 15 steel, 10 cable |
 | Defences         | territorial anti-boarder turret       | `WeaponTurretAutoPDPersistentPoi`                  | 15 steel, 5 cable                          |
@@ -544,7 +545,9 @@ in its save; the dead are cleared out with every other corpse, and nothing bring
 
 **Drone pickets.** At round start every territory nobody holds gets one or two drones circling it 350 m out
 (`TerritoryDronePickets` on the standard, flown by `TerritoryDronePicketSystem`). They are the faction drones' own
-hulls - Valor, Rocinante, Wasp, Hornet, picked at random - that the Turning got to: they answer to no carrier and no drone
+hulls - Valor, Rocinante, Wasp, Hornet, picked at random - that the Turning got to, stripped down to 150cc 'Retribution'
+pulse lasers and no shields (the `Poi...Drone` maps in `persistent_poi_drones.yml`, hull copies under
+`/Maps/_Crescent/Shuttles/POI/`; the Valor uses its faction map, which already fits): they answer to no carrier and no drone
 console, fly under a sickly purple IFF, and go by names like "Turnwracked Valor 3F-A1" (the first word comes from the
 `TerritoryDroneNamePrefixes` dataset; the faction letters are gone). They show on radar but not on the shuttle
 console's map (`IFFFlags.HideOnMap`), and their hulls' warp points are taken off, so ghosts can't warp to them. The
@@ -559,6 +562,26 @@ not even an asteroid with a miner on it, since only a grid with thrust counts. W
 of the standard (`wakeRange`) the picket parks where it is and stops steering and aiming, so nobody pays for its
 flight AI or physics while nobody can see it; it picks up again within a second of someone coming into range. Pickets are not part of the
 territory: never saved, and one shot down stays down until the next round puts up a fresh one.
+
+**Holder's garrison.** At round start a held territory gets its holder's soldiers and drones instead, as many as its
+level says (`garrisonSoldiers` / `garrisonDrones` in `persistent_poi_progression.yml`: 2 + 1 at level 1, 4 + 2 at
+level 2, 8 + 4 at level 3). The soldiers are the holder's own faction soldier AI (`TerritoryGarrison` on the standard
+lists them per faction) and come down by drop pod onto free floor within 8 tiles of the standard. They kill anyone who
+is neither of their side nor wearing an allied ID, open the holder's territorial doors, and can't be recruited into a
+squad, so they hold the post. The drones are the same picket hulls under the holder's IFF and colours ("DSM Valor
+3F-A1"), and go for any ship or suited person within 500 m that is not the holder or an ally. Both stay loyal to
+whoever held the ground at round start, even if it changes hands mid-round. Drones are never replaced in-round;
+soldiers only through the recruitment console. Garrison soldiers are never saved with the territory.
+
+**Recruitment console.** One per territory, from the Command page of the build menu (`ComputerPersistentPoiRecruitment`,
+needs APC power). The holder calls soldiers down by drop pod, paying per soldier from their own account or the
+faction treasury like the production orders (`garrisonPrice` 2000, `escortPrice` 3000 on
+`TerritoryRecruitmentConsole`). **Garrison** tops the territory's guard back up to the level's `garrisonSoldiers`.
+**Escort** soldiers land around the console and join the caller's squad, up to the level's `escortSoldiers` standing
+at once (2 / 4 / 6) and never past the squad's own limit of six. Soldiers still in the air count toward both limits,
+and only soldiers of the current holder count. A pod (`TerritoryDropPod`) marks its spot with a pulsing ring, falls
+for 4 seconds with a flame trail, lands with a bang that shakes nearby cameras, lets its soldier out and is gone 20
+seconds later.
 
 ## The political map
 

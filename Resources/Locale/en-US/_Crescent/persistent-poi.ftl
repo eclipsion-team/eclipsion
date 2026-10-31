@@ -35,6 +35,7 @@ persistent-poi-category-radarconsole = Radar consoles
 persistent-poi-category-shuttleconsole = Shuttle consoles
 persistent-poi-category-spawnbeacon = Cryo spawners
 persistent-poi-category-gearrack = Equipment racks
+persistent-poi-category-recruitmentconsole = Recruitment consoles
 
 persistent-poi-admin-not-holder = Only the territory's holder can develop it.
 persistent-poi-admin-max-level = The territory is already fully developed.
@@ -312,3 +313,29 @@ territory-spawn-beacon-unavailable = The territory's cryo spawner could not take
 territory-spawn-beacon-arrived = You wake up in the cryo spawner at { $territory }.
 late-join-deploy-label = Deploy at:
 late-join-deploy-home = Home station
+
+# # Recruitment console
+
+territory-recruit-ui-title = Territorial Recruitment
+territory-recruit-ui-hint = Soldiers come down by drop pod. The garrison holds the territory; an escort joins your squad. How many may stand at once goes by the territory's level.
+territory-recruit-ui-garrison = Garrison - holds the territory
+territory-recruit-ui-escort = Escort - joins your squad
+territory-recruit-ui-standing = { $count } of { $limit } standing
+territory-recruit-ui-one = Call 1 - { $price } cr
+territory-recruit-ui-fill = Call { $count } - { $price } cr
+territory-recruit-ui-unclaimed = Nobody holds this territory.
+territory-recruit-ui-unpowered = [color=red]No power.[/color] The console needs an APC.
+territory-recruit-ui-squad-full = Your squad is full.
+territory-recruit-garrison-called = { $count ->
+    [one] A soldier is
+   *[other] { $count } soldiers are
+} on the way down to the garrison. { $price } cr paid.
+territory-recruit-escort-called = { $count ->
+    [one] A soldier is
+   *[other] { $count } soldiers are
+} on the way down to join you. { $price } cr paid.
+territory-recruit-round-over = The round is over.
+territory-recruit-not-holder = Only the territory's holder can call soldiers in.
+territory-recruit-unpowered = The console has no power.
+territory-recruit-full = As many as the territory's level allows are already standing.
+territory-recruit-squad-full = Your squad has no room for more.

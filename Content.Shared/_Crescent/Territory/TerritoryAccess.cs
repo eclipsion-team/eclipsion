@@ -10,6 +10,22 @@ namespace Content.Shared._Crescent.Territory;
 [RegisterComponent, NetworkedComponent]
 public sealed partial class TerritoryAccessComponent : Component;
 
+/// <summary>
+/// A soldier a territory put up, guarding it or sent along with its holder. Never saved with the territory.
+/// </summary>
+[RegisterComponent]
+public sealed partial class TerritoryGarrisonSoldierComponent : Component
+{
+    [DataField]
+    public string Faction = string.Empty;
+
+    [DataField]
+    public string RegionId = string.Empty;
+
+    [DataField]
+    public bool Escort;
+}
+
 public sealed class TerritoryAccessSystem : EntitySystem
 {
     [Dependency] private readonly FactionMachineSystem _factionMachines = default!;
@@ -47,6 +63,8 @@ public sealed class TerritoryAccessSystem : EntitySystem
 
         var holder = _factionMachines.GetFaction(door);
         return holder.Length == 0 ||
-               string.Equals(PersistentTerritoryFactions.GetTeam(EntityManager, user), holder, StringComparison.Ordinal);
+               string.Equals(PersistentTerritoryFactions.GetTeam(EntityManager, user), holder, StringComparison.Ordinal) ||
+               TryComp<TerritoryGarrisonSoldierComponent>(user, out var soldier) &&
+               string.Equals(soldier.Faction, holder, StringComparison.Ordinal);
     }
 }

@@ -104,6 +104,75 @@
     node: administrationConsole
 
 - type: entity
+  parent: BaseComputerPersistentPoi
+  id: ComputerPersistentPoiRecruitment
+  name: territorial recruitment console
+  suffix: Persistent territory, built
+  description: Calls the holder's soldiers down by drop pod, to top up the garrison or to go along with whoever paid for them.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: security
+    - map: ["computerLayerKeys"]
+      state: security_key
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: PointLight
+    color: "#c94242"
+  - type: PersistentPoiWorks
+    category: RecruitmentConsole
+  - type: TerritoryRecruitmentConsole
+  - type: ActivatableUI
+    key: enum.TerritoryRecruitmentUiKey.Key
+    singleUser: true
+  - type: UserInterface
+    interfaces:
+      enum.TerritoryRecruitmentUiKey.Key:
+        type: TerritoryRecruitmentBoundUserInterface
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: recruitmentConsole
+
+- type: entity
+  id: TerritoryDropPod
+  name: drop pod
+  description: Came down from orbit with a soldier in it.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Crescent/Effects/territory_drop_pod.rsi
+    drawdepth: Effects
+    noRot: true
+    layers:
+    - state: marker
+      map: [ "marker" ]
+      shader: unshaded
+    - state: landed
+      map: [ "landed" ]
+      visible: false
+    - state: trail
+      map: [ "trail" ]
+      shader: unshaded
+      visible: false
+    - state: pod
+      map: [ "pod" ]
+      visible: false
+  - type: TerritoryDropPod
+    landSound:
+      path: /Audio/Effects/explosion_small1.ogg
+      params:
+        volume: -2
+  - type: PointLight
+    color: "#ff8a1e"
+    radius: 3
+    energy: 1.5
+
+- type: entity
   abstract: true
   parent: BaseMachine
   id: BasePersistentPoiWorks

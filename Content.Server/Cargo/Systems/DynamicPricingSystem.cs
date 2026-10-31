@@ -256,6 +256,27 @@ public sealed class DynamicPricingSystem : EntitySystem
         return result;
     }
 
+    public IReadOnlyList<string> GetGoods()
+    {
+        if (!_initialized)
+            InitializeAllGoods();
+
+        return _goodsList;
+    }
+
+    public bool TryGetPrice(string goodId, out double basePrice, out float multiplier)
+    {
+        basePrice = 0;
+        multiplier = 1f;
+
+        if (!_globalPrices.TryGetValue(goodId, out var priceComp))
+            return false;
+
+        basePrice = priceComp.BasePrice;
+        multiplier = priceComp.PriceMultiplier;
+        return true;
+    }
+
     public Dictionary<string, (double BasePrice, float Multiplier, double CurrentPrice)> GetAllPricesFull()
     {
         if (!_initialized)

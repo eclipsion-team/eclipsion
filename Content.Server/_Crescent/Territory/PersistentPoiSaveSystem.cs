@@ -438,7 +438,9 @@ public sealed class PersistentPoiSaveSystem : EntitySystem
 
     private bool ShouldDiscard(EntityUid uid)
     {
-        if (HasComp<ProjectileComponent>(uid) || HasComp<TimedDespawnComponent>(uid))
+        // the garrison comes back fresh every round start
+        if (HasComp<ProjectileComponent>(uid) || HasComp<TimedDespawnComponent>(uid) ||
+            HasComp<TerritoryGarrisonSoldierComponent>(uid))
             return true;
 
         var native = HasComp<PersistentPoiNativeComponent>(uid);

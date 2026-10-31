@@ -1,4 +1,3 @@
-using System.Linq;
 using Content.Shared.Cargo;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -15,9 +14,10 @@ public sealed class EconomicConsolePanel : BoxContainer
     private readonly ScrollContainer _contentScroll;
     private readonly BoxContainer _contentList;
 
-    private Dictionary<string, ItemPriceData> _currentPrices = new();
-    private Dictionary<string, ShuttlePriceInfoData> _shuttlePrices = new();
-    private string _searchFilter = string.Empty;
+    private EconomicConsoleBuiState? _state;
+
+    // the server does the filtering
+    public event Action<string>? OnSearch;
 
     public EconomicConsolePanel()
     {
@@ -77,15 +77,17 @@ public sealed class EconomicConsolePanel : BoxContainer
 
     private void OnSearchChanged(LineEdit.LineEditEventArgs args)
     {
-        _searchFilter = args.Text.ToLowerInvariant();
-        RefreshContentList();
+        var search = args.Text.Length > EconomicConsoleSearchMessage.MaxLength
+            ? args.Text[..EconomicConsoleSearchMessage.MaxLength]
+            : args.Text;
+
+        OnSearch?.Invoke(search);
     }
 
-    public void UpdateState(Dictionary<string, ItemPriceData> prices, Dictionary<string, ShuttlePriceInfoData> shuttlePrices)
+    public void UpdateState(EconomicConsoleBuiState state)
     {
-        _currentPrices = prices;
-        _shuttlePrices = shuttlePrices;
-        _statusLabel.Text = Loc.GetString("economic-console-status-count", ("count", prices.Count + shuttlePrices.Count));
+        _state = state;
+        _statusLabel.Text = Loc.GetString("economic-console-status-count", ("count", state.Tracked));
         RefreshContentList();
     }
 
@@ -93,7 +95,10 @@ public sealed class EconomicConsolePanel : BoxContainer
     {
         _contentList.RemoveAllChildren();
 
-        if (_shuttlePrices.Count > 0)
+        if (_state is not { } state)
+            return;
+
+        if (state.Shuttles.Count > 0)
         {
             var shuttleHeader = new Label
             {
@@ -103,13 +108,9 @@ public sealed class EconomicConsolePanel : BoxContainer
             };
             _contentList.AddChild(shuttleHeader);
 
-            foreach (var (name, shuttle) in _shuttlePrices)
+            foreach (var shuttle in state.Shuttles)
             {
-                if (!string.IsNullOrEmpty(_searchFilter) && !name.ToLowerInvariant().Contains(_searchFilter))
-                    continue;
-
-                var row = CreateShuttleRow(shuttle);
-                _contentList.AddChild(row);
+                _contentList.AddChild(CreateShuttleRow(shuttle));
             }
         }
 
@@ -121,14 +122,7 @@ public sealed class EconomicConsolePanel : BoxContainer
         };
         _contentList.AddChild(itemHeader);
 
-        var filteredItems = _currentPrices
-            .Where(p => string.IsNullOrEmpty(_searchFilter) ||
-                p.Key.ToLowerInvariant().Contains(_searchFilter) ||
-                (!string.IsNullOrEmpty(p.Value.LocalizedName) && p.Value.LocalizedName.ToLowerInvariant().Contains(_searchFilter)))
-            .OrderBy(p => p.Key)
-            .ToList();
-
-        if (filteredItems.Count == 0 && _shuttlePrices.Count == 0)
+        if (state.Items.Count == 0 && state.Shuttles.Count == 0)
         {
             var noResults = new Label
             {
@@ -141,20 +135,16 @@ public sealed class EconomicConsolePanel : BoxContainer
             return;
         }
 
-        var displayCount = Math.Min(filteredItems.Count, 50);
-
-        for (var i = 0; i < displayCount; i++)
+        foreach (var price in state.Items)
         {
-            var (itemId, price) = filteredItems[i];
-            var row = CreateItemRow(price);
-            _contentList.AddChild(row);
+            _contentList.AddChild(CreateItemRow(price));
         }
 
-        if (filteredItems.Count > displayCount)
+        if (state.MatchingItems > state.Items.Count)
         {
             var moreLabel = new Label
             {
-                Text = Loc.GetString("economic-console-more-items", ("count", filteredItems.Count - displayCount)),
+                Text = Loc.GetString("economic-console-more-items", ("count", state.MatchingItems - state.Items.Count)),
                 HorizontalAlignment = HAlignment.Center,
                 Margin = new Thickness(0, 8),
             };

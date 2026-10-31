@@ -28,6 +28,8 @@ public enum PersistentPoiWorksCategory : byte
 
     SpawnBeacon,
     GearRack,
+
+    RecruitmentConsole,
 }
 
 [Prototype("persistentPoiLevel")]
@@ -53,6 +55,17 @@ public sealed partial class PersistentPoiLevelPrototype : IPrototype
 
     [DataField]
     public float StockRewardMultiplier = 1f;
+
+    // the holder's guard, put up fresh every round start
+    [DataField]
+    public int GarrisonSoldiers;
+
+    [DataField]
+    public int GarrisonDrones;
+
+    // soldiers the recruitment console sends along with the holder's own people, alive at once
+    [DataField]
+    public int EscortSoldiers;
 }
 
 [Prototype("persistentPoiCapability")]

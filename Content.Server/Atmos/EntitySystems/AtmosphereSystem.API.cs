@@ -93,7 +93,7 @@ public partial class AtmosphereSystem
         var handled = false;
 
         // If we've been passed a grid, try to let it handle it.
-        if (grid is {} gridEnt && Resolve(gridEnt, ref gridEnt.Comp1))
+        if (grid is {} gridEnt && Resolve(gridEnt, ref gridEnt.Comp1, false))
         {
             if (excite)
                 Resolve(gridEnt, ref gridEnt.Comp2);
@@ -126,7 +126,7 @@ public partial class AtmosphereSystem
 
         // We either don't have a grid, or the event wasn't handled.
         // Let the map handle it instead, and also broadcast the event.
-        if (map is {} mapEnt && _mapAtmosQuery.Resolve(mapEnt, ref mapEnt.Comp))
+        if (map is {} mapEnt && _mapAtmosQuery.Resolve(mapEnt, ref mapEnt.Comp, false))
         {
             mixtures ??= new GasMixture?[tiles.Count];
             for (var i = 0; i < tiles.Count; i++)

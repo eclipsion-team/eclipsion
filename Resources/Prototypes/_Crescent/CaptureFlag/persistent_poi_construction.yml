@@ -28,6 +28,11 @@
       - material: Steel
         amount: 10
         doAfter: 2
+    - to: recruitmentConsoleFrame
+      steps:
+      - material: Steel
+        amount: 10
+        doAfter: 2
     # Defences
     - to: targetingConsoleFrame
       steps:
@@ -408,6 +413,27 @@
         category: ShuttleConsole
   - node: shuttleConsole
     entity: ComputerShuttlePersistentPoi
+
+  - node: recruitmentConsoleFrame
+    entity: PersistentPoiFrameRecruitmentConsole
+    edges:
+    - to: recruitmentConsoleGlazed
+      steps:
+      - material: Glass
+        amount: 5
+        doAfter: 1
+  - node: recruitmentConsoleGlazed
+    edges:
+    - to: recruitmentConsole
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: RecruitmentConsole
+  - node: recruitmentConsole
+    entity: ComputerPersistentPoiRecruitment
 
   # Defences
 
@@ -1248,6 +1274,36 @@
   - !type:PersistentPoiHeldGround
   - !type:PersistentPoiWithinLimit
     category: ShuttleConsole
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiRecruitmentConsole
+  name: territorial recruitment console
+  description: Calls the holder's soldiers down by drop pod, to top the garrison up or to go along with you. How many may stand at once goes by level. One per territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: recruitmentConsole
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Machines/computers.rsi
+    state: security
+  layers:
+  - sprite: Structures/Machines/computers.rsi
+    state: computer
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: Structures/Machines/computers.rsi
+    state: security
+  - sprite: Structures/Machines/computers.rsi
+    state: security_key
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: RecruitmentConsole
   - !type:TileNotBlocked
 
 # Defences

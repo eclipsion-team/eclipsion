@@ -1,3 +1,4 @@
+using System.Linq;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared.Communications
@@ -28,6 +29,25 @@ namespace Content.Shared.Communications
             AlertLevels = alertLevels;
             CurrentAlert = currentAlert;
             CurrentAlertDelay = currentAlertDelay;
+        }
+
+        // eclipsion - set every second; an unchanged one isn't resent with every other tab on a mainframe
+        public override bool Equals(object? obj)
+        {
+            return obj is CommunicationsConsoleInterfaceState other &&
+                   CanAnnounce == other.CanAnnounce &&
+                   CanBroadcast == other.CanBroadcast &&
+                   CanCall == other.CanCall &&
+                   ExpectedCountdownEnd == other.ExpectedCountdownEnd &&
+                   CountdownStarted == other.CountdownStarted &&
+                   CurrentAlert == other.CurrentAlert &&
+                   CurrentAlertDelay.Equals(other.CurrentAlertDelay) &&
+                   (AlertLevels == null ? other.AlertLevels == null : other.AlertLevels != null && AlertLevels.SequenceEqual(other.AlertLevels));
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(CanAnnounce, CanCall, CurrentAlert, CurrentAlertDelay);
         }
     }
 

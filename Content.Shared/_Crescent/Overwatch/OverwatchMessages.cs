@@ -1,3 +1,4 @@
+using System.Linq;
 using Robust.Shared.Maths;
 using Robust.Shared.Serialization;
 
@@ -56,6 +57,21 @@ public sealed class OverwatchUpdateState : BoundUserInterfaceState
         Members = members;
         AvailableSquads = availableSquads ?? new Dictionary<int, string>();
         FactionColor = factionColor;
+    }
+
+    // refreshed every second; an unchanged roster then isn't resent with every other tab on a mainframe
+    public override bool Equals(object? obj)
+    {
+        return obj is OverwatchUpdateState other &&
+               FactionColor == other.FactionColor &&
+               Members.SequenceEqual(other.Members) &&
+               AvailableSquads.Count == other.AvailableSquads.Count &&
+               AvailableSquads.All(squad => other.AvailableSquads.TryGetValue(squad.Key, out var name) && name == squad.Value);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(FactionColor, Members.Count, AvailableSquads.Count);
     }
 }
 

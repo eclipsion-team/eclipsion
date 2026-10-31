@@ -48,10 +48,37 @@
         TFSC: burgundy-gold
     - type: TerritoryDronePickets
       drones:
-      - ValorDrone
-      - RocinanteDrone
-      - WaspDrone
-      - HornetDrone
+      - PoiValorDrone
+      - PoiRocinanteDrone
+      - PoiWaspDrone
+      - PoiHornetDrone
+    # held ground only, as many as the level's garrisonSoldiers
+    - type: TerritoryGarrison
+      soldiers:
+        DSM:
+        - MobSoldierAIDSMRifleman
+        - MobSoldierAIDSMShock
+        - MobSoldierAIDSMShotgunner
+        - MobSoldierAIDSMMarksman
+        - MobSoldierAIDSMGunner
+        NCWL:
+        - MobSoldierAINCWLRifleman
+        - MobSoldierAINCWLShock
+        - MobSoldierAINCWLShotgunner
+        - MobSoldierAINCWLMarksman
+        - MobSoldierAINCWLGunner
+        TFSC:
+        - MobSoldierAITFSCRifleman
+        - MobSoldierAITFSCShock
+        - MobSoldierAITFSCShotgunner
+        - MobSoldierAITFSCMarksman
+        - MobSoldierAITFSCGunner
+        SHI:
+        - MobSoldierAISHIRifleman
+        - MobSoldierAISHIShock
+        - MobSoldierAISHIShotgunner
+        - MobSoldierAISHIMarksman
+        - MobSoldierAISHIGunner
 
 # Map these instead of a faction-specific anti-boarder turret in a capturable region. The territory system supplies
 # its faction when the map loads and whenever the flag changes hands.

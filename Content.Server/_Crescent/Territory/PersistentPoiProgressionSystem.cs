@@ -81,7 +81,9 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
         _levels.CountAllWorksLive(_counts);
         foreach (var (uid, counts) in _counts)
         {
-            ApplyCounts(uid, Comp<PersistentPoiGridComponent>(uid), counts);
+            var territory = Comp<PersistentPoiGridComponent>(uid);
+            ApplyCounts(uid, territory, counts);
+            SyncLevel(uid, territory);
         }
 
         var consoles = EntityQueryEnumerator<PersistentPoiAdministrationConsoleComponent>();
@@ -247,6 +249,23 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
         return grids;
     }
 
+    // The save is the truth. A grid that missed its registration sat at level 1, and raising it from there
+    // wrote level 2 over a saved 3.
+    private void SyncLevel(EntityUid grid, PersistentPoiGridComponent territory)
+    {
+        if (!_progress.TryGetValue(territory.RegionId, out var progress))
+            return;
+
+        var level = Math.Clamp(progress.Level, 1, _levels.MaxLevel);
+        if (territory.Level == level)
+            return;
+
+        Log.Warning($"Territory '{territory.RegionId}' showed level {territory.Level} against a saved {level}; corrected.");
+        territory.Level = level;
+        Dirty(grid, territory);
+        RaiseDevelopmentChanged(grid);
+    }
+
     private void RaiseDevelopmentChanged(EntityUid grid)
     {
         var ev = new PersistentPoiDevelopmentChangedEvent(grid);
@@ -301,7 +320,7 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
 
         args.Handled = true;
 
-        if (!TryGetTerritory(ent, out _, out var territory))
+        if (!TryGetTerritory(ent, out var grid, out var territory))
             return;
 
         if (!IsHolder(args.User, territory))
@@ -310,6 +329,7 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
             return;
         }
 
+        SyncLevel(grid, territory);
         if (_levels.GetNextLevel(territory.Level) is not { } next)
         {
             _popup.PopupEntity(Loc.GetString("persistent-poi-admin-max-level"), ent, args.User);
@@ -417,11 +437,12 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
 
     public bool TryUpgrade(EntityUid grid)
     {
-        if (!TryComp<PersistentPoiGridComponent>(grid, out var territory) ||
-            _levels.GetNextLevel(territory.Level) is not { } next)
-        {
+        if (!TryComp<PersistentPoiGridComponent>(grid, out var territory))
             return false;
-        }
+
+        SyncLevel(grid, territory);
+        if (_levels.GetNextLevel(territory.Level) is not { } next)
+            return false;
 
         var progress = GetOrCreate(territory.RegionId);
         foreach (var (material, required) in next.UpgradeCost)

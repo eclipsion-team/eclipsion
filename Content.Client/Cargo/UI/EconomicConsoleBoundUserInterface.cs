@@ -23,6 +23,7 @@ public sealed class EconomicConsoleBoundUserInterface : BoundUserInterface
         base.Open();
 
         _panel = new EconomicConsolePanel();
+        _panel.OnSearch += search => SendMessage(new EconomicConsoleSearchMessage(search));
 
         // On a mainframe this renders as a tab instead of its own window.
         if (UiSystem.HasUi(Owner, MainframeUiKey.Key))
@@ -44,7 +45,7 @@ public sealed class EconomicConsoleBoundUserInterface : BoundUserInterface
         base.UpdateState(state);
 
         if (state is EconomicConsoleBuiState buiState)
-            _panel?.UpdateState(buiState.ItemPrices, buiState.ShuttlePrices);
+            _panel?.UpdateState(buiState);
     }
 
     protected override void Dispose(bool disposing)

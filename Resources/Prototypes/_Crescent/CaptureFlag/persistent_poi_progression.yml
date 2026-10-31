@@ -21,9 +21,13 @@
     Generator: 2
     SpawnBeacon: 0
     GearRack: 0
+    RecruitmentConsole: 1
   productionSpeed: 1
   extraStorage: 0
   stockRewardMultiplier: 1
+  garrisonSoldiers: 2
+  garrisonDrones: 1
+  escortSoldiers: 2
 
 - type: persistentPoiLevel
   id: PersistentPoiLevel2
@@ -50,9 +54,13 @@
     Generator: 4
     SpawnBeacon: 0
     GearRack: 0
+    RecruitmentConsole: 1
   productionSpeed: 1.5
   extraStorage: 3
   stockRewardMultiplier: 1.5
+  garrisonSoldiers: 4
+  garrisonDrones: 2
+  escortSoldiers: 4
 
 - type: persistentPoiLevel
   id: PersistentPoiLevel3
@@ -80,9 +88,13 @@
     Generator: 6
     SpawnBeacon: 1
     GearRack: 2
+    RecruitmentConsole: 1
   productionSpeed: 2
   extraStorage: 6
   stockRewardMultiplier: 2
+  garrisonSoldiers: 8
+  garrisonDrones: 4
+  escortSoldiers: 6
 
 - type: persistentPoiCapability
   id: GeneralOre

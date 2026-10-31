@@ -1,0 +1,62 @@
+# POI picket and garrison drones: faction drone hulls capped at 150cc guns, no shields.
+# Not sold anywhere; TerritoryDronePickets on the standard picks from these.
+
+- type: gameMap
+  id: PoiValorDrone
+  mapName: 'DSM Valor'
+  mapPath: /Maps/_Crescent/Shuttles/DSM/valordrone.yml # already 2x 150cc, no shield
+  minPlayers: 0
+  stations:
+    Valor:
+      stationProto: StandardCrescentVessel
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'DSM Valor {1}'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '14'
+
+- type: gameMap
+  id: PoiRocinanteDrone
+  mapName: 'DSM Rocinante'
+  mapPath: /Maps/_Crescent/Shuttles/POI/rocinantedronepoi.yml # 2x 150cc 'Retribution', no shield
+  minPlayers: 0
+  stations:
+    PoiRocinanteDrone:
+      stationProto: StandardCrescentVessel
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'DSM Rocinante {1}'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '14'
+
+- type: gameMap
+  id: PoiWaspDrone
+  mapName: 'NCWL Wasp'
+  mapPath: /Maps/_Crescent/Shuttles/POI/waspdronepoi.yml # 1x 150cc 'Retribution'
+  minPlayers: 0
+  stations:
+    PoiWaspDrone:
+      stationProto: StandardCrescentVessel
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'NCWL Wasp {1}'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '14'
+
+- type: gameMap
+  id: PoiHornetDrone
+  mapName: 'NCWL Hornet'
+  mapPath: /Maps/_Crescent/Shuttles/POI/hornetdronepoi.yml # 1x 150cc 'Retribution'
+  minPlayers: 0
+  stations:
+    PoiHornetDrone:
+      stationProto: StandardCrescentVessel
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'NCWL Hornet {1}'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '14'

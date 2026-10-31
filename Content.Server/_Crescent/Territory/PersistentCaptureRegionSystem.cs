@@ -188,7 +188,7 @@ public sealed class PersistentCaptureRegionSystem : EntitySystem
 
         foreach (var (otherId, otherUid) in _liveRegions)
         {
-            if (!Exists(otherUid) || Transform(otherUid).GridUid != regionGrid)
+            if (otherUid == ent.Owner || !Exists(otherUid) || Transform(otherUid).GridUid != regionGrid)
                 continue;
 
             ent.Comp.ValidRegion = false;

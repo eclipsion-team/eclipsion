@@ -18,6 +18,10 @@ public sealed partial class EconomicConsoleComponent : Component
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField, AutoNetworkedField]
     public bool AutoUpdateEnabled = true;
+
+    // lower-cased, set by the viewer
+    [ViewVariables]
+    public string Search = string.Empty;
 }
 
 public abstract class SharedEconomicConsoleSystem : EntitySystem

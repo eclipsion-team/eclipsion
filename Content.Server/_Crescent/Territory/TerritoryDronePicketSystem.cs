@@ -10,13 +10,16 @@ using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
 using Content.Server.Warps;
 using Content.Server.Worldgen.Components.Debris;
+using Content.Shared._Crescent.Diplomacy;
 using Content.Shared._Crescent.DroneControl;
+using Content.Shared._Crescent.Factions;
 using Content.Shared.Shipyard.Components;
 using Content.Shared._Crescent.Territory;
 using Content.Shared.Dataset;
 using Content.Server.GameTicking;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Roles;
 using Content.Shared.Shuttles.Components;
 using Robust.Server.GameObjects;
 using Robust.Shared.EntitySerialization.Systems;
@@ -35,6 +38,8 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly DiplomacySystem _diplomacy = default!;
+    [Dependency] private readonly RatDiplomacySystem _factionDiplomacy = default!;
+    [Dependency] private readonly PersistentPoiLevelSystem _levels = default!;
     [Dependency] private readonly MapLoaderSystem _mapLoader = default!;
     [Dependency] private readonly MetaDataSystem _meta = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
@@ -94,7 +99,6 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
         var xform = Transform(standard);
         if (xform.GridUid is not { } territoryGrid ||
             !TryComp<PersistentPoiGridComponent>(territoryGrid, out var territory) ||
-            territory.Owner != null ||
             standard.Comp.Drones.Count == 0)
             return 0;
 
@@ -102,7 +106,11 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
         if (center.MapId == MapId.Nullspace)
             return 0;
 
-        var count = _random.Next(standard.Comp.MinDrones, standard.Comp.MaxDrones + 1);
+        // unclaimed ground gets a picket hostile to all, held ground its holder's, sized by level
+        standard.Comp.Faction = territory.Owner;
+        var count = territory.Owner == null
+            ? _random.Next(standard.Comp.MinDrones, standard.Comp.MaxDrones + 1)
+            : _levels.GetLevel(territory.Level)?.GarrisonDrones ?? 0;
         var spawned = 0;
         for (var slot = 0; slot < count; slot++)
         {
@@ -177,7 +185,16 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
         standard.Comp.Pickets.Add(controller);
 
         _meta.SetEntityName(grid, DroneName(standard.Comp, gameMap));
-        _shuttle.SetIFFColor(grid, standard.Comp.IffColor);
+        if (standard.Comp.Faction is { } faction)
+        {
+            _shuttle.SetIFFFaction(grid, faction);
+            _shuttle.SetIFFColor(grid, FactionColor(standard, faction));
+        }
+        else
+        {
+            _shuttle.SetIFFColor(grid, standard.Comp.IffColor);
+        }
+
         _shuttle.AddIFFFlag(grid, IFFFlags.HideOnMap);
 
         // no ghost warps to a picket
@@ -197,11 +214,24 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
         return true;
     }
 
+    private Color FactionColor(EntityUid standard, string faction)
+    {
+        if (TryComp<PersistentCaptureRegionComponent>(standard, out var region) &&
+            region.FactionColors.TryGetValue(faction, out var color))
+        {
+            return color;
+        }
+
+        return _proto.TryIndex<FactionPrototype>(faction, out var proto) ? proto.FactionButtonColor : Color.White;
+    }
+
     private string DroneName(TerritoryDronePicketsComponent pickets, GameMapPrototype gameMap)
     {
-        var prefix = _proto.TryIndex(pickets.NamePrefixes, out var dataset) && dataset.Values.Count > 0
-            ? _random.Pick(dataset.Values)
-            : "Turnwracked";
+        var prefix = pickets.Faction is { } faction
+            ? FactionDisplay.Abbreviation(faction)
+            : _proto.TryIndex(pickets.NamePrefixes, out var dataset) && dataset.Values.Count > 0
+                ? _random.Pick(dataset.Values)
+                : "Turnwracked";
 
         // "DSM Valor" -> "Valor"
         var words = gameMap.MapName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -310,7 +340,7 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
 
     private EntityUid? PickTarget(TerritoryDronePicketsComponent pickets, MapCoordinates center, EntityUid territoryGrid)
     {
-        if (pickets.Target is { } current && !TerminatingOrDeleted(current) && IsIntruder(current, territoryGrid))
+        if (pickets.Target is { } current && !TerminatingOrDeleted(current) && IsIntruder(current, territoryGrid, pickets.Faction))
         {
             var at = _transform.GetMapCoordinates(current);
             if (at.MapId == center.MapId && (at.Position - center.Position).LengthSquared() <= pickets.Leash * pickets.Leash)
@@ -332,7 +362,7 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
         _map.FindGridsIntersecting(center.MapId, box, ref _gridScratch, approx: true, includeMap: false);
         foreach (var grid in _gridScratch)
         {
-            if (_picketGrids.Contains(grid.Owner) || !IsIntruder(grid.Owner, territoryGrid))
+            if (_picketGrids.Contains(grid.Owner) || !IsIntruder(grid.Owner, territoryGrid, pickets.Faction))
                 continue;
 
             var distance = (_transform.GetWorldPosition(grid.Owner) - center.Position).LengthSquared();
@@ -347,8 +377,11 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
         var players = EntityQueryEnumerator<ActorComponent, MobStateComponent, TransformComponent>();
         while (players.MoveNext(out var player, out _, out var mob, out var playerXform))
         {
-            if (playerXform.GridUid != null || playerXform.MapID != center.MapId || !_mobState.IsAlive(player, mob))
+            if (playerXform.GridUid != null || playerXform.MapID != center.MapId || !_mobState.IsAlive(player, mob) ||
+                IsFriend(pickets.Faction, player))
+            {
                 continue;
+            }
 
             var distance = (_transform.GetWorldPosition(playerXform) - center.Position).LengthSquared();
             if (distance >= bestDistance)
@@ -361,10 +394,10 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
         return best;
     }
 
-    private bool IsIntruder(EntityUid target, EntityUid territoryGrid)
+    private bool IsIntruder(EntityUid target, EntityUid territoryGrid, string? faction)
     {
         if (!HasComp<MapGridComponent>(target))
-            return HasComp<ActorComponent>(target) && _mobState.IsAlive(target);
+            return HasComp<ActorComponent>(target) && _mobState.IsAlive(target) && !IsFriend(faction, target);
 
         if (target == territoryGrid ||
             HasComp<PersistentPoiGridComponent>(target) ||
@@ -379,17 +412,32 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
             return false;
 
         // every bare grid's iff faction is "Neutral", which isn't a faction
-        if (HasComp<ShuttleDeedComponent>(target) || _diplomacy.GetGridFaction(target) != null)
+        if (_diplomacy.GetGridFaction(target) is { } gridFaction)
+            return !IsFriendlyFaction(faction, gridFaction);
+
+        if (faction == null && HasComp<ShuttleDeedComponent>(target))
             return true;
 
         var players = EntityQueryEnumerator<ActorComponent, MobStateComponent, TransformComponent>();
-        while (players.MoveNext(out _, out _, out _, out var playerXform))
+        while (players.MoveNext(out var player, out _, out _, out var playerXform))
         {
-            if (playerXform.GridUid == target)
+            if (playerXform.GridUid == target && !IsFriend(faction, player))
                 return true;
         }
 
         return false;
+    }
+
+    private bool IsFriend(string? faction, EntityUid person)
+    {
+        return IsFriendlyFaction(faction, PersistentTerritoryFactions.GetTeam(EntityManager, person));
+    }
+
+    // a neutral picket has no friends
+    private bool IsFriendlyFaction(string? faction, string? other)
+    {
+        return faction != null && other != null &&
+               _factionDiplomacy.GetRelation(faction, other) == FactionRelation.Alliance;
     }
 
     private void Fly(EntityUid drone, TerritoryDronePicketsComponent pickets, EntityUid standard, MapCoordinates center,

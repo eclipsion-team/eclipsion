@@ -23,6 +23,7 @@
       - PersistentPoiProductionConsole
       - PersistentPoiRadarConsole
       - PersistentPoiShuttleConsole
+      - PersistentPoiRecruitmentConsole
     - name: persistent-poi-build-category-defence
       icon:
         sprite: _Crescent/Structures/hardpoints.rsi
@@ -1113,6 +1114,15 @@
   - type: Construction
     graph: PersistentPoiStructures
     node: shuttleConsoleFrame
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameRecruitmentConsole
+  name: recruitment console frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: recruitmentConsoleFrame
 
 - type: entity
   parent: PersistentPoiConsoleFrameBase
