@@ -1,6 +1,7 @@
 using Content.Server.Lathe;
 using Content.Server.Materials;
 using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Content.Shared.Lathe;
 using Content.Shared.Power;
 using Content.Shared.Research.Prototypes;
@@ -48,7 +49,7 @@ public sealed class LatheBatchOutputTest
             // A receiver on no network never reaches the power solver, so it never gets recalculated either
             // and the flag has to be set by hand, same as DisposalUnitTest does.
             var power = entMan.GetComponent<ApcPowerReceiverComponent>(processor);
-            power.NeedsPower = false;
+            entMan.System<PowerReceiverSystem>().SetNeedsPower(processor, false, power);
             power.Powered = true;
         });
 
@@ -112,7 +113,7 @@ public sealed class LatheBatchOutputTest
         {
             processor = entMan.SpawnEntity(Processor, map.GridCoords);
             var power = entMan.GetComponent<ApcPowerReceiverComponent>(processor);
-            power.NeedsPower = false;
+            entMan.System<PowerReceiverSystem>().SetNeedsPower(processor, false, power);
             power.Powered = true;
 
             foreach (var (material, amount) in recipe.Materials)

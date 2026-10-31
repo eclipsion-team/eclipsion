@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Server.Construction;
 using Content.Server.Paper;
 using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Content.Server.Research.Systems;
 using Content.Shared.UserInterface;
 using Content.Server.Xenoarchaeology.Equipment.Components;
@@ -47,6 +48,7 @@ public sealed class ArtifactAnalyzerSystem : EntitySystem
     [Dependency] private readonly MetaDataSystem _metaSystem = default!;
     [Dependency] private readonly TraversalDistorterSystem _traversalDistorter = default!;
     [Dependency] private readonly GlimmerSystem _glimmerSystem = default!;
+    [Dependency] private readonly PowerReceiverSystem _powerReceiver = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -525,7 +527,7 @@ public sealed class ArtifactAnalyzerSystem : EntitySystem
     private void OnAnalyzeStart(EntityUid uid, ActiveArtifactAnalyzerComponent component, ComponentStartup args)
     {
         if (TryComp<ApcPowerReceiverComponent>(uid, out var powa))
-            powa.NeedsPower = true;
+            _powerReceiver.SetNeedsPower(uid, true, powa);
 
         _ambientSound.SetAmbience(uid, true);
     }
@@ -533,7 +535,7 @@ public sealed class ArtifactAnalyzerSystem : EntitySystem
     private void OnAnalyzeEnd(EntityUid uid, ActiveArtifactAnalyzerComponent component, ComponentShutdown args)
     {
         if (TryComp<ApcPowerReceiverComponent>(uid, out var powa))
-            powa.NeedsPower = false;
+            _powerReceiver.SetNeedsPower(uid, false, powa);
 
         _ambientSound.SetAmbience(uid, false);
     }

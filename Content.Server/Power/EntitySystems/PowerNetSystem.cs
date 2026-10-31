@@ -68,6 +68,7 @@ namespace Content.Server.Power.EntitySystems
         private readonly HashSet<EntityUid> _dirtyConsumers = new();
         private readonly HashSet<EntityUid> _dirtyNetworkBatteries = new();
         private readonly HashSet<EntityUid> _activeApcBatteryReceivers = new();
+        private readonly HashSet<EntityUid> _recalculatingReceivers = new(); // eclipsion
         private readonly List<EntityUid> _apcProcessBuffer = new();
         private readonly List<EntityUid> _processBuffer = new();
         // Forge-Change-end
@@ -360,14 +361,20 @@ namespace Content.Server.Power.EntitySystems
             UpdateNetworkBatteries();
         }
 
-        // eclipsion - NeedsPower gets flipped straight on the component (glimmer, artifact analyzer, admin verb) and only
-        // raises Recalculate. the solver never sees that change, so without this those receivers kept their old state
+        // eclipsion - the solver never sees a NeedsPower flip, so those receivers are queued here
+        // (PowerReceiverSystem.SetNeedsPower). they stay queued while paused, until the flip is applied
+        public void QueueReceiverUpdate(EntityUid uid)
+        {
+            _recalculatingReceivers.Add(uid);
+        }
+
         private void CollectRecalculatingReceivers()
         {
-            var query = EntityQueryEnumerator<ApcPowerReceiverComponent>();
-            while (query.MoveNext(out var uid, out var receiver))
+            _recalculatingReceivers.RemoveWhere(uid => !TryComp(uid, out ApcPowerReceiverComponent? receiver) || !receiver.Recalculate);
+
+            foreach (var uid in _recalculatingReceivers)
             {
-                if (receiver.Recalculate)
+                if (!Paused(uid))
                     _dirtyApcReceivers.Add(uid);
             }
         }

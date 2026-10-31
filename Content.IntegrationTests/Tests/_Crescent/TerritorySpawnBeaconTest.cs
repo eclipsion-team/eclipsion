@@ -1,5 +1,6 @@
 using Content.Server._Crescent.Territory;
 using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Content.Shared._Crescent.HullrotFaction;
 using Content.Shared._Crescent.Territory;
 using Content.Shared.Maps;
@@ -43,7 +44,7 @@ public sealed class TerritorySpawnBeaconTest
             territory.Level = 3;
 
             beacon = entMan.SpawnEntity("PersistentPoiCryoSpawner", new EntityCoordinates(grid, 6.5f, 0.5f));
-            entMan.GetComponent<ApcPowerReceiverComponent>(beacon).NeedsPower = false;
+            entMan.System<PowerReceiverSystem>().SetNeedsPower(beacon, false);
             rack = entMan.SpawnEntity("PersistentPoiGearRackDSM", new EntityCoordinates(grid, 3.5f, 0.5f));
         });
 

@@ -9,6 +9,7 @@ using Content.Server.Atmos.EntitySystems;
 using Content.Server.Construction.Components;
 using Content.Server.Gravity;
 using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Content.Shared.Atmos;
 using Content.Shared.Construction.Prototypes;
 using Content.Shared.Gravity;
@@ -1143,8 +1144,9 @@ public abstract partial class InteractionTest
 
     protected void ToggleNeedPower(NetEntity? target = null)
     {
+        target ??= Target;
         var comp = Comp<ApcPowerReceiverComponent>(target);
-        comp.NeedsPower = !comp.NeedsPower;
+        SEntMan.System<PowerReceiverSystem>().SetNeedsPower(ToServer(target!.Value), !comp.NeedsPower, comp);
     }
 
     #endregion

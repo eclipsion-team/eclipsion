@@ -35,7 +35,10 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
 
     private static readonly TimeSpan RefreshInterval = TimeSpan.FromSeconds(1);
 
+    private static readonly PersistentPoiWorksCategory[] WorksCategories = Enum.GetValues<PersistentPoiWorksCategory>();
+
     private readonly Dictionary<string, TerritoryProgress> _progress = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<EntityUid, Dictionary<PersistentPoiWorksCategory, int>> _counts = new();
     private TimeSpan _nextRefresh;
 
     public override void Initialize()
@@ -67,10 +70,18 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
 
         _nextRefresh = now + RefreshInterval;
 
+        // one pass for every territory and category
+        _counts.Clear();
         var grids = EntityQueryEnumerator<PersistentPoiGridComponent>();
-        while (grids.MoveNext(out var uid, out var territory))
+        while (grids.MoveNext(out var uid, out _))
         {
-            RefreshCounts(uid, territory);
+            _counts[uid] = new Dictionary<PersistentPoiWorksCategory, int>();
+        }
+
+        _levels.CountAllWorksLive(_counts);
+        foreach (var (uid, counts) in _counts)
+        {
+            ApplyCounts(uid, Comp<PersistentPoiGridComponent>(uid), counts);
         }
 
         var consoles = EntityQueryEnumerator<PersistentPoiAdministrationConsoleComponent>();
@@ -244,10 +255,18 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
 
     private void RefreshCounts(EntityUid grid, PersistentPoiGridComponent territory)
     {
+        var counts = new Dictionary<EntityUid, Dictionary<PersistentPoiWorksCategory, int>> { [grid] = new() };
+        _levels.CountAllWorksLive(counts);
+        ApplyCounts(grid, territory, counts[grid]);
+    }
+
+    private void ApplyCounts(EntityUid grid, PersistentPoiGridComponent territory,
+        Dictionary<PersistentPoiWorksCategory, int> counts)
+    {
         var changed = false;
-        foreach (var category in Enum.GetValues<PersistentPoiWorksCategory>())
+        foreach (var category in WorksCategories)
         {
-            var count = _levels.CountWorksLive(grid, category);
+            var count = counts.GetValueOrDefault(category);
             if (territory.WorksCounts.GetValueOrDefault(category) == count &&
                 territory.WorksCounts.ContainsKey(category))
             {

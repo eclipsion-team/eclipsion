@@ -71,7 +71,7 @@ public sealed class PersistentPoiLevelSystem : EntitySystem
 
         if (category == PersistentPoiWorksCategory.PointDefence)
         {
-            var guns = EntityQueryEnumerator<PointCannonComponent, TransformComponent>();
+            var guns = AllEntityQuery<PointCannonComponent, TransformComponent>();
             while (guns.MoveNext(out _, out _, out var xform))
             {
                 if (xform.GridUid == grid && xform.Anchored)
@@ -81,7 +81,7 @@ public sealed class PersistentPoiLevelSystem : EntitySystem
             return count;
         }
 
-        var works = EntityQueryEnumerator<PersistentPoiWorksComponent, TransformComponent>();
+        var works = AllEntityQuery<PersistentPoiWorksComponent, TransformComponent>();
         while (works.MoveNext(out _, out var comp, out var xform))
         {
             if (comp.Category == category && xform.GridUid == grid)
@@ -89,6 +89,37 @@ public sealed class PersistentPoiLevelSystem : EntitySystem
         }
 
         return count;
+    }
+
+    /// <summary>
+    /// <see cref="CountWorksLive"/> for every grid keyed in <paramref name="counts"/> and every category at once,
+    /// in one pass over the guns and one over the works.
+    /// </summary>
+    public void CountAllWorksLive(Dictionary<EntityUid, Dictionary<PersistentPoiWorksCategory, int>> counts)
+    {
+        foreach (var perGrid in counts.Values)
+        {
+            perGrid.Clear();
+        }
+
+        var guns = AllEntityQuery<PointCannonComponent, TransformComponent>();
+        while (guns.MoveNext(out _, out _, out var xform))
+        {
+            if (xform.Anchored && xform.GridUid is { } grid && counts.TryGetValue(grid, out var perGrid))
+                perGrid[PersistentPoiWorksCategory.PointDefence] = perGrid.GetValueOrDefault(PersistentPoiWorksCategory.PointDefence) + 1;
+        }
+
+        var works = AllEntityQuery<PersistentPoiWorksComponent, TransformComponent>();
+        while (works.MoveNext(out _, out var comp, out var xform))
+        {
+            // point defence goes by the guns themselves
+            if (comp.Category != PersistentPoiWorksCategory.PointDefence &&
+                xform.GridUid is { } grid &&
+                counts.TryGetValue(grid, out var perGrid))
+            {
+                perGrid[comp.Category] = perGrid.GetValueOrDefault(comp.Category) + 1;
+            }
+        }
     }
 
     public bool HasRoomFor(EntityUid grid, PersistentPoiWorksCategory category)

@@ -136,7 +136,7 @@ public sealed class PersistentPoiSystem : EntitySystem
 
     private void OnGridLoaded(ref PersistentPoiGridLoadedEvent args)
     {
-        var guns = EntityQueryEnumerator<HardpointAnchorableOnlyComponent, TransformComponent>();
+        var guns = AllEntityQuery<HardpointAnchorableOnlyComponent, TransformComponent>();
         while (guns.MoveNext(out var uid, out var weapon, out var xform))
         {
             if (xform.GridUid != args.Grid || !xform.Anchored || weapon.anchoredTo != null)

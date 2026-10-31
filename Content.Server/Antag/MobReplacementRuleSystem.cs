@@ -19,6 +19,7 @@ using Content.Shared.Weapons.Melee;
 using Content.Server.Advertise.EntitySystems;
 using Content.Server.Advertise.Components;
 using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Content.Shared.CombatMode;
 using Content.Server.Station.Systems;
 using Content.Server.GameTicking;
@@ -42,6 +43,7 @@ public sealed class MobReplacementRuleSystem : GameRuleSystem<MobReplacementRule
     [Dependency] private readonly NPCSystem _npc = default!;
     [Dependency] private readonly TransformSystem _transform = default!;
     [Dependency] private readonly AdvertiseSystem _advertise = default!;
+    [Dependency] private readonly PowerReceiverSystem _powerReceiver = default!;
 
 
     protected override void Started(EntityUid uid, MobReplacementRuleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
@@ -164,6 +166,6 @@ public sealed class MobReplacementRuleSystem : GameRuleSystem<MobReplacementRule
         _advertise.SayAdvertisement(uid, vendorComponent);
 
         if (TryComp<ApcPowerReceiverComponent>(uid, out var aPC))
-            aPC.NeedsPower = false;
+            _powerReceiver.SetNeedsPower(uid, false, aPC);
     }
 }

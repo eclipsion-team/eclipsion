@@ -5,6 +5,7 @@ using Content.Server.Disposal.Tube.Components;
 using Content.Server.Disposal.Unit.Components;
 using Content.Server.Disposal.Unit.EntitySystems;
 using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Content.Shared.Disposal;
 using Content.Shared.Disposal.Components;
 using NUnit.Framework;
@@ -228,7 +229,7 @@ namespace Content.IntegrationTests.Tests.Disposal
             {
                 // Remove power need
                 Assert.That(entityManager.TryGetComponent(disposalUnit, out ApcPowerReceiverComponent power));
-                power!.NeedsPower = false;
+                entityManager.System<PowerReceiverSystem>().SetNeedsPower(disposalUnit, false, power);
                 unitComponent.Powered = true; //Power state changed event doesn't get fired smh
 
                 // Flush with a mob and an item

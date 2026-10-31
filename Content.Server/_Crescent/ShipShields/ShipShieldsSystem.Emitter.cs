@@ -2,6 +2,7 @@ using Content.Shared._Crescent.ShipShields;
 using Content.Shared._Crescent.CCvars;
 using Content.Server._Crescent.RoundEnd;
 using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Robust.Shared.Configuration;
 using Content.Shared.Projectiles;
 using Robust.Shared.Physics.Components;
@@ -24,6 +25,7 @@ public partial class ShipShieldsSystem
     [Dependency] private readonly SharedAudioSystem _audio = default!;
 	[Dependency] private readonly IConfigurationManager _config = default!;
 	[Dependency] private readonly EntityLookupSystem _lookup = default!; // Rat
+	[Dependency] private readonly PowerReceiverSystem _powerReceiver = default!;
 	private bool _powerDrawEnabled;
 
     public void InitializeEmitters()
@@ -75,7 +77,7 @@ public partial class ShipShieldsSystem
 			return;
 
 		receiver.Load = 0f;
-		receiver.NeedsPower = false;
+		_powerReceiver.SetNeedsPower(uid, false, receiver);
     }
     // Rat-end
 

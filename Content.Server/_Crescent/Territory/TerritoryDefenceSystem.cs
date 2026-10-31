@@ -65,7 +65,7 @@ public sealed class TerritoryDefenceSystem : EntitySystem
 
     private void ApplyTurrets(EntityUid grid, PersistentPoiGridComponent territory)
     {
-        var turrets = EntityQueryEnumerator<PersistentPoiWorksComponent, SignalControlComponent, TransformComponent>();
+        var turrets = AllEntityQuery<PersistentPoiWorksComponent, SignalControlComponent, TransformComponent>();
         while (turrets.MoveNext(out _, out var works, out var control, out var xform))
         {
             if (works.Category == PersistentPoiWorksCategory.AntiBoarderTurret && xform.GridUid == grid)

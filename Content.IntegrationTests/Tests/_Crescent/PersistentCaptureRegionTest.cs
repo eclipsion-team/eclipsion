@@ -199,6 +199,47 @@ public sealed class PersistentCaptureRegionTest
         await pair.CleanReturnAsync();
     }
 
+    [Test]
+    public async Task DeletedCapturerFreesStandard()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+        var entMan = server.EntMan;
+
+        EntityUid flagUid = default;
+        EntityUid playerUid = default;
+        await server.WaitAssertion(() =>
+        {
+            flagUid = entMan.CreateEntityUninitialized("PersistentCaptureRegionFlag", map.GridCoords);
+            entMan.GetComponent<PersistentCaptureRegionComponent>(flagUid).RegionId = $"integration-test-{Guid.NewGuid():N}";
+            entMan.InitializeAndStartEntity(flagUid);
+            entMan.GetComponent<CaptureFlagComponent>(flagUid).CaptureTime = 60f;
+
+            playerUid = entMan.SpawnEntity("MobHuman", map.GridCoords);
+            entMan.EnsureComponent<HullrotFactionComponent>(playerUid).Faction = "DSM";
+        });
+
+        await server.WaitRunTicks(1);
+        await server.WaitAssertion(() => entMan.EventBus.RaiseLocalEvent(flagUid, new InteractHandEvent(playerUid, flagUid)));
+        await server.WaitRunTicks(2);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.GetComponent<PersistentCaptureRegionComponent>(flagUid).Capturer, Is.EqualTo(playerUid));
+            entMan.DeleteEntity(playerUid);
+        });
+
+        await server.WaitRunTicks(2);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.GetComponent<PersistentCaptureRegionComponent>(flagUid).Capturer, Is.Null,
+                "A capturer deleted mid-attempt left the standard locked.");
+            Assert.That(entMan.GetComponent<CaptureFlagComponent>(flagUid).Stage, Is.EqualTo(CaptureFlagStage.Idle));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
     /// <summary>
     /// The four supported powers are not a cosmetic list. A faction that cannot hold territory has to fail here
     /// rather than at runtime, where an unknown NPC faction leaves a captured turret shooting nobody and a

@@ -1,5 +1,6 @@
 using Content.Server.Gravity;
 using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Content.Shared.Gravity;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
@@ -63,7 +64,7 @@ namespace Content.IntegrationTests.Tests
                 });
 
                 var powerComponent = entityMan.GetComponent<ApcPowerReceiverComponent>(generator);
-                powerComponent.NeedsPower = false;
+                entityMan.System<PowerReceiverSystem>().SetNeedsPower(generator, false, powerComponent);
             });
 
             // power nets only update every 0.5 s here
@@ -83,7 +84,7 @@ namespace Content.IntegrationTests.Tests
 
                 // Re-enable needs power so it turns off again.
                 // Charge rate is ridiculously high so it finishes in one tick.
-                powerComponent.NeedsPower = true;
+                entityMan.System<PowerReceiverSystem>().SetNeedsPower(generator, true, powerComponent);
             });
 
             await pair.RunSeconds(1);

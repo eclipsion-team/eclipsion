@@ -1,5 +1,6 @@
 using Content.Server.Audio;
 using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Content.Server.Electrocution;
 using Content.Server.Lightning;
 using Content.Server.Explosion.EntitySystems;
@@ -41,6 +42,7 @@ public sealed class GlimmerReactiveSystem : EntitySystem
     [Dependency] private readonly RevenantSystem _revenantSystem = default!;
     [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
     [Dependency] private readonly SharedPointLightSystem _pointLightSystem = default!;
+    [Dependency] private readonly PowerReceiverSystem _powerReceiver = default!;
     private ISawmill _sawmill = default!;
 
     public float Accumulator = 0;
@@ -145,11 +147,11 @@ public sealed class GlimmerReactiveSystem : EntitySystem
                 AnchorOrExplode(uid);
 
             receiver.PowerDisabled = false;
-            receiver.NeedsPower = false;
+            _powerReceiver.SetNeedsPower(uid, false, receiver);
         }
         else
         {
-            receiver.NeedsPower = true;
+            _powerReceiver.SetNeedsPower(uid, true, receiver);
         }
     }
 

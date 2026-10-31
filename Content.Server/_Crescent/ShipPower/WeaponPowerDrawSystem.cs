@@ -19,6 +19,7 @@ public sealed class WeaponPowerDrawSystem : EntitySystem
     [Dependency] private readonly BatterySystem _battery = default!;
     [Dependency] private readonly IConfigurationManager _config = default!;
     [Dependency] private readonly PowerNetSystem _powerNet = default!;
+    [Dependency] private readonly PowerReceiverSystem _powerReceiver = default!;
 
     private bool _powerDrawEnabled;
 
@@ -42,7 +43,7 @@ public sealed class WeaponPowerDrawSystem : EntitySystem
         if (TryComp<ApcPowerReceiverComponent>(ent, out var receiver))
         {
             receiver.Load = 0f;
-            receiver.NeedsPower = false;
+            _powerReceiver.SetNeedsPower(ent, false, receiver);
         }
 
         _powerNet.SetReceiverBatteryPowerDraw(ent.Owner, false);

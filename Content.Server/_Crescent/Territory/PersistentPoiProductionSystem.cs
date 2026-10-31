@@ -293,6 +293,13 @@ public sealed class PersistentPoiProductionSystem : EntitySystem
 
     private void OnOwnerChanged(ref PersistentRegionOwnerChangedEvent args)
     {
+        // overtime is paid for by the old holder
+        if (TryComp<PersistentPoiGridComponent>(args.Grid, out var territory))
+        {
+            territory.OvertimeUntil = TimeSpan.Zero;
+            territory.OvertimeSpeed = 1f;
+        }
+
         var consoles = EntityQueryEnumerator<PersistentPoiProductionConsoleComponent, TransformComponent>();
         while (consoles.MoveNext(out var uid, out _, out var xform))
         {

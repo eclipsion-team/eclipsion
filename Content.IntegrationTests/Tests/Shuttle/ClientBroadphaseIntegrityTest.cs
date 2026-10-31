@@ -3,6 +3,7 @@ using System.Numerics;
 using System.Reflection;
 using Content.IntegrationTests.Pair;
 using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Robust.Shared;
 using Robust.Shared.Enums;
 using Robust.Shared.GameObjects;
@@ -318,7 +319,7 @@ public sealed class ClientBroadphaseIntegrityTest
     {
         var emitter = entMan.SpawnEntity(EmitterPrototype, new EntityCoordinates(grid, localPos));
         // No APC in a test map: this makes the receiver count as powered, the same state a working grid gives it.
-        entMan.GetComponent<ApcPowerReceiverComponent>(emitter).NeedsPower = false;
+        entMan.System<PowerReceiverSystem>().SetNeedsPower(emitter, false);
         return emitter;
     }
 

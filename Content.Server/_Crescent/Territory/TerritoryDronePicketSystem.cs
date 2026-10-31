@@ -22,6 +22,7 @@ using Robust.Server.GameObjects;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -66,6 +67,7 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
 
     private List<Entity<MapGridComponent>> _gridScratch = new();
     private readonly HashSet<EntityUid> _picketGrids = new();
+    private readonly List<MapCoordinates> _players = new();
 
     public override void Initialize()
     {
@@ -218,6 +220,7 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
 
         _accumulator = 0f;
         var scan = _tick++ % ScanEveryNTicks == 0;
+        var gathered = false;
 
         var query = EntityQueryEnumerator<TerritoryDronePicketsComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var pickets, out var xform))
@@ -237,12 +240,71 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
                 continue;
 
             if (scan)
+            {
+                if (!gathered)
+                {
+                    GatherPlayers();
+                    gathered = true;
+                }
+
+                var dormant = !IsWatched(center, pickets.WakeRange);
+                if (dormant && !pickets.Dormant)
+                    Park(pickets);
+
+                pickets.Dormant = dormant;
+            }
+
+            if (pickets.Dormant)
+                continue;
+
+            if (scan)
                 pickets.Target = PickTarget(pickets, center, territoryGrid);
 
             foreach (var drone in pickets.Pickets)
             {
                 Fly(drone, pickets, uid, center, territoryGrid);
             }
+        }
+    }
+
+    private void GatherPlayers()
+    {
+        _players.Clear();
+
+        var actors = EntityQueryEnumerator<ActorComponent, MobStateComponent, TransformComponent>();
+        while (actors.MoveNext(out var uid, out _, out _, out var xform))
+        {
+            _players.Add(_transform.GetMapCoordinates(uid, xform));
+        }
+    }
+
+    private bool IsWatched(MapCoordinates position, float range)
+    {
+        var rangeSquared = range * range;
+        foreach (var player in _players)
+        {
+            if (player.MapId == position.MapId && (player.Position - position.Position).LengthSquared() <= rangeSquared)
+                return true;
+        }
+
+        return false;
+    }
+
+    // nobody is near enough to see them stop, and a hull left drifting never lets physics sleep
+    private void Park(TerritoryDronePicketsComponent pickets)
+    {
+        pickets.Target = null;
+
+        foreach (var drone in pickets.Pickets)
+        {
+            _steering.Stop(drone);
+            _targeting.Stop(drone);
+
+            if (Transform(drone).GridUid is not { } grid || !TryComp<PhysicsComponent>(grid, out var body))
+                continue;
+
+            _physics.SetLinearVelocity(grid, Vector2.Zero, body: body);
+            _physics.SetAngularVelocity(grid, 0f, body: body);
         }
     }
 

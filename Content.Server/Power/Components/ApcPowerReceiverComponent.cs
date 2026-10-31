@@ -1,3 +1,4 @@
+using Content.Server.Power.EntitySystems;
 using Content.Server.Power.NodeGroups;
 using Content.Server.Power.Pow3r;
 using Content.Shared.Power.Components;
@@ -24,6 +25,7 @@ namespace Content.Server.Power.Components
         ///     When false, causes this to appear powered even if not receiving power from an Apc.
         /// </summary>
         [ViewVariables(VVAccess.ReadWrite)]
+        [Access(typeof(PowerReceiverSystem))] // eclipsion - set through SetNeedsPower, the power net isn't told otherwise
         public bool NeedsPower
         {
             get => _needsPower;

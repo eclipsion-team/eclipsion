@@ -38,6 +38,10 @@ public sealed partial class TerritoryDronePicketsComponent : Component
     [DataField]
     public float AimScatter = 20f;
 
+    // with no player body this close to the standard the pickets park and stop thinking
+    [DataField]
+    public float WakeRange = 1500f;
+
     [DataField]
     public Color IffColor = Color.FromHex("#9B59B6");
 
@@ -49,6 +53,9 @@ public sealed partial class TerritoryDronePicketsComponent : Component
 
     [ViewVariables]
     public EntityUid? Target;
+
+    [ViewVariables]
+    public bool Dormant;
 }
 
 [RegisterComponent, Access(typeof(TerritoryDronePicketSystem))]

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Content.Server.Shuttles.Systems;
 using Content.Shared._Crescent.ShipShields;
 using Robust.Shared.GameObjects;
@@ -231,7 +232,7 @@ public sealed class ShuttleRamClientStabilityTest
     {
         var emitter = entMan.SpawnEntity(EmitterPrototype, new EntityCoordinates(grid, localPos));
         // No APC in a test map: this makes the receiver count as powered, the same state a working grid gives it.
-        entMan.GetComponent<ApcPowerReceiverComponent>(emitter).NeedsPower = false;
+        entMan.System<PowerReceiverSystem>().SetNeedsPower(emitter, false);
         return emitter;
     }
 

@@ -54,6 +54,8 @@ public sealed class PersistentCaptureRegionSystem : EntitySystem
 
     private static readonly TimeSpan AttackAlertCooldown = TimeSpan.FromSeconds(60);
 
+    private static readonly TimeSpan StaleCaptureGrace = TimeSpan.FromSeconds(5);
+
     private const string AttackAlertSound = "/Audio/Misc/notice1.ogg";
     private const int SaveVersion = 1;
 
@@ -92,6 +94,13 @@ public sealed class PersistentCaptureRegionSystem : EntitySystem
         {
             if (!region.ValidRegion)
                 continue;
+
+            // a capturer deleted mid do-after (gibbed, cryo, admin) never gets the event that frees the standard
+            if (region.Capturer is { } capturer &&
+                (TerminatingOrDeleted(capturer) || _timing.CurTime > region.CaptureEndsAt + StaleCaptureGrace))
+            {
+                ResetCaptureAttempt((uid, region), flag);
+            }
 
             if (string.IsNullOrWhiteSpace(flag.OwnerTeam))
             {
@@ -136,7 +145,7 @@ public sealed class PersistentCaptureRegionSystem : EntitySystem
     private void OnPersistentGridLoaded(ref PersistentPoiGridLoadedEvent args)
     {
         var regions = new List<Entity<PersistentCaptureRegionComponent>>();
-        var query = EntityQueryEnumerator<PersistentCaptureRegionComponent, TransformComponent>();
+        var query = AllEntityQuery<PersistentCaptureRegionComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var region, out var xform))
         {
             if (xform.GridUid == args.Grid)

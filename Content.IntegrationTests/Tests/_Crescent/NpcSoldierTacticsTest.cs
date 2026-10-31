@@ -17,6 +17,7 @@ using Content.Server.Body.Systems;
 using Content.Server.Damage.Systems;
 using Content.Server.Gravity;
 using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Content.Shared._Crescent;
 using Content.Shared._Crescent.Barricades;
 using Content.Shared._Crescent.HardsuitInjection;
@@ -1181,7 +1182,7 @@ public sealed class NpcSoldierTacticsTest
 
                 airlock = uid;
                 // Nothing is wired up on a test grid, and an unpowered airlock opens for nobody.
-                entMan.GetComponent<ApcPowerReceiverComponent>(uid).NeedsPower = false;
+                entMan.System<PowerReceiverSystem>().SetNeedsPower(uid, false);
             }
 
             soldier = entMan.SpawnEntity(DsmSoldier, new EntityCoordinates(map.Grid, new Vector2(1.5f, 0.5f)));
@@ -1269,7 +1270,7 @@ public sealed class NpcSoldierTacticsTest
                 }
 
                 airlock = uid;
-                entMan.GetComponent<ApcPowerReceiverComponent>(uid).NeedsPower = false;
+                entMan.System<PowerReceiverSystem>().SetNeedsPower(uid, false);
 
                 // Locked to a ship code the soldier's card doesn't carry.
                 var codes = server.System<DynamicCodeSystem>();

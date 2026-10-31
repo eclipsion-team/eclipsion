@@ -29,6 +29,7 @@ namespace Content.Server.Power.EntitySystems
         [Dependency] private readonly AppearanceSystem _appearance = default!;
         [Dependency] private readonly AudioSystem _audio = default!;
         [Dependency] private readonly SharedInteractionSystem _interaction = default!;
+        [Dependency] private readonly PowerNetSystem _powerNet = default!;
         private EntityQuery<ApcPowerReceiverComponent> _recQuery;
         private EntityQuery<ApcPowerProviderComponent> _provQuery;
 
@@ -69,7 +70,7 @@ namespace Content.Server.Power.EntitySystems
                 Text = Loc.GetString("verb-debug-toggle-need-power"),
                 Category = VerbCategory.Debug,
                 Icon = new SpriteSpecifier.Texture(new ("/Textures/Interface/VerbIcons/smite.svg.192dpi.png")), // "smite" is a lightning bolt
-                Act = () => component.NeedsPower = !component.NeedsPower
+                Act = () => SetNeedsPower(uid, !component.NeedsPower, component)
             });
         }
 
@@ -206,6 +207,16 @@ namespace Content.Server.Power.EntitySystems
         public void SetLoad(ApcPowerReceiverComponent comp, float load)
         {
             comp.Load = load;
+        }
+
+        // eclipsion - goes around the solver, so the power net has to be told
+        public void SetNeedsPower(EntityUid uid, bool needsPower, ApcPowerReceiverComponent? receiver = null)
+        {
+            if (!_recQuery.Resolve(uid, ref receiver, false))
+                return;
+
+            receiver.NeedsPower = needsPower;
+            _powerNet.QueueReceiverUpdate(uid);
         }
 
         public override bool ResolveApc(EntityUid entity, [NotNullWhen(true)] ref SharedApcPowerReceiverComponent? component)

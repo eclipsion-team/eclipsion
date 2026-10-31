@@ -555,7 +555,9 @@ instead of circling it, and its aim wanders up to 20 m around the target (5 m fo
 target once it is 650 m from the standard, and a drone that ends up past 850 m breaks off and flies home before it
 picks a fight again. They hold fire while the territory itself is in the line of fire, so a ship docked alongside is
 not worth wrecking the territory over. Asteroids, belts, wrecks, stations and other territories are never targets -
-not even an asteroid with a miner on it, since only a grid with thrust counts. Pickets are not part of the
+not even an asteroid with a miner on it, since only a grid with thrust counts. While no player body is within 1500 m
+of the standard (`wakeRange`) the picket parks where it is and stops steering and aiming, so nobody pays for its
+flight AI or physics while nobody can see it; it picks up again within a second of someone coming into range. Pickets are not part of the
 territory: never saved, and one shot down stays down until the next round puts up a fresh one.
 
 ## The political map

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Content.IntegrationTests.Pair;
 using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Content.Server.Shuttles.Systems;
 using Content.Shared._Crescent.ShipShields;
 using Content.Shared.Projectiles;
@@ -461,7 +462,7 @@ public sealed class ShuttleCollisionTest
     private static EntityUid SpawnPoweredEmitter(IEntityManager entMan, EntityUid grid, Vector2 localPos)
     {
         var emitter = entMan.SpawnEntity(EmitterPrototype, new EntityCoordinates(grid, localPos));
-        entMan.GetComponent<ApcPowerReceiverComponent>(emitter).NeedsPower = false;
+        entMan.System<PowerReceiverSystem>().SetNeedsPower(emitter, false);
         return emitter;
     }
 
