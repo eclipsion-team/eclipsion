@@ -245,4 +245,4 @@
         layer:
         - HighImpassable
   - type: Transform
-    noRot: true
+    noRot: false # Eclipsion - keep the placed facing so the finished door is not always horizontal

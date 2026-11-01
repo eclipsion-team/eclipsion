@@ -6,6 +6,7 @@
   components:
   - type: Sprite
     sprite: Structures/Doors/Airlocks/Standard/firelock.rsi
+    snapCardinals: true
     layers:
     - state: frame1
       map: [ "enum.ConstructionVisuals.Layer" ]
@@ -53,4 +54,4 @@
         - HighImpassable
         - MidImpassable
   - type: Transform
-    noRot: true
+    noRot: false # Eclipsion - keep the placed facing so the finished door is not always horizontal

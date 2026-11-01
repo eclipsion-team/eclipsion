@@ -37,7 +37,7 @@
     energy: 0.6
     radius: 8
     softness: 1
-    offset: "0, -0.5"
+    offset: "0, -0.45" # -0.5 lands on the opposite wall in 1-wide corridors and the engine culls lights inside occluders
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Metallic
@@ -288,7 +288,7 @@
     enabled: false
   - type: PointLight
     enabled: false
-    offset: "0, -0.5"
+    offset: "0, -0.45"
   - type: ContainerContainer
     containers:
       light_bulb: !type:ContainerSlot
