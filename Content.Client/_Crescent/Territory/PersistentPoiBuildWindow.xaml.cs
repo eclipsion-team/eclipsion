@@ -34,7 +34,6 @@ public sealed partial class PersistentPoiBuildWindow : FancyWindow
 
     public event Action<ConstructionPrototype>? OnBuild;
     public event Action? OnPaint;
-    public event Action? OnDeconstruct;
 
     private List<PersistentPoiBuildCategory> _categories = new();
     private readonly List<Button> _categoryButtons = new();
@@ -54,9 +53,7 @@ public sealed partial class PersistentPoiBuildWindow : FancyWindow
 
         PaintIcon.Texture = _sprite.Frame0(new SpriteSpecifier.Rsi(new ResPath("Objects/Tools/spray_painter.rsi"), "spray_painter"));
         FooterLabel.SetHint(Loc.GetString("persistent-poi-build-ui-footer"));
-        DeconstructIcon.Texture = _sprite.Frame0(new SpriteSpecifier.Rsi(new ResPath("Objects/Tools/crowbar.rsi"), "icon"));
         PaintButton.OnPressed += _ => OnPaint?.Invoke();
-        DeconstructButton.OnPressed += _ => OnDeconstruct?.Invoke();
         BuildButton.OnPressed += _ =>
         {
             if (_selected != null)

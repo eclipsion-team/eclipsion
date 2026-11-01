@@ -16,7 +16,7 @@
     PointDefence: 4
     MediumLaser: 0
     HeavyLaser: 0
-    AntiBoarderTurret: 2
+    AntiBoarderTurret: 4
     Factory: 2
     Shipyard: 0
     DockingPort: 2
@@ -56,7 +56,7 @@
     PointDefence: 6
     MediumLaser: 3
     HeavyLaser: 0
-    AntiBoarderTurret: 3
+    AntiBoarderTurret: 6
     Factory: 3
     Shipyard: 1
     DockingPort: 4
@@ -97,7 +97,7 @@
     PointDefence: 8
     MediumLaser: 4
     HeavyLaser: 2
-    AntiBoarderTurret: 4
+    AntiBoarderTurret: 8
     Factory: 4
     Shipyard: 1
     DockingPort: 6

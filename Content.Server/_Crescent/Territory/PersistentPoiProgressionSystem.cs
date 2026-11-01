@@ -5,6 +5,7 @@ using Content.Server.Stack;
 using Content.Shared._Crescent.Territory;
 using Content.Shared.Database;
 using Content.Server.Administration.Logs;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
@@ -25,6 +26,8 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
     [Dependency] private readonly IResourceManager _resources = default!;
     [Dependency] private readonly PersistentPoiLevelSystem _levels = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
+    [Dependency] private readonly PersistentPoiSiloSystem _silo = default!;
+    [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly StackSystem _stack = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
 
@@ -57,6 +60,8 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
         {
             subs.Event<BoundUIOpenedEvent>(OnAdministrationOpened);
             subs.Event<PersistentPoiUpgradeMessage>(OnUpgrade);
+            subs.Event<PersistentPoiDrawFromSiloMessage>(OnDrawFromSilo);
+            subs.Event<PersistentPoiReturnDepositMessage>(OnReturnDeposit);
         });
     }
 
@@ -405,6 +410,119 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
         return true;
     }
 
+    private void OnDrawFromSilo(Entity<PersistentPoiAdministrationConsoleComponent> ent, ref PersistentPoiDrawFromSiloMessage args)
+    {
+        if (!TryGetTerritory(ent, out var grid, out var territory) || !IsHolder(args.Actor, territory))
+            return;
+
+        var taken = DrawFromSilo(grid, territory);
+        if (taken.Count == 0)
+        {
+            _popup.PopupEntity(Loc.GetString("persistent-poi-admin-silo-nothing"), ent, args.Actor, PopupType.SmallCaution);
+            return;
+        }
+
+        LogDraw(args.Actor, territory, taken);
+        _popup.PopupEntity(Loc.GetString("persistent-poi-admin-silo-drawn", ("materials", DescribeTaken(taken))), ent, args.Actor);
+        UpdateAdministrationConsole(ent);
+    }
+
+    /// <summary>
+    /// Moves whatever the next level still needs out of the territory's silo and onto its deposits.
+    /// </summary>
+    public Dictionary<string, int> DrawFromSilo(EntityUid grid, PersistentPoiGridComponent territory)
+    {
+        var taken = new Dictionary<string, int>();
+        SyncLevel(grid, territory);
+        if (_levels.GetNextLevel(territory.Level) is not { } next ||
+            !PersistentPoiSilo.TryGetSilo(EntityManager, grid, out var silo))
+        {
+            return taken;
+        }
+
+        var progress = GetOrCreate(territory.RegionId);
+        foreach (var (material, required) in next.UpgradeCost)
+        {
+            var deposited = progress.Deposits.GetValueOrDefault(material);
+            var take = _silo.TakeOut(silo, material, required - deposited);
+            if (take <= 0)
+                continue;
+
+            progress.Deposits[material] = deposited + take;
+            taken[material] = take;
+        }
+
+        if (taken.Count > 0)
+            Save();
+
+        return taken;
+    }
+
+    private void OnReturnDeposit(Entity<PersistentPoiAdministrationConsoleComponent> ent, ref PersistentPoiReturnDepositMessage args)
+    {
+        ReturnDeposit(ent, args.Actor, args.Material, args.ToSilo);
+    }
+
+    /// <summary>
+    /// Hands a deposited material back off the next level: one stack to the actor, or all of it into the silo.
+    /// </summary>
+    public bool ReturnDeposit(EntityUid ent, EntityUid actor, string material, bool toSilo)
+    {
+        if (!TryGetTerritory(ent, out var grid, out var territory) ||
+            !IsHolder(actor, territory) ||
+            !_proto.TryIndex<StackPrototype>(material, out var stack) ||
+            !_progress.TryGetValue(territory.RegionId, out var progress))
+        {
+            return false;
+        }
+
+        var deposited = progress.Deposits.GetValueOrDefault(material);
+        if (deposited <= 0)
+            return false;
+
+        int moved;
+        if (toSilo)
+        {
+            if (!_silo.TryDeposit(grid, new Dictionary<ProtoId<StackPrototype>, int> { [stack.ID] = deposited }))
+            {
+                _popup.PopupEntity(Loc.GetString("persistent-poi-admin-no-silo"), ent, actor, PopupType.SmallCaution);
+                return false;
+            }
+
+            moved = deposited;
+        }
+        else
+        {
+            moved = Math.Min(deposited, stack.MaxCount ?? _stack.GetMaxCount(stack.Spawn));
+            var spawned = _stack.Spawn(moved, stack, Transform(ent).Coordinates);
+            _hands.PickupOrDrop(actor, spawned);
+        }
+
+        if (deposited - moved > 0)
+            progress.Deposits[material] = deposited - moved;
+        else
+            progress.Deposits.Remove(material);
+        Save();
+
+        _adminLog.Add(LogType.Action, LogImpact.Low,
+            $"{ToPrettyString(actor):player} took {moved} {material} back off territory '{territory.RegionId}''s level deposits{(toSilo ? " into the silo" : string.Empty)}");
+        _popup.PopupEntity(Loc.GetString(toSilo ? "persistent-poi-admin-returned-silo" : "persistent-poi-admin-returned",
+            ("amount", moved), ("material", GetMaterialName(stack.ID))), ent, actor);
+        UpdateAdministrationConsole(ent);
+        return true;
+    }
+
+    private void LogDraw(EntityUid actor, PersistentPoiGridComponent territory, Dictionary<string, int> taken)
+    {
+        _adminLog.Add(LogType.Action, LogImpact.Low,
+            $"{ToPrettyString(actor):player} drew {string.Join(", ", taken.Select(pair => $"{pair.Value} {pair.Key}"))} from the silo into territory '{territory.RegionId}''s level deposits");
+    }
+
+    private string DescribeTaken(Dictionary<string, int> taken)
+    {
+        return string.Join(", ", taken.Select(pair => $"{pair.Value} {GetMaterialName(pair.Key)}"));
+    }
+
     private void OnUpgrade(Entity<PersistentPoiAdministrationConsoleComponent> ent, ref PersistentPoiUpgradeMessage args)
     {
         if (!TryGetTerritory(ent, out var grid, out var territory) ||
@@ -413,6 +531,11 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
         {
             return;
         }
+
+        // whatever is still short comes out of the silo first
+        var drawn = DrawFromSilo(grid, territory);
+        if (drawn.Count > 0)
+            LogDraw(args.Actor, territory, drawn);
 
         if (!RaiseLevel(grid, args.Actor))
         {
@@ -452,6 +575,24 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
         }
 
         SetLevel(territory.RegionId, next.Level);
+        return true;
+    }
+
+    /// <summary>
+    /// Deposits everything the region's next level asks for, as if its holder had brought it all.
+    /// </summary>
+    public bool FundNextLevel(string regionId)
+    {
+        if (_levels.GetNextLevel(GetLevel(regionId)) is not { } next)
+            return false;
+
+        var progress = GetOrCreate(regionId);
+        foreach (var (material, required) in next.UpgradeCost)
+        {
+            progress.Deposits[material] = Math.Max(progress.Deposits.GetValueOrDefault(material), required);
+        }
+
+        Save();
         return true;
     }
 
@@ -502,6 +643,9 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
                 });
             }
 
+            var silo = PersistentPoiSilo.TryGetSilo(EntityManager, grid, out var siloEnt) ? siloEnt.Comp : null;
+            state.HasSilo = silo != null;
+
             if (next != null)
             {
                 var deposits = _progress.GetValueOrDefault(territory.RegionId)?.Deposits;
@@ -510,13 +654,18 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
                 foreach (var (material, required) in next.UpgradeCost)
                 {
                     var deposited = deposits?.GetValueOrDefault(material) ?? 0;
-                    ready &= deposited >= required;
+                    var inSilo = silo?.Stored.GetValueOrDefault(material) ?? 0;
+
+                    // raising the level draws the rest from the silo
+                    ready &= deposited + inSilo >= required;
 
                     state.NextLevelCost.Add(new PersistentPoiCostState
                     {
+                        MaterialId = material,
                         Material = GetMaterialName(material),
                         Deposited = deposited,
                         Required = required,
+                        InSilo = inSilo,
                     });
                 }
 

@@ -217,6 +217,14 @@
   name: imperial rifleman
   description: A levyman of the Imperial Mandate, hardsuited and carrying a Miller.
   components:
+  - type: NpcFactionName
+    ranks:
+    - npc-rank-dsm-levyman
+    - npc-rank-dsm-gefreiter
+    - npc-rank-dsm-korporal
+    maleFirst: NpcNamesDSMMale
+    femaleFirst: NpcNamesDSMFemale
+    last: NpcNamesDSMLast
   - type: NpcFactionMember
     factions:
     - DSM
@@ -319,6 +327,14 @@
   name: communard rifleman
   description: A partisan of the League, hardsuited and carrying a Falin.
   components:
+  - type: NpcFactionName
+    ranks:
+    - npc-rank-ncwl-soldat
+    - npc-rank-ncwl-comrade
+    - npc-rank-ncwl-homeguard
+    maleFirst: NpcNamesNCWLMale
+    femaleFirst: NpcNamesNCWLFemale
+    last: NpcNamesNCWLLast
   - type: NpcFactionMember
     factions:
     - NCWL
@@ -416,6 +432,14 @@
   name: coalition rifleman
   description: A Coalition contractor, hardsuited and carrying an AKMS.
   components:
+  - type: NpcFactionName
+    ranks:
+    - npc-rank-tfsc-infanteer
+    - npc-rank-tfsc-contractor
+    - npc-rank-tfsc-specialist
+    maleFirst: NpcNamesTFSCMale
+    femaleFirst: NpcNamesTFSCFemale
+    last: NpcNamesTFSCLast
   - type: NpcFactionMember
     factions:
     - TFSC
@@ -518,6 +542,14 @@
   name: corporate rifleman
   description: Shinohara corporate security, hardsuited and carrying a Nimrod.
   components:
+  - type: NpcFactionName
+    ranks:
+    - npc-rank-shi-officer
+    - npc-rank-shi-associate
+    - npc-rank-shi-agent
+    maleFirst: NpcNamesSHIMale
+    femaleFirst: NpcNamesSHIFemale
+    last: NpcNamesSHILast
   - type: NpcFactionMember
     factions:
     - SHI
@@ -625,6 +657,11 @@
   name: independent gunhand
   description: Hired muscle in a patched-up Fishbed, carrying a Krinkov.
   components:
+  - type: NpcFactionName
+    maleFirst: NpcNamesINDMale
+    femaleFirst: NpcNamesINDFemale
+    last: NpcNamesINDLast
+    nicknames: NpcNamesINDNicknames
   - type: NpcFactionMember
     factions:
     - IND
@@ -745,6 +782,14 @@
   name: minuteman rifleman
   description: A Colonial Minuteman in a Midshipman hardsuit, carrying a Nimrod.
   components:
+  - type: NpcFactionName
+    ranks:
+    - npc-rank-cmm-minuteman
+    - npc-rank-cmm-deputy
+    - npc-rank-cmm-ranger
+    maleFirst: NpcNamesCMMMale
+    femaleFirst: NpcNamesCMMFemale
+    last: NpcNamesCMMLast
   - type: NpcFactionMember
     factions:
     - CMM
@@ -832,6 +877,12 @@
   name: hunter
   description: A Hunter of the Saint's Militia on a declared Hunt, hardsuited and carrying a Hunter DMR. Spares no one.
   components:
+  - type: NpcFactionName
+    ranks:
+    - npc-rank-srm-hunter
+    maleFirst: NpcNamesSRMMale
+    femaleFirst: NpcNamesSRMFemale
+    last: NpcNamesSRMLast
   - type: NpcFactionMember
     factions:
     - SRM

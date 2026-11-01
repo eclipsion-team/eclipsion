@@ -20,5 +20,9 @@
         </BoxContainer>
     </ScrollContainer>
     <RichTextLabel Name="DepositHint" HorizontalExpand="True"/>
-    <Button Name="UpgradeButton" StyleClasses="OpenRight"/>
+    <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+        <Button Name="DrawButton" Text="{Loc 'persistent-poi-admin-ui-draw'}" ToolTip="{Loc 'persistent-poi-admin-ui-draw-tooltip'}"
+                StyleClasses="OpenRight" HorizontalExpand="True"/>
+        <Button Name="UpgradeButton" StyleClasses="OpenLeft" HorizontalExpand="True"/>
+    </BoxContainer>
 </BoxContainer>

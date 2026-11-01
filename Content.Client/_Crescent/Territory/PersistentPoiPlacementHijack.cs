@@ -26,7 +26,7 @@ public sealed class PersistentPoiPlacementHijack : PlacementHijack
 
     public override bool HijackPlacementRequest(EntityCoordinates coordinates)
     {
-        // from the works console there is no body to raise a ghost with, so it is the silo or nothing
+        // from the construction console there is no body to raise a ghost with, so it is the silo or nothing
         if (!_build.IsViewing && !_build.SiloCovers(_recipe))
             return _ghost.HijackPlacementRequest(coordinates);
 

@@ -215,7 +215,7 @@
 - type: entity
   parent: BaseFactionPortal
   id: PersistentPoiFactionPortal
-  name: territorial faction portal
+  name: faction portal
   suffix: Persistent territory, built
   description: A bluespace gate wired into the territory. While it has power, the holding faction's people can step through to their stations and other territories.
   components:

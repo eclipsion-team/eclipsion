@@ -1,4 +1,6 @@
+using System.Text.RegularExpressions;
 using Content.Server.Construction.Components;
+using Content.Server.Destructible;
 using Content.Server.Popups;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
@@ -18,6 +20,8 @@ namespace Content.Server._Crescent.Territory;
 
 public sealed class PersistentPoiSystem : EntitySystem
 {
+    [Dependency] private readonly DestructibleSystem _destructible = default!;
+    [Dependency] private readonly MetaDataSystem _metaData = default!;
     [Dependency] private readonly SharedHardpointSystem _hardpoints = default!;
     [Dependency] private readonly PersistentPoiLevelSystem _levels = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
@@ -35,6 +39,12 @@ public sealed class PersistentPoiSystem : EntitySystem
         SubscribeLocalEvent<PersistentPoiStructureComponent, MapInitEvent>(OnStructureMapInit);
         SubscribeLocalEvent<PersistentPoiStructureComponent, EntityTerminatingEvent>(OnStructureTerminating);
         SubscribeLocalEvent<PersistentPoiStructureComponent, PersistentPoiBuiltEvent>(OnStructureBuilt);
+        SubscribeLocalEvent<DestructibleComponent, PersistentPoiIntegrityEvent>(OnIntegrity);
+    }
+
+    private void OnIntegrity(Entity<DestructibleComponent> ent, ref PersistentPoiIntegrityEvent args)
+    {
+        args.DestroyedAt = _destructible.DestroyedAt(ent, ent.Comp);
     }
 
     private void OnStructureBuilt(Entity<PersistentPoiStructureComponent> ent, ref PersistentPoiBuiltEvent args)
@@ -167,6 +177,23 @@ public sealed class PersistentPoiSystem : EntitySystem
 
             _hardpoints.TryAnchorToHardpoint(uid, weapon);
         }
+
+        // names saved before the works lost their "territorial" prefix, owner-prefixed ones above all
+        var children = Transform(args.Grid).ChildEnumerator;
+        while (children.MoveNext(out var child))
+        {
+            var meta = MetaData(child);
+            var name = StripTerritorial(meta.EntityName);
+            if (name != meta.EntityName)
+                _metaData.SetEntityName(child, name, meta);
+        }
+    }
+
+    private static readonly Regex TerritorialWord = new(@"\bterritorial\s+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    public static string StripTerritorial(string name)
+    {
+        return TerritorialWord.Replace(name, string.Empty);
     }
 
     private void OnStructureMapInit(Entity<PersistentPoiStructureComponent> ent, ref MapInitEvent args)

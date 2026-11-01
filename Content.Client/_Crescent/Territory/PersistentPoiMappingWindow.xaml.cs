@@ -42,6 +42,8 @@ public sealed partial class PersistentPoiMappingWindow : FancyWindow
     {
         base.FrameUpdate(args);
 
+        DismantleButton.Pressed = _build.IsDeconstructing;
+
         _sinceRefresh += args.DeltaSeconds;
         if (_sinceRefresh < RefreshInterval)
             return;

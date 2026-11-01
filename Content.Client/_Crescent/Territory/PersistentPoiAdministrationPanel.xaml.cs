@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Client._Crescent.UI;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._Crescent.Factions;
@@ -13,6 +14,8 @@ namespace Content.Client._Crescent.Territory;
 public sealed partial class PersistentPoiAdministrationPanel : BoxContainer
 {
     public event Action? OnUpgrade;
+    public event Action? OnDraw;
+    public event Action<string, bool>? OnReturn;
 
     public PersistentPoiAdministrationPanel()
     {
@@ -20,6 +23,7 @@ public sealed partial class PersistentPoiAdministrationPanel : BoxContainer
         DepositHint.SetHint(Loc.GetString("persistent-poi-admin-ui-deposit-hint"));
 
         UpgradeButton.OnPressed += _ => OnUpgrade?.Invoke();
+        DrawButton.OnPressed += _ => OnDraw?.Invoke();
     }
 
     private bool _remote;
@@ -33,6 +37,7 @@ public sealed partial class PersistentPoiAdministrationPanel : BoxContainer
                 ? "persistent-poi-admin-ui-remote-deposit-hint"
                 : "persistent-poi-admin-ui-deposit-hint"));
             UpgradeButton.Visible &= !value;
+            DrawButton.Visible &= !value;
         }
     }
 
@@ -100,6 +105,9 @@ public sealed partial class PersistentPoiAdministrationPanel : BoxContainer
         UpgradeButton.Visible = !atTop && !_remote;
         UpgradeButton.Disabled = !state.CanUpgrade;
         UpgradeButton.Text = Loc.GetString("persistent-poi-admin-ui-upgrade", ("level", state.Level + 1));
+        DrawButton.Visible = !atTop && !_remote;
+        DrawButton.Disabled = !state.HasSilo ||
+                              !state.NextLevelCost.Any(cost => cost.InSilo > 0 && cost.Deposited < cost.Required);
 
         foreach (var cost in state.NextLevelCost)
         {
@@ -109,7 +117,7 @@ public sealed partial class PersistentPoiAdministrationPanel : BoxContainer
             var material = cost.Material.Length > 0
                 ? cost.Material.Substring(0, 1).ToUpperInvariant() + cost.Material.Substring(1)
                 : cost.Material;
-            row.AddChild(new Label { Text = material, MinWidth = 150, ClipText = true });
+            row.AddChild(new Label { Text = material, MinWidth = 130, ClipText = true });
             row.AddChild(new ProgressBar
             {
                 MinValue = 0f,
@@ -128,6 +136,38 @@ public sealed partial class PersistentPoiAdministrationPanel : BoxContainer
                 Align = Label.AlignMode.Right,
                 FontColorOverride = complete ? ConsolePalette.Good : ConsolePalette.Normal,
             });
+
+            if (!_remote)
+            {
+                row.AddChild(new Label
+                {
+                    Text = state.HasSilo ? Loc.GetString("persistent-poi-admin-ui-in-silo", ("count", cost.InSilo)) : string.Empty,
+                    MinWidth = 70,
+                    Align = Label.AlignMode.Right,
+                    FontColorOverride = ConsolePalette.Muted,
+                });
+
+                var id = cost.MaterialId;
+                var take = new Button
+                {
+                    Text = Loc.GetString("persistent-poi-admin-ui-take"),
+                    ToolTip = Loc.GetString("persistent-poi-admin-ui-take-tooltip"),
+                    StyleClasses = { "OpenRight" },
+                    Disabled = cost.Deposited <= 0,
+                };
+                take.OnPressed += _ => OnReturn?.Invoke(id, false);
+                row.AddChild(take);
+
+                var toSilo = new Button
+                {
+                    Text = Loc.GetString("persistent-poi-admin-ui-to-silo"),
+                    ToolTip = Loc.GetString("persistent-poi-admin-ui-to-silo-tooltip"),
+                    StyleClasses = { "OpenLeft" },
+                    Disabled = cost.Deposited <= 0 || !state.HasSilo,
+                };
+                toSilo.OnPressed += _ => OnReturn?.Invoke(id, true);
+                row.AddChild(toSilo);
+            }
 
             CostContainer.AddChild(row);
         }

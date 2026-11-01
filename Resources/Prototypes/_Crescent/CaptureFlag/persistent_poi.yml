@@ -106,6 +106,35 @@
       - PersistentPoiSink
       - PersistentPoiShower
       - PersistentPoiToilet
+    - name: persistent-poi-build-category-posters
+      icon:
+        sprite: Structures/Wallmounts/posters.rsi
+        state: poster5_legit
+      recipes:
+      - PersistentPoiPosterDSMValkenrathZehring
+      - PersistentPoiPosterDSMGirl
+      - PersistentPoiPosterDSMGBoy
+      - PersistentPoiPosterContrabandFreeTonto
+      - PersistentPoiPosterContrabandAtmosiaDeclarationIndependence
+      - PersistentPoiPosterContrabandCommunistState
+      - PersistentPoiPosterContrabandRebelsUnite
+      - PersistentPoiPosterContrabandRise
+      - PersistentPoiPosterContrabandRevolt
+      - PersistentPoiPosterContrabandBountyHunters
+      - PersistentPoiPosterContrabandWaffleCorp
+      - PersistentPoiPosterContrabandTools
+      - PersistentPoiPosterContrabandPower
+      - PersistentPoiPosterLegitHelpOthers
+      - PersistentPoiPosterLegitBuild
+      - PersistentPoiPosterLegitWorkForAFuture
+      - PersistentPoiPosterLegitObey
+      - PersistentPoiPosterLegitSafetyInternals
+      - PersistentPoiPosterLegitSafetyEyeProtection
+      - PersistentPoiPosterLegitCarbonDioxide
+      - PersistentPoiPosterLegitPeriodicTable
+      - PersistentPoiPosterLegit12Gauge
+      - PersistentPoiPosterLegitHighClassMartini
+      - PersistentPoiPosterLegitFruitBowl
     - name: persistent-poi-build-category-production
       icon:
         sprite: _Crescent/Structures/factorystructures.rsi
@@ -169,7 +198,7 @@
 - type: entity
   parent: ComputerRadar
   id: ComputerRadarPersistentPoi
-  name: territorial radar console
+  name: radar console
   suffix: Persistent territory, built
   description: Watches the space around the territory.
   components:
@@ -206,7 +235,7 @@
 - type: entity
   parent: ComputerShuttle
   id: ComputerShuttlePersistentPoi
-  name: territorial shuttle console
+  name: shuttle console
   suffix: Persistent territory, built
   description: A shuttle console wired into ground that doesn't move. Good for the radar, the sector map and the political map, not for flying.
   components:
@@ -254,7 +283,7 @@
 - type: entity
   parent: AAAHardpointSmallEnergy
   id: HardpointPersistentPoiLaserEmplacement
-  name: territorial point-defence emplacement
+  name: point-defence emplacement
   suffix: Persistent territory, built
   description: An energy hardpoint bolted into permanent ground, its 150cc pulse laser answering to the territory's fire-control console. The laser runs off the territory's power.
   components:
@@ -291,7 +320,7 @@
 - type: entity
   parent: AAAHardpointSmallEnergy
   id: HardpointPersistentPoiMediumLaserEmplacement
-  name: territorial 200cc laser emplacement
+  name: 200cc laser emplacement
   suffix: Persistent territory, built
   description: An energy hardpoint bolted into permanent ground, its 200cc pulse laser answering to the territory's fire-control console. The laser runs off the territory's power.
   components:
@@ -385,7 +414,7 @@
 - type: entity
   parent: AAAHardpointMediumEnergy
   id: HardpointPersistentPoiHeavyLaserEmplacement
-  name: territorial 250cc laser emplacement
+  name: 250cc laser emplacement
   suffix: Persistent territory, built
   description: A medium energy hardpoint bolted into permanent ground, its 250cc lance laser answering to the territory's fire-control console. The laser runs off the territory's power.
   components:
@@ -487,7 +516,7 @@
 - type: entity
   parent: AAAHardpointSmallBallistic
   id: HardpointPersistentPoiEmplacement
-  name: territorial point-defence emplacement
+  name: point-defence emplacement
   suffix: Persistent territory, built
   description: A ballistic hardpoint bolted into permanent ground, its twin machinegun answering to the territory's fire-control console.
   components:
@@ -523,7 +552,7 @@
 - type: entity
   parent: RatCountsmanMothershipComputer
   id: ComputerPersistentPoiShipyardDSM
-  name: territorial imperial shipyard
+  name: imperial shipyard
   suffix: Persistent territory, built
   description: Sells the Imperial fleet's ships to its own people, and docks them right here.
   components:
@@ -561,7 +590,7 @@
 - type: entity
   parent: RatNCWLMothershipComputer
   id: ComputerPersistentPoiShipyardNCWL
-  name: territorial NCWL shipyard
+  name: NCWL shipyard
   suffix: Persistent territory, built
   description: Sells the Workers' League's ships to its own people, and docks them right here.
   components:
@@ -599,7 +628,7 @@
 - type: entity
   parent: RatJackalMothershipComputer
   id: ComputerPersistentPoiShipyardTFSC
-  name: territorial TFCF shipyard
+  name: TFCF shipyard
   suffix: Persistent territory, built
   description: Sells the Free Companies' ships to their own people, and docks them right here.
   components:
@@ -637,7 +666,7 @@
 - type: entity
   parent: RatTatsumotoMothershipComputer
   id: ComputerPersistentPoiShipyardSHI
-  name: territorial Shinohara shipyard
+  name: Shinohara shipyard
   suffix: Persistent territory, built
   description: Sells Shinohara's ships to its own people, and docks them right here.
   components:
@@ -675,7 +704,7 @@
 - type: entity
   parent: AirlockShuttle
   id: AirlockPersistentPoiDock
-  name: territorial external airlock
+  name: external airlock
   suffix: Docking, Persistent territory, built
   description: The docking airlock every ship uses, bolted into permanent ground. Only the territory holder's people get through it.
   components:
@@ -699,7 +728,7 @@
 - type: entity
   parent: AirlockCommand
   id: AirlockPersistentPoi
-  name: territorial airlock
+  name: airlock
   suffix: Persistent territory, built
   description: An airlock bolted into permanent ground. It opens only for the people of the faction holding the territory.
   components:
@@ -720,7 +749,7 @@
 - type: entity
   parent: AirlockCommandGlass
   id: AirlockGlassPersistentPoi
-  name: territorial glass airlock
+  name: glass airlock
   suffix: Persistent territory, built
   description: A glass airlock bolted into permanent ground. It opens only for the people of the faction holding the territory.
   components:
@@ -807,7 +836,7 @@
 - type: entity
   parent: BoriaticGeneratorHercules
   id: BoriaticGeneratorPersistentPoi
-  name: territorial boriatic generator
+  name: boriatic generator
   suffix: Persistent territory, built
   description: |-
     A loud, foulsmelling, toxic generator bolted into permanent ground.
@@ -845,7 +874,7 @@
 - type: entity
   parent: GeneratorRTG
   id: GeneratorRTGPersistentPoi
-  name: territorial RTG
+  name: RTG
   suffix: Persistent territory, built
   components:
   - type: PersistentPoiStructure
@@ -858,7 +887,7 @@
 - type: entity
   parent: SubstationBasic
   id: SubstationPersistentPoi
-  name: territorial substation
+  name: substation
   suffix: Persistent territory, built
   components:
   - type: PersistentPoiStructure
@@ -869,7 +898,7 @@
 - type: entity
   parent: APCBasic
   id: APCPersistentPoi
-  name: territorial APC
+  name: APC
   suffix: Persistent territory, built
   components:
   - type: PersistentPoiStructure
@@ -900,7 +929,7 @@
 - type: entity
   parent: SMESBasic
   id: SMESPersistentPoi
-  name: territorial SMES
+  name: SMES
   suffix: Persistent territory, built
   components:
   - type: PersistentPoiStructure
@@ -993,7 +1022,7 @@
 - type: entity
   parent: AirCanister
   id: AirCanisterPersistentPoi
-  name: territorial air canister
+  name: air canister
   suffix: Persistent territory, built
   description: A canister of breathable air bolted into permanent ground. Stood on a connector port it joins the pipe; opened, it fills the room. Only the territory holder's people can work it.
   components:
@@ -1017,7 +1046,7 @@
 - type: entity
   parent: AirAlarm
   id: AirAlarmPersistentPoi
-  name: territorial air alarm
+  name: air alarm
   suffix: Persistent territory, built
   components:
   - type: PersistentPoiStructure
@@ -1108,6 +1137,294 @@
     node: toilet
 
 - type: entity
+  parent: PosterDSMValkenrathZehring
+  id: PosterDSMValkenrathZehringPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterValkenrathZehring
+
+- type: entity
+  parent: PosterDSMGirl
+  id: PosterDSMGirlPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterDSMGirl
+
+- type: entity
+  parent: PosterDSMGBoy
+  id: PosterDSMGBoyPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterDSMBoy
+
+- type: entity
+  parent: PosterContrabandFreeTonto
+  id: PosterContrabandFreeTontoPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterFreeTonto
+
+- type: entity
+  parent: PosterContrabandAtmosiaDeclarationIndependence
+  id: PosterContrabandAtmosiaDeclarationIndependencePersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterAtmosia
+
+- type: entity
+  parent: PosterContrabandCommunistState
+  id: PosterContrabandCommunistStatePersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterCommunistState
+
+- type: entity
+  parent: PosterContrabandRebelsUnite
+  id: PosterContrabandRebelsUnitePersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterRebelsUnite
+
+- type: entity
+  parent: PosterContrabandRise
+  id: PosterContrabandRisePersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterRise
+
+- type: entity
+  parent: PosterContrabandRevolt
+  id: PosterContrabandRevoltPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterRevolt
+
+- type: entity
+  parent: PosterContrabandBountyHunters
+  id: PosterContrabandBountyHuntersPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterBountyHunters
+
+- type: entity
+  parent: PosterContrabandWaffleCorp
+  id: PosterContrabandWaffleCorpPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterWaffleCorp
+
+- type: entity
+  parent: PosterContrabandTools
+  id: PosterContrabandToolsPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterTools
+
+- type: entity
+  parent: PosterContrabandPower
+  id: PosterContrabandPowerPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterPower
+
+- type: entity
+  parent: PosterLegitHelpOthers
+  id: PosterLegitHelpOthersPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterHelpOthers
+
+- type: entity
+  parent: PosterLegitBuild
+  id: PosterLegitBuildPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterBuild
+
+- type: entity
+  parent: PosterLegitWorkForAFuture
+  id: PosterLegitWorkForAFuturePersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterWorkForAFuture
+
+- type: entity
+  parent: PosterLegitObey
+  id: PosterLegitObeyPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterObey
+
+- type: entity
+  parent: PosterLegitSafetyInternals
+  id: PosterLegitSafetyInternalsPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterSafetyInternals
+
+- type: entity
+  parent: PosterLegitSafetyEyeProtection
+  id: PosterLegitSafetyEyeProtectionPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterSafetyEyes
+
+- type: entity
+  parent: PosterLegitCarbonDioxide
+  id: PosterLegitCarbonDioxidePersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterCarbonDioxide
+
+- type: entity
+  parent: PosterLegitPeriodicTable
+  id: PosterLegitPeriodicTablePersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterPeriodicTable
+
+- type: entity
+  parent: PosterLegit12Gauge
+  id: PosterLegit12GaugePersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: poster12Gauge
+
+- type: entity
+  parent: PosterLegitHighClassMartini
+  id: PosterLegitHighClassMartiniPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterMartini
+
+- type: entity
+  parent: PosterLegitFruitBowl
+  id: PosterLegitFruitBowlPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiFurnishing
+  - type: Transform
+    anchored: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: posterFruitBowl
+
+- type: entity
   parent: ComfyChair
   id: ComfyChairPersistentPoi
   suffix: Persistent territory, built
@@ -1190,7 +1507,7 @@
 - type: entity
   parent: ClosetSteelBase
   id: ClosetPersistentPoi
-  name: territorial closet
+  name: closet
   suffix: Persistent territory, built
   components:
   - type: PersistentPoiFurnishing
@@ -1242,7 +1559,7 @@
   abstract: true
   parent: BaseStructure
   id: PersistentPoiFrameBase
-  name: territorial works frame
+  name: works frame
   description: Territory works half put together. Examine it to see what goes in next, then use that on it.
   suffix: Persistent territory, frame
   components:
@@ -1270,7 +1587,7 @@
   abstract: true
   parent: PersistentPoiFrameBase
   id: PersistentPoiConsoleFrameBase
-  name: territorial console frame
+  name: console frame
   components:
   - type: Sprite
     sprite: Structures/Machines/parts.rsi
@@ -1280,7 +1597,7 @@
   abstract: true
   parent: PersistentPoiFrameBase
   id: PersistentPoiDoorFrameBase
-  name: territorial airlock assembly
+  name: airlock assembly
   components:
   - type: Sprite
     sprite: Structures/Doors/Airlocks/Standard/basic.rsi
@@ -1345,7 +1662,7 @@
 - type: entity
   parent: PersistentPoiConsoleFrameBase
   id: PersistentPoiFrameMappingConsole
-  name: works console frame
+  name: construction console frame
   components:
   - type: Construction
     graph: PersistentPoiStructures
@@ -1501,7 +1818,7 @@
 - type: entity
   parent: PersistentPoiDoorFrameBase
   id: PersistentPoiFrameAirlock
-  name: territorial airlock assembly
+  name: airlock assembly
   components:
   - type: Sprite
     sprite: Structures/Doors/Airlocks/Standard/command.rsi
@@ -1513,7 +1830,7 @@
 - type: entity
   parent: PersistentPoiDoorFrameBase
   id: PersistentPoiFrameAirlockGlass
-  name: territorial glass airlock assembly
+  name: glass airlock assembly
   components:
   - type: Sprite
     sprite: Structures/Doors/Airlocks/Glass/command.rsi
@@ -1534,7 +1851,7 @@
 - type: entity
   parent: PersistentPoiFrameBase
   id: PersistentPoiGirder
-  name: territorial girder
+  name: girder
   description: The steel bones of a heavy wall. Plate it with plasteel to finish it.
   components:
   - type: Sprite
@@ -1609,7 +1926,7 @@
 
 - type: entity
   id: PersistentPoiFrameApc
-  name: territorial APC frame
+  name: APC frame
   description: An APC with no wiring yet. Use cable on it to finish it.
   suffix: Persistent territory, frame
   placement:
@@ -1646,7 +1963,7 @@
 - type: entity
   parent: PersistentPoiFrameApc
   id: PersistentPoiFrameAirAlarm
-  name: territorial air alarm frame
+  name: air alarm frame
   description: An air alarm with no wiring yet. Use cable on it to finish it.
   components:
   - type: Sprite
@@ -1660,7 +1977,7 @@
 - type: entity
   parent: BaseStructure
   id: PersistentPoiCryoSpawner
-  name: territorial cryo spawner
+  name: cryo spawner
   suffix: Persistent territory, built
   description: A cryo pod wired into the territory. While it has power, the holding faction's people can choose to wake up here when they join, instead of at home.
   components:
@@ -1742,7 +2059,7 @@
 - type: entity
   parent: [ PersistentPoiGearRackBase, ColMarTechEquipmentDSM ]
   id: PersistentPoiGearRackDSM
-  name: territorial imperial equipment rack
+  name: imperial equipment rack
   suffix: Persistent territory, built
   description: The Empire's standard kits, racked at the front. Only the Empire's own can draw from it, and only while the Empire holds the ground.
   components:
@@ -1760,7 +2077,7 @@
 - type: entity
   parent: [ PersistentPoiGearRackBase, ColMarTechEquipmentNCWL ]
   id: PersistentPoiGearRackNCWL
-  name: territorial NCWL equipment rack
+  name: NCWL equipment rack
   suffix: Persistent territory, built
   description: The League's standard kits, racked at the front. Only the League's own can draw from it, and only while the League holds the ground.
   components:
@@ -1778,7 +2095,7 @@
 - type: entity
   parent: [ PersistentPoiGearRackBase, ColMarTechEquipmentInterdyne ]
   id: PersistentPoiGearRackTFSC
-  name: territorial TFCF equipment rack
+  name: TFCF equipment rack
   suffix: Persistent territory, built
   description: The Free Companies' standard kits, racked at the front. Only the Companies' own can draw from it, and only while they hold the ground.
   components:
@@ -1796,7 +2113,7 @@
 - type: entity
   parent: [ PersistentPoiGearRackBase, ColMarTechEquipmentSHI ]
   id: PersistentPoiGearRackSHI
-  name: territorial Shinohara equipment rack
+  name: Shinohara equipment rack
   suffix: Persistent territory, built
   description: Shinohara's standard security kits, racked at the front. Only Shinohara's own can draw from it, and only while Shinohara holds the ground.
   components:
@@ -1824,7 +2141,7 @@
 - type: entity
   parent: BaseStructure
   id: PersistentPoiMaterialSilo
-  name: territorial material silo
+  name: material silo
   suffix: Persistent territory, built
   description: Holds building materials for the territory's works. Anything placed from the build menu that it can cover goes up straight away. Its contents do not outlast the round - the Turning takes them - but what is built from them stays.
   components:
@@ -1845,6 +2162,12 @@
         layer:
         - MachineLayer
   - type: PersistentPoiMaterialSilo
+  - type: ActivatableUI
+    key: enum.PersistentPoiSiloUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.PersistentPoiSiloUiKey.Key:
+        type: PersistentPoiSiloBoundUserInterface
   - type: PersistentPoiStructure
   - type: PersistentPoiWorks
     category: MaterialSilo

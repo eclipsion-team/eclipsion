@@ -24,7 +24,7 @@ public sealed class PersistentPoiBuildBoundUserInterface : BoundUserInterface
         {
             build.StartPlacing(recipe);
 
-            // from the works console the menu stays up, like a mapping palette
+            // from the construction console the menu stays up, like a mapping palette
             if (!build.IsViewing)
                 Close();
         };
@@ -32,12 +32,6 @@ public sealed class PersistentPoiBuildBoundUserInterface : BoundUserInterface
         {
             build.OpenPainter();
             Close();
-        };
-        _window.OnDeconstruct += () =>
-        {
-            build.StartDeconstructing();
-            if (!build.IsViewing)
-                Close();
         };
     }
 }

@@ -6,6 +6,7 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
 using Content.Shared.Stacks;
 using Content.Shared.Storage;
+using Robust.Client.Graphics;
 using Robust.Client.Placement;
 using Robust.Client.Player;
 using Robust.Client.State;
@@ -22,6 +23,7 @@ public readonly record struct PersistentPoiBuildCost(StackPrototype Material, in
 public sealed class PersistentPoiBuildSystem : EntitySystem
 {
     [Dependency] private readonly IComponentFactory _factory = default!;
+    [Dependency] private readonly IOverlayManager _overlays = default!;
     [Dependency] private readonly IPlacementManager _placement = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
     [Dependency] private readonly IStateManager _state = default!;
@@ -34,6 +36,7 @@ public sealed class PersistentPoiBuildSystem : EntitySystem
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly TerritoryDecalPainterSystem _painter = default!;
+    [Dependency] private readonly SharedUserInterfaceSystem _ui = default!;
 
     private static readonly EntProtoId Standard = "PersistentCaptureRegionFlag";
 
@@ -51,6 +54,21 @@ public sealed class PersistentPoiBuildSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<PersistentPoiMappingViewerComponent, ComponentShutdown>(OnViewerShutdown);
+        SubscribeLocalEvent<PersistentPoiMaterialSiloComponent, AfterAutoHandleStateEvent>(OnSiloState);
+        _overlays.AddOverlay(new PersistentPoiDeconstructOverlay());
+    }
+
+    private void OnSiloState(Entity<PersistentPoiMaterialSiloComponent> ent, ref AfterAutoHandleStateEvent args)
+    {
+        if (_ui.TryGetOpenUi<PersistentPoiSiloBoundUserInterface>(ent.Owner, PersistentPoiSiloUiKey.Key, out var bui))
+            bui.Refresh();
+    }
+
+    public override void Shutdown()
+    {
+        base.Shutdown();
+
+        _overlays.RemoveOverlay<PersistentPoiDeconstructOverlay>();
     }
 
     // a placement started from the view would otherwise carry on from the body
@@ -230,10 +248,15 @@ public sealed class PersistentPoiBuildSystem : EntitySystem
         _painter.Open();
     }
 
-    public void StartDeconstructing()
+    public bool IsDeconstructing => _placement is PlacementManager { Eraser: true, Hijack: PersistentPoiDeconstructHijack };
+
+    public void ToggleDeconstructing()
     {
-        if (_placement.Eraser)
+        if (IsDeconstructing)
+        {
+            _placement.Clear();
             return;
+        }
 
         _placement.Clear();
         _placement.ToggleEraserHijacked(new PersistentPoiDeconstructHijack(this, _state, _transform));

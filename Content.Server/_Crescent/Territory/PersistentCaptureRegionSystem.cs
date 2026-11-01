@@ -905,7 +905,7 @@ public sealed class PersistentCaptureRegionSystem : EntitySystem
 
         if (ent.Comp.UpdateName)
         {
-            ent.Comp.BaseName ??= PersistentTerritoryFactions.StripOwnerPrefix(MetaData(ent).EntityName);
+            ent.Comp.BaseName ??= PersistentPoiSystem.StripTerritorial(PersistentTerritoryFactions.StripOwnerPrefix(MetaData(ent).EntityName));
             _metadata.SetEntityName(ent,
                 owner == null
                     ? ent.Comp.BaseName

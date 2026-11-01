@@ -1,3 +1,4 @@
+using Content.Server._Crescent.NpcSquad;
 using Content.Server.Administration.Logs;
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
@@ -5,6 +6,7 @@ using Content.Shared._Crescent.FactionPortal;
 using Content.Shared._Crescent.Territory;
 using Content.Shared.Database;
 using Content.Shared.Examine;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Systems;
 using Robust.Server.GameObjects;
@@ -26,11 +28,13 @@ public sealed class FactionPortalSystem : SharedFactionPortalSystem
     [Dependency] private readonly PointLightSystem _light = default!;
     [Dependency] private readonly PowerReceiverSystem _power = default!;
     [Dependency] private readonly PullingSystem _pulling = default!;
+    [Dependency] private readonly NpcSquadSystem _squad = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
 
     private const string PortalFixture = "portal";
     private const float StepInRange = 1.25f;
+    private const float SquadFollowRange = 12f;
     private static readonly TimeSpan UpdateInterval = TimeSpan.FromSeconds(1);
     private static readonly TimeSpan ArrivalGrace = TimeSpan.FromSeconds(1.5);
 
@@ -221,13 +225,29 @@ public sealed class FactionPortalSystem : SharedFactionPortalSystem
     {
         var target = Transform(to).Coordinates;
 
-        // whoever they're dragging goes with them
+        // whoever they're dragging goes with them, unless it's someone the portal wouldn't let through
         EntityUid? dragged = null;
         if (TryComp<PullerComponent>(user, out var puller) && puller.Pulling is { } pulling
             && TryComp<PullableComponent>(pulling, out var pullable))
         {
             _pulling.TryStopPull(pulling, pullable, user, ignoreGrab: true);
-            dragged = pulling;
+            if (!HasComp<MobStateComponent>(pulling) || CanUse(from, pulling))
+                dragged = pulling;
+            else
+                Popup.PopupEntity(Loc.GetString("faction-portal-dragged-denied", ("target", pulling)), from, user);
+        }
+
+        // the user's squad comes along too, unless told to hold a post or too far off
+        var squad = new List<EntityUid>();
+        foreach (var member in _squad.GetActiveMembers(user))
+        {
+            if (_squad.IsHoldingPost(member) || Transform(member).Anchored || _container.IsEntityInContainer(member) ||
+                !_transform.InRange(Transform(member).Coordinates, Transform(from).Coordinates, SquadFollowRange))
+            {
+                continue;
+            }
+
+            squad.Add(member);
         }
 
         if (TryComp<PullableComponent>(user, out var userPullable) && userPullable.BeingPulled)
@@ -248,6 +268,15 @@ public sealed class FactionPortalSystem : SharedFactionPortalSystem
             draggedTraveller.ArrivedAt = to;
             draggedTraveller.ArrivalGraceEnd = traveller.ArrivalGraceEnd;
             _transform.SetCoordinates(draggedUid, target);
+        }
+
+        foreach (var member in squad)
+        {
+            var memberTraveller = EnsureComp<FactionPortalTravellerComponent>(member);
+            memberTraveller.ArrivedAt = to;
+            memberTraveller.ArrivalGraceEnd = traveller.ArrivalGraceEnd;
+            _transform.SetCoordinates(member, target);
+            _squad.ForceReplan(member);
         }
 
         _audio.PlayPvs(Comp<FactionPortalComponent>(to).ArrivalSound, to);

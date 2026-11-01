@@ -15,6 +15,7 @@ public sealed class TerritoryDropPodSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly AudioSystem _audio = default!;
+    [Dependency] private readonly MetaDataSystem _metaData = default!;
     [Dependency] private readonly NpcMercenarySystem _mercenaries = default!;
     [Dependency] private readonly NpcSquadSystem _squad = default!;
     [Dependency] private readonly SharedCameraRecoilSystem _recoil = default!;
@@ -88,6 +89,7 @@ public sealed class TerritoryDropPodSystem : EntitySystem
         {
             // holds its post instead of following somebody off on a raid
             RemComp<NpcSquadRecruitableComponent>(soldier);
+            _metaData.SetEntityName(soldier, Loc.GetString("territory-garrison-soldier-name", ("name", Name(soldier))));
         }
         else if (payload.Recruiter is { } recruiter && !TerminatingOrDeleted(recruiter))
         {

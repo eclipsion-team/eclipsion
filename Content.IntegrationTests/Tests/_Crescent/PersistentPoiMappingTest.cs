@@ -24,7 +24,7 @@ namespace Content.IntegrationTests.Tests._Crescent;
 public sealed class PersistentPoiMappingTest
 {
     [Test]
-    public async Task WorksConsoleBuildsFromAfarAndLetsGo()
+    public async Task ConstructionConsoleBuildsFromAfarAndLetsGo()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -94,6 +94,7 @@ public sealed class PersistentPoiMappingTest
 
         await server.WaitRunTicks(200);
         EntityUid wall = default;
+        EntityUid native = default;
         await server.WaitAssertion(() =>
         {
             var local = entMan.GetComponent<TransformComponent>(eye).LocalPosition;
@@ -105,13 +106,30 @@ public sealed class PersistentPoiMappingTest
 
             xforms.SetCoordinates(eye, new EntityCoordinates(grid, 22.5f, 1.5f));
             Assert.That(dismantle.TryStartDismantle(user, wall), Is.True, "the console could not tear down without tools");
+
+            // a wall the map came with pays back what its own graph took
+            native = entMan.SpawnEntity("WallSolid", new EntityCoordinates(grid, 21.5f, 1.5f));
+            Assert.That(dismantle.TryStartDismantle(user, native), Is.True);
+
+            var territory = entMan.GetComponent<PersistentPoiGridComponent>(grid);
+            territory.ProtectedCenter = new Vector2(20.5f, 0.5f);
+            territory.ProtectedRadius = 0.6f;
+            Assert.That(dismantle.TryStartTearUp(user, new EntityCoordinates(grid, 20.5f, 0.5f)), Is.False, "the permanent floor came up");
+            Assert.That(dismantle.TryStartTearUp(user, new EntityCoordinates(grid, 23.5f, 0.5f)), Is.True);
         });
 
         await server.WaitRunTicks(200);
         await server.WaitAssertion(() =>
         {
             Assert.That(entMan.Deleted(wall), Is.True, "the wall survived");
-            Assert.That(Steel(entMan, silo), Is.EqualTo(30), "the wall was not paid back into the silo");
+            Assert.That(entMan.Deleted(native), Is.True, "the map's wall survived");
+            Assert.That(Steel(entMan, silo), Is.GreaterThan(30), "the walls were not paid back into the silo");
+
+            var mapGrid = entMan.GetComponent<MapGridComponent>(grid);
+            var plating = server.ResolveDependency<ITileDefinitionManager>()["Plating"];
+            Assert.That(mapSystem.GetTileRef(grid, mapGrid, new Vector2i(23, 0)).Tile.TypeId, Is.Not.EqualTo(plating.TileId),
+                "the plating was not torn up");
+            Assert.That(mapSystem.GetTileRef(grid, mapGrid, new Vector2i(20, 0)).Tile.TypeId, Is.EqualTo(plating.TileId));
 
             var damage = new DamageSpecifier(server.ProtoMan.Index<DamageTypePrototype>("Blunt"), 5);
             entMan.System<DamageableSystem>().TryChangeDamage(user, damage, true, origin: console);

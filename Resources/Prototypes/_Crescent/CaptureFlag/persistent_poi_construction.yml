@@ -372,6 +372,126 @@
       - material: Steel
         amount: 5
         doAfter: 2
+    - to: posterValkenrathZehring
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterDSMGirl
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterDSMBoy
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterFreeTonto
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterAtmosia
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterCommunistState
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterRebelsUnite
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterRise
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterRevolt
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterBountyHunters
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterWaffleCorp
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterTools
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterPower
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterHelpOthers
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterBuild
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterWorkForAFuture
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterObey
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterSafetyInternals
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterSafetyEyes
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterCarbonDioxide
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterPeriodicTable
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: poster12Gauge
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterMartini
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
+    - to: posterFruitBowl
+      steps:
+      - material: Cloth
+        amount: 1
+        doAfter: 1
 
   # Command
 
@@ -469,6 +589,13 @@
         doAfter: 1
   - node: recruitmentConsoleGlazed
     edges:
+    - to: recruitmentConsoleGilded
+      steps:
+      - material: Gold
+        amount: 5
+        doAfter: 2
+  - node: recruitmentConsoleGilded
+    edges:
     - to: recruitmentConsole
       steps:
       - material: Cable
@@ -511,6 +638,20 @@
         doAfter: 2
   - node: droneBayGlazed
     edges:
+    - to: droneBaySilvered
+      steps:
+      - material: Silver
+        amount: 10
+        doAfter: 2
+  - node: droneBaySilvered
+    edges:
+    - to: droneBayCored
+      steps:
+      - material: Uranium
+        amount: 5
+        doAfter: 2
+  - node: droneBayCored
+    edges:
     - to: droneBay
       steps:
       - material: Cable
@@ -533,6 +674,13 @@
         amount: 5
         doAfter: 1
   - node: targetingConsoleGlazed
+    edges:
+    - to: targetingConsoleSilvered
+      steps:
+      - material: Silver
+        amount: 5
+        doAfter: 2
+  - node: targetingConsoleSilvered
     edges:
     - to: targetingConsole
       steps:
@@ -587,6 +735,13 @@
         doAfter: 2
   - node: mediumLaserLensed
     edges:
+    - to: mediumLaserCharged
+      steps:
+      - material: Plasma
+        amount: 5
+        doAfter: 2
+  - node: mediumLaserCharged
+    edges:
     - to: mediumLaserEmplacement
       steps:
       - material: Cable
@@ -617,6 +772,20 @@
         amount: 15
         doAfter: 2
   - node: heavyLaserLensed
+    edges:
+    - to: heavyLaserCharged
+      steps:
+      - material: Plasma
+        amount: 10
+        doAfter: 2
+  - node: heavyLaserCharged
+    edges:
+    - to: heavyLaserFocused
+      steps:
+      - material: Gold
+        amount: 5
+        doAfter: 2
+  - node: heavyLaserFocused
     edges:
     - to: heavyLaserEmplacement
       steps:
@@ -783,6 +952,13 @@
         doAfter: 2
   - node: shipyardDSMGlazed
     edges:
+    - to: shipyardDSMGilded
+      steps:
+      - material: Gold
+        amount: 5
+        doAfter: 2
+  - node: shipyardDSMGilded
+    edges:
     - to: shipyardDSM
       steps:
       - material: Cable
@@ -817,6 +993,13 @@
         amount: 10
         doAfter: 2
   - node: shipyardNCWLGlazed
+    edges:
+    - to: shipyardNCWLGilded
+      steps:
+      - material: Gold
+        amount: 5
+        doAfter: 2
+  - node: shipyardNCWLGilded
     edges:
     - to: shipyardNCWL
       steps:
@@ -853,6 +1036,13 @@
         doAfter: 2
   - node: shipyardTFSCGlazed
     edges:
+    - to: shipyardTFSCGilded
+      steps:
+      - material: Gold
+        amount: 5
+        doAfter: 2
+  - node: shipyardTFSCGilded
+    edges:
     - to: shipyardTFSC
       steps:
       - material: Cable
@@ -887,6 +1077,13 @@
         amount: 10
         doAfter: 2
   - node: shipyardSHIGlazed
+    edges:
+    - to: shipyardSHIGilded
+      steps:
+      - material: Gold
+        amount: 5
+        doAfter: 2
+  - node: shipyardSHIGilded
     edges:
     - to: shipyardSHI
       steps:
@@ -1062,6 +1259,13 @@
         doAfter: 2
   - node: smesPlated
     edges:
+    - to: smesCoiled
+      steps:
+      - material: Silver
+        amount: 5
+        doAfter: 2
+  - node: smesCoiled
+    edges:
     - to: smes
       steps:
       - material: Cable
@@ -1222,6 +1426,78 @@
   - node: toilet
     entity: ToiletPersistentPoi
 
+  - node: posterValkenrathZehring
+    entity: PosterDSMValkenrathZehringPersistentPoi
+
+  - node: posterDSMGirl
+    entity: PosterDSMGirlPersistentPoi
+
+  - node: posterDSMBoy
+    entity: PosterDSMGBoyPersistentPoi
+
+  - node: posterFreeTonto
+    entity: PosterContrabandFreeTontoPersistentPoi
+
+  - node: posterAtmosia
+    entity: PosterContrabandAtmosiaDeclarationIndependencePersistentPoi
+
+  - node: posterCommunistState
+    entity: PosterContrabandCommunistStatePersistentPoi
+
+  - node: posterRebelsUnite
+    entity: PosterContrabandRebelsUnitePersistentPoi
+
+  - node: posterRise
+    entity: PosterContrabandRisePersistentPoi
+
+  - node: posterRevolt
+    entity: PosterContrabandRevoltPersistentPoi
+
+  - node: posterBountyHunters
+    entity: PosterContrabandBountyHuntersPersistentPoi
+
+  - node: posterWaffleCorp
+    entity: PosterContrabandWaffleCorpPersistentPoi
+
+  - node: posterTools
+    entity: PosterContrabandToolsPersistentPoi
+
+  - node: posterPower
+    entity: PosterContrabandPowerPersistentPoi
+
+  - node: posterHelpOthers
+    entity: PosterLegitHelpOthersPersistentPoi
+
+  - node: posterBuild
+    entity: PosterLegitBuildPersistentPoi
+
+  - node: posterWorkForAFuture
+    entity: PosterLegitWorkForAFuturePersistentPoi
+
+  - node: posterObey
+    entity: PosterLegitObeyPersistentPoi
+
+  - node: posterSafetyInternals
+    entity: PosterLegitSafetyInternalsPersistentPoi
+
+  - node: posterSafetyEyes
+    entity: PosterLegitSafetyEyeProtectionPersistentPoi
+
+  - node: posterCarbonDioxide
+    entity: PosterLegitCarbonDioxidePersistentPoi
+
+  - node: posterPeriodicTable
+    entity: PosterLegitPeriodicTablePersistentPoi
+
+  - node: poster12Gauge
+    entity: PosterLegit12GaugePersistentPoi
+
+  - node: posterMartini
+    entity: PosterLegitHighClassMartiniPersistentPoi
+
+  - node: posterFruitBowl
+    entity: PosterLegitFruitBowlPersistentPoi
+
   - node: cryoSpawnerFrame
     entity: PersistentPoiFrameCryoSpawner
     edges:
@@ -1238,6 +1514,13 @@
         amount: 10
         doAfter: 2
   - node: cryoSpawnerGlazed
+    edges:
+    - to: cryoSpawnerSilvered
+      steps:
+      - material: Silver
+        amount: 10
+        doAfter: 2
+  - node: cryoSpawnerSilvered
     edges:
     - to: cryoSpawner
       steps:
@@ -1266,6 +1549,20 @@
         amount: 10
         doAfter: 2
   - node: portalGlazed
+    edges:
+    - to: portalCharged
+      steps:
+      - material: Plasma
+        amount: 15
+        doAfter: 3
+  - node: portalCharged
+    edges:
+    - to: portalSilvered
+      steps:
+      - material: Silver
+        amount: 10
+        doAfter: 2
+  - node: portalSilvered
     edges:
     - to: portal
       steps:
@@ -1366,7 +1663,7 @@
 
 - type: construction
   id: PersistentPoiAdministrationConsole
-  name: territorial administration console
+  name: administration console
   description: Shows what the territory is developed to and what that allows, and takes the materials that raise it a level. One per territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -1396,7 +1693,7 @@
 
 - type: construction
   id: PersistentPoiProductionConsole
-  name: territorial production console
+  name: production console
   description: Tools the territory for a line of production, then runs and empties its works. Without one, they all stand idle. One per territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -1426,7 +1723,7 @@
 
 - type: construction
   id: PersistentPoiRadarConsole
-  name: territorial radar console
+  name: radar console
   description: A mass scanner for watching the space around the territory. One per territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -1456,7 +1753,7 @@
 
 - type: construction
   id: PersistentPoiShuttleConsole
-  name: territorial shuttle console
+  name: shuttle console
   description: Radar, sector map and political map. The territory is fixed in place, so it never flies anywhere. One per territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -1486,7 +1783,7 @@
 
 - type: construction
   id: PersistentPoiRecruitmentConsole
-  name: territorial recruitment console
+  name: recruitment console
   description: Calls the holder's soldiers down by drop pod, to top the garrison up or to go along with you. How many may stand at once goes by level. One per territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -1516,7 +1813,7 @@
 
 - type: construction
   id: PersistentPoiMappingConsole
-  name: territorial works console
+  name: construction console
   description: Lifts your view off your body and over the territory, so you can build, tear down and paint it from the material silo as if drawing it up. You cannot fight or reach from it, and any harm throws you out. Needs power and a stocked silo. One per territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -1548,7 +1845,7 @@
 
 - type: construction
   id: PersistentPoiTargetingConsole
-  name: territorial point-defence console
+  name: point-defence console
   description: Fire control for the territory's guns. Unattended, it fights on its own against anyone at war with its holder. One per territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -1578,7 +1875,7 @@
 
 - type: construction
   id: PersistentPoiPointDefenceEmplacement
-  name: territorial point-defence emplacement
+  name: point-defence emplacement
   description: An energy hardpoint with a 150cc 'Retribution' pulse laser on it, for the fire-control console to aim. It goes down as one piece and needs power to fire. The territory's level caps how many guns its fire control can reach.
   graph: PersistentPoiStructures
   startNode: start
@@ -1599,7 +1896,7 @@
 
 - type: construction
   id: PersistentPoiMediumLaserEmplacement
-  name: territorial 200cc laser emplacement
+  name: 200cc laser emplacement
   description: An energy hardpoint with a 200cc 'Warden' pulse laser on it, hitting harder and reaching further than the 150cc. Needs a level 2 territory and power, and counts as one of the fire-control console's guns.
   graph: PersistentPoiStructures
   startNode: start
@@ -1622,7 +1919,7 @@
 
 - type: construction
   id: PersistentPoiHeavyLaserEmplacement
-  name: territorial 250cc laser emplacement
+  name: 250cc laser emplacement
   description: A medium energy hardpoint with a 250cc 'Bastion' lance laser on it, the heaviest gun a territory can raise. Needs a level 3 territory and power, and counts as one of the fire-control console's guns.
   graph: PersistentPoiStructures
   startNode: start
@@ -1645,7 +1942,7 @@
 
 - type: construction
   id: PersistentPoiAntiBoarderTurret
-  name: territorial anti-boarder turret
+  name: anti-boarder turret
   description: Shoots everyone the holder is hostile to. Unclaimed, it shoots nobody.
   graph: PersistentPoiStructures
   startNode: start
@@ -1666,7 +1963,7 @@
 
 - type: construction
   id: PersistentPoiDroneBay
-  name: territorial drone bay
+  name: drone bay
   description: Buys light drones that join the territory's picket and never leave it. Shieldless hulls with 150cc guns at most. Level 3 only, one per territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -1696,7 +1993,7 @@
 
 - type: construction
   id: PersistentPoiMixedOreRig
-  name: territorial ore extraction rig
+  name: ore extraction rig
   description: Brings up a mix of ores. General ore extraction line.
   graph: PersistentPoiStructures
   startNode: start
@@ -1719,7 +2016,7 @@
 
 - type: construction
   id: PersistentPoiExtractionRig
-  name: territorial targeted extraction rig
+  name: targeted extraction rig
   description: Brings up a lot of one chosen ore. Targeted ore extraction line.
   graph: PersistentPoiStructures
   startNode: start
@@ -1742,7 +2039,7 @@
 
 - type: construction
   id: PersistentPoiTextileMill
-  name: territorial textile mill
+  name: textile mill
   description: Spins cotton and weaves cloth and durathread. Textile line.
   graph: PersistentPoiStructures
   startNode: start
@@ -1765,7 +2062,7 @@
 
 - type: construction
   id: PersistentPoiFoundry
-  name: territorial foundry
+  name: foundry
   description: Casts steel, glass, plastic and plasteel. Materials line.
   graph: PersistentPoiStructures
   startNode: start
@@ -1788,7 +2085,7 @@
 
 - type: construction
   id: PersistentPoiTradeWorks
-  name: territorial trade works
+  name: trade works
   description: Crates trade goods for export and writes research disks. Trade goods line.
   graph: PersistentPoiStructures
   startNode: start
@@ -1811,7 +2108,7 @@
 
 - type: construction
   id: PersistentPoiShipyardDSM
-  name: territorial imperial shipyard
+  name: imperial shipyard
   description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a developed territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -1843,7 +2140,7 @@
 
 - type: construction
   id: PersistentPoiShipyardNCWL
-  name: territorial NCWL shipyard
+  name: NCWL shipyard
   description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a developed territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -1875,7 +2172,7 @@
 
 - type: construction
   id: PersistentPoiShipyardTFSC
-  name: territorial TFCF shipyard
+  name: TFCF shipyard
   description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a developed territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -1907,7 +2204,7 @@
 
 - type: construction
   id: PersistentPoiShipyardSHI
-  name: territorial Shinohara shipyard
+  name: Shinohara shipyard
   description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a developed territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -1939,7 +2236,7 @@
 
 - type: construction
   id: PersistentPoiDockingPort
-  name: territorial external airlock
+  name: external airlock
   description: The docking airlock every ship uses, for the territory's edge. Ships bought at its shipyard dock here, and so can anyone visiting - but only the holder's people get through it. Build it facing out into space.
   graph: PersistentPoiStructures
   startNode: start
@@ -1960,7 +2257,7 @@
 
 - type: construction
   id: PersistentPoiAirlock
-  name: territorial airlock
+  name: airlock
   description: Opens only for the people of the faction holding the territory - whoever that is - and for anybody while it is unclaimed.
   graph: PersistentPoiStructures
   startNode: start
@@ -1979,7 +2276,7 @@
 
 - type: construction
   id: PersistentPoiAirlockGlass
-  name: territorial glass airlock
+  name: glass airlock
   description: A territorial airlock you can see through. Opens only for the people of the faction holding the territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -2019,7 +2316,7 @@
 
 - type: construction
   id: PersistentPoiWall
-  name: territorial wall
+  name: wall
   description: A plain steel wall.
   graph: PersistentPoiStructures
   startNode: start
@@ -2038,7 +2335,7 @@
 
 - type: construction
   id: PersistentPoiWallReinforced
-  name: territorial reinforced wall
+  name: reinforced wall
   description: A steel girder plated over with plasteel. Takes a great deal more to bring down.
   graph: PersistentPoiStructures
   startNode: start
@@ -2057,7 +2354,7 @@
 
 - type: construction
   id: PersistentPoiWallPlastitanium
-  name: territorial plastitanium wall
+  name: plastitanium wall
   description: A steel girder under a thick plasteel shell. Holds out far longer than a reinforced wall.
   graph: PersistentPoiStructures
   startNode: start
@@ -2076,7 +2373,7 @@
 
 - type: construction
   id: PersistentPoiWindow
-  name: territorial reinforced window
+  name: reinforced window
   description: A full-tile pane of reinforced glass.
   graph: PersistentPoiStructures
   startNode: start
@@ -2095,7 +2392,7 @@
 
 - type: construction
   id: PersistentPoiWindowGlass
-  name: territorial window
+  name: window
   description: A full-tile pane of plain glass. Cheaper than reinforced, and a great deal easier to break.
   graph: PersistentPoiStructures
   startNode: start
@@ -2115,7 +2412,7 @@
 
 - type: construction
   id: PersistentPoiGenerator
-  name: territorial boriatic generator
+  name: boriatic generator
   description: A boriatic generator rated for 50 kW, feeding high-voltage cable (or medium, switched with a multitool). It is built with an empty tank - fill it with boriatic fuel and start it. Put a substation after it for the works. A full tank goes up like a bomb when it is wrecked. The territory's level caps how many it can run.
   graph: PersistentPoiStructures
   startNode: start
@@ -2136,7 +2433,7 @@
 
 - type: construction
   id: PersistentPoiSubstation
-  name: territorial substation
+  name: substation
   description: Steps high-voltage power down onto medium-voltage cable, which the works and APCs draw from.
   graph: PersistentPoiStructures
   startNode: start
@@ -2155,7 +2452,7 @@
 
 - type: construction
   id: PersistentPoiSmes
-  name: territorial SMES
+  name: SMES
   description: Banks power off high-voltage cable and hands it back when the generators fall short or run dry. Goes between the generators and the substation. Built empty.
   graph: PersistentPoiStructures
   startNode: start
@@ -2174,7 +2471,7 @@
 
 - type: construction
   id: PersistentPoiApc
-  name: territorial APC
+  name: APC
   description: Feeds the consoles and lights around it from medium-voltage cable. Mounted on a wall.
   graph: PersistentPoiStructures
   startNode: start
@@ -2193,7 +2490,7 @@
 
 - type: construction
   id: PersistentPoiLight
-  name: territorial wall light
+  name: wall light
   description: A wall light, tube included. Build it against a wall, facing into the room.
   graph: PersistentPoiStructures
   startNode: start
@@ -2213,7 +2510,7 @@
 
 - type: construction
   id: PersistentPoiSmallLight
-  name: territorial small light
+  name: small light
   description: A small wall light, bulb included, for corridors and corners. Build it against a wall, facing into the room.
   graph: PersistentPoiStructures
   startNode: start
@@ -2234,7 +2531,7 @@
 # cable runs go under walls too, so power can be carried through thick hulls; the material silo lays them anywhere in reach
 - type: construction
   id: PersistentPoiCableHV
-  name: territorial high-voltage cable
+  name: high-voltage cable
   description: One tile of high-voltage cable. It can be laid under walls - with a stocked material silo it goes in straight from the silo, through any thickness of wall, so generators can feed guns on the outer hull.
   graph: PersistentPoiStructures
   startNode: start
@@ -2255,7 +2552,7 @@
 
 - type: construction
   id: PersistentPoiCableMV
-  name: territorial medium-voltage cable
+  name: medium-voltage cable
   description: One tile of medium-voltage cable. It can be laid under walls - with a stocked material silo it goes in straight from the silo, through any thickness of wall, so substations can feed APCs and works on the outer hull.
   graph: PersistentPoiStructures
   startNode: start
@@ -2276,7 +2573,7 @@
 
 - type: construction
   id: PersistentPoiCableLV
-  name: territorial low-voltage cable
+  name: low-voltage cable
   description: One tile of low-voltage cable. It can be laid under walls - with a stocked material silo it goes in straight from the silo, through any thickness of wall, so an APC can feed what stands on the outer hull.
   graph: PersistentPoiStructures
   startNode: start
@@ -2297,7 +2594,7 @@
 
 - type: construction
   id: PersistentPoiMaterialSilo
-  name: territorial material silo
+  name: material silo
   description: Load building materials into it, and everything placed from the build menu that it can cover goes up straight away, drawn from the silo. Its contents do not outlast the round - the Turning takes them - but what is built from them stays. One per territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -2318,7 +2615,7 @@
 
 - type: construction
   id: PersistentPoiAirVent
-  name: territorial air vent
+  name: air vent
   description: Pumps air from its pipe into the room, up to normal pressure.
   graph: PersistentPoiStructures
   startNode: start
@@ -2341,7 +2638,7 @@
 
 - type: construction
   id: PersistentPoiAirScrubber
-  name: territorial air scrubber
+  name: air scrubber
   description: Draws stale gas out of the room into its pipe. Lead that pipe to a passive vent or a canister.
   graph: PersistentPoiStructures
   startNode: start
@@ -2364,7 +2661,7 @@
 
 - type: construction
   id: PersistentPoiPassiveVent
-  name: territorial passive vent
+  name: passive vent
   description: An open pipe end. Put it outside to vent the scrubbers' waste into space.
   graph: PersistentPoiStructures
   startNode: start
@@ -2387,7 +2684,7 @@
 
 - type: construction
   id: PersistentPoiConnectorPort
-  name: territorial connector port
+  name: connector port
   description: Joins a canister standing on it to the pipe. Build it first, then the air canister on top.
   graph: PersistentPoiStructures
   startNode: start
@@ -2410,7 +2707,7 @@
 
 - type: construction
   id: PersistentPoiAirCanister
-  name: territorial air canister
+  name: air canister
   description: A canister full of breathable air, bolted down. Build it on a connector port to feed the vents, or open its valve to fill the room around it. Only the holder's people can work its valve.
   graph: PersistentPoiStructures
   startNode: start
@@ -2430,7 +2727,7 @@
 
 - type: construction
   id: PersistentPoiGasPipeStraight
-  name: territorial gas pipe
+  name: gas pipe
   description: A straight length of gas pipe. It can run under walls.
   graph: PersistentPoiStructures
   startNode: start
@@ -2447,7 +2744,7 @@
 
 - type: construction
   id: PersistentPoiGasPipeBend
-  name: territorial gas pipe bend
+  name: gas pipe bend
   description: A gas pipe turning a corner. It can run under walls.
   graph: PersistentPoiStructures
   startNode: start
@@ -2464,7 +2761,7 @@
 
 - type: construction
   id: PersistentPoiGasPipeTJunction
-  name: territorial gas pipe T junction
+  name: gas pipe T junction
   description: A gas pipe splitting three ways. It can run under walls.
   graph: PersistentPoiStructures
   startNode: start
@@ -2481,7 +2778,7 @@
 
 - type: construction
   id: PersistentPoiGasPipeFourway
-  name: territorial gas pipe four-way
+  name: gas pipe four-way
   description: A gas pipe crossing four ways. It can run under walls.
   graph: PersistentPoiStructures
   startNode: start
@@ -2498,7 +2795,7 @@
 
 - type: construction
   id: PersistentPoiAirAlarm
-  name: territorial air alarm
+  name: air alarm
   description: Watches the room's air and sets the vents and scrubbers linked to it with a multitool. Anyone can read it; only the holder's people can change it. Mounted on a wall, off an APC.
   graph: PersistentPoiStructures
   startNode: start
@@ -2518,7 +2815,7 @@
 
 - type: construction
   id: PersistentPoiChair
-  name: territorial chair
+  name: chair
   description: A plain steel chair.
   graph: PersistentPoiStructures
   startNode: start
@@ -2537,7 +2834,7 @@
 
 - type: construction
   id: PersistentPoiComfyChair
-  name: territorial comfy chair
+  name: comfy chair
   description: A padded armchair.
   graph: PersistentPoiStructures
   startNode: start
@@ -2556,7 +2853,7 @@
 
 - type: construction
   id: PersistentPoiBarStool
-  name: territorial bar stool
+  name: bar stool
   description: A tall stool for a counter.
   graph: PersistentPoiStructures
   startNode: start
@@ -2575,7 +2872,7 @@
 
 - type: construction
   id: PersistentPoiBench
-  name: territorial steel bench
+  name: steel bench
   description: A long steel bench.
   graph: PersistentPoiStructures
   startNode: start
@@ -2594,7 +2891,7 @@
 
 - type: construction
   id: PersistentPoiTable
-  name: territorial table
+  name: table
   description: A square steel table.
   graph: PersistentPoiStructures
   startNode: start
@@ -2613,7 +2910,7 @@
 
 - type: construction
   id: PersistentPoiTableReinforced
-  name: territorial reinforced table
+  name: reinforced table
   description: A plasteel table that takes a beating.
   graph: PersistentPoiStructures
   startNode: start
@@ -2632,7 +2929,7 @@
 
 - type: construction
   id: PersistentPoiCounter
-  name: territorial counter
+  name: counter
   description: A metal counter, for a bar, a canteen or a front desk.
   graph: PersistentPoiStructures
   startNode: start
@@ -2651,7 +2948,7 @@
 
 - type: construction
   id: PersistentPoiBed
-  name: territorial bed
+  name: bed
   description: A steel bed frame with a cloth mattress.
   graph: PersistentPoiStructures
   startNode: start
@@ -2670,7 +2967,7 @@
 
 - type: construction
   id: PersistentPoiMedicalBed
-  name: territorial medical bed
+  name: medical bed
   description: A hospital bed. Resting in it slowly heals.
   graph: PersistentPoiStructures
   startNode: start
@@ -2689,7 +2986,7 @@
 
 - type: construction
   id: PersistentPoiCloset
-  name: territorial closet
+  name: closet
   description: A steel closet. Whatever is left in it when the round ends is cleared out.
   graph: PersistentPoiStructures
   startNode: start
@@ -2709,7 +3006,7 @@
 
 - type: construction
   id: PersistentPoiRack
-  name: territorial rack
+  name: rack
   description: A steel rack to set things down on. Whatever is left on it when the round ends is cleared away.
   graph: PersistentPoiStructures
   startNode: start
@@ -2728,7 +3025,7 @@
 
 - type: construction
   id: PersistentPoiSink
-  name: territorial sink
+  name: sink
   description: A sink that slowly fills itself with water. Build it against a wall.
   graph: PersistentPoiStructures
   startNode: start
@@ -2748,7 +3045,7 @@
 
 - type: construction
   id: PersistentPoiShower
-  name: territorial shower
+  name: shower
   description: A shower head with its own water. Build it against a wall, facing into the room.
   graph: PersistentPoiStructures
   startNode: start
@@ -2768,7 +3065,7 @@
 
 - type: construction
   id: PersistentPoiOfficeChair
-  name: territorial office chair
+  name: office chair
   description: A white office chair. Unlock its wheels to roll it about.
   graph: PersistentPoiStructures
   startNode: start
@@ -2787,7 +3084,7 @@
 
 - type: construction
   id: PersistentPoiOfficeChairDark
-  name: territorial dark office chair
+  name: dark office chair
   description: A dark office chair. Unlock its wheels to roll it about.
   graph: PersistentPoiStructures
   startNode: start
@@ -2806,7 +3103,7 @@
 
 - type: construction
   id: PersistentPoiToilet
-  name: territorial toilet
+  name: toilet
   description: A toilet, flushing into disposals if it is piped to them. Anything hidden in its cistern is cleared away when the round ends.
   graph: PersistentPoiStructures
   startNode: start
@@ -2824,11 +3121,491 @@
   - !type:PersistentPoiHeldGround
   - !type:TileNotBlocked
 
+- type: construction
+  id: PersistentPoiPosterDSMValkenrathZehring
+  name: "house Valkenrath-Zehring's coat of arms"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterValkenrathZehring
+  category: construction-category-furniture
+  icon:
+    sprite: _Crescent/Structures/Wallmounts/posters.rsi
+    state: valkenrath-zehring
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterDSMGirl
+  name: "Play Duke: Edition 7"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterDSMGirl
+  category: construction-category-furniture
+  icon:
+    sprite: _Crescent/Structures/Wallmounts/posters.rsi
+    state: dsmposter1
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterDSMGBoy
+  name: "Play Duke: Edition 11"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterDSMBoy
+  category: construction-category-furniture
+  icon:
+    sprite: _Crescent/Structures/Wallmounts/posters.rsi
+    state: dsmposter2
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterContrabandFreeTonto
+  name: "Free Tonto"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterFreeTonto
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster1_contraband
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterContrabandAtmosiaDeclarationIndependence
+  name: "Atmosia Declaration of Independence"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterAtmosia
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster2_contraband
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterContrabandCommunistState
+  name: "Communist State"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterCommunistState
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster18_contraband
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterContrabandRebelsUnite
+  name: "Rebels Unite"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterRebelsUnite
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster23_contraband
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterContrabandRise
+  name: "Rise Up"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterRise
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster55_contraband
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterContrabandRevolt
+  name: "Revolt"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterRevolt
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster56_contraband
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterContrabandBountyHunters
+  name: "Bounty Hunters"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterBountyHunters
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster47_contraband
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterContrabandWaffleCorp
+  name: "Waffle Corp rifles"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterWaffleCorp
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster62_contraband
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterContrabandTools
+  name: "Tools"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterTools
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster15_contraband
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterContrabandPower
+  name: "Power"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterPower
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster16_contraband
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterLegitHelpOthers
+  name: "Help Others"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterHelpOthers
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster4_legit
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterLegitBuild
+  name: "Build"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterBuild
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster5_legit
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterLegitWorkForAFuture
+  name: "Work For A Future"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterWorkForAFuture
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster17_legit
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterLegitObey
+  name: "Obey"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterObey
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster9_legit
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterLegitSafetyInternals
+  name: "Safety: Internals"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterSafetyInternals
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster19_legit
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterLegitSafetyEyeProtection
+  name: "Safety: Eye Protection"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterSafetyEyes
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster20_legit
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterLegitCarbonDioxide
+  name: "Carbon Dioxide"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterCarbonDioxide
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster35_legit
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterLegitPeriodicTable
+  name: "Periodic Table of the Elements"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterPeriodicTable
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster49_legit
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterLegit12Gauge
+  name: "12 gauge"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: poster12Gauge
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster31_legit
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterLegitHighClassMartini
+  name: "High-Class Martini"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterMartini
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster32_legit
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
+- type: construction
+  id: PersistentPoiPosterLegitFruitBowl
+  name: "Fruit Bowl"
+  description: Hangs on a wall tile.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: posterFruitBowl
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Wallmounts/posters.rsi
+    state: poster27_legit
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiOnWall
+
 # Deployment
 
 - type: construction
   id: PersistentPoiCryoSpawner
-  name: territorial cryo spawner
+  name: cryo spawner
   description: Lets your faction's people wake up here when they join, instead of at home. Needs power and a level 2 territory. One per territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -2849,7 +3626,7 @@
 
 - type: construction
   id: PersistentPoiFactionPortal
-  name: territorial faction portal
+  name: faction portal
   description: Joins the territory to your faction's portal network, so your people can step between it, your stations and your other territories. Needs power and a developed territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -2870,7 +3647,7 @@
 
 - type: construction
   id: PersistentPoiGearRackDSM
-  name: territorial imperial equipment rack
+  name: imperial equipment rack
   description: Your faction's standard kits - armour, a primary weapon, ammunition and utilities - drawn once per life. Only your faction can use it, and only while it holds the ground. Needs a fully developed territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -2898,7 +3675,7 @@
 
 - type: construction
   id: PersistentPoiGearRackNCWL
-  name: territorial NCWL equipment rack
+  name: NCWL equipment rack
   description: Your faction's standard kits - armour, a primary weapon, ammunition and utilities - drawn once per life. Only your faction can use it, and only while it holds the ground. Needs a fully developed territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -2926,7 +3703,7 @@
 
 - type: construction
   id: PersistentPoiGearRackTFSC
-  name: territorial TFCF equipment rack
+  name: TFCF equipment rack
   description: Your faction's standard kits - armour, a primary weapon, ammunition and utilities - drawn once per life. Only your faction can use it, and only while it holds the ground. Needs a fully developed territory.
   graph: PersistentPoiStructures
   startNode: start
@@ -2954,7 +3731,7 @@
 
 - type: construction
   id: PersistentPoiGearRackSHI
-  name: territorial Shinohara equipment rack
+  name: Shinohara equipment rack
   description: Your faction's standard kits - armour, a primary weapon, ammunition and utilities - drawn once per life. Only your faction can use it, and only while it holds the ground. Needs a fully developed territory.
   graph: PersistentPoiStructures
   startNode: start

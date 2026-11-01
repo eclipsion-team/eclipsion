@@ -147,7 +147,7 @@ is fired on, and traffic between there and `range` gets a radio warning naming t
 The battery holds fire when a grid that is not at war with the holder is in the line of shot, and only fires guns
 that can actually bear - a welded mount has to already be pointing at the target, a turret swings onto it.
 
-**Missile interception.** Guns with `TerritoryMissileInterceptor` (the territorial 150cc point-defence laser and the
+**Missile interception.** Guns with `TerritoryMissileInterceptor` (the 150cc point-defence laser and the
 old machinegun emplacement) shoot down missiles within `missileRange` (600) of the console: any seeker locked on
 something on the territory's grid, and any rocket whose course passes within 15 m of the grid's bounding circle.
 Missiles fired from the territory itself or by an ally are left alone. This runs whether or not anyone is at the
@@ -166,13 +166,18 @@ territory forget <regionId>              drop the save row, so the map's own own
 territory level <regionId> <level>       set a region's development level
 territory capability <regionId> <line>   retool a region's production (GeneralOre, TargetedOre, Textiles, Materials, TradeGoods, none)
 territory name <regionId> [name]         name a held region, or give it back its own name
+territory silo <regionId> [show]         what the region's material silo holds
+territory silo <regionId> fill [amount]  top every material the silo takes up to amount (default 1000)
+territory silo <regionId> add <stack> <n> put one material in (Steel, Plasma, Silver...), or take it out with a negative n
+territory silo <regionId> clear          empty the silo
+territory fund <regionId>                deposit everything the next level asks for
 territory profile                        this round's campaign, its factions, and every campaign on disk
 territory reset <regionId>               start one region over: no holder or name, level 1, no line, grid from the map
 territory resetfaction <faction>         take every region a faction holds off it; levels stay with the ground
 territory resetall <campaign>            start a whole campaign over - type its name to confirm
 ```
 
-Everything acts on this round's campaign except `resetall`, which takes any campaign by name. `set` and `clear` work
+A regionId of `here` means the territory the admin stands on. Everything acts on this round's campaign except `resetall`, which takes any campaign by name. `set` and `clear` work
 whether or not the region's map is loaded, and take effect immediately when it is. `reset` and `resetall` set persistent grids back to their map files the way `persistentpoi reset` does:
 a grid loaded right now plays on unchanged, but its round is not saved over the result. `resetall` moves the
 campaign's folder aside as `territories/<campaign>.reset-<time>` rather than deleting it, so a mistake can be undone by
@@ -213,51 +218,52 @@ Frames cannot be taken apart, only shot down.
 
 | Page             | Recipe                                | Builds                                             | Stages                                     |
 |------------------|---------------------------------------|----------------------------------------------------|--------------------------------------------|
-| Command          | territorial administration console    | `ComputerPersistentPoiAdministration`              | 10 steel, 5 glass, 10 cable                |
-| Command          | territorial production console        | `ComputerPersistentPoiProduction`                  | 10 steel, 5 glass, 10 cable                |
-| Command          | territorial radar console             | `ComputerRadarPersistentPoi` (holder only)         | 10 steel, 5 glass, 10 cable                |
-| Command          | territorial shuttle console           | `ComputerShuttlePersistentPoi` (holder only)       | 10 steel, 5 glass, 10 cable                |
-| Command          | territorial recruitment console       | `ComputerPersistentPoiRecruitment` (holder only)   | 10 steel, 5 glass, 10 cable                |
-| Command          | territorial material silo             | `PersistentPoiMaterialSilo` (one, stock not saved) | 20 steel, 10 glass                         |
-| Command          | territorial works console             | `ComputerPersistentPoiMapping` (one, holder only)  | 10 steel, 5 glass, 10 cable                |
-| Defences         | territorial point-defence console     | `ComputerTargetingPersistentPoi`                   | 10 steel, 5 glass, 10 cable                |
-| Defences         | territorial point-defence emplacement | `HardpointPersistentPoiLaserEmplacement` + its 150cc 'Retribution' laser (needs power) | 10 plasteel, 15 steel, 10 cable |
-| Defences         | territorial 200cc laser emplacement   | `HardpointPersistentPoiMediumLaserEmplacement` + 200cc 'Warden' laser, level 2+ (3 at L2, 4 at L3) | 20 plasteel, 20 steel, 10 glass, 15 cable |
-| Defences         | territorial 250cc laser emplacement   | `HardpointPersistentPoiHeavyLaserEmplacement` (medium hardpoint) + 250cc 'Bastion' laser, level 3 only (2) | 30 plasteel, 30 steel, 15 glass, 20 cable |
-| Defences         | territorial anti-boarder turret       | `WeaponTurretAutoPDPersistentPoi`                  | 15 steel, 5 cable                          |
-| Defences         | territorial drone bay                 | `ComputerPersistentPoiDroneBay`, level 3 only (1)  | 15 plasteel, 10 glass, 20 cable            |
-| Power & light    | territorial boriatic generator        | `BoriaticGeneratorPersistentPoi` (50 kW, empty tank) | 15 steel, 10 plastic, 5 gold, 10 cable   |
-| Power & light    | territorial SMES                      | `SMESPersistentPoi` (built empty)                  | 10 steel, 5 plasteel, 10 cable             |
-| Power & light    | territorial substation                | `SubstationPersistentPoi`                          | 10 steel, 10 cable                         |
-| Power & light    | territorial APC (on a wall)           | `APCPersistentPoi`                                 | 3 steel, 5 cable                           |
-| Power & light    | territorial wall light                | `PoweredlightPersistentPoi`                        | 2 steel                                    |
-| Power & light    | territorial small light               | `PoweredSmallLightPersistentPoi`                   | 1 steel                                    |
-| Power & light    | territorial HV / MV / LV cable        | `CableHVPersistentPoi` etc., also under walls     | 1 matching cable coil                      |
-| Atmospherics     | territorial air canister              | `AirCanisterPersistentPoi` (full of air, holder only) | 15 steel                                |
-| Atmospherics     | territorial connector port            | `GasPortPersistentPoi`                             | 2 steel                                    |
-| Atmospherics     | territorial air vent / air scrubber   | `GasVentPumpPersistentPoi` / `GasVentScrubberPersistentPoi` | 2 steel                           |
-| Atmospherics     | territorial passive vent              | `GasPassiveVentPersistentPoi`                      | 2 steel                                    |
-| Atmospherics     | territorial gas pipe (straight, bend, T, four-way) | `GasPipe<Shape>PersistentPoi`         | 1 steel                                    |
-| Atmospherics     | territorial air alarm (on a wall)     | `AirAlarmPersistentPoi` (holder only)              | 2 steel, 5 cable                           |
-| Doors & airlocks | territorial airlock                   | `AirlockPersistentPoi` (holder only)               | 4 steel, 5 cable                           |
-| Doors & airlocks | territorial glass airlock             | `AirlockGlassPersistentPoi` (holder only)          | 4 steel, 2 reinforced glass, 5 cable       |
+| Command          | administration console    | `ComputerPersistentPoiAdministration`              | 10 steel, 5 glass, 10 cable                |
+| Command          | production console        | `ComputerPersistentPoiProduction`                  | 10 steel, 5 glass, 10 cable                |
+| Command          | radar console             | `ComputerRadarPersistentPoi` (holder only)         | 10 steel, 5 glass, 10 cable                |
+| Command          | shuttle console           | `ComputerShuttlePersistentPoi` (holder only)       | 10 steel, 5 glass, 10 cable                |
+| Command          | recruitment console       | `ComputerPersistentPoiRecruitment` (holder only)   | 10 steel, 5 glass, 5 gold, 10 cable        |
+| Command          | material silo             | `PersistentPoiMaterialSilo` (one, stock not saved) | 20 steel, 10 glass                         |
+| Command          | construction console      | `ComputerPersistentPoiMapping` (one, holder only)  | 10 steel, 5 glass, 10 cable                |
+| Defences         | point-defence console     | `ComputerTargetingPersistentPoi`                   | 10 steel, 5 glass, 5 silver, 10 cable      |
+| Defences         | point-defence emplacement | `HardpointPersistentPoiLaserEmplacement` + its 150cc 'Retribution' laser (needs power) | 10 plasteel, 15 steel, 10 cable |
+| Defences         | 200cc laser emplacement   | `HardpointPersistentPoiMediumLaserEmplacement` + 200cc 'Warden' laser, level 2+ (3 at L2, 4 at L3) | 20 plasteel, 20 steel, 10 glass, 5 plasma, 15 cable |
+| Defences         | 250cc laser emplacement   | `HardpointPersistentPoiHeavyLaserEmplacement` (medium hardpoint) + 250cc 'Bastion' laser, level 3 only (2) | 30 plasteel, 30 steel, 15 glass, 10 plasma, 5 gold, 20 cable |
+| Defences         | anti-boarder turret       | `WeaponTurretAutoPDPersistentPoi`                  | 15 steel, 5 cable                          |
+| Defences         | drone bay                 | `ComputerPersistentPoiDroneBay`, level 3 only (1)  | 15 plasteel, 10 glass, 10 silver, 5 uranium, 20 cable |
+| Power & light    | boriatic generator        | `BoriaticGeneratorPersistentPoi` (50 kW, empty tank) | 15 steel, 10 plastic, 5 gold, 10 cable   |
+| Power & light    | SMES                      | `SMESPersistentPoi` (built empty)                  | 10 steel, 5 plasteel, 5 silver, 10 cable   |
+| Power & light    | substation                | `SubstationPersistentPoi`                          | 10 steel, 10 cable                         |
+| Power & light    | APC (on a wall)           | `APCPersistentPoi`                                 | 3 steel, 5 cable                           |
+| Power & light    | wall light                | `PoweredlightPersistentPoi`                        | 2 steel                                    |
+| Power & light    | small light               | `PoweredSmallLightPersistentPoi`                   | 1 steel                                    |
+| Power & light    | HV / MV / LV cable        | `CableHVPersistentPoi` etc., also under walls     | 1 matching cable coil                      |
+| Atmospherics     | air canister              | `AirCanisterPersistentPoi` (full of air, holder only) | 15 steel                                |
+| Atmospherics     | connector port            | `GasPortPersistentPoi`                             | 2 steel                                    |
+| Atmospherics     | air vent / air scrubber   | `GasVentPumpPersistentPoi` / `GasVentScrubberPersistentPoi` | 2 steel                           |
+| Atmospherics     | passive vent              | `GasPassiveVentPersistentPoi`                      | 2 steel                                    |
+| Atmospherics     | gas pipe (straight, bend, T, four-way) | `GasPipe<Shape>PersistentPoi`         | 1 steel                                    |
+| Atmospherics     | air alarm (on a wall)     | `AirAlarmPersistentPoi` (holder only)              | 2 steel, 5 cable                           |
+| Doors & airlocks | airlock                   | `AirlockPersistentPoi` (holder only)               | 4 steel, 5 cable                           |
+| Doors & airlocks | glass airlock             | `AirlockGlassPersistentPoi` (holder only)          | 4 steel, 2 reinforced glass, 5 cable       |
 | Doors & airlocks | public airlock                        | `AirlockPublicPersistentPoi` (anyone)              | 4 steel, 5 cable                           |
-| Doors & airlocks | territorial external airlock          | `AirlockPersistentPoiDock` (docking, holder only)  | 10 steel, 5 plasteel, 5 cable              |
-| Walls & windows  | territorial wall                      | `WallSolidPersistentPoi`                           | 5 steel                                    |
-| Walls & windows  | territorial reinforced wall           | `WallReinforcedPersistentPoi`                      | 4 steel (girder), 3 plasteel               |
-| Walls & windows  | territorial plastitanium wall         | `WallPlastitaniumPersistentPoi`                    | 4 steel (girder), 6 plasteel               |
-| Walls & windows  | territorial reinforced window         | `ReinforcedWindowPersistentPoi`                    | 4 reinforced glass                         |
-| Walls & windows  | territorial window                    | `WindowPersistentPoi`                              | 4 glass                                    |
+| Doors & airlocks | external airlock          | `AirlockPersistentPoiDock` (docking, holder only)  | 10 steel, 5 plasteel, 5 cable              |
+| Walls & windows  | wall                      | `WallSolidPersistentPoi`                           | 5 steel                                    |
+| Walls & windows  | reinforced wall           | `WallReinforcedPersistentPoi`                      | 4 steel (girder), 3 plasteel               |
+| Walls & windows  | plastitanium wall         | `WallPlastitaniumPersistentPoi`                    | 4 steel (girder), 6 plasteel               |
+| Walls & windows  | reinforced window         | `ReinforcedWindowPersistentPoi`                    | 4 reinforced glass                         |
+| Walls & windows  | window                    | `WindowPersistentPoi`                              | 4 glass                                    |
 | Furniture        | chair, comfy chair, office chairs, bar stool, steel bench | `ChairPersistentPoi`, `ComfyChairPersistentPoi`, `ChairOffice<Light/Dark>PersistentPoi`, `StoolBarPersistentPoi`, `SteelBenchPersistentPoi` | 1-2 steel |
 | Furniture        | table, reinforced table, counter      | `TablePersistentPoi`, `TableReinforcedPersistentPoi`, `TableCounterMetalPersistentPoi` | 2 steel / 2 plasteel / 3 steel |
 | Furniture        | bed, medical bed                      | `BedPersistentPoi`, `MedicalBedPersistentPoi`      | 2 steel, 2 cloth / 2 plasteel, 2 durathread |
 | Furniture        | closet, rack                          | `ClosetPersistentPoi`, `RackPersistentPoi`         | 4 steel / 2 steel                          |
 | Furniture        | sink, shower, toilet                  | `SinkPersistentPoi`, `ShowerPersistentPoi`, `ToiletPersistentPoi` | 3 / 5 / 5 steel           |
+| Posters          | 24 posters (DSM, faction and general)  | `Poster<Name>PersistentPoi`, on a wall tile, one per tile (`PersistentPoiOnWall`) | 1 cloth                  |
 | Production       | one works per line of production      | see below; other lines are greyed out              | 20-30 steel, then plasteel/cloth/glass, cable |
-| Shipyard         | territorial (faction) shipyard        | `ComputerPersistentPoiShipyard<DSM/NCWL/TFSC/SHI>` | 20 steel, 20 steel, 20 plasteel, 10 glass, 20 cable |
-| Shipyard         | territorial external airlock          | the same recipe as under Doors & airlocks          |                                            |
-| Deployment       | territorial cryo spawner              | `PersistentPoiCryoSpawner`                         | 20 steel, 20 plasteel, 10 glass, 20 cable  |
-| Deployment       | territorial (faction) equipment rack  | `PersistentPoiGearRack<DSM/NCWL/TFSC/SHI>`         | 20 steel, 10 plasteel, 10 cable            |
+| Shipyard         | (faction) shipyard        | `ComputerPersistentPoiShipyard<DSM/NCWL/TFSC/SHI>` | 20 steel, 20 steel, 20 plasteel, 10 glass, 5 gold, 20 cable |
+| Shipyard         | external airlock          | the same recipe as under Doors & airlocks          |                                            |
+| Deployment       | cryo spawner              | `PersistentPoiCryoSpawner`                         | 20 steel, 20 plasteel, 10 glass, 10 silver, 20 cable |
+| Deployment       | (faction) equipment rack  | `PersistentPoiGearRack<DSM/NCWL/TFSC/SHI>`         | 20 steel, 10 plasteel, 10 cable            |
 
 **Floor markings** has a button of its own under the pages; see below.
 
@@ -274,7 +280,7 @@ the generators (2 / 4 / 6). Cable is laid by hand, as anywhere. The menu used to
 (`GeneratorRTGPersistentPoi`) and no longer offers them, but RTGs already standing in a save - and RTG frames left half
 done - keep working and count against the same cap.
 
-**Air.** A territorial air canister comes full of air. Build a connector port, the canister on top of it, and pipe from
+**Air.** A air canister comes full of air. Build a connector port, the canister on top of it, and pipe from
 the port to air vents; scrubbers pipe their waste to a passive vent outside (or into a canister). Vents and scrubbers
 work unattended at normal pressure; an air alarm linked to them with a multitool sets them otherwise. Pipes can run
 under walls. Anyone can look at the canister and the air alarm, but only the holder's people can work them
@@ -287,13 +293,17 @@ rolls once its wheels are unlocked. The territory keeps it between rounds wherev
 Whatever is left in a closet, on a rack or in a toilet's cistern when the round ends is cleared away like any other
 loose belongings.
 
-**Doors.** Territorial airlocks, glass airlocks and external airlocks open only for the people of the faction holding
+**Posters.** Their own page: 24 posters for 1 cloth each, hung on a wall tile with nothing else mounted on it
+(`PersistentPoiOnWall`, which has no facing check so it works from the construction console too). They are
+furnishings, kept between rounds like the furniture.
+
+**Doors.** Territory airlocks, glass airlocks and external airlocks open only for the people of the faction holding
 the territory (`TerritoryAccess`). Whose that is comes off their `FactionMachine`, which the territory stamps again
 every time the ground changes hands (`CaptureRegionDevice`), so the doors change sides with it - and on unclaimed
 ground they open for anybody. Membership is read off the body, like the consoles do, not off an ID card. Forcing one
 works as on any door: cut its power and pry it, or shoot it down. Public airlocks open for everyone.
 
-**Shipyard and dockyard.** Each of the four factions has its own territorial shipyard: its own fleet's listing (the
+**Shipyard and dockyard.** Each of the four factions has its own shipyard: its own fleet's listing (the
 same one as its home yard), usable only by its own people (`FactionMachine` with `restrictAccess`), and the bought
 ship docks on the territory's external airlocks - the same docking airlock every ship uses (`AirlockShuttle`). The
 menu shows a holder only their own faction's yard (`PersistentPoiFactionRequired`). A yard stays its faction's after
@@ -304,7 +314,7 @@ edge, facing out.
 the top: the **faction treasury** or the buyer's **own account**. A treasury purchase keeps every treasury rule: the
 per-player ship limit (`shipyard.faction_ship_limit`) and sign-off at a treasury console for one big enough. A personal
 purchase has none of them. Sold back anywhere, a hull pays into whatever paid for it: treasury hulls into the treasury,
-personal ones to the seller. A yard stamped with its own faction (`FactionMachine`, as the territorial yards are) bills
+personal ones to the seller. A yard stamped with its own faction (`FactionMachine`, as the yards are) bills
 that faction's treasury and issues hulls in its colours, whoever holds the ground it stands on. Civilian yards always
 bill the buyer.
 
@@ -320,7 +330,7 @@ faction's home armoury rack (class kit, armour, primary weapon, utilities, ammun
 any member of that faction - no armoury access needed - but only while that faction holds the ground
 (`TerritoryHolderOnly` on top of `FactionMachine`). Like the shipyards, the menu shows a holder only their own rack.
 
-Built equipment cannot be unanchored or deconstructed by hand (the holder can take it down with **Dismantle**, below),
+Built equipment cannot be unanchored or deconstructed by hand (the holder can take it down with **Dismantle** from the construction console, below), cannot be pulled, and examining it shows its integrity, how much more damage it takes before it goes down,
 but it can be shot to pieces, which is how the next holder gets to build their own. An emplacement is one piece: its
 hardpoint and gun go down together. Emplacements built before
 the switch to the laser keep their machinegun (`HardpointPersistentPoiEmplacement`, `WeaponTurretPDTPersistentPoi`);
@@ -349,15 +359,15 @@ the box:
 
 | Level | Costs to reach                                                                                          | Fire control | Factories | Anti-boarder turrets | Production | Bank | Stock reward |
 |-------|---------------------------------------------------------------------------------------------------------|--------------|-----------|----------------------|------------|------|--------------|
-| 1     | -                                                                                                       | 4 guns       | 2         | 2                    | 1x         | +0   | 1x           |
-| 2     | 1125 steel, 450 glass, 450 plasteel, 113 gold, 113 silver, 2 advanced + 2 precursor electronic parts      | 6 guns       | 3         | 3                    | 1.5x       | +3   | 1.5x         |
-| 3     | 2250 steel, 900 glass, 1125 plasteel, 300 gold, 300 silver, 225 uranium, 4 advanced + 4 precursor parts  | 8 guns       | 4         | 4                    | 2x         | +6   | 2x           |
+| 1     | -                                                                                                       | 4 guns       | 2         | 4                    | 1x         | +0   | 1x           |
+| 2     | 1125 steel, 450 glass, 450 plasteel, 113 gold, 113 silver, 2 advanced + 2 precursor electronic parts      | 6 guns       | 3         | 6                    | 1.5x       | +3   | 1.5x         |
+| 3     | 2250 steel, 900 glass, 1125 plasteel, 300 gold, 300 silver, 225 uranium, 4 advanced + 4 precursor parts  | 8 guns       | 4         | 8                    | 2x         | +6   | 2x           |
 
 Precursor electronic parts (`NanotrasenElectronics`) are salvage only - nothing makes them any more - which is what
-makes the top level a real prize. Anti-boarder turrets never go past four.
+makes the top level a real prize. Anti-boarder turrets go up to eight at level 3.
 
 Every level allows one console of each kind - fire control, production, administration - counting mapped ones.
-A territorial shipyard needs level 2 (one at levels 2 and 3), external airlocks go 2 / 4 / 6, and so do territorial
+A shipyard needs level 2 (one at levels 2 and 3), external airlocks go 2 / 4 / 6, and so do territorial
 generators. The cryo spawner (one) needs level 2, the equipment racks (two) level 3.
 
 **Fire control is capped by level.** Every anchored ship gun on the territory counts, whoever put it there. Past the
@@ -485,19 +495,10 @@ Painting needs the same thing building does - standing on held ground of your ow
 tile takes up to 4 decals and a territory 4000. Painted markings are part of the grid, so a persistent territory keeps
 them between rounds, and the next holder can scrub them off.
 
-**Dismantle** under the build menu's pages turns left click into a tear-down tool, like the construction ghost
-eraser; right click stops it. Clicking anything anchored on held ground - built works, the wreck's own walls,
-grilles, windows, consoles and machines - starts a 4 second do-after (`PersistentPoiDeconstructSystem`) that breaks
-on moving or taking damage. Clicking bare floor tears the tile up one layer (floor to plating to lattice) in 2
-seconds. Both need the same standing as building plus a wrench (`Anchoring`) and a crowbar (`Prying`) held in hand,
-and interaction range. Built works (`PersistentPoiStructure`, `PersistentPoiFurnishing`) hand back the materials of
-every stage they finished; the map's own entities give nothing, and a dismantled silo spills what it held. The
-standard, mobs other than built turrets, players and loose items cannot be dismantled, and the permanent floor round
-the standard cannot be torn up - clicking it only warns.
+**Dismantle** lives on the construction console only (below); there is no tear-down by hand and no tool takes works apart. In the construction view it turns left click into a tear-down tool, and right click or the button again stops it. The tile under the mouse is marked red with a label naming what would come down (`PersistentPoiDeconstructOverlay`). Clicking anything anchored on held ground - built works, the wreck's own walls, grilles, windows, consoles and machines - queues a 2 second RCD tear-down (`PersistentPoiDeconstructSystem`, at most 8 at once); clicking bare floor tears the tile up one layer (floor to plating to lattice). What comes down pays back what its construction graph took up to the node it stands on - built works every stage they finished, the map's own walls and machines whatever their ordinary graph cost (boards and parts are not stacks and are lost) - into the silo, or onto the floor with no silo. A popup says what came back. A dismantled silo spills what it held. The standard, mobs other than built turrets, players and loose items cannot be dismantled, and the permanent floor round the standard cannot be torn up - clicking it only warns.
 
 **Material silo.** One per territory from level 1, on the Command page (`PersistentPoiMaterialSilo`, 20 steel then 10
-glass). The holders load it with any stack the build menu's recipes use - by hand, or a whole bag or box at once - and
-take a full stack back out through its Eject verbs. While it holds everything a recipe takes, placing that recipe from
+glass). The holders load it with any stack the build menu's recipes or the level costs use (steel, glass, plasteel, plasma, gold, silver, uranium, cable, the electronic parts...) - by hand, or a whole bag or box at once - and take 1, 5, 10 or a full stack of any of it back out of its window (or a full stack through its Eject verbs). The administration console draws from it too: **Draw from silo** moves whatever the next level still needs onto the deposits, and raising the level does the same on its own for anything still short. Each deposited material can also be taken back off the deposits, a stack at a time, or moved into the silo whole. While it holds everything a recipe takes, placing that recipe from
 the build menu skips the ghost: the materials come out of the silo, an RCD build-up plays for 1 to 4 seconds and the
 works go up finished, running every stage's completion actions, limits included (`PersistentPoiSiloSystem`). It
 reaches 15 tiles from the builder without needing a line of sight. Recipes with a non-material step still need hand
@@ -509,13 +510,12 @@ LV ones - ordinary cables with a construction node). They can go under walls, an
 straight from it through any thickness of wall, which is how power reaches guns on the outer hull of a POI with thick
 walls. One of each voltage per tile (`PersistentPoiNoPrototypeInTile`).
 
-**Works console.** One per territory from level 1, on the Command page (`ComputerPersistentPoiMapping`,
+**Construction console.** One per territory from level 1, on the Command page (`ComputerPersistentPoiMapping`,
 `PersistentPoiMappingSystem`). Holders only, and it needs APC power. Opening it lifts the operator's view off their
 body onto a `PersistentPoiMappingEye` over the territory: their movement keys pan the view (input relay), the eye is
 their camera with FOV off, and the view is held inside the grid's bounds plus 8 tiles. While they look through it the
 build menu stays open after Place like a mapping palette, everything they place goes up straight from the material
-silo (never as a ghost - with nothing in the silo, nothing is built), Dismantle needs no tools and pays built works
-back into the silo after a 2 second RCD tear-down (at most 8 at once), and floor markings can be painted. Reach is 24
+silo (never as a ghost - with nothing in the silo, nothing is built), Dismantle (above) is available, and floor markings can be painted. Reach is 24
 tiles from the view instead of the body's arm's length; the permanent floor still refuses with a warning. The hotbar
 build action keeps working as before. The operator cannot attack, shoot, throw, use or pick up items, or interact
 with anything but the console (`PersistentPoiMappingViewerSystem`), so the wide view cannot be used to fight. The view
@@ -644,8 +644,8 @@ territory: never saved, and one shot down stays down until the next round puts u
 level says (`garrisonSoldiers` / `garrisonDrones` in `persistent_poi_progression.yml`: 2 + 1 at level 1, 4 + 2 at
 level 2, 8 + 4 at level 3). The soldiers are the holder's own faction soldier AI, a random mix of the roles `TerritoryGarrison`
 on the standard lists (`territory_soldier_roles.yml`), and come down by drop pod onto free floor within 8 tiles of the standard. They kill anyone who
-is neither of their side nor wearing an allied ID, open the holder's territorial doors, and can't be recruited into a
-squad, so they hold the post. The drones are the same picket hulls under the holder's IFF and colours ("DSM Valor
+is neither of their side nor wearing an allied ID, open the holder's doors, and can't be recruited into a
+squad, so they hold the post; their names start with "garrison". A derelict's hunters cannot be recruited either. The drones are the same picket hulls under the holder's IFF and colours ("DSM Valor
 3F-A1"), and go for any ship or suited person within 500 m that is not the holder or an ally. Both stay loyal to
 whoever held the ground at round start, even if it changes hands mid-round. Drones are never replaced in-round;
 soldiers only through the recruitment console. Garrison soldiers are never saved with the territory.

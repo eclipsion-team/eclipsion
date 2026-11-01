@@ -3,6 +3,7 @@ using Content.Server.Administration;
 using Content.Shared.Administration;
 using Content.Shared._Crescent.Factions;
 using Content.Shared._Crescent.Territory;
+using Content.Shared.Stacks;
 using Robust.Shared.Console;
 using Robust.Shared.Prototypes;
 
@@ -21,8 +22,9 @@ public sealed class TerritoryCommand : IConsoleCommand
     public string Description => "Inspects and overrides ownership of persistent capture regions.";
 
     public string Help =>
-        "Usage: territory <list|set|clear|forget|level|capability|name|profile|reset|resetfaction|resetall>\n" +
+        "Usage: territory <list|set|clear|forget|level|capability|name|silo|fund|profile|reset|resetfaction|resetall>\n" +
         "Every gamemode plays its own territory campaign; everything below acts on this round's, except resetall.\n" +
+        "A <regionId> of 'here' means the territory you are standing on.\n" +
         "  list                          - every region in the save or on the current map\n" +
         "  set <regionId> <faction>      - hand a region to one of the campaign's factions\n" +
         "  clear <regionId>              - return a region to nobody\n" +
@@ -30,6 +32,11 @@ public sealed class TerritoryCommand : IConsoleCommand
         "  level <regionId> <level>      - set a region's development level, discarding deposits toward the next\n" +
         "  capability <regionId> <id>    - retool a region's production, or 'none'\n" +
         "  name <regionId> [name]        - name a held region as its holder would (DSM-name), or reset it\n" +
+        "  silo <regionId> [show]        - what the region's material silo holds\n" +
+        "  silo <regionId> fill [amount] - top every material the silo takes up to amount (default 1000)\n" +
+        "  silo <regionId> add <material> <amount> - put one material in (a stack ID such as Steel or Plasma)\n" +
+        "  silo <regionId> clear         - empty the silo\n" +
+        "  fund <regionId>               - deposit everything the region's next level asks for\n" +
         "  profile                       - this round's campaign, who fights over it, and every campaign on disk\n" +
         "  reset <regionId>              - start a region over: no holder or name, level 1, no line, and its\n" +
         "                                  persistent grid back to the map file next round\n" +
@@ -37,6 +44,7 @@ public sealed class TerritoryCommand : IConsoleCommand
         "  resetall <campaign>           - reset every region of a campaign; type its name to confirm. Its files\n" +
         "                                  are set aside under territories/, not deleted";
 
+    [Dependency] private readonly IEntityManager _entMan = default!;
     [Dependency] private readonly IEntitySystemManager _systems = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
 
@@ -61,8 +69,42 @@ public sealed class TerritoryCommand : IConsoleCommand
 
         var territory = _systems.GetEntitySystem<PersistentCaptureRegionSystem>();
 
+        // the rest take a region; 'here' is the one under the admin's feet
+        if (args.Length > 1 && args[1].Equals("here", StringComparison.OrdinalIgnoreCase))
+        {
+            if (FindHere(shell) is not { } here)
+            {
+                shell.WriteError("You are not standing on a territory.");
+                return;
+            }
+
+            args[1] = here;
+        }
+
         switch (args[0].ToLowerInvariant())
         {
+            case "silo":
+                if (args.Length < 2)
+                {
+                    shell.WriteError("Usage: territory silo <regionId> [show|fill [amount]|add <material> <amount>|clear]");
+                    return;
+                }
+
+                Silo(shell, args);
+                return;
+
+            case "fund":
+                if (args.Length < 2)
+                {
+                    shell.WriteError("Usage: territory fund <regionId>");
+                    return;
+                }
+
+                shell.WriteLine(_systems.GetEntitySystem<PersistentPoiProgressionSystem>().FundNextLevel(args[1])
+                    ? $"Region '{args[1]}' has everything its next level asks for. Raise it at its administration console, or with 'territory level'."
+                    : $"Region '{args[1]}' is already fully developed.");
+                return;
+
             case "list":
                 ListRegions(shell, territory);
                 return;
@@ -200,6 +242,106 @@ public sealed class TerritoryCommand : IConsoleCommand
         }
     }
 
+    private string? FindHere(IConsoleShell shell)
+    {
+        if (shell.Player?.AttachedEntity is not { } admin ||
+            _entMan.GetComponent<TransformComponent>(admin).GridUid is not { } grid ||
+            !_entMan.TryGetComponent(grid, out PersistentPoiGridComponent? poi))
+        {
+            return null;
+        }
+
+        return poi.RegionId;
+    }
+
+    private void Silo(IConsoleShell shell, string[] args)
+    {
+        var silos = _systems.GetEntitySystem<PersistentPoiSiloSystem>();
+
+        EntityUid? grid = null;
+        var query = _entMan.EntityQueryEnumerator<PersistentPoiGridComponent>();
+        while (query.MoveNext(out var uid, out var poi))
+        {
+            if (string.Equals(poi.RegionId, args[1].Trim(), StringComparison.OrdinalIgnoreCase))
+                grid = uid;
+        }
+
+        if (grid == null)
+        {
+            shell.WriteError($"Region '{args[1]}' is not in the sector this round.");
+            return;
+        }
+
+        if (!PersistentPoiSilo.TryGetSilo(_entMan, grid.Value, out var silo))
+        {
+            shell.WriteError($"Region '{args[1]}' has no material silo. Build one, or spawn PersistentPoiMaterialSilo there.");
+            return;
+        }
+
+        var action = args.Length > 2 ? args[2].ToLowerInvariant() : "show";
+        switch (action)
+        {
+            case "show":
+                break;
+
+            case "fill":
+                var amount = 1000;
+                if (args.Length > 3 && (!int.TryParse(args[3], out amount) || amount <= 0))
+                {
+                    shell.WriteError("The amount must be a positive whole number.");
+                    return;
+                }
+
+                foreach (var material in silos.AcceptedMaterials)
+                {
+                    silo.Comp.Stored[material] = Math.Max(silo.Comp.Stored.GetValueOrDefault(material), amount);
+                }
+
+                _entMan.Dirty(silo);
+                break;
+
+            case "add":
+                if (args.Length < 5 || !int.TryParse(args[4], out var count) || count == 0)
+                {
+                    shell.WriteError("Usage: territory silo <regionId> add <material> <amount>");
+                    return;
+                }
+
+                if (!_proto.HasIndex<StackPrototype>(args[3]))
+                {
+                    shell.WriteError($"'{args[3]}' is not a stack. The silo takes: {string.Join(", ", silos.AcceptedMaterials.Select(m => m.Id).OrderBy(m => m))}.");
+                    return;
+                }
+
+                var total = Math.Max(0, silo.Comp.Stored.GetValueOrDefault(args[3]) + count);
+                if (total > 0)
+                    silo.Comp.Stored[args[3]] = total;
+                else
+                    silo.Comp.Stored.Remove(args[3]);
+
+                _entMan.Dirty(silo);
+                break;
+
+            case "clear":
+                silo.Comp.Stored.Clear();
+                _entMan.Dirty(silo);
+                break;
+
+            default:
+                shell.WriteError("Usage: territory silo <regionId> [show|fill [amount]|add <material> <amount>|clear]");
+                return;
+        }
+
+        if (silo.Comp.Stored.Count == 0)
+        {
+            shell.WriteLine($"The silo of '{args[1]}' is empty.");
+            return;
+        }
+
+        shell.WriteLine($"The silo of '{args[1]}' holds: " +
+                        string.Join(", ", silo.Comp.Stored.OrderBy(pair => pair.Key.Id).Select(pair => $"{pair.Value} {pair.Key.Id}")));
+    }
+
     private IEnumerable<string> Capabilities =>
         _proto.EnumeratePrototypes<PersistentPoiCapabilityPrototype>().Select(c => c.ID).OrderBy(id => id);
 
@@ -283,7 +425,7 @@ public sealed class TerritoryCommand : IConsoleCommand
         if (args.Length == 1)
         {
             return CompletionResult.FromHintOptions(
-                ["list", "set", "clear", "forget", "level", "capability", "name", "profile", "reset", "resetfaction", "resetall"],
+                ["list", "set", "clear", "forget", "level", "capability", "name", "silo", "fund", "profile", "reset", "resetfaction", "resetall"],
                 "action");
         }
 
@@ -304,17 +446,31 @@ public sealed class TerritoryCommand : IConsoleCommand
         if (args.Length == 3 && action == "level")
             return CompletionResult.FromHint("level");
 
-        if (args.Length == 2 && action is "set" or "clear" or "forget" or "level" or "capability" or "name" or "reset")
+        if (args.Length == 2 && action is "set" or "clear" or "forget" or "level" or "capability" or "name" or "reset" or "silo" or "fund")
         {
             var regions = _systems.GetEntitySystem<PersistentCaptureRegionSystem>()
                 .GetRegions()
-                .Select(region => region.RegionId);
+                .Select(region => region.RegionId)
+                .Prepend("here");
 
             return CompletionResult.FromHintOptions(regions, "region ID");
         }
 
         if (args.Length == 3 && action == "set")
             return CompletionResult.FromHintOptions(Factions, "faction");
+
+        if (args.Length == 3 && action == "silo")
+            return CompletionResult.FromHintOptions(["show", "fill", "add", "clear"], "silo action");
+
+        if (args.Length == 4 && action == "silo" && args[2].Equals("add", StringComparison.OrdinalIgnoreCase))
+        {
+            return CompletionResult.FromHintOptions(
+                _systems.GetEntitySystem<PersistentPoiSiloSystem>().AcceptedMaterials.Select(m => m.Id).OrderBy(m => m),
+                "material");
+        }
+
+        if (args.Length == 4 && action == "silo" && args[2].Equals("fill", StringComparison.OrdinalIgnoreCase))
+            return CompletionResult.FromHint("amount (default 1000)");
 
         return CompletionResult.Empty;
     }

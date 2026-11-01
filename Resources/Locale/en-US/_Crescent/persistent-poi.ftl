@@ -3,6 +3,7 @@
 persistent-poi-floor-tool-denied = The floor around the territory's standard is permanent ground. Only its holders can pry it up.
 persistent-poi-structure-examine = [color=goldenrod]Territory works: it stays where it was built until it is destroyed or decommissioned.[/color]
 persistent-poi-structure-unanchor-denied = Territory works are bolted into permanent ground.
+persistent-poi-structure-integrity = Integrity: [color={ $colour }]{ $left }/{ $max }[/color]
 
 # # Build action
 
@@ -16,23 +17,29 @@ persistent-poi-build-category-doors = Doors & airlocks
 persistent-poi-build-category-structure = Walls & windows
 persistent-poi-build-category-atmos = Atmospherics
 persistent-poi-build-category-furniture = Furniture
+persistent-poi-build-category-posters = Posters
 construction-condition-persistent-poi-held-ground = Must be built on territory your faction holds, standing on it.
 construction-condition-persistent-poi-within-limit = The territory's level has no room for another of these. Raise its level at the administration console.
 construction-condition-persistent-poi-capability = The territory is not tooled for this line of production. Retool it at the production console.
 construction-condition-persistent-poi-no-duplicate = There is already one of these on that tile.
+construction-condition-persistent-poi-on-wall = Must go on a wall with nothing else mounted on it.
 
 persistent-poi-silo-not-holder = Only the holders of this ground can use its silo.
 persistent-poi-silo-stored = { $count ->
     [one] You load one sheet into the silo.
    *[other] You load { $count } into the silo.
 }
-persistent-poi-silo-refused = The silo only takes what the territory works are built from.
+persistent-poi-silo-refused = The silo only takes what territory works are built from and what raises the territory's level.
 persistent-poi-silo-examine-turning = [color=goldenrod]Whatever is stored here is lost at the end of the round - the Turning takes it. What is built from it stays.[/color]
 persistent-poi-silo-examine-empty = It is empty.
 persistent-poi-silo-examine-line = { $material }: { $count }
 persistent-poi-silo-take = { $material }
 persistent-poi-silo-hand-only = This one has to be put together by hand; the silo cannot build it.
 persistent-poi-silo-short = The silo does not hold enough for that.
+persistent-poi-silo-ui-title = Material Silo
+persistent-poi-silo-ui-hint = [color=#9A9AA4]Use material stacks, or a bag or box of them, on the silo to load it. Take out as much as you need here. Its contents do not outlast the round.[/color]
+persistent-poi-silo-ui-stack = Stack
+persistent-poi-silo-ui-stack-tooltip = A full stack, or all that is left.
 
 # # Development
 
@@ -55,7 +62,7 @@ persistent-poi-category-heavylaser = 250cc laser emplacements
 persistent-poi-category-portal = Faction portals
 persistent-poi-category-dronebay = Drone bays
 persistent-poi-category-materialsilo = Material silos
-persistent-poi-category-mappingconsole = Works consoles
+persistent-poi-category-mappingconsole = Construction consoles
 
 persistent-poi-admin-not-holder = Only the territory's holder can develop it.
 persistent-poi-admin-max-level = The territory is already fully developed.
@@ -65,6 +72,11 @@ persistent-poi-admin-deposited = Deposited { $amount } { $material } ({ $total }
 persistent-poi-admin-nothing-needed-in = Nothing in { THE($container) } is needed for the next level.
 persistent-poi-admin-missing-materials = The next level still needs more materials.
 persistent-poi-admin-upgraded = The territory is now level { $level }.
+persistent-poi-admin-silo-nothing = The silo holds nothing the next level still needs.
+persistent-poi-admin-silo-drawn = Drawn from the silo: { $materials }.
+persistent-poi-admin-no-silo = The territory has no material silo.
+persistent-poi-admin-returned = You take { $amount } { $material } back off the deposits.
+persistent-poi-admin-returned-silo = { $amount } { $material } moved off the deposits and into the silo.
 
 persistent-poi-admin-ui-title = Territorial Administration
 persistent-poi-admin-ui-level = Level { $level }/{ $max }
@@ -76,9 +88,16 @@ persistent-poi-admin-ui-used-unlimited = { $used }
 persistent-poi-admin-ui-next-limit = next level: { $limit }
 persistent-poi-admin-ui-top-level = The territory is fully developed.
 persistent-poi-admin-ui-next-level = To reach level { $level }
-persistent-poi-admin-ui-deposit-hint = Use material stacks on this console to deposit them, or a bag or box of them to hand over everything inside at once. It takes only what is still needed.
+persistent-poi-admin-ui-deposit-hint = Use material stacks on this console to deposit them, or a bag or box of them to hand over everything inside at once. It takes only what is still needed. With a material silo on the territory it can also draw from that, and raising the level takes whatever is still short from it.
 persistent-poi-admin-ui-upgrade = Raise to level { $level }
 persistent-poi-admin-ui-deposited = { $deposited }/{ $required }
+persistent-poi-admin-ui-draw = Draw from silo
+persistent-poi-admin-ui-draw-tooltip = Move whatever the next level still needs out of the territory's material silo. Raising the level does this on its own.
+persistent-poi-admin-ui-in-silo = silo { $count }
+persistent-poi-admin-ui-take = Take
+persistent-poi-admin-ui-take-tooltip = Take one stack of this back off the deposits.
+persistent-poi-admin-ui-to-silo = To silo
+persistent-poi-admin-ui-to-silo-tooltip = Move all of this off the deposits and into the material silo. Unlike deposits, the silo does not keep it past the round.
 
 # # Production
 
@@ -225,18 +244,23 @@ territory-console-command-abandon-confirm = Press again to abandon
 # # Territory decal painter
 
 persistent-poi-build-decals = Paint floor markings
-persistent-poi-build-deconstruct = Dismantle
-persistent-poi-deconstruct-start = You start dismantling {THE($target)}.
+persistent-poi-deconstruct-start = Tearing down {THE($target)}...
 persistent-poi-deconstruct-invalid = That cannot be dismantled here.
-persistent-poi-deconstruct-tools = You need a wrench and a crowbar in your hands to dismantle that.
+persistent-poi-deconstruct-console-only = Territory works are taken down from the construction console.
+persistent-poi-deconstruct-done = { CAPITALIZE($target) } is down: { $refund } left on the floor.
+persistent-poi-deconstruct-done-silo = { CAPITALIZE($target) } is down: { $refund } back into the silo.
+persistent-poi-deconstruct-refund-none = nothing to pay back
+persistent-poi-deconstruct-refund-entry = { $count } { $material }
+persistent-poi-deconstruct-cursor = Dismantle: { $target }
+persistent-poi-deconstruct-cursor-tile = Tear up the floor
 persistent-poi-deconstruct-permanent = This is the territory's permanent ground around its standard. It cannot be torn up.
-persistent-poi-deconstruct-busy = The works console is already tearing down as much as it can at once.
+persistent-poi-deconstruct-busy = The construction console is already tearing down as much as it can at once.
 
-persistent-poi-mapping-unpowered = The works console has no power.
+persistent-poi-mapping-unpowered = The construction console has no power.
 persistent-poi-mapping-cannot = You cannot work the territory from here right now.
-persistent-poi-mapping-jolted = The blow throws you out of the works view!
-persistent-poi-mapping-ui-title = Territory Works Console
-persistent-poi-mapping-ui-menu = Works menu
+persistent-poi-mapping-jolted = The blow throws you out of the construction view!
+persistent-poi-mapping-ui-title = Territory Construction Console
+persistent-poi-mapping-ui-menu = Build menu
 persistent-poi-mapping-ui-dismantle = Dismantle
 persistent-poi-mapping-ui-paint = Paint floor markings
 persistent-poi-mapping-ui-recenter = Back to the console
@@ -246,7 +270,7 @@ persistent-poi-mapping-ui-silo = Silo: { $total } in store, { $kinds } { $kinds 
    *[other] kinds
 }
 persistent-poi-mapping-ui-no-silo = [color=#E05A5A]No material silo - nothing can be built from here.[/color]
-persistent-poi-mapping-ui-hint = [color=#9A9AA4]Move to pan the view over the territory. Everything is built from the silo and torn-down works pay back into it; no tools needed. Right click stops placing. Taking any harm, losing power or stepping away ends the view.[/color]
+persistent-poi-mapping-ui-hint = [color=#9A9AA4]Move to pan the view over the territory. Everything is built from the silo; no tools needed. Dismantle marks what is under the mouse in red - click it to tear it down, and what built it goes back into the silo, map-built walls and machines included. Right click stops placing or dismantling. Taking any harm, losing power or stepping away ends the view.[/color]
 territory-decal-window-title = Territory markings
 territory-decal-window-hint = Left click paints a tile, right click scrubs it. Hold to drag. Close to stop.
 territory-decal-window-colour = Colour
@@ -313,7 +337,6 @@ persistent-poi-overtime-done = Overtime booked. { $price } cr paid from { $sourc
 persistent-poi-build-ui-title = Territory Works
 persistent-poi-build-ui-search = Search works...
 persistent-poi-build-ui-paint-tooltip = Paint markings onto the floor in your faction's colours.
-persistent-poi-build-ui-deconstruct-tooltip = Click works, walls, machines or floor on held ground to tear them down. Needs a wrench and a crowbar in your hands. Built works hand back their materials; the permanent ground around the standard cannot be torn up. Right-click to stop.
 persistent-poi-build-ui-no-territory = Not on held ground
 persistent-poi-build-ui-summary = Level { $level }/{ $max } · { $line }
 persistent-poi-build-ui-line = Tooled for { $line }
@@ -386,6 +409,7 @@ territory-recruit-escort-called = { $count ->
    *[other] { $count } x { $role } are
 } on the way down to join you. { $price } cr paid.
 territory-recruit-unknown-role = This territory can't call in that kind of soldier.
+territory-garrison-soldier-name = garrison { $name }
 
 territory-soldier-role-rifleman = Rifleman
 territory-soldier-role-rifleman-desc = All-rounder with a service rifle. Cheapest.

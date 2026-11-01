@@ -7,6 +7,7 @@ faction-portal-denied = The portal does not answer you.
 faction-portal-choose = Choose where the portal should take you.
 faction-portal-destination-gone = That portal is no longer open.
 faction-portal-destination-set = Destination set: { $destination }. Step into the portal to travel.
+faction-portal-dragged-denied = The portal will not take { THE($target) }.
 
 faction-portal-examine-open = [color=green]Open.[/color] Its faction's people can step through it.
 faction-portal-examine-closed = [color=red]Closed.[/color] It needs an owner, and on a territory also power and level 2.

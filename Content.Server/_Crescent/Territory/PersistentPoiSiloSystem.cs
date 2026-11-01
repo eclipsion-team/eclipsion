@@ -74,6 +74,11 @@ public sealed class PersistentPoiSiloSystem : EntitySystem
         });
         SubscribeNetworkEvent<PersistentPoiSiloBuildRequestEvent>(OnBuildRequest);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => _pending.Clear());
+
+        Subs.BuiEvents<PersistentPoiMaterialSiloComponent>(PersistentPoiSiloUiKey.Key, subs =>
+        {
+            subs.Event<PersistentPoiSiloEjectMessage>(OnEject);
+        });
     }
 
     #region Storage
@@ -95,6 +100,12 @@ public sealed class PersistentPoiSiloSystem : EntitySystem
                 {
                     _accepted.Add(material);
                 }
+            }
+
+            // what raises the level too, so the administration console can draw it from here
+            foreach (var level in _proto.EnumeratePrototypes<PersistentPoiLevelPrototype>())
+            {
+                _accepted.UnionWith(level.UpgradeCost.Keys);
             }
 
             return _accepted;
@@ -214,18 +225,25 @@ public sealed class PersistentPoiSiloSystem : EntitySystem
             {
                 Text = Loc.GetString("persistent-poi-silo-take", ("material", Loc.GetString(stack.Name))),
                 Category = VerbCategory.Eject,
-                Act = () => Take(ent, user, id),
+                Act = () => Take(ent, user, id, 0),
             });
         }
     }
 
-    private void Take(Entity<PersistentPoiMaterialSiloComponent> ent, EntityUid user, ProtoId<StackPrototype> material)
+    private void OnEject(Entity<PersistentPoiMaterialSiloComponent> ent, ref PersistentPoiSiloEjectMessage args)
+    {
+        Take(ent, args.Actor, args.Material, args.Amount);
+    }
+
+    // amount 0 takes a full stack
+    public void Take(Entity<PersistentPoiMaterialSiloComponent> ent, EntityUid user, ProtoId<StackPrototype> material, int amount)
     {
         if (!MayUse(user, ent) || !_proto.TryIndex(material, out var stack))
             return;
 
         var stored = ent.Comp.Stored.GetValueOrDefault(material);
-        var amount = Math.Min(stored, stack.MaxCount ?? _stack.GetMaxCount(stack.Spawn));
+        var max = stack.MaxCount ?? _stack.GetMaxCount(stack.Spawn);
+        amount = Math.Min(stored, amount <= 0 ? max : Math.Min(amount, max));
         if (amount <= 0)
             return;
 
@@ -268,6 +286,29 @@ public sealed class PersistentPoiSiloSystem : EntitySystem
 
         Dirty(silo);
         return true;
+    }
+
+    public IReadOnlyCollection<ProtoId<StackPrototype>> AcceptedMaterials => Accepted;
+
+    public bool Accepts(ProtoId<StackPrototype> material) => Accepted.Contains(material);
+
+    /// <summary>
+    /// Takes up to <paramref name="amount"/> of one material out of the silo's store; returns how much it had.
+    /// </summary>
+    public int TakeOut(Entity<PersistentPoiMaterialSiloComponent> silo, ProtoId<StackPrototype> material, int amount)
+    {
+        var stored = silo.Comp.Stored.GetValueOrDefault(material);
+        var taken = Math.Min(stored, Math.Max(0, amount));
+        if (taken <= 0)
+            return 0;
+
+        if (stored - taken > 0)
+            silo.Comp.Stored[material] = stored - taken;
+        else
+            silo.Comp.Stored.Remove(material);
+
+        Dirty(silo);
+        return taken;
     }
 
     private void Withdraw(PersistentPoiMaterialSiloComponent silo, Dictionary<ProtoId<StackPrototype>, int> costs)

@@ -1,0 +1,464 @@
+# names for faction soldier NPCs, see NpcFactionNameComponent
+
+- type: dataset
+  id: NpcNamesDSMMale
+  values:
+  - Konrad
+  - Friedrich
+  - Heinrich
+  - Albrecht
+  - Wilhelm
+  - Otto
+  - Ludwig
+  - Karl
+  - Dietrich
+  - Ernst
+  - Gottfried
+  - Siegfried
+  - Johann
+  - Leopold
+  - Maximilian
+  - Rupert
+  - Anselm
+  - Eckhart
+  - Volker
+  - Lothar
+
+- type: dataset
+  id: NpcNamesDSMFemale
+  values:
+  - Adelheid
+  - Brunhilde
+  - Gertrud
+  - Hildegard
+  - Ilse
+  - Liesel
+  - Mathilde
+  - Ottilie
+  - Sieglinde
+  - Ursula
+  - Walburga
+  - Elisabeth
+  - Margarethe
+  - Kunigunde
+  - Irmgard
+
+- type: dataset
+  id: NpcNamesDSMLast
+  values:
+  - Brandt
+  - Hollweg
+  - Kessler
+  - Richter
+  - Vogt
+  - Steinmetz
+  - Adler
+  - Eisenach
+  - Krause
+  - Lindemann
+  - Reinholdt
+  - Schreiber
+  - Waldeck
+  - Thalberg
+  - Ostermann
+  - Hagen
+  - Voss
+  - Rothenburg
+  - von Falkenrath
+  - von Eschenau
+
+- type: dataset
+  id: NpcNamesNCWLMale
+  values:
+  - Pyotr
+  - Mikhail
+  - Emile
+  - Lucien
+  - Anton
+  - Dmitri
+  - Gaspard
+  - Ivan
+  - Jakub
+  - Lev
+  - Marek
+  - Pavel
+  - Rene
+  - Stanislav
+  - Tomas
+  - Yuri
+  - Bogdan
+  - Casimir
+
+- type: dataset
+  id: NpcNamesNCWLFemale
+  values:
+  - Anya
+  - Colette
+  - Dasha
+  - Elodie
+  - Irina
+  - Jeanne
+  - Katya
+  - Louise
+  - Marta
+  - Nadia
+  - Olga
+  - Rosa
+  - Simone
+  - Vera
+  - Zofia
+
+- type: dataset
+  id: NpcNamesNCWLLast
+  values:
+  - Volkov
+  - Moreau
+  - Kowalski
+  - Dubois
+  - Petrov
+  - Lefebvre
+  - Novak
+  - Sokolov
+  - Garnier
+  - Horvat
+  - Laurent
+  - Mazur
+  - Rousseau
+  - Zielinski
+  - Kravets
+  - Bernard
+  - Orlov
+  - Fournier
+  - Dvorak
+
+- type: dataset
+  id: NpcNamesTFSCMale
+  values:
+  - Jake
+  - Marcus
+  - Diego
+  - Kofi
+  - Ravi
+  - Connor
+  - Tyrell
+  - Mateo
+  - Liam
+  - Rhys
+  - Darius
+  - Hector
+  - Andre
+  - Wes
+  - Callum
+
+- type: dataset
+  id: NpcNamesTFSCFemale
+  values:
+  - Ava
+  - Keisha
+  - Lucia
+  - Priya
+  - Sadie
+  - Tamsin
+  - Yara
+  - Morgan
+  - Jada
+  - Carmen
+  - Riley
+  - Nia
+  - Brooke
+  - Imani
+  - Elena
+
+- type: dataset
+  id: NpcNamesTFSCLast
+  values:
+  - Reyes
+  - Okafor
+  - Hartley
+  - Castillo
+  - Brennan
+  - Delgado
+  - Whitaker
+  - Achebe
+  - Kincaid
+  - Vance
+  - Morales
+  - Thorne
+  - Gallagher
+  - Osei
+  - Pratt
+  - Calloway
+  - Navarro
+  - Sinclair
+  - Duarte
+  - Banerjee
+
+- type: dataset
+  id: NpcNamesSHIMale
+  values:
+  - Haruto
+  - Kenji
+  - Takeshi
+  - Daichi
+  - Ren
+  - Hiroshi
+  - Kaito
+  - Shun
+  - Yuto
+  - Makoto
+  - Ryo
+  - Sora
+  - Tatsuya
+  - Isamu
+  - Kazuki
+
+- type: dataset
+  id: NpcNamesSHIFemale
+  values:
+  - Aiko
+  - Hana
+  - Yui
+  - Sakura
+  - Mei
+  - Rin
+  - Emi
+  - Natsuki
+  - Ayumi
+  - Kaori
+  - Mio
+  - Akane
+  - Yuna
+  - Chiyo
+  - Reiko
+
+- type: dataset
+  id: NpcNamesSHILast
+  values:
+  - Tanaka
+  - Watanabe
+  - Kobayashi
+  - Yamamoto
+  - Saito
+  - Ishikawa
+  - Morita
+  - Fujita
+  - Okada
+  - Hayashi
+  - Kimura
+  - Matsuda
+  - Nakajima
+  - Ogawa
+  - Sakamoto
+  - Takahashi
+  - Ueda
+  - Yoshida
+  - Kuroda
+  - Endo
+
+- type: dataset
+  id: NpcNamesCMMMale
+  values:
+  - Eli
+  - Jebediah
+  - Silas
+  - Wyatt
+  - Caleb
+  - Amos
+  - Hank
+  - Clint
+  - Boone
+  - Ezra
+  - Jesse
+  - Luke
+  - Cody
+  - Rusty
+  - Abe
+
+- type: dataset
+  id: NpcNamesCMMFemale
+  values:
+  - Abigail
+  - Clara
+  - Hattie
+  - Josie
+  - Mae
+  - Ruth
+  - Della
+  - Etta
+  - Lorna
+  - Pearl
+  - Sadie
+  - Willa
+  - Annie
+  - Cora
+  - June
+
+- type: dataset
+  id: NpcNamesCMMLast
+  values:
+  - McCoy
+  - Hollister
+  - Barlow
+  - Cartwright
+  - Dawson
+  - Garrett
+  - Harlan
+  - Jennings
+  - Logan
+  - Monroe
+  - Pickett
+  - Raines
+  - Sutton
+  - Tate
+  - Wheeler
+  - Yates
+  - Callahan
+  - Boyd
+
+- type: dataset
+  id: NpcNamesSRMMale
+  values:
+  - Abel
+  - Ezekiel
+  - Gideon
+  - Josiah
+  - Malachi
+  - Obadiah
+  - Tobias
+  - Zacharias
+  - Cyprian
+  - Ambrose
+  - Barnabas
+  - Lazarus
+  - Silvanus
+  - Thaddeus
+  - Uriel
+
+- type: dataset
+  id: NpcNamesSRMFemale
+  values:
+  - Agatha
+  - Beatrix
+  - Cecily
+  - Dorcas
+  - Esther
+  - Honora
+  - Lucretia
+  - Magdalene
+  - Perpetua
+  - Prudence
+  - Temperance
+  - Verity
+  - Winifred
+  - Zillah
+  - Constance
+
+- type: dataset
+  id: NpcNamesSRMLast
+  values:
+  - Ashborn
+  - Blackwater
+  - Candlemas
+  - Graves
+  - Kettle
+  - Marrow
+  - Penitent
+  - Pilgrim
+  - Thorn
+  - Vigil
+  - Wick
+  - Cinder
+  - Crane
+  - Fell
+  - Hallow
+  - Mercy
+  - Saltmarsh
+  - Lantern
+
+- type: dataset
+  id: NpcNamesINDMale
+  values:
+  - Bram
+  - Nikolai
+  - Wade
+  - Jonas
+  - Malik
+  - Bastian
+  - Rory
+  - Quinn
+  - Dex
+  - Hollis
+  - Ivo
+  - Kasimir
+  - Nash
+  - Otis
+  - Teodor
+  - Vic
+  - Zeke
+  - Rafe
+
+- type: dataset
+  id: NpcNamesINDFemale
+  values:
+  - Cass
+  - Dina
+  - Freya
+  - Greta
+  - Ines
+  - Juno
+  - Kira
+  - Lena
+  - Mira
+  - Nell
+  - Petra
+  - Roxy
+  - Sana
+  - Tilly
+  - Vesna
+  - Wren
+
+- type: dataset
+  id: NpcNamesINDLast
+  values:
+  - Kade
+  - Marsh
+  - Brask
+  - Doyle
+  - Fenn
+  - Grady
+  - Hale
+  - Ivers
+  - Jory
+  - Kell
+  - Lusk
+  - Morrow
+  - Nyberg
+  - Orr
+  - Pike
+  - Quill
+  - Rask
+  - Stroud
+  - Tanner
+  - Wick
+
+- type: dataset
+  id: NpcNamesINDNicknames
+  values:
+  - Spike
+  - Dutch
+  - Lucky
+  - Rook
+  - Patch
+  - Ghost
+  - Ace
+  - Gears
+  - Shiv
+  - Tex
+  - Doc
+  - Moss
+  - Sparks
+  - Jinx
+  - Ratchet
+  - Cinder
+  - Pockets
+  - Rust

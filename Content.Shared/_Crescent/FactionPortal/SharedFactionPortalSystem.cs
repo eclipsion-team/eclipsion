@@ -1,6 +1,8 @@
 using Content.Shared._Crescent.Factions;
 using Content.Shared._Crescent.Territory;
+using Content.Shared.Construction.Components;
 using Content.Shared.Ghost;
+using Content.Shared.Pulling.Events;
 using Content.Shared.Popups;
 using Content.Shared.UserInterface;
 
@@ -16,6 +18,19 @@ public abstract class SharedFactionPortalSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<FactionPortalComponent, ActivatableUIOpenAttemptEvent>(OnUiOpenAttempt);
+        SubscribeLocalEvent<FactionPortalComponent, UnanchorAttemptEvent>(OnUnanchorAttempt);
+        SubscribeLocalEvent<FactionPortalComponent, BeingPulledAttemptEvent>(OnBeingPulledAttempt);
+    }
+
+    // portals stay where they were mapped or built
+    private void OnUnanchorAttempt(Entity<FactionPortalComponent> ent, ref UnanchorAttemptEvent args)
+    {
+        args.Cancel();
+    }
+
+    private void OnBeingPulledAttempt(Entity<FactionPortalComponent> ent, ref BeingPulledAttemptEvent args)
+    {
+        args.Cancel();
     }
 
     private void OnUiOpenAttempt(Entity<FactionPortalComponent> ent, ref ActivatableUIOpenAttemptEvent args)

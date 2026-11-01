@@ -36,7 +36,7 @@
 - type: entity
   parent: BaseComputerPersistentPoi
   id: ComputerPersistentPoiProduction
-  name: territorial production console
+  name: production console
   suffix: Persistent territory, built
   description: Tools the territory for a line of production, then runs and empties every works on it. Without it, they all stand idle.
   components:
@@ -71,7 +71,7 @@
 - type: entity
   parent: BaseComputerPersistentPoi
   id: ComputerPersistentPoiAdministration
-  name: territorial administration console
+  name: administration console
   suffix: Persistent territory, built
   description: Records what the territory is developed to and what that allows. Feed it the materials it asks for to raise the territory a level.
   components:
@@ -106,7 +106,7 @@
 - type: entity
   parent: BaseComputerPersistentPoi
   id: ComputerPersistentPoiRecruitment
-  name: territorial recruitment console
+  name: recruitment console
   suffix: Persistent territory, built
   description: Calls the holder's soldiers down by drop pod, to top up the garrison or to go along with whoever paid for them.
   components:
@@ -138,11 +138,11 @@
     graph: PersistentPoiStructures
     node: recruitmentConsole
 
-# works console: the operator views the territory from above and builds from the silo
+# construction console: the operator views the territory from above and builds from the silo
 - type: entity
   parent: BaseComputerPersistentPoi
   id: ComputerPersistentPoiMapping
-  name: territorial works console
+  name: construction console
   suffix: Persistent territory, built
   description: Lifts its operator's view over the territory to build, tear down and paint it from the material silo. They cannot fight or reach from it, and any harm throws them out.
   components:
@@ -178,7 +178,7 @@
 - type: entity
   parent: Incorporeal
   id: PersistentPoiMappingEye
-  name: works view
+  name: construction view
   save: false
   categories: [ HideSpawnMenu ]
   components:
@@ -196,7 +196,7 @@
 - type: entity
   parent: BaseComputerPersistentPoi
   id: ComputerPersistentPoiDroneBay
-  name: territorial drone bay
+  name: drone bay
   suffix: Persistent territory, built
   description: Buys light drones for the territory's picket. They guard the territory and never stray from it. Shieldless hulls with 150cc guns at most.
   components:
@@ -297,7 +297,7 @@
 - type: entity
   parent: BasePersistentPoiWorks
   id: PersistentPoiMixedOreRig
-  name: territorial ore extraction rig
+  name: ore extraction rig
   suffix: Persistent territory, built
   description: A deep-core drill sunk into permanent ground. It brings up a mix of whatever ore lies below.
   components:
@@ -321,7 +321,7 @@
 - type: entity
   parent: BasePersistentPoiWorks
   id: PersistentPoiExtractionRig
-  name: territorial targeted extraction rig
+  name: targeted extraction rig
   suffix: Persistent territory, built
   description: A deep-core drill calibrated to one seam at a time. Slower to set up than a mixed rig, but it brings up a lot of what you ask for.
   components:
@@ -352,7 +352,7 @@
 - type: entity
   parent: BasePersistentPoiWorks
   id: PersistentPoiTextileMill
-  name: territorial textile mill
+  name: textile mill
   suffix: Persistent territory, built
   description: Spins, weaves and treats fabric without anyone at the loom - durathread included.
   components:
@@ -382,7 +382,7 @@
 - type: entity
   parent: BasePersistentPoiWorks
   id: PersistentPoiFoundry
-  name: territorial foundry
+  name: foundry
   suffix: Persistent territory, built
   description: Smelts, rolls and casts finished building materials straight from the territory's own stock.
   components:
@@ -413,7 +413,7 @@
 - type: entity
   parent: BasePersistentPoiWorks
   id: PersistentPoiTradeWorks
-  name: territorial trade works
+  name: trade works
   suffix: Persistent territory, built
   description: An assembly line that crates the territory's own output into goods worth shipping out.
   components:

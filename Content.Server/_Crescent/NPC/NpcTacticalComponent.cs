@@ -470,25 +470,25 @@ public sealed partial class NpcTacticalComponent : Component
     /// Minimum gap between two callouts from the same NPC.
     /// </summary>
     [DataField]
-    public TimeSpan CalloutCooldown = TimeSpan.FromSeconds(8);
+    public TimeSpan CalloutCooldown = TimeSpan.FromSeconds(20);
 
     /// <summary>
     /// Chance per occasion that the NPC says something at all, so a squad doesn't bark in unison.
     /// </summary>
     [DataField]
-    public float CalloutChance = 0.6f;
+    public float CalloutChance = 0.35f;
 
     /// <summary>
     /// Average gap between battle cries while the NPC is fighting.
     /// </summary>
     [DataField]
-    public TimeSpan BattleCryInterval = TimeSpan.FromSeconds(25);
+    public TimeSpan BattleCryInterval = TimeSpan.FromSeconds(60);
 
     /// <summary>
     /// Average gap between idle remarks while it is not.
     /// </summary>
     [DataField]
-    public TimeSpan IdleChatterInterval = TimeSpan.FromSeconds(150);
+    public TimeSpan IdleChatterInterval = TimeSpan.FromSeconds(420);
 
     [ViewVariables]
     public TimeSpan NextCallout;

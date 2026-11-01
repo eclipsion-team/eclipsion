@@ -2,7 +2,9 @@ using Content.Shared.Construction;
 using Content.Shared.Construction.Conditions;
 using Content.Shared.Construction.Prototypes;
 using Content.Shared.Construction.Steps;
+using Content.Shared.Popups;
 using Content.Shared.Stacks;
+using Content.Shared.UserInterface;
 using JetBrains.Annotations;
 using Robust.Shared.GameStates;
 using Robust.Shared.Map;
@@ -12,12 +14,33 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared._Crescent.Territory;
 
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true)]
 public sealed partial class PersistentPoiMaterialSiloComponent : Component
 {
     // not a DataField on purpose: the round-end save drops it, so the silo starts every round empty
     [ViewVariables, AutoNetworkedField]
     public Dictionary<ProtoId<StackPrototype>, int> Stored = new();
+}
+
+[Serializable, NetSerializable]
+public enum PersistentPoiSiloUiKey : byte
+{
+    Key,
+}
+
+[Serializable, NetSerializable]
+public sealed class PersistentPoiSiloEjectMessage : BoundUserInterfaceMessage
+{
+    public ProtoId<StackPrototype> Material;
+
+    // zero for a full stack
+    public int Amount;
+
+    public PersistentPoiSiloEjectMessage(ProtoId<StackPrototype> material, int amount)
+    {
+        Material = material;
+        Amount = amount;
+    }
 }
 
 [Serializable, NetSerializable]
@@ -32,6 +55,31 @@ public sealed class PersistentPoiSiloBuildRequestEvent : EntityEventArgs
         Recipe = recipe;
         Location = location;
         Direction = direction;
+    }
+}
+
+public sealed class PersistentPoiSiloAccessSystem : EntitySystem
+{
+    [Dependency] private readonly SharedPopupSystem _popup = default!;
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        SubscribeLocalEvent<PersistentPoiMaterialSiloComponent, ActivatableUIOpenAttemptEvent>(OnOpenAttempt);
+    }
+
+    private void OnOpenAttempt(Entity<PersistentPoiMaterialSiloComponent> ent, ref ActivatableUIOpenAttemptEvent args)
+    {
+        if (Transform(ent).GridUid is { } grid &&
+            TryComp<PersistentPoiGridComponent>(grid, out var territory) &&
+            PersistentTerritoryFactions.Holds(EntityManager, args.User, territory))
+        {
+            return;
+        }
+
+        args.Cancel();
+        _popup.PopupClient(Loc.GetString("persistent-poi-silo-not-holder"), ent, args.User);
     }
 }
 

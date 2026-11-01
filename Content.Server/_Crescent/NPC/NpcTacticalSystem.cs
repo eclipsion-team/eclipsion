@@ -131,7 +131,7 @@ public sealed partial class NpcTacticalSystem : EntitySystem
         // After the loadout, since the supplies go into the storage it puts on them, and after the random name,
         // which goes on its ID card.
         SubscribeLocalEvent<NpcTacticalComponent, MapInitEvent>(OnMapInit,
-            after: [typeof(SharedLoadoutSystem), typeof(RandomHumanoidAppearanceSystem)]);
+            after: [typeof(SharedLoadoutSystem), typeof(RandomHumanoidAppearanceSystem), typeof(NpcFactionNameSystem)]);
         SubscribeLocalEvent<NpcTacticalComponent, NpcGunReloadStartedEvent>(OnReloadStarted);
         SubscribeLocalEvent<NpcTacticalComponent, NpcBuildBarricadeDoAfterEvent>(OnBarricadeDoAfter);
         SubscribeLocalEvent<TargetingComponent, HealingDoAfterEvent>(OnHealingDoAfter, after: [typeof(HealingSystem)]);

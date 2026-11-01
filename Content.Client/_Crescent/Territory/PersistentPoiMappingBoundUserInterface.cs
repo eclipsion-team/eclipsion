@@ -22,7 +22,7 @@ public sealed class PersistentPoiMappingBoundUserInterface : BoundUserInterface
         _window.OpenCenteredLeft();
 
         _window.OnMenu += () => SendMessage(new PersistentPoiMappingOpenMenuMessage());
-        _window.OnDismantle += () => build.StartDeconstructing();
+        _window.OnDismantle += () => build.ToggleDeconstructing();
         _window.OnPaint += () => build.OpenPainter();
         _window.OnRecenter += () => SendMessage(new PersistentPoiMappingRecenterMessage());
         _window.OnLeave += Close;

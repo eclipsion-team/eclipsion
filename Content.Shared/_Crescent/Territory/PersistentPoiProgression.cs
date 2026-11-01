@@ -130,10 +130,13 @@ public sealed class PersistentPoiLimitState
 [Serializable, NetSerializable]
 public sealed class PersistentPoiCostState
 {
+    public string MaterialId = string.Empty;
     public string Material = string.Empty;
 
     public int Deposited;
     public int Required;
+
+    public int InSilo;
 }
 
 [Serializable, NetSerializable]
@@ -151,7 +154,28 @@ public sealed class PersistentPoiAdministrationState : BoundUserInterfaceState
     public List<PersistentPoiCostState> NextLevelCost = new();
 
     public bool CanUpgrade;
+
+    public bool HasSilo;
 }
 
 [Serializable, NetSerializable]
 public sealed class PersistentPoiUpgradeMessage : BoundUserInterfaceMessage;
+
+[Serializable, NetSerializable]
+public sealed class PersistentPoiDrawFromSiloMessage : BoundUserInterfaceMessage;
+
+/// <summary>
+/// Hands a deposited material back: one stack to the user, or all of it into the territory's silo.
+/// </summary>
+[Serializable, NetSerializable]
+public sealed class PersistentPoiReturnDepositMessage : BoundUserInterfaceMessage
+{
+    public string Material;
+    public bool ToSilo;
+
+    public PersistentPoiReturnDepositMessage(string material, bool toSilo)
+    {
+        Material = material;
+        ToSilo = toSilo;
+    }
+}

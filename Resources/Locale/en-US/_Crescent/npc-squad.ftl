@@ -5,6 +5,7 @@ npc-squad-verb-dismiss = Dismiss from squad
 
 npc-squad-recruit-fail-incapacitated = You are in no state to lead anyone.
 npc-squad-recruit-fail-taken = {CAPITALIZE(THE($npc))} already follows someone else.
+npc-squad-recruit-fail-garrison = {CAPITALIZE(THE($npc))} holds this ground and will not leave it.
 npc-squad-recruit-fail-faction = {CAPITALIZE(THE($npc))} won't take orders from you.
 npc-squad-recruit-fail-full = Your squad is full. ({$max} max)
 

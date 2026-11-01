@@ -9,6 +9,7 @@ using Content.Server.NPC.Systems;
 using Content.Server.Popups;
 using Content.Server.Weapons.Ranged.Systems;
 using Content.Shared._Crescent.NpcSquad;
+using Content.Shared._Crescent.Territory;
 using Content.Shared.Actions;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -189,7 +190,7 @@ public sealed partial class NpcSquadSystem : EntitySystem
         var user = args.User;
         var npc = ent.Owner;
 
-        if (user == npc || HasComp<ActorComponent>(npc) || !_mobState.IsAlive(npc))
+        if (user == npc || HasComp<ActorComponent>(npc) || !_mobState.IsAlive(npc) || IsPostedGuard(npc))
             return;
 
         if (TryComp<NpcSquadMemberComponent>(npc, out var member))
@@ -220,6 +221,13 @@ public sealed partial class NpcSquadSystem : EntitySystem
         });
     }
 
+    // a territory's garrison and a derelict's hunters hold their ground for nobody's squad
+    private bool IsPostedGuard(EntityUid npc)
+    {
+        return TryComp<TerritoryGarrisonSoldierComponent>(npc, out var soldier) && !soldier.Escort ||
+               HasComp<NpcGarrisonDormancyComponent>(npc);
+    }
+
     public bool CanRecruit(EntityUid user, EntityUid npc, [NotNullWhen(false)] out string? reason)
     {
         reason = null;
@@ -233,6 +241,12 @@ public sealed partial class NpcSquadSystem : EntitySystem
         if (HasComp<NpcSquadMemberComponent>(npc))
         {
             reason = Loc.GetString("npc-squad-recruit-fail-taken", ("npc", npc));
+            return false;
+        }
+
+        if (IsPostedGuard(npc))
+        {
+            reason = Loc.GetString("npc-squad-recruit-fail-garrison", ("npc", npc));
             return false;
         }
 

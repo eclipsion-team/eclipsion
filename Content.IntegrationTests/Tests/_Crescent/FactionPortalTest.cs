@@ -1,10 +1,13 @@
 using System.Numerics;
 using Content.Server._Crescent.FactionPortal;
+using Content.Server._Crescent.NpcSquad;
 using Content.Server.Power.EntitySystems;
 using Content.Shared._Crescent.FactionPortal;
 using Content.Shared._Crescent.HullrotFaction;
+using Content.Shared._Crescent.NpcSquad;
 using Content.Shared._Crescent.Territory;
 using Content.Shared.Maps;
+using Content.Shared.Movement.Pulling.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
@@ -23,6 +26,8 @@ public sealed class FactionPortalTest
         var entMan = server.EntMan;
         var mapSystem = server.System<SharedMapSystem>();
         var portals = server.System<FactionPortalSystem>();
+        var pulling = server.System<PullingSystem>();
+        var squads = server.System<NpcSquadSystem>();
 
         EntityUid station = default;
         EntityUid dsm = default;
@@ -67,6 +72,26 @@ public sealed class FactionPortalTest
 
             Assert.That(portals.TryTravel(dsm, poi, member), Is.True);
             Assert.That(entMan.GetComponent<TransformComponent>(member).ParentUid, Is.EqualTo(entMan.GetComponent<TransformComponent>(poi).ParentUid));
+
+            var captor = SpawnMember(entMan, station, "DSM");
+            var prisoner = SpawnMember(entMan, station, "NCWL");
+            Assert.That(pulling.TryStartPull(captor, prisoner), Is.True);
+            Assert.That(portals.TryTravel(dsm, poi, captor), Is.True);
+            Assert.That(entMan.GetComponent<TransformComponent>(prisoner).ParentUid, Is.EqualTo(station), "an enemy was dragged through a portal");
+
+            Assert.That(pulling.CanPull(captor, poi), Is.False, "a portal could be dragged off");
+
+            var leader = SpawnMember(entMan, station, "DSM");
+            var follower = entMan.SpawnEntity("MobSoldierAIDSMRifleman", new EntityCoordinates(station, 3.5f, 0.5f));
+            var holder = entMan.SpawnEntity("MobSoldierAIDSMRifleman", new EntityCoordinates(station, 5.5f, 0.5f));
+            Assert.That(squads.TryRecruit(leader, follower), Is.True);
+            Assert.That(squads.TryRecruit(leader, holder), Is.True);
+            squads.SetOrder(holder, entMan.GetComponent<NpcSquadMemberComponent>(holder), NpcSquadOrder.Defend,
+                entMan.GetComponent<TransformComponent>(holder).Coordinates);
+            Assert.That(portals.TryTravel(dsm, poi, leader), Is.True);
+            Assert.That(entMan.GetComponent<TransformComponent>(follower).ParentUid, Is.EqualTo(entMan.GetComponent<TransformComponent>(poi).ParentUid),
+                "the squad didn't follow its leader through the portal");
+            Assert.That(entMan.GetComponent<TransformComponent>(holder).ParentUid, Is.EqualTo(station), "a soldier left its post for the portal");
 
             territory.Level = 1;
         });

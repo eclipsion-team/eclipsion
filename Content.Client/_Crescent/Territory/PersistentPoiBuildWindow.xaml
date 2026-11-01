@@ -26,12 +26,6 @@
                         <Label Text="{Loc 'persistent-poi-build-decals'}" VerticalAlignment="Center" ClipText="True" HorizontalExpand="True"/>
                     </BoxContainer>
                 </Button>
-                <Button Name="DeconstructButton" StyleClasses="OpenBoth" ToolTip="{Loc 'persistent-poi-build-ui-deconstruct-tooltip'}">
-                    <BoxContainer Orientation="Horizontal" SeparationOverride="6">
-                        <TextureRect Name="DeconstructIcon" SetSize="24 24" Stretch="KeepAspectCentered"/>
-                        <Label Text="{Loc 'persistent-poi-build-deconstruct'}" VerticalAlignment="Center" ClipText="True" HorizontalExpand="True"/>
-                    </BoxContainer>
-                </Button>
             </BoxContainer>
 
             <PanelContainer MinWidth="2" VerticalExpand="True">

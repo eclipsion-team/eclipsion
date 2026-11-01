@@ -25,7 +25,7 @@
 - type: entity
   parent: CaptureFlag
   id: PersistentCaptureRegionFlag
-  name: territorial claim standard
+  name: claim standard
   description: Work the standard by hand to claim this installation for your faction across future shifts.
   components:
     - type: CaptureFlag
@@ -68,7 +68,7 @@
 - type: entity
   parent: BaseWeaponTurretAutoPD
   id: WeaponTurretAutoPDCapturable
-  name: territorial 7.62x51mm anti-boarder turret
+  name: 7.62x51mm anti-boarder turret
   suffix: Capturable territory PDT
   components:
     # Empty on purpose. The turret shoots nobody until a faction takes the region, and

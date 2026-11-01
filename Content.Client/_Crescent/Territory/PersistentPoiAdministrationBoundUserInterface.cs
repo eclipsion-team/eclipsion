@@ -18,6 +18,8 @@ public sealed class PersistentPoiAdministrationBoundUserInterface : BoundUserInt
 
         _window = this.CreateWindow<PersistentPoiAdministrationWindow>();
         _window.Panel.OnUpgrade += () => SendMessage(new PersistentPoiUpgradeMessage());
+        _window.Panel.OnDraw += () => SendMessage(new PersistentPoiDrawFromSiloMessage());
+        _window.Panel.OnReturn += (material, toSilo) => SendMessage(new PersistentPoiReturnDepositMessage(material, toSilo));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

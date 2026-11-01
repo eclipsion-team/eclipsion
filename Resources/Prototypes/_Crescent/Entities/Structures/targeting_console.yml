@@ -58,7 +58,7 @@
 - type: entity
   parent: [ComputerTargeting, BaseStructureDisableToolUse, BaseStructureUnanchorable]
   id: ComputerTargetingCapturable
-  name: territorial point-defence console
+  name: point-defence console
   suffix: Capturable territory
   components:
   - type: FactionMachine
