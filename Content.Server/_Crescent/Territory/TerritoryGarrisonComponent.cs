@@ -1,3 +1,4 @@
+using Content.Shared._Crescent.Territory;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._Crescent.Territory;
@@ -8,9 +9,9 @@ namespace Content.Server._Crescent.Territory;
 [RegisterComponent, Access(typeof(TerritoryGarrisonSystem))]
 public sealed partial class TerritoryGarrisonComponent : Component
 {
-    // holder faction -> who stands guard for it
+    // what the recruitment console offers, in menu order; the round-start garrison is a random mix of them
     [DataField(required: true)]
-    public Dictionary<string, List<EntProtoId>> Soldiers = new();
+    public List<ProtoId<TerritorySoldierRolePrototype>> Roles = new();
 
     // tiles from the standard a soldier may be put down on
     [DataField]

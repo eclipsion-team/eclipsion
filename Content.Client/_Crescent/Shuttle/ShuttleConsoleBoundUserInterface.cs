@@ -18,6 +18,7 @@ public sealed partial class ShuttleConsoleBoundUserInterface : BoundUserInterfac
         _window.NavScreen.modulePressed += (index) => SendMessage(new NavConsoleGroupPressedMessage(index));
         _window.NavScreen.OnTargetingModeChange += mode => SendMessage(new Content.Shared.PointCannons.ShipWeaponTargetingModeMessage(mode));
         _window.NavScreen.OnRename += (args) => SendMessage(new ModuleNamingChangeEvent(args));
+        _window.NavScreen.OnTurnRateChange += rate => SendMessage(new Content.Shared._Crescent.Shuttles.Events.ShuttleTurnRateMessage(rate));
         _window.CrewScreen.targetIdButton.OnPressed += _ => SendMessage(new ItemSlotButtonPressedEvent(SharedShuttleConsoleComponent.IdSlotName));
         _window.CrewScreen.OnVisibilityChanged += control => SendMessage(new SwitchedToCrewHudMessage(control.Visible));
         _window.CrewScreen.toggleEmployeeClicked += args => SendMessage(new TryMakeEmployeeMessage(args));

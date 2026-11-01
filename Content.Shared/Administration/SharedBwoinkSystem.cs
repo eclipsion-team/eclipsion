@@ -52,6 +52,20 @@ namespace Content.Shared.Administration
     }
 
     /// <summary>
+    ///     Sent by the server on join and admin status changes so ahelp history survives reconnects and deadmin/readmin.
+    /// </summary>
+    [Serializable, NetSerializable]
+    public sealed class BwoinkHistoryMessage : EntityEventArgs
+    {
+        public List<SharedBwoinkSystem.BwoinkTextMessage> Messages { get; }
+
+        public BwoinkHistoryMessage(List<SharedBwoinkSystem.BwoinkTextMessage> messages)
+        {
+            Messages = messages;
+        }
+    }
+
+    /// <summary>
     ///     Sent by the server to notify all clients when the webhook url is sent.
     ///     The webhook url itself is not and should not be sent.
     /// </summary>

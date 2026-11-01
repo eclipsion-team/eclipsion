@@ -19,9 +19,51 @@ public static class PersistentTerritoryFactions
     /// </summary>
     public static IReadOnlyList<string> Supported => Ids;
 
+    /// <summary>
+    /// Spacers and vagrants. Not a territorial faction: each of them holds ground alone as IND1, IND2...
+    /// </summary>
+    public const string IndependentFaction = "IND";
+
+    private static readonly Color[] IndependentColors =
+    [
+        Color.FromHex("#2FD3C6"),
+        Color.FromHex("#7BE03C"),
+        Color.FromHex("#3D8BFF"),
+        Color.FromHex("#9B6BFF"),
+        Color.FromHex("#00B37A"),
+        Color.FromHex("#6FC3FF"),
+        Color.FromHex("#C8E64B"),
+        Color.FromHex("#4B5DFF"),
+    ];
+
     public static bool IsSupported(string? faction)
     {
-        return faction is "DSM" or "NCWL" or "TFSC" or "SHI";
+        return faction is "DSM" or "NCWL" or "TFSC" or "SHI" || IsIndependent(faction);
+    }
+
+    /// <summary>A single independent's owner id, "IND" followed by their number.</summary>
+    public static bool IsIndependent(string? owner)
+    {
+        if (owner == null ||
+            owner.Length <= IndependentFaction.Length ||
+            !owner.StartsWith(IndependentFaction, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        for (var i = IndependentFaction.Length; i < owner.Length; i++)
+        {
+            if (owner[i] is < '0' or > '9')
+                return false;
+        }
+
+        return true;
+    }
+
+    public static Color IndependentColor(string owner)
+    {
+        var number = int.TryParse(owner.Substring(IndependentFaction.Length), out var parsed) ? parsed : 1;
+        return IndependentColors[(Math.Max(number, 1) - 1) % IndependentColors.Length];
     }
 
     public static string? GetTeam(IEntityManager entMan, EntityUid uid)
@@ -35,6 +77,14 @@ public static class PersistentTerritoryFactions
         if (entMan.TryGetComponent(uid, out HullrotFactionComponent? faction) &&
             !string.IsNullOrWhiteSpace(faction.Faction))
         {
+            // the token only counts while they are still independent, recruitment into a faction drops it
+            if (faction.Faction == IndependentFaction &&
+                entMan.TryGetComponent(uid, out TerritoryIndependentComponent? independent) &&
+                IsIndependent(independent.Owner))
+            {
+                return independent.Owner;
+            }
+
             return faction.Faction;
         }
 
@@ -53,6 +103,10 @@ public static class PersistentTerritoryFactions
     /// </summary>
     public static string StripOwnerPrefix(string name)
     {
+        var space = name.IndexOf(' ');
+        if (space > 0 && IsIndependent(name[..space]))
+            return name[(space + 1)..];
+
         foreach (var faction in Ids)
         {
             foreach (var spelling in FactionDisplay.Spellings(faction))
@@ -246,4 +300,17 @@ public sealed partial class TerritoryAutoDefenseComponent : Component
 
     [ViewVariables]
     public TimeSpan NextScan;
+
+    // missiles locked on or closing on the grid are shot down inside this, manned or not
+    [DataField]
+    public float MissileRange = 600f;
+
+    [ViewVariables]
+    public EntityUid? Missile;
+
+    [ViewVariables]
+    public TimeSpan NextMissileScan;
+
+    [ViewVariables]
+    public TimeSpan NextLinkRefresh;
 }

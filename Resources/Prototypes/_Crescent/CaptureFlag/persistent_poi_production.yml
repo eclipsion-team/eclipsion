@@ -138,6 +138,102 @@
     graph: PersistentPoiStructures
     node: recruitmentConsole
 
+# works console: the operator views the territory from above and builds from the silo
+- type: entity
+  parent: BaseComputerPersistentPoi
+  id: ComputerPersistentPoiMapping
+  name: territorial works console
+  suffix: Persistent territory, built
+  description: Lifts its operator's view over the territory to build, tear down and paint it from the material silo. They cannot fight or reach from it, and any harm throws them out.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: engie_cams
+    - map: ["computerLayerKeys"]
+      state: atmos_key
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: PointLight
+    color: "#e6a33c"
+  - type: PersistentPoiWorks
+    category: MappingConsole
+  - type: PersistentPoiMappingConsole
+  - type: TerritoryHolderOnly
+  - type: ActivatableUI
+    key: enum.PersistentPoiMappingUiKey.Key
+    singleUser: true
+  - type: UserInterface
+    interfaces:
+      enum.PersistentPoiMappingUiKey.Key:
+        type: PersistentPoiMappingBoundUserInterface
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: mappingConsole
+
+- type: entity
+  parent: Incorporeal
+  id: PersistentPoiMappingEye
+  name: works view
+  save: false
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InputMover
+  - type: MobMover
+  - type: Eye
+    pvsScale: 1.25
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 8
+    baseSprintSpeed: 16
+  - type: Tag
+    tags:
+    - CantInteract
+
+- type: entity
+  parent: BaseComputerPersistentPoi
+  id: ComputerPersistentPoiDroneBay
+  name: territorial drone bay
+  suffix: Persistent territory, built
+  description: Buys light drones for the territory's picket. They guard the territory and never stray from it. Shieldless hulls with 150cc guns at most.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: dron_control_monitor
+    - map: ["computerLayerKeys"]
+      state: rd_key
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: PointLight
+    color: "#9b59b6"
+  - type: PersistentPoiWorks
+    category: DroneBay
+  # only the territory drone hulls: no shields, 150cc guns at most
+  - type: TerritoryDroneBayConsole
+    hulls:
+      PoiHornetDrone: 8000
+      PoiWaspDrone: 8000
+      PoiValorDrone: 12000
+      PoiRocinanteDrone: 12000
+  - type: ActivatableUI
+    key: enum.TerritoryDroneBayUiKey.Key
+    singleUser: true
+  - type: UserInterface
+    interfaces:
+      enum.TerritoryDroneBayUiKey.Key:
+        type: TerritoryDroneBayBoundUserInterface
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: droneBay
+
 - type: entity
   id: TerritoryDropPod
   name: drop pod
@@ -339,6 +435,7 @@
     - PersistentPoiAssembleGunparts
     - PersistentPoiAssembleAmmo
     - PersistentPoiAssemblePlasma
+    - PersistentPoiCompileResearchDisk
   - type: Construction
     graph: PersistentPoiStructures
     node: tradeWorks
@@ -497,3 +594,10 @@
   duration: 600
   outputs:
     TradeGoodPlasma: 1
+
+- type: persistentPoiProductionRecipe
+  id: PersistentPoiCompileResearchDisk
+  name: persistent-poi-recipe-research-disk
+  duration: 600
+  outputs:
+    ResearchDisk5000: 1

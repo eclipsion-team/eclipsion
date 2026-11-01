@@ -98,6 +98,7 @@ public sealed class PointCannonSystem : EntitySystem
     private EntityQuery<HardpointComponent> _hardpointQuery;
     private EntityQuery<PhysicsComponent> _physicsQuery;
     private EntityQuery<CannonFireCooldownComponent> _cooldownQuery;
+    private EntityQuery<TerritoryMissileInterceptorComponent> _interceptorQuery;
     private EntityQuery<GridCannonCacheComponent> _gridCacheQuery;
 
     public override void Initialize()
@@ -141,6 +142,7 @@ public sealed class PointCannonSystem : EntitySystem
         _hardpointQuery = GetEntityQuery<HardpointComponent>();
         _physicsQuery = GetEntityQuery<PhysicsComponent>();
         _cooldownQuery = GetEntityQuery<CannonFireCooldownComponent>();
+        _interceptorQuery = GetEntityQuery<TerritoryMissileInterceptorComponent>();
         _gridCacheQuery = GetEntityQuery<GridCannonCacheComponent>();
     }
 
@@ -829,6 +831,13 @@ public sealed class PointCannonSystem : EntitySystem
             {
                 console.CurrentGroup.RemoveAt(i);
                 TogglePvsOverride(new[] { cannonUid }, GetUiSessions(uid), false);
+                continue;
+            }
+
+            // a territory pd gun busy with a missile ignores the operator until it is gone
+            if (_interceptorQuery.TryComp(cannonUid, out var interceptor) && interceptor.EngagedUntil > now)
+            {
+                i++;
                 continue;
             }
 

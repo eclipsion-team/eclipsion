@@ -34,6 +34,7 @@ public sealed partial class PersistentPoiBuildWindow : FancyWindow
 
     public event Action<ConstructionPrototype>? OnBuild;
     public event Action? OnPaint;
+    public event Action? OnDeconstruct;
 
     private List<PersistentPoiBuildCategory> _categories = new();
     private readonly List<Button> _categoryButtons = new();
@@ -53,7 +54,9 @@ public sealed partial class PersistentPoiBuildWindow : FancyWindow
 
         PaintIcon.Texture = _sprite.Frame0(new SpriteSpecifier.Rsi(new ResPath("Objects/Tools/spray_painter.rsi"), "spray_painter"));
         FooterLabel.SetHint(Loc.GetString("persistent-poi-build-ui-footer"));
+        DeconstructIcon.Texture = _sprite.Frame0(new SpriteSpecifier.Rsi(new ResPath("Objects/Tools/crowbar.rsi"), "icon"));
         PaintButton.OnPressed += _ => OnPaint?.Invoke();
+        DeconstructButton.OnPressed += _ => OnDeconstruct?.Invoke();
         BuildButton.OnPressed += _ =>
         {
             if (_selected != null)
@@ -278,6 +281,7 @@ public sealed partial class PersistentPoiBuildWindow : FancyWindow
 
         DetailLimit.SetMarkup(LimitText(status));
         BuildButton.Disabled = status.Block != PersistentPoiBuildBlock.None;
+        BuildButton.Text = Loc.GetString(_build.SiloCovers(recipe) ? "persistent-poi-build-ui-place-silo" : "persistent-poi-build-ui-place");
     }
 
     private Control BuildStage(int number, int total, List<PersistentPoiBuildCost> costs)
@@ -324,6 +328,18 @@ public sealed partial class PersistentPoiBuildWindow : FancyWindow
                 FontColorOverride = color,
                 VerticalAlignment = VAlignment.Center,
             });
+
+            if (_build.HasSilo)
+            {
+                var stock = _build.GetSiloStock(cost.Material.ID);
+                row.AddChild(new Label
+                {
+                    Text = Loc.GetString("persistent-poi-build-ui-silo-stock", ("count", stock)),
+                    FontColorOverride = stock >= cost.Amount ? Ready : Muted,
+                    VerticalAlignment = VAlignment.Center,
+                });
+            }
+
             box.AddChild(row);
         }
 

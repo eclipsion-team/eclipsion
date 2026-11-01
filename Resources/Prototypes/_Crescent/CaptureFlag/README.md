@@ -76,13 +76,35 @@ Only the flag's own grid is renamed and recoloured on radar. Devices bound acros
 
 ## Who can take it
 
-DSM, NCWL, TFSC (the TFCF's ID) and SHI, and nobody else. The restriction is not cosmetic: each of those four has
-an `npcFaction` prototype for the turrets to join and a banner sprite state for the flag to fly. ATH, TAP, TSP,
-SRM and IND characters are ignored by the flag entirely - they neither capture nor contest, and they cannot use a
+DSM, NCWL, TFSC (the TFCF's ID) and SHI, plus independents (below). The restriction is not cosmetic: each of those
+four has an `npcFaction` prototype for the turrets to join and a banner sprite state for the flag to fly. ATH, TAP,
+TSP and SRM characters are ignored by the flag entirely - they neither capture nor contest, and they cannot use a
 captured console. Adding a fifth power means adding its `npcFaction` prototype, a banner state in
 `medieval_pole_banners.rsi`, an entry in `PersistentTerritoryFactions`, and radar and flag colours. For its
 batteries to know who to shoot it also needs a `diplomacy` prototype and a place on `RatDiplomacySystem`'s
 roster, and for the territory to move its stock price, a row in `FactionStockCompanies`.
+
+**Independents.** IND is not a faction here. Each spacer or vagrant (HullrotFaction `IND`) who claims ground gets
+their own owner id, `IND1`, `IND2` and so on, numbered on their first claim and kept per player across rounds and
+campaigns in `territories/independents.json`. `TerritoryIndependentSystem` puts it on their body as
+`TerritoryIndependent` at spawn, and `PersistentTerritoryFactions.GetTeam` returns it while the body is still IND, so
+every holder check (doors, consoles, build menu, production, garrison console) sees one player, never the other
+independents. Joining a faction drops it. Rules:
+
+- One territory at a time. Raising colours on a second is refused while the first is held; neutralising other
+  ground is still allowed. Losing or abandoning the first frees the slot, and the number stays.
+- Every campaign allows independents; the campaign faction list only limits the powers.
+- Radar name `IND3 <name>`, rename prefix `IND3-`. Radar and political map colour come from a fixed palette by
+  number (`PersistentTerritoryFactions.IndependentColor`), none of them a faction's colour. Flag banner `teal-steel`.
+- Turrets join `IndependentTerritory`, which is hostile to every IND as well; the holder's body is let through with
+  a `FactionException`.
+- No treasury, so every payment is from their own account. No garrison: no round-start soldiers, and the
+  recruitment console only hires mercenaries (`MobSoldierAIMercenary*`, the `IND` line of each
+  `territorySoldierRole`) to join their squad. A mercenary (`NpcMercenary`, NPC faction `Mercenary`, hostile to
+  nobody) never fights of its own accord and ignores kill-all: it goes for whoever its hirer points out (that one
+  person, not their faction) and whoever attacks the hirer or a mercenary. The console says so. Mercenaries have no
+  all-access, only their spacer ID. Drones still fly in the holder's colour and attack everybody else. Faction-only
+  works (faction shipyards, gear racks) stay closed to them.
 
 Capture needs a living body and an explicit interaction with the standard; proximity alone does nothing. Corpses,
 crit characters and unsupported factions cannot start an attempt. Moving away or taking damage interrupts the
@@ -124,6 +146,15 @@ is fired on, and traffic between there and `range` gets a radio warning naming t
 
 The battery holds fire when a grid that is not at war with the holder is in the line of shot, and only fires guns
 that can actually bear - a welded mount has to already be pointing at the target, a turret swings onto it.
+
+**Missile interception.** Guns with `TerritoryMissileInterceptor` (the territorial 150cc point-defence laser and the
+old machinegun emplacement) shoot down missiles within `missileRange` (600) of the console: any seeker locked on
+something on the territory's grid, and any rocket whose course passes within 15 m of the grid's bounding circle.
+Missiles fired from the territory itself or by an ally are left alone. This runs whether or not anyone is at the
+console and whether auto fire is on, with no war needed. While a gun is on a missile it ignores the operator's and
+the automatic ship fire orders, and goes back to them half a second after the missile is gone. The 200cc and 250cc
+lasers never turn on missiles. A missile already over the territory's plating can't be hit (the bolts pass through
+their own grid).
 
 ## Admin console
 
@@ -187,15 +218,21 @@ Frames cannot be taken apart, only shot down.
 | Command          | territorial radar console             | `ComputerRadarPersistentPoi` (holder only)         | 10 steel, 5 glass, 10 cable                |
 | Command          | territorial shuttle console           | `ComputerShuttlePersistentPoi` (holder only)       | 10 steel, 5 glass, 10 cable                |
 | Command          | territorial recruitment console       | `ComputerPersistentPoiRecruitment` (holder only)   | 10 steel, 5 glass, 10 cable                |
+| Command          | territorial material silo             | `PersistentPoiMaterialSilo` (one, stock not saved) | 20 steel, 10 glass                         |
+| Command          | territorial works console             | `ComputerPersistentPoiMapping` (one, holder only)  | 10 steel, 5 glass, 10 cable                |
 | Defences         | territorial point-defence console     | `ComputerTargetingPersistentPoi`                   | 10 steel, 5 glass, 10 cable                |
 | Defences         | territorial point-defence emplacement | `HardpointPersistentPoiLaserEmplacement` + its 150cc 'Retribution' laser (needs power) | 10 plasteel, 15 steel, 10 cable |
+| Defences         | territorial 200cc laser emplacement   | `HardpointPersistentPoiMediumLaserEmplacement` + 200cc 'Warden' laser, level 2+ (3 at L2, 4 at L3) | 20 plasteel, 20 steel, 10 glass, 15 cable |
+| Defences         | territorial 250cc laser emplacement   | `HardpointPersistentPoiHeavyLaserEmplacement` (medium hardpoint) + 250cc 'Bastion' laser, level 3 only (2) | 30 plasteel, 30 steel, 15 glass, 20 cable |
 | Defences         | territorial anti-boarder turret       | `WeaponTurretAutoPDPersistentPoi`                  | 15 steel, 5 cable                          |
+| Defences         | territorial drone bay                 | `ComputerPersistentPoiDroneBay`, level 3 only (1)  | 15 plasteel, 10 glass, 20 cable            |
 | Power & light    | territorial boriatic generator        | `BoriaticGeneratorPersistentPoi` (50 kW, empty tank) | 15 steel, 10 plastic, 5 gold, 10 cable   |
 | Power & light    | territorial SMES                      | `SMESPersistentPoi` (built empty)                  | 10 steel, 5 plasteel, 10 cable             |
 | Power & light    | territorial substation                | `SubstationPersistentPoi`                          | 10 steel, 10 cable                         |
 | Power & light    | territorial APC (on a wall)           | `APCPersistentPoi`                                 | 3 steel, 5 cable                           |
 | Power & light    | territorial wall light                | `PoweredlightPersistentPoi`                        | 2 steel                                    |
 | Power & light    | territorial small light               | `PoweredSmallLightPersistentPoi`                   | 1 steel                                    |
+| Power & light    | territorial HV / MV / LV cable        | `CableHVPersistentPoi` etc., also under walls     | 1 matching cable coil                      |
 | Atmospherics     | territorial air canister              | `AirCanisterPersistentPoi` (full of air, holder only) | 15 steel                                |
 | Atmospherics     | territorial connector port            | `GasPortPersistentPoi`                             | 2 steel                                    |
 | Atmospherics     | territorial air vent / air scrubber   | `GasVentPumpPersistentPoi` / `GasVentScrubberPersistentPoi` | 2 steel                           |
@@ -208,6 +245,7 @@ Frames cannot be taken apart, only shot down.
 | Doors & airlocks | territorial external airlock          | `AirlockPersistentPoiDock` (docking, holder only)  | 10 steel, 5 plasteel, 5 cable              |
 | Walls & windows  | territorial wall                      | `WallSolidPersistentPoi`                           | 5 steel                                    |
 | Walls & windows  | territorial reinforced wall           | `WallReinforcedPersistentPoi`                      | 4 steel (girder), 3 plasteel               |
+| Walls & windows  | territorial plastitanium wall         | `WallPlastitaniumPersistentPoi`                    | 4 steel (girder), 6 plasteel               |
 | Walls & windows  | territorial reinforced window         | `ReinforcedWindowPersistentPoi`                    | 4 reinforced glass                         |
 | Walls & windows  | territorial window                    | `WindowPersistentPoi`                              | 4 glass                                    |
 | Furniture        | chair, comfy chair, office chairs, bar stool, steel bench | `ChairPersistentPoi`, `ComfyChairPersistentPoi`, `ChairOffice<Light/Dark>PersistentPoi`, `StoolBarPersistentPoi`, `SteelBenchPersistentPoi` | 1-2 steel |
@@ -270,8 +308,8 @@ personal ones to the seller. A yard stamped with its own faction (`FactionMachin
 that faction's treasury and issues hulls in its colours, whoever holds the ground it stands on. Civilian yards always
 bill the buyer.
 
-**Deployment.** A level 3 territory can take a **cryo spawner** (one) and up to two **equipment racks**. While the
-spawner is anchored, powered off an APC (5 kW) and its ground is held at level 3, the late-join window offers the
+**Deployment.** A level 2 territory can take a **cryo spawner** (one), and a level 3 one up to two **equipment racks**. While the
+spawner is anchored, powered off an APC (5 kW) and its ground is held at level 2 or above, the late-join window offers the
 holder's people a *Deploy at* choice next to the job list: their home station, or the territory by name. They still
 sign on with a home-station job and get its records and gear; only where they wake up changes. The choice is
 checked again as they spawn, against the faction read off the new body, and anyone the spawner can no longer take
@@ -282,8 +320,9 @@ faction's home armoury rack (class kit, armour, primary weapon, utilities, ammun
 any member of that faction - no armoury access needed - but only while that faction holds the ground
 (`TerritoryHolderOnly` on top of `FactionMachine`). Like the shipyards, the menu shows a holder only their own rack.
 
-Built equipment cannot be unanchored or deconstructed, but it can be shot to pieces, which is how the next holder gets
-to build their own. An emplacement is one piece: its hardpoint and gun go down together. Emplacements built before
+Built equipment cannot be unanchored or deconstructed by hand (the holder can take it down with **Dismantle**, below),
+but it can be shot to pieces, which is how the next holder gets to build their own. An emplacement is one piece: its
+hardpoint and gun go down together. Emplacements built before
 the switch to the laser keep their machinegun (`HardpointPersistentPoiEmplacement`, `WeaponTurretPDTPersistentPoi`);
 those prototypes stay only so old saves load. The radar and shuttle consoles are one each per territory and only
 look - the ground is fixed in place, so the shuttle console never flies or jumps it. The menu lives on the
@@ -311,15 +350,15 @@ the box:
 | Level | Costs to reach                                                                                          | Fire control | Factories | Anti-boarder turrets | Production | Bank | Stock reward |
 |-------|---------------------------------------------------------------------------------------------------------|--------------|-----------|----------------------|------------|------|--------------|
 | 1     | -                                                                                                       | 4 guns       | 2         | 2                    | 1x         | +0   | 1x           |
-| 2     | 1500 steel, 600 glass, 600 plasteel, 150 gold, 150 silver, 2 advanced + 2 precursor electronic parts      | 6 guns       | 3         | 3                    | 1.5x       | +3   | 1.5x         |
-| 3     | 3000 steel, 1200 glass, 1500 plasteel, 400 gold, 400 silver, 300 uranium, 5 advanced + 5 precursor parts | 8 guns       | 4         | 4                    | 2x         | +6   | 2x           |
+| 2     | 1125 steel, 450 glass, 450 plasteel, 113 gold, 113 silver, 2 advanced + 2 precursor electronic parts      | 6 guns       | 3         | 3                    | 1.5x       | +3   | 1.5x         |
+| 3     | 2250 steel, 900 glass, 1125 plasteel, 300 gold, 300 silver, 225 uranium, 4 advanced + 4 precursor parts  | 8 guns       | 4         | 4                    | 2x         | +6   | 2x           |
 
 Precursor electronic parts (`NanotrasenElectronics`) are salvage only - nothing makes them any more - which is what
 makes the top level a real prize. Anti-boarder turrets never go past four.
 
 Every level allows one console of each kind - fire control, production, administration - counting mapped ones.
 A territorial shipyard needs level 2 (one at levels 2 and 3), external airlocks go 2 / 4 / 6, and so do territorial
-generators. The cryo spawner (one) and equipment racks (two) need level 3.
+generators. The cryo spawner (one) needs level 2, the equipment racks (two) level 3.
 
 **Fire control is capped by level.** Every anchored ship gun on the territory counts, whoever put it there. Past the
 cap, the newest guns are left out of fire control entirely: no console links them and they will not fire, whatever
@@ -340,7 +379,7 @@ The production console tools the territory for one **line of production**:
 | Targeted ore extraction | `PersistentPoiExtractionRig`          | one chosen ore per rig, in quantity                     |
 | Textiles                | `PersistentPoiTextileMill`            | cotton, cloth, durathread                               |
 | Materials               | `PersistentPoiFoundry`                | steel, glass, plastic, plasteel sheets                  |
-| Trade goods             | `PersistentPoiTradeWorks`             | crated alloys, gunparts, ammunition, plasma             |
+| Trade goods             | `PersistentPoiTradeWorks`             | crated alloys, gunparts, ammunition, plasma; research disks (5000) |
 
 Only the current line's works can be built, up to the level's factory limit, and only they run. Retooling idles the
 old line's works; the console can **decommission** works to free their place (anything they banked is dispensed first).
@@ -445,6 +484,44 @@ signs. A palette's `emblems` list adds a page of the faction's own insignia once
 Painting needs the same thing building does - standing on held ground of your own faction - and reaches 10 tiles. A
 tile takes up to 4 decals and a territory 4000. Painted markings are part of the grid, so a persistent territory keeps
 them between rounds, and the next holder can scrub them off.
+
+**Dismantle** under the build menu's pages turns left click into a tear-down tool, like the construction ghost
+eraser; right click stops it. Clicking anything anchored on held ground - built works, the wreck's own walls,
+grilles, windows, consoles and machines - starts a 4 second do-after (`PersistentPoiDeconstructSystem`) that breaks
+on moving or taking damage. Clicking bare floor tears the tile up one layer (floor to plating to lattice) in 2
+seconds. Both need the same standing as building plus a wrench (`Anchoring`) and a crowbar (`Prying`) held in hand,
+and interaction range. Built works (`PersistentPoiStructure`, `PersistentPoiFurnishing`) hand back the materials of
+every stage they finished; the map's own entities give nothing, and a dismantled silo spills what it held. The
+standard, mobs other than built turrets, players and loose items cannot be dismantled, and the permanent floor round
+the standard cannot be torn up - clicking it only warns.
+
+**Material silo.** One per territory from level 1, on the Command page (`PersistentPoiMaterialSilo`, 20 steel then 10
+glass). The holders load it with any stack the build menu's recipes use - by hand, or a whole bag or box at once - and
+take a full stack back out through its Eject verbs. While it holds everything a recipe takes, placing that recipe from
+the build menu skips the ghost: the materials come out of the silo, an RCD build-up plays for 1 to 4 seconds and the
+works go up finished, running every stage's completion actions, limits included (`PersistentPoiSiloSystem`). It
+reaches 15 tiles from the builder without needing a line of sight. Recipes with a non-material step still need hand
+work. The stock is not a DataField, so the round-end save drops it: whatever is in the silo at round end is lost to the
+Turning, as its examine text says, while everything built from it stays.
+
+**Cable runs.** The Power page has one-tile high, medium and low-voltage cable (`CableHVPersistentPoi` and the MV and
+LV ones - ordinary cables with a construction node). They can go under walls, and with a stocked silo they go in
+straight from it through any thickness of wall, which is how power reaches guns on the outer hull of a POI with thick
+walls. One of each voltage per tile (`PersistentPoiNoPrototypeInTile`).
+
+**Works console.** One per territory from level 1, on the Command page (`ComputerPersistentPoiMapping`,
+`PersistentPoiMappingSystem`). Holders only, and it needs APC power. Opening it lifts the operator's view off their
+body onto a `PersistentPoiMappingEye` over the territory: their movement keys pan the view (input relay), the eye is
+their camera with FOV off, and the view is held inside the grid's bounds plus 8 tiles. While they look through it the
+build menu stays open after Place like a mapping palette, everything they place goes up straight from the material
+silo (never as a ghost - with nothing in the silo, nothing is built), Dismantle needs no tools and pays built works
+back into the silo after a 2 second RCD tear-down (at most 8 at once), and floor markings can be painted. Reach is 24
+tiles from the view instead of the body's arm's length; the permanent floor still refuses with a warning. The hotbar
+build action keeps working as before. The operator cannot attack, shoot, throw, use or pick up items, or interact
+with anything but the console (`PersistentPoiMappingViewerSystem`), so the wide view cannot be used to fight. The view
+ends when they close or leave the console, are pushed out of its range, lose power, lose the ground, are cuffed, go
+crit or die, are hit (any damage with an attacker, or 10 at once), ghost or disconnect, or the console is destroyed.
+One operator at a time.
 
 ## Carrying a territory between rounds
 
@@ -565,8 +642,8 @@ territory: never saved, and one shot down stays down until the next round puts u
 
 **Holder's garrison.** At round start a held territory gets its holder's soldiers and drones instead, as many as its
 level says (`garrisonSoldiers` / `garrisonDrones` in `persistent_poi_progression.yml`: 2 + 1 at level 1, 4 + 2 at
-level 2, 8 + 4 at level 3). The soldiers are the holder's own faction soldier AI (`TerritoryGarrison` on the standard
-lists them per faction) and come down by drop pod onto free floor within 8 tiles of the standard. They kill anyone who
+level 2, 8 + 4 at level 3). The soldiers are the holder's own faction soldier AI, a random mix of the roles `TerritoryGarrison`
+on the standard lists (`territory_soldier_roles.yml`), and come down by drop pod onto free floor within 8 tiles of the standard. They kill anyone who
 is neither of their side nor wearing an allied ID, open the holder's territorial doors, and can't be recruited into a
 squad, so they hold the post. The drones are the same picket hulls under the holder's IFF and colours ("DSM Valor
 3F-A1"), and go for any ship or suited person within 500 m that is not the holder or an ally. Both stay loyal to
@@ -574,14 +651,24 @@ whoever held the ground at round start, even if it changes hands mid-round. Dron
 soldiers only through the recruitment console. Garrison soldiers are never saved with the territory.
 
 **Recruitment console.** One per territory, from the Command page of the build menu (`ComputerPersistentPoiRecruitment`,
-needs APC power). The holder calls soldiers down by drop pod, paying per soldier from their own account or the
-faction treasury like the production orders (`garrisonPrice` 2000, `escortPrice` 3000 on
-`TerritoryRecruitmentConsole`). **Garrison** tops the territory's guard back up to the level's `garrisonSoldiers`.
+needs APC power). The holder picks a kind of soldier and calls it down by drop pod, paying per soldier from their own
+account or the faction treasury like the production orders. Each `territorySoldierRole` carries its price and the
+soldier per faction: rifleman 2000, breacher 2200, shocktrooper 2500, marksman 3000, machinegunner 3500. An escort
+costs `escortSurcharge` (1000, on `TerritoryRecruitmentConsole`) more. **Garrison** tops the territory's guard back up to the level's `garrisonSoldiers`.
 **Escort** soldiers land around the console and join the caller's squad, up to the level's `escortSoldiers` standing
 at once (2 / 4 / 6) and never past the squad's own limit of six. Soldiers still in the air count toward both limits,
 and only soldiers of the current holder count. A pod (`TerritoryDropPod`) marks its spot with a pulsing ring, falls
 for 4 seconds with a flame trail, lands with a bang that shakes nearby cameras, lets its soldier out and is gone 20
 seconds later.
+
+**Drone bay.** Level 3 only, one per territory, from the Defences page (`ComputerPersistentPoiDroneBay`, needs APC
+power). The holder buys a drone from `TerritoryDroneBayConsole.hulls`, paying from their own account or the
+treasury: Hornet and Wasp 8000, Valor and Rocinante 12000. Only the territory drone hulls belong in that list, no
+shields and 150cc guns at most; the picket refuses any hull carrying a shield emitter, and
+`TerritoryDroneDefenceTest` checks every listed hull. A bought drone joins the standard's picket under the holder's
+IFF and flies exactly like the garrison drones: it guards the territory and breaks off past `returnRange`. Up to the
+level's `bayDrones` (0 / 0 / 4) bought drones fly at once, on top of the garrison's. They last until shot down or the
+round ends, and are never saved. While the picket still flies for a previous holder the bay sells nothing.
 
 ## The political map
 

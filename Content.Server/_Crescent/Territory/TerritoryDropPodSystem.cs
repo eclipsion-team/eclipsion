@@ -15,6 +15,7 @@ public sealed class TerritoryDropPodSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly AudioSystem _audio = default!;
+    [Dependency] private readonly NpcMercenarySystem _mercenaries = default!;
     [Dependency] private readonly NpcSquadSystem _squad = default!;
     [Dependency] private readonly SharedCameraRecoilSystem _recoil = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
@@ -90,7 +91,10 @@ public sealed class TerritoryDropPodSystem : EntitySystem
         }
         else if (payload.Recruiter is { } recruiter && !TerminatingOrDeleted(recruiter))
         {
-            _squad.TryRecruit(recruiter, soldier);
+            if (HasComp<NpcMercenaryComponent>(soldier))
+                _mercenaries.Hire(recruiter, soldier);
+            else
+                _squad.TryRecruit(recruiter, soldier);
         }
 
         RemComp<TerritoryDropPodPayloadComponent>(uid);

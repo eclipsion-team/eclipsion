@@ -30,6 +30,18 @@ public enum PersistentPoiWorksCategory : byte
     GearRack,
 
     RecruitmentConsole,
+
+    // heavier laser emplacements, still counted as point-defence guns too
+    MediumLaser,
+    HeavyLaser,
+
+    Portal,
+
+    DroneBay,
+
+    MaterialSilo,
+
+    MappingConsole,
 }
 
 [Prototype("persistentPoiLevel")]
@@ -66,6 +78,10 @@ public sealed partial class PersistentPoiLevelPrototype : IPrototype
     // soldiers the recruitment console sends along with the holder's own people, alive at once
     [DataField]
     public int EscortSoldiers;
+
+    // drones bought at the drone bay, on top of the garrison's, alive at once
+    [DataField]
+    public int BayDrones;
 }
 
 [Prototype("persistentPoiCapability")]

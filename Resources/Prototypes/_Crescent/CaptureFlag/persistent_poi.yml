@@ -24,6 +24,8 @@
       - PersistentPoiRadarConsole
       - PersistentPoiShuttleConsole
       - PersistentPoiRecruitmentConsole
+      - PersistentPoiMaterialSilo
+      - PersistentPoiMappingConsole
     - name: persistent-poi-build-category-defence
       icon:
         sprite: _Crescent/Structures/hardpoints.rsi
@@ -31,7 +33,10 @@
       recipes:
       - PersistentPoiTargetingConsole
       - PersistentPoiPointDefenceEmplacement
+      - PersistentPoiMediumLaserEmplacement
+      - PersistentPoiHeavyLaserEmplacement
       - PersistentPoiAntiBoarderTurret
+      - PersistentPoiDroneBay
     - name: persistent-poi-build-category-power
       icon:
         sprite: Structures/Power/Generation/portable_generator.rsi
@@ -43,6 +48,9 @@
       - PersistentPoiApc
       - PersistentPoiLight
       - PersistentPoiSmallLight
+      - PersistentPoiCableHV
+      - PersistentPoiCableMV
+      - PersistentPoiCableLV
     - name: persistent-poi-build-category-atmos
       icon:
         sprite: Structures/Storage/canister.rsi
@@ -74,6 +82,7 @@
       recipes:
       - PersistentPoiWall
       - PersistentPoiWallReinforced
+      - PersistentPoiWallPlastitanium
       - PersistentPoiWindow
       - PersistentPoiWindowGlass
     - name: persistent-poi-build-category-furniture
@@ -123,6 +132,7 @@
         state: closed
       recipes:
       - PersistentPoiCryoSpawner
+      - PersistentPoiFactionPortal
       - PersistentPoiGearRackDSM
       - PersistentPoiGearRackNCWL
       - PersistentPoiGearRackTFSC
@@ -261,6 +271,7 @@
   suffix: Persistent territory, built
   components:
   - type: PersistentPoiStructure
+  - type: TerritoryMissileInterceptor
   - type: Construction
     graph: PersistentPoiStructures
     node: pdLaser
@@ -275,6 +286,202 @@
           collection: MetalGlassBreak
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
+
+# heavier territory lasers, level 2 and 3. only built on territories
+- type: entity
+  parent: AAAHardpointSmallEnergy
+  id: HardpointPersistentPoiMediumLaserEmplacement
+  name: territorial 200cc laser emplacement
+  suffix: Persistent territory, built
+  description: An energy hardpoint bolted into permanent ground, its 200cc pulse laser answering to the territory's fire-control console. The laser runs off the territory's power.
+  components:
+  - type: PersistentPoiStructure
+    spawnOnBuild:
+    - WeaponTurretWardenPersistentPoi
+  - type: PersistentPoiWorks
+    category: MediumLaser
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: mediumLaserEmplacement
+
+- type: entity
+  parent: WeaponTurretRetribution
+  id: WeaponTurretWardenPersistentPoi
+  name: 200cc 'Warden' Pulse Laser
+  suffix: Persistent territory, built
+  description: A territorial energy platform, heavier than the 150cc. Its bolts hit harder and carry further.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Objects/Turrets/Laser/retribution.rsi
+    drawdepth: Mobs
+    layers:
+    - state: retribution-dsm
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: mediumLaser
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 1100
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: Gun
+    fireOnDropChance: 0
+    projectileSpeed: 125
+    fireRate: 6
+    selectedMode: FullAuto
+    availableModes:
+    - FullAuto
+    angleDecay: 4.5
+    minAngle: .6
+    maxAngle: 2.6
+    angleIncrease: .22
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/laserturret.ogg
+      params:
+        variation: 0.12
+  - type: RechargeBasicEntityAmmo
+    rechargeCooldown: .3
+    energyPerCharge: 90
+    rechargeSound:
+      path: /Audio/Weapons/Guns/Bolt/lmg_bolt_closed.ogg
+      params:
+        pitch: 1.2
+        variation: 0.08
+  - type: BasicEntityAmmoProvider
+    proto: BulletWardenPersistentPoi
+    capacity: 40
+    count: 40
+  - type: ApcPowerReceiver
+    powerLoad: 3000
+  - type: WeaponPowerDraw
+    energyPerShot: 4300
+  - type: Battery
+    maxCharge: 21500
+    startingCharge: 21500
+  - type: ApcPowerReceiverBattery
+    batteryRechargeRate: 100000
+
+- type: entity
+  parent: BulletRetribution
+  id: BulletWardenPersistentPoi
+  name: charged hardlight bolt
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Projectile
+    ignoreWeaponGrid: true
+    damage:
+      types:
+        Heat: 130
+  - type: TimedDespawn
+    lifetime: 16 # 2000 m
+
+- type: entity
+  parent: AAAHardpointMediumEnergy
+  id: HardpointPersistentPoiHeavyLaserEmplacement
+  name: territorial 250cc laser emplacement
+  suffix: Persistent territory, built
+  description: A medium energy hardpoint bolted into permanent ground, its 250cc lance laser answering to the territory's fire-control console. The laser runs off the territory's power.
+  components:
+  - type: PersistentPoiStructure
+    spawnOnBuild:
+    - WeaponTurretBastionPersistentPoi
+  - type: PersistentPoiWorks
+    category: HeavyLaser
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: heavyLaserEmplacement
+
+- type: entity
+  parent: WeaponTurretRetribution
+  id: WeaponTurretBastionPersistentPoi
+  name: 250cc 'Bastion' Lance Laser
+  suffix: Persistent territory, built
+  description: The heaviest gun a territory can raise. A medium energy platform that lances hardlight at anything that comes too close.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Objects/Turrets/Laser/absolution.rsi
+    drawdepth: Mobs
+    layers:
+    - state: absolution
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: heavyLaser
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 1250
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: Gun
+    fireOnDropChance: 0
+    projectileSpeed: 122
+    fireRate: 5
+    selectedMode: FullAuto
+    availableModes:
+    - FullAuto
+    angleDecay: 5
+    minAngle: .5
+    maxAngle: 2.2
+    angleIncrease: .18
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/lasergatling.ogg
+      params:
+        variation: 0.12
+  - type: RechargeBasicEntityAmmo
+    rechargeCooldown: .26
+    energyPerCharge: 120
+    rechargeSound:
+      path: /Audio/Weapons/Guns/Bolt/lmg_bolt_closed.ogg
+      params:
+        pitch: 1.4
+        variation: 0.08
+  - type: BasicEntityAmmoProvider
+    proto: BulletBastionPersistentPoi
+    capacity: 44
+    count: 44
+  - type: ApcPowerReceiver
+    powerLoad: 3500
+  - type: WeaponPowerDraw
+    energyPerShot: 5500
+  - type: Battery
+    maxCharge: 27500
+    startingCharge: 27500
+  - type: ApcPowerReceiverBattery
+    batteryRechargeRate: 120000
+  - type: HardpointAnchorableOnly
+    class: Energy
+    size: Medium
+
+- type: entity
+  parent: BulletRetribution
+  id: BulletBastionPersistentPoi
+  name: lancing hardlight bolt
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Projectile
+    ignoreWeaponGrid: true
+    damage:
+      types:
+        Heat: 165
+  - type: TimedDespawn
+    lifetime: 20 # 2440 m
+  - type: Sprite
+    sprite: _Crescent/Objects/Turrets/Ammunition/Projectiles/lasers.rsi
+    layers:
+    - state: laser
 
 # the old machinegun emplacement, no longer built. kept so saved territories still load
 - type: entity
@@ -297,6 +504,7 @@
   suffix: Persistent territory, built
   components:
   - type: PersistentPoiStructure
+  - type: TerritoryMissileInterceptor
   - type: Construction
     graph: PersistentPoiStructures
     node: pdGun
@@ -565,6 +773,16 @@
   - type: Construction
     graph: PersistentPoiStructures
     node: wallReinforced
+
+- type: entity
+  parent: WallPlastitanium
+  id: WallPlastitaniumPersistentPoi
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: wallPlastitanium
 
 - type: entity
   parent: ReinforcedWindow
@@ -1126,6 +1344,24 @@
 
 - type: entity
   parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameMappingConsole
+  name: works console frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: mappingConsoleFrame
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameDroneBay
+  name: drone bay console frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: droneBayFrame
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
   id: PersistentPoiFrameTargetingConsole
   name: point-defence console frame
   components:
@@ -1141,6 +1377,24 @@
   - type: Construction
     graph: PersistentPoiStructures
     node: pdEmplacementFrame
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameMediumLaser
+  name: 200cc laser emplacement frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: mediumLaserFrame
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameHeavyLaser
+  name: 250cc laser emplacement frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: heavyLaserFrame
 
 - type: entity
   parent: PersistentPoiFrameBase
@@ -1281,7 +1535,7 @@
   parent: PersistentPoiFrameBase
   id: PersistentPoiGirder
   name: territorial girder
-  description: The steel bones of a reinforced wall. Plate it with plasteel to finish it.
+  description: The steel bones of a heavy wall. Plate it with plasteel to finish it.
   components:
   - type: Sprite
     sprite: Structures/Walls/solid.rsi
@@ -1565,6 +1819,98 @@
   - type: Construction
     graph: PersistentPoiStructures
     node: cryoSpawnerFrame
+
+# feeds the build menu: what it can cover goes up straight from it. Its stock is not saved, the silo itself is
+- type: entity
+  parent: BaseStructure
+  id: PersistentPoiMaterialSilo
+  name: territorial material silo
+  suffix: Persistent territory, built
+  description: Holds building materials for the territory's works. Anything placed from the build menu that it can cover goes up straight away. Its contents do not outlast the round - the Turning takes them - but what is built from them stays.
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/material_silo.rsi
+    state: material_silo
+    noRot: true
+  - type: InteractionOutline
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: PersistentPoiMaterialSilo
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: MaterialSilo
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: materialSilo
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 4
+            max: 8
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFrameMaterialSilo
+  name: material silo frame
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/material_silo.rsi
+    state: material_silo
+    color: "#ffffff88"
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: materialSiloFrame
+
+# ordinary cables with a construction node, so the build menu can lay them, under walls too
+- type: entity
+  parent: CableHV
+  id: CableHVPersistentPoi
+  suffix: Persistent territory
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: cableHV
+
+- type: entity
+  parent: CableMV
+  id: CableMVPersistentPoi
+  suffix: Persistent territory
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: cableMV
+
+- type: entity
+  parent: CableApcExtension
+  id: CableApcExtensionPersistentPoi
+  suffix: Persistent territory
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: cableLV
 
 - type: entity
   parent: PersistentPoiConsoleFrameBase

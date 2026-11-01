@@ -8,8 +8,10 @@ using Content.Shared.Stacks;
 using Content.Shared.Storage;
 using Robust.Client.Placement;
 using Robust.Client.Player;
+using Robust.Client.State;
 using Robust.Shared.Containers;
 using Robust.Shared.Enums;
+using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -22,6 +24,7 @@ public sealed class PersistentPoiBuildSystem : EntitySystem
     [Dependency] private readonly IComponentFactory _factory = default!;
     [Dependency] private readonly IPlacementManager _placement = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
+    [Dependency] private readonly IStateManager _state = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly ConstructionSystem _construction = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
@@ -29,6 +32,7 @@ public sealed class PersistentPoiBuildSystem : EntitySystem
     [Dependency] private readonly PersistentPoiLevelSystem _levels = default!;
     [Dependency] private readonly SharedContainerSystem _container = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
+    [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly TerritoryDecalPainterSystem _painter = default!;
 
     private static readonly EntProtoId Standard = "PersistentCaptureRegionFlag";
@@ -41,6 +45,25 @@ public sealed class PersistentPoiBuildSystem : EntitySystem
     private readonly HashSet<Entity<StackComponent>> _nearby = new();
 
     public int MaxLevel => _levels.MaxLevel;
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        SubscribeLocalEvent<PersistentPoiMappingViewerComponent, ComponentShutdown>(OnViewerShutdown);
+    }
+
+    // a placement started from the view would otherwise carry on from the body
+    private void OnViewerShutdown(Entity<PersistentPoiMappingViewerComponent> ent, ref ComponentShutdown args)
+    {
+        if (ent.Owner == _player.LocalEntity &&
+            _placement is PlacementManager { Hijack: PersistentPoiPlacementHijack or PersistentPoiDeconstructHijack })
+        {
+            _placement.Clear();
+        }
+    }
+
+    public bool IsViewing => _player.LocalEntity is { } user && PersistentPoiMapping.IsViewing(EntityManager, user);
 
     public List<PersistentPoiBuildCategory> GetMenu()
     {
@@ -199,11 +222,79 @@ public sealed class PersistentPoiBuildSystem : EntitySystem
                 IsTile = false,
                 PlacementOption = recipe.PlacementMode,
             },
-            new ConstructionPlacementHijack(_construction, recipe));
+            new PersistentPoiPlacementHijack(this, new ConstructionPlacementHijack(_construction, recipe), recipe));
     }
 
     public void OpenPainter()
     {
         _painter.Open();
+    }
+
+    public void StartDeconstructing()
+    {
+        if (_placement.Eraser)
+            return;
+
+        _placement.Clear();
+        _placement.ToggleEraserHijacked(new PersistentPoiDeconstructHijack(this, _state, _transform));
+    }
+
+    public void RequestDeconstruct(EntityUid target)
+    {
+        RaiseNetworkEvent(new PersistentPoiDeconstructRequestEvent(GetNetEntity(target)));
+    }
+
+    public void RequestDeconstructTile(EntityCoordinates location)
+    {
+        RaiseNetworkEvent(new PersistentPoiDeconstructTileRequestEvent(GetNetCoordinates(location)));
+    }
+
+    public int GetSiloStock(string material)
+    {
+        return TryGetSilo(out var silo) ? silo.Comp.Stored.GetValueOrDefault(material) : 0;
+    }
+
+    public bool HasSilo => TryGetSilo(out _);
+
+    public bool TryGetSiloStock(out int kinds, out int total)
+    {
+        kinds = 0;
+        total = 0;
+        if (!TryGetSilo(out var silo))
+            return false;
+
+        foreach (var count in silo.Comp.Stored.Values)
+        {
+            if (count <= 0)
+                continue;
+
+            kinds++;
+            total += count;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Whether the territory's silo holds everything the recipe takes, so placing it builds it outright.
+    /// </summary>
+    public bool SiloCovers(ConstructionPrototype recipe)
+    {
+        if (!TryGetSilo(out var silo))
+            return false;
+
+        var costs = PersistentPoiSilo.GetCosts(_proto, recipe, out var materialsOnly, out _);
+        return materialsOnly && costs.Count > 0 && PersistentPoiSilo.Covers(silo.Comp, costs);
+    }
+
+    public void RequestSiloBuild(ConstructionPrototype recipe, EntityCoordinates location, Direction direction)
+    {
+        RaiseNetworkEvent(new PersistentPoiSiloBuildRequestEvent(recipe.ID, GetNetCoordinates(location), direction));
+    }
+
+    private bool TryGetSilo(out Entity<PersistentPoiMaterialSiloComponent> silo)
+    {
+        silo = default;
+        return TryGetTerritory(out var territory) && PersistentPoiSilo.TryGetSilo(EntityManager, territory, out silo);
     }
 }

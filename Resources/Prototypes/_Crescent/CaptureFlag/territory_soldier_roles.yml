@@ -1,0 +1,63 @@
+# What a territory's recruitment console can call in, and what one costs. An escort pays the console's
+# escortSurcharge on top. The order the standard lists them in is the console's menu order.
+# IND is every independent's mercenary (IND1, IND2...), hired only to follow them.
+
+- type: territorySoldierRole
+  id: Rifleman
+  name: territory-soldier-role-rifleman
+  description: territory-soldier-role-rifleman-desc
+  price: 2000
+  soldiers:
+    DSM: MobSoldierAIDSMRifleman
+    NCWL: MobSoldierAINCWLRifleman
+    TFSC: MobSoldierAITFSCRifleman
+    SHI: MobSoldierAISHIRifleman
+    IND: MobSoldierAIMercenaryRifleman
+
+- type: territorySoldierRole
+  id: Breacher
+  name: territory-soldier-role-breacher
+  description: territory-soldier-role-breacher-desc
+  price: 2200
+  soldiers:
+    DSM: MobSoldierAIDSMShotgunner
+    NCWL: MobSoldierAINCWLShotgunner
+    TFSC: MobSoldierAITFSCShotgunner
+    SHI: MobSoldierAISHIShotgunner
+    IND: MobSoldierAIMercenaryShotgunner
+
+- type: territorySoldierRole
+  id: Shocktrooper
+  name: territory-soldier-role-shock
+  description: territory-soldier-role-shock-desc
+  price: 2500
+  soldiers:
+    DSM: MobSoldierAIDSMShock
+    NCWL: MobSoldierAINCWLShock
+    TFSC: MobSoldierAITFSCShock
+    SHI: MobSoldierAISHIShock
+    IND: MobSoldierAIMercenaryShock
+
+- type: territorySoldierRole
+  id: Marksman
+  name: territory-soldier-role-marksman
+  description: territory-soldier-role-marksman-desc
+  price: 3000
+  soldiers:
+    DSM: MobSoldierAIDSMMarksman
+    NCWL: MobSoldierAINCWLMarksman
+    TFSC: MobSoldierAITFSCMarksman
+    SHI: MobSoldierAISHIMarksman
+    IND: MobSoldierAIMercenaryMarksman
+
+- type: territorySoldierRole
+  id: Machinegunner
+  name: territory-soldier-role-gunner
+  description: territory-soldier-role-gunner-desc
+  price: 3500
+  soldiers:
+    DSM: MobSoldierAIDSMGunner
+    NCWL: MobSoldierAINCWLGunner
+    TFSC: MobSoldierAITFSCGunner
+    SHI: MobSoldierAISHIGunner
+    IND: MobSoldierAIMercenaryGunner

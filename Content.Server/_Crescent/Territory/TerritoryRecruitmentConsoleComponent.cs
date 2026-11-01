@@ -3,12 +3,9 @@ namespace Content.Server._Crescent.Territory;
 [RegisterComponent]
 public sealed partial class TerritoryRecruitmentConsoleComponent : Component
 {
-    // per soldier, pod included
+    // on top of the role's price, per escort
     [DataField]
-    public int GarrisonPrice = 2000;
-
-    [DataField]
-    public int EscortPrice = 3000;
+    public int EscortSurcharge = 1000;
 
     // most of the treasury one member may draw on in a round
     [DataField]

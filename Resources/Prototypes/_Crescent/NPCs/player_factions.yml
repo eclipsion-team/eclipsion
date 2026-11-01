@@ -97,3 +97,21 @@
     - Xeno
     - Zombie
     - Dragon
+
+# Turrets on ground one independent holds (IND1, IND2...). Hostile to every independent too; the holder's own
+# body is let through by TerritoryIndependentSystem.
+- type: npcFaction
+  id: IndependentTerritory
+  hostile:
+    - NCWL
+    - TFSC
+    - DSM
+    - SHI
+    - IND
+    - CMM
+    - SRMHunt
+
+# Hired guns of independents (NpcMercenary). Hostile to nobody: they only go for whoever their hirer points
+# out or whoever attacks the hirer or them.
+- type: npcFaction
+  id: Mercenary

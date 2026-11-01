@@ -28,7 +28,7 @@ namespace Content.Client.Administration.Systems
         {
             var info = _adminSystem.PlayerInfos.GetValueOrDefault(channelId)?.Connected ?? true;
             _audio.PlayGlobal(info ? AHelpUIController.AHelpSendSound : AHelpUIController.AHelpErrorSound,
-                Filter.Local(), false);
+                Filter.Local(), false, AHelpUIController.AHelpAudioParams);
 
             // Reuse the channel ID as the 'true sender'.
             // Server will ignore this and if someone makes it not ignore this (which is bad, allows impersonation!!!), that will help.

@@ -490,10 +490,15 @@ public sealed partial class NpcSquadSystem : EntitySystem
             // Also what lets it shoot a friend: its rounds would pass straight through one otherwise.
             _hostility.AddTarget(npc, target, duration);
 
+            // a mercenary goes for that one person only
             foreach (var faction in _targetAllegiances)
             {
-                if (!_npcFaction.IsMember(npc, faction) && !_leaderAllegiances.Contains(faction))
+                if (!HasComp<NpcMercenaryComponent>(npc) &&
+                    !_npcFaction.IsMember(npc, faction) &&
+                    !_leaderAllegiances.Contains(faction))
+                {
                     _hostility.AddFaction(npc, faction, duration);
+                }
             }
 
             // A pointed-out soldier of its own side fights back instead of standing there taking it.

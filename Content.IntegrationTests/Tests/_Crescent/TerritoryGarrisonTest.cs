@@ -6,6 +6,7 @@ using Content.Server.Power.EntitySystems;
 using Content.Shared._Crescent.Economy;
 using Content.Shared._Crescent.HullrotFaction;
 using Content.Shared._Crescent.Territory;
+using Content.Shared.Bank.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Maps;
 using Content.Shared.NPC.Components;
@@ -13,6 +14,7 @@ using Content.Shared.Shuttles.Components;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 using Robust.UnitTesting;
@@ -183,12 +185,10 @@ public sealed class TerritoryGarrisonTest
 
             console = entMan.SpawnEntity("ComputerPersistentPoiRecruitment", new EntityCoordinates(grid, 4.5f, 4.5f));
             entMan.System<PowerReceiverSystem>().SetNeedsPower(console, false);
-            var pricing = entMan.GetComponent<TerritoryRecruitmentConsoleComponent>(console);
-            pricing.GarrisonPrice = 0;
-            pricing.EscortPrice = 0;
 
             holder = entMan.SpawnEntity("MobHuman", new EntityCoordinates(grid, 3.5f, 4.5f));
             entMan.EnsureComponent<HullrotFactionComponent>(holder).Faction = "DSM";
+            entMan.EnsureComponent<BankAccountComponent>(holder).Balance = 100_000;
             // the test grid is in vacuum
             entMan.System<SharedGodmodeSystem>().EnableGodmode(holder);
 
@@ -200,21 +200,32 @@ public sealed class TerritoryGarrisonTest
         {
             var recruitment = server.System<TerritoryRecruitmentSystem>();
             var ent = (console, entMan.GetComponent<TerritoryRecruitmentConsoleComponent>(console));
+            var protos = server.ResolveDependency<IPrototypeManager>();
+            var marksman = protos.Index<TerritorySoldierRolePrototype>("Marksman");
+            var gunner = protos.Index<TerritorySoldierRolePrototype>("Machinegunner");
 
-            Assert.That(recruitment.TryRecruit(ent, holder, TerritoryRecruitKind.Garrison, 5, PaymentSource.Personal,
-                out _, out _, out var error), Is.False, "A full garrison took more.");
+            Assert.That(recruitment.TryRecruit(ent, holder, TerritoryRecruitKind.Garrison, marksman.ID, 5,
+                PaymentSource.Personal, out _, out _, out var error), Is.False, "A full garrison took more.");
             Assert.That(error, Is.EqualTo("territory-recruit-full"));
 
-            entMan.DeleteEntity(Soldiers(entMan, grid).First());
-            Assert.That(recruitment.TryRecruit(ent, holder, TerritoryRecruitKind.Garrison, 5, PaymentSource.Personal,
-                out var refilled, out _, out _), Is.True);
-            Assert.That(refilled, Is.EqualTo(1), "The refill went past the level's garrison.");
+            Assert.That(recruitment.TryRecruit(ent, holder, TerritoryRecruitKind.Garrison, "NoSuchRole", 1,
+                PaymentSource.Personal, out _, out _, out error), Is.False);
+            Assert.That(error, Is.EqualTo("territory-recruit-unknown-role"));
 
-            Assert.That(recruitment.TryRecruit(ent, holder, TerritoryRecruitKind.Escort, 5, PaymentSource.Personal,
-                out var escorts, out _, out _), Is.True);
+            entMan.DeleteEntity(Soldiers(entMan, grid).First());
+            Assert.That(recruitment.TryRecruit(ent, holder, TerritoryRecruitKind.Garrison, marksman.ID, 5,
+                PaymentSource.Personal, out var refilled, out var price, out _), Is.True);
+            Assert.That(refilled, Is.EqualTo(1), "The refill went past the level's garrison.");
+            Assert.That(price, Is.EqualTo(marksman.Price));
+
+            Assert.That(recruitment.TryRecruit(ent, holder, TerritoryRecruitKind.Escort, gunner.ID, 5,
+                PaymentSource.Personal, out var escorts, out price, out _), Is.True);
             Assert.That(escorts, Is.EqualTo(2), "Level 1 sends two along.");
-            Assert.That(recruitment.TryRecruit(ent, holder, TerritoryRecruitKind.Escort, 1, PaymentSource.Personal,
-                out _, out _, out _), Is.False, "Escorts in the air were not counted.");
+            Assert.That(price, Is.EqualTo(2 * (gunner.Price + ent.Item2.EscortSurcharge)));
+            Assert.That(entMan.GetComponent<BankAccountComponent>(holder).Balance,
+                Is.EqualTo(100_000 - marksman.Price - price));
+            Assert.That(recruitment.TryRecruit(ent, holder, TerritoryRecruitKind.Escort, gunner.ID, 1,
+                PaymentSource.Personal, out _, out _, out _), Is.False, "Escorts in the air were not counted.");
         });
 
         await WaitForPods(server);
@@ -224,9 +235,13 @@ public sealed class TerritoryGarrisonTest
             var soldiers = Soldiers(entMan, null);
             var escorts = soldiers.Where(s => entMan.GetComponent<TerritoryGarrisonSoldierComponent>(s).Escort).ToList();
             Assert.That(soldiers, Has.Count.EqualTo(4), "A pod never let its soldier out.");
+            Assert.That(soldiers.Count(s => entMan.GetComponent<MetaDataComponent>(s).EntityPrototype?.ID == "MobSoldierAIDSMMarksman"),
+                Is.GreaterThanOrEqualTo(1), "The refill didn't send the kind of soldier picked.");
             Assert.That(escorts, Has.Count.EqualTo(2));
             foreach (var escort in escorts)
             {
+                Assert.That(entMan.GetComponent<MetaDataComponent>(escort).EntityPrototype?.ID,
+                    Is.EqualTo("MobSoldierAIDSMGunner"), "An escort wasn't the kind picked.");
                 Assert.That(entMan.GetComponent<NpcSquadMemberComponent>(escort).Leader, Is.EqualTo(holder),
                     "An escort didn't join the squad of whoever called it.");
             }

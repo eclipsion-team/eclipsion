@@ -133,6 +133,20 @@
                                          MaxWidth="82"/>
                     </controls:BoxContainer>
                     <!--end Inertia dampener controls-->
+                    <!-- Eclipsion: turn rate -->
+                    <controls:BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="5 0 5 3">
+                        <controls:BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                            <controls:Label Text="{controls:Loc 'nav-screen-turn-rate'}" HorizontalExpand="True"/>
+                            <controls:Label Name="TurnRateLabel" Text="100%" Align="Right"/>
+                        </controls:BoxContainer>
+                        <controls:Slider Name="TurnRateSlider"
+                                         HorizontalExpand="True"
+                                         MinValue="5"
+                                         MaxValue="100"
+                                         Value="100"
+                                         Rounded="True"
+                                         ToolTip="{controls:Loc 'nav-screen-turn-rate-description'}"/>
+                    </controls:BoxContainer>
                     <!-- hullrot modules -->
                     <controls:OptionButton Name="WeaponTargetingMode" Margin="5 2"/>
                     <controls:BoxContainer Name ="ButtonHolder" VerticalExpand="True" HorizontalExpand="False" Orientation="Vertical">

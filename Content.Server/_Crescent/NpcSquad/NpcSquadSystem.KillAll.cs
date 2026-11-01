@@ -64,6 +64,9 @@ public sealed partial class NpcSquadSystem
     /// </summary>
     public bool IsKillAll(EntityUid npc)
     {
+        if (HasComp<NpcMercenaryComponent>(npc))
+            return false;
+
         if (TryComp<NpcSquadMemberComponent>(npc, out var member) &&
             TryComp<NpcSquadLeaderComponent>(member.Leader, out var leader))
         {

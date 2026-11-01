@@ -1,0 +1,65 @@
+# Mercenaries an independent hires at their territory's recruitment console. They join the hirer's squad and go
+# for nobody of their own accord: only whoever the hirer points out, and whoever attacks the hirer or them
+# (NpcMercenary). The Mercenary NPC faction is hostile to nobody, and the IND their hardsuit adds is taken off.
+# No all-access like the IND gunhands: only the spacer ID they wear opens doors, so a hirer cannot walk them
+# through anyone's doors.
+
+- type: entity
+  parent: MobSoldierAIINDRifleman
+  id: MobSoldierAIMercenaryRifleman
+  name: mercenary gunhand
+  description: A hired gun in a patched-up Fishbed, carrying a Krinkov. Shoots what the one paying points at.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - Mercenary
+  - type: NpcMercenary
+  - type: Access
+
+- type: entity
+  parent: MobSoldierAIINDShock
+  id: MobSoldierAIMercenaryShock
+  name: mercenary enforcer
+  description: A hired gun in a patched-up Fishbed, carrying a Militant. Shoots what the one paying points at.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - Mercenary
+  - type: NpcMercenary
+  - type: Access
+
+- type: entity
+  parent: MobSoldierAIINDShotgunner
+  id: MobSoldierAIMercenaryShotgunner
+  name: mercenary breacher
+  description: A hired gun in a patched-up Fishbed, carrying a Bush. Shoots what the one paying points at.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - Mercenary
+  - type: NpcMercenary
+  - type: Access
+
+- type: entity
+  parent: MobSoldierAIINDMarksman
+  id: MobSoldierAIMercenaryMarksman
+  name: mercenary sharpshooter
+  description: A hired gun in a patched-up Fishbed, carrying a Kar98k. Shoots what the one paying points at.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - Mercenary
+  - type: NpcMercenary
+  - type: Access
+
+- type: entity
+  parent: MobSoldierAIINDGunner
+  id: MobSoldierAIMercenaryGunner
+  name: mercenary machinegunner
+  description: A hired gun in a patched-up Fishbed, carrying an MG42. Shoots what the one paying points at.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - Mercenary
+  - type: NpcMercenary
+  - type: Access

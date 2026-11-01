@@ -115,7 +115,8 @@ public sealed class TerritoryDecalSystem : EntitySystem
             return false;
         }
 
-        if (!_transform.InRange(coordinates, userXform.Coordinates, TerritoryDecals.Reach) || !Throttle(painter))
+        var origin = PersistentPoiMapping.GetReachOrigin(EntityManager, painter, TerritoryDecals.Reach, out var reach);
+        if (!_transform.InRange(coordinates, origin, reach) || !Throttle(painter))
             return false;
 
         var indices = _map.TileIndicesFor(target, mapGrid, coordinates);

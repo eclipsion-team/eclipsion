@@ -13,7 +13,7 @@ namespace Content.Shared._Crescent.Territory;
 public sealed partial class TerritorySpawnBeaconComponent : Component
 {
     [DataField]
-    public int MinLevel = 3;
+    public int MinLevel = 2;
 }
 
 /// <summary>

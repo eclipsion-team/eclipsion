@@ -14,6 +14,8 @@
     RadarConsole: 1
     ShuttleConsole: 1
     PointDefence: 4
+    MediumLaser: 0
+    HeavyLaser: 0
     AntiBoarderTurret: 2
     Factory: 2
     Shipyard: 0
@@ -22,22 +24,27 @@
     SpawnBeacon: 0
     GearRack: 0
     RecruitmentConsole: 1
+    Portal: 0
+    DroneBay: 0
+    MaterialSilo: 1
+    MappingConsole: 1
   productionSpeed: 1
   extraStorage: 0
   stockRewardMultiplier: 1
   garrisonSoldiers: 2
   garrisonDrones: 1
   escortSoldiers: 2
+  bayDrones: 0
 
 - type: persistentPoiLevel
   id: PersistentPoiLevel2
   level: 2
   upgradeCost:
-    Steel: 1500
-    Glass: 600
-    Plasteel: 600
-    Gold: 150
-    Silver: 150
+    Steel: 1125
+    Glass: 450
+    Plasteel: 450
+    Gold: 113
+    Silver: 113
     AdvancedElectronics: 2
     NanotrasenElectronics: 2
   limits:
@@ -47,33 +54,40 @@
     RadarConsole: 1
     ShuttleConsole: 1
     PointDefence: 6
+    MediumLaser: 3
+    HeavyLaser: 0
     AntiBoarderTurret: 3
     Factory: 3
     Shipyard: 1
     DockingPort: 4
     Generator: 4
-    SpawnBeacon: 0
+    SpawnBeacon: 1
     GearRack: 0
     RecruitmentConsole: 1
+    Portal: 1
+    DroneBay: 0
+    MaterialSilo: 1
+    MappingConsole: 1
   productionSpeed: 1.5
   extraStorage: 3
   stockRewardMultiplier: 1.5
   garrisonSoldiers: 4
   garrisonDrones: 2
   escortSoldiers: 4
+  bayDrones: 0
 
 - type: persistentPoiLevel
   id: PersistentPoiLevel3
   level: 3
   upgradeCost:
-    Steel: 3000
-    Glass: 1200
-    Plasteel: 1500
-    Gold: 400
-    Silver: 400
-    Uranium: 300
-    AdvancedElectronics: 5
-    NanotrasenElectronics: 5
+    Steel: 2250
+    Glass: 900
+    Plasteel: 1125
+    Gold: 300
+    Silver: 300
+    Uranium: 225
+    AdvancedElectronics: 4
+    NanotrasenElectronics: 4
   limits:
     TargetingConsole: 1
     ProductionConsole: 1
@@ -81,6 +95,8 @@
     RadarConsole: 1
     ShuttleConsole: 1
     PointDefence: 8
+    MediumLaser: 4
+    HeavyLaser: 2
     AntiBoarderTurret: 4
     Factory: 4
     Shipyard: 1
@@ -89,12 +105,17 @@
     SpawnBeacon: 1
     GearRack: 2
     RecruitmentConsole: 1
+    Portal: 2
+    DroneBay: 1
+    MaterialSilo: 1
+    MappingConsole: 1
   productionSpeed: 2
   extraStorage: 6
   stockRewardMultiplier: 2
   garrisonSoldiers: 8
   garrisonDrones: 4
   escortSoldiers: 6
+  bayDrones: 4
 
 - type: persistentPoiCapability
   id: GeneralOre

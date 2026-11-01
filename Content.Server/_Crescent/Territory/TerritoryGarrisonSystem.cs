@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Content.Server.GameTicking;
 using Content.Shared._Crescent.Territory;
 using Content.Shared.Maps;
@@ -6,12 +7,14 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Physics;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
 namespace Content.Server._Crescent.Territory;
 
 public sealed class TerritoryGarrisonSystem : EntitySystem
 {
+    [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly PersistentPoiLevelSystem _levels = default!;
@@ -57,10 +60,10 @@ public sealed class TerritoryGarrisonSystem : EntitySystem
 
     /// <summary>
     /// Drops <paramref name="count"/> of the holder's soldiers in by pod, around <paramref name="near"/> if given,
-    /// otherwise around the standard.
+    /// otherwise around the standard. With no <paramref name="role"/> each pod brings a random one.
     /// </summary>
     public int CallIn(Entity<TerritoryGarrisonComponent> standard, TerritoryRecruitKind kind, int count,
-        EntityCoordinates? near = null, EntityUid? recruiter = null)
+        ProtoId<TerritorySoldierRolePrototype>? role = null, EntityCoordinates? near = null, EntityUid? recruiter = null)
     {
         var xform = Transform(standard);
         if (count <= 0 ||
@@ -68,11 +71,20 @@ public sealed class TerritoryGarrisonSystem : EntitySystem
             !TryComp<MapGridComponent>(grid, out var gridComp) ||
             !TryComp<PersistentPoiGridComponent>(grid, out var territory) ||
             territory.Owner is not { } owner ||
-            !standard.Comp.Soldiers.TryGetValue(owner, out var roster) ||
-            roster.Count == 0)
+            !Offers(owner, kind))
         {
             return 0;
         }
+
+        var roster = new List<EntProtoId>();
+        foreach (var offered in GetRoles(standard, owner))
+        {
+            if (role == null || offered.ID == role.Value.Id)
+                roster.Add(offered.Soldiers[RosterKey(owner)]);
+        }
+
+        if (roster.Count == 0)
+            return 0;
 
         var posts = near is { } spot
             ? FindPosts(grid, gridComp, _map.LocalToTile(grid, gridComp, spot), NearRadius)
@@ -143,6 +155,34 @@ public sealed class TerritoryGarrisonSystem : EntitySystem
         }
 
         return count;
+    }
+
+    public bool HasSoldiers(Entity<TerritoryGarrisonComponent> standard, string faction)
+    {
+        return GetRoles(standard, faction).Any();
+    }
+
+    // the roles the standard offers that the faction has soldiers for, in menu order
+    public IEnumerable<TerritorySoldierRolePrototype> GetRoles(Entity<TerritoryGarrisonComponent> standard, string faction)
+    {
+        var key = RosterKey(faction);
+        foreach (var id in standard.Comp.Roles)
+        {
+            if (_proto.TryIndex(id, out var role) && role.Soldiers.ContainsKey(key))
+                yield return role;
+        }
+    }
+
+    /// <summary>Independents only hire mercenaries to follow them; nobody holds their ground for them.</summary>
+    public static bool Offers(string owner, TerritoryRecruitKind kind)
+    {
+        return kind == TerritoryRecruitKind.Escort || !PersistentTerritoryFactions.IsIndependent(owner);
+    }
+
+    // every independent hires from the one IND roster
+    private static string RosterKey(string owner)
+    {
+        return PersistentTerritoryFactions.IsIndependent(owner) ? PersistentTerritoryFactions.IndependentFaction : owner;
     }
 
     public bool TryGetStandard(EntityUid grid, [NotNullWhen(true)] out Entity<TerritoryGarrisonComponent>? standard)

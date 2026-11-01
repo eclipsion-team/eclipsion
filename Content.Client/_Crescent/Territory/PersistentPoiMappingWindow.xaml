@@ -1,0 +1,18 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      Title="{Loc 'persistent-poi-mapping-ui-title'}"
+                      MinSize="280 300"
+                      SetSize="300 340">
+    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="6">
+        <Label Name="TerritoryLabel" StyleClasses="LabelHeading" ClipText="True"/>
+        <RichTextLabel Name="SiloLabel"/>
+        <PanelContainer StyleClasses="LowDivider"/>
+        <Button Name="MenuButton" Text="{Loc 'persistent-poi-mapping-ui-menu'}" StyleClasses="OpenBoth" MinHeight="30"/>
+        <Button Name="DismantleButton" Text="{Loc 'persistent-poi-mapping-ui-dismantle'}" StyleClasses="OpenBoth" MinHeight="30"/>
+        <Button Name="PaintButton" Text="{Loc 'persistent-poi-mapping-ui-paint'}" StyleClasses="OpenBoth" MinHeight="30"/>
+        <Button Name="RecenterButton" Text="{Loc 'persistent-poi-mapping-ui-recenter'}" StyleClasses="OpenBoth" MinHeight="30"/>
+        <Control VerticalExpand="True"/>
+        <RichTextLabel Name="HintLabel"/>
+        <Button Name="LeaveButton" Text="{Loc 'persistent-poi-mapping-ui-leave'}" StyleClasses="Caution" MinHeight="30"/>
+    </BoxContainer>
+</controls:FancyWindow>

@@ -80,4 +80,8 @@ public sealed partial class TerritoryPicketDroneComponent : Component
 
     [ViewVariables]
     public float StrafeLeft;
+
+    // paid for at the drone bay, not part of the round-start garrison
+    [ViewVariables]
+    public bool Bought;
 }

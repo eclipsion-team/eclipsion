@@ -17,7 +17,8 @@ public sealed class TerritoryRecruitmentBoundUserInterface : BoundUserInterface
         base.Open();
 
         _window = this.CreateWindow<TerritoryRecruitmentWindow>();
-        _window.OnRecruit += (kind, count, source) => SendMessage(new TerritoryRecruitMessage(kind, count, source));
+        _window.OnRecruit += (kind, role, count, source) =>
+            SendMessage(new TerritoryRecruitMessage(kind, role, count, source));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

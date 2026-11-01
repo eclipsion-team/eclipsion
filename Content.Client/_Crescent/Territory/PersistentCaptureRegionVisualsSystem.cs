@@ -56,7 +56,11 @@ public sealed class PersistentCaptureRegionVisualsSystem : EntitySystem
         }
 
         var state = flag.NeutralState;
-        if (flag.OwnerTeam != null && ent.Comp.TeamStates.TryGetValue(flag.OwnerTeam, out var configuredState))
+        var team = PersistentTerritoryFactions.IsIndependent(flag.OwnerTeam)
+            ? PersistentTerritoryFactions.IndependentFaction
+            : flag.OwnerTeam;
+
+        if (team != null && ent.Comp.TeamStates.TryGetValue(team, out var configuredState))
             state = configuredState;
 
         sprite.LayerSetState(0, state);

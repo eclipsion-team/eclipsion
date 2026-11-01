@@ -25,6 +25,14 @@ namespace Content.Server.Shuttles.Components
 
         public const float MaxAngularVelocity = 6f;
 
+        public const float MinTurnRate = 0.05f;
+
+        /// <summary>
+        /// Eclipsion: pilot-set fraction of turning torque and max angular velocity, from the shuttle console.
+        /// </summary>
+        [ViewVariables(VVAccess.ReadWrite), DataField]
+        public float TurnRate = 1f;
+
         /// <summary>
         /// The cached thrust available for each cardinal direction
         /// </summary>

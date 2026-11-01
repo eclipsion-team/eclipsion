@@ -1,0 +1,267 @@
+# Faction portal network. Members of a portal's faction can travel to any other open portal of that faction
+# on the same map: click it to pick a destination, or step in and pick one then. A picked destination is
+# remembered, so the next step in sends them straight there.
+#
+# Mapped portals need no power. Map the faction's own variant, or FactionPortal to take the faction of the
+# grid's IFF. Set the FactionPortal label when a grid carries more than one portal.
+
+- type: entity
+  abstract: true
+  parent: BaseStructure
+  id: BaseFactionPortal
+  name: faction portal
+  description: A bluespace gate tuned to one faction's network. Its members can step through to any of the faction's other gates.
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/gateway.rsi
+    noRot: true
+    layers:
+    - state: frame
+    - state: portal
+      shader: unshaded
+      visible: false
+      map: ["enum.FactionPortalVisualLayers.Portal"]
+    - state: on
+      shader: unshaded
+      visible: false
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.FactionPortalVisuals.Active:
+        enum.FactionPortalVisualLayers.Portal:
+          True: { visible: true }
+          False: { visible: false }
+        enum.PowerDeviceVisualLayers.Powered:
+          True: { visible: true }
+          False: { visible: false }
+  - type: InteractionOutline
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      portal:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.48,0.25,0.48"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        hard: false
+  - type: PointLight
+    enabled: false
+    color: SkyBlue
+    radius: 3
+    energy: 1
+  - type: FactionPortal
+  - type: FactionMachine
+    explicit: true
+  - type: ActivatableUI
+    key: enum.FactionPortalUiKey.Key
+    requireActiveHand: false
+  - type: UserInterface
+    interfaces:
+      enum.FactionPortalUiKey.Key:
+        type: FactionPortalBoundUserInterface
+
+- type: entity
+  parent: BaseFactionPortal
+  id: FactionPortal
+  suffix: Grid faction
+  components:
+  - type: FactionMachine
+    faction: ""
+    explicit: false
+
+- type: entity
+  parent: BaseFactionPortal
+  id: FactionPortalDSM
+  suffix: DSM
+  components:
+  - type: FactionMachine
+    faction: DSM
+  - type: Sprite
+    layers:
+    - state: frame
+    - state: portal
+      shader: unshaded
+      visible: false
+      color: "#C677A5"
+      map: ["enum.FactionPortalVisualLayers.Portal"]
+    - state: on
+      shader: unshaded
+      visible: false
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+  - type: PointLight
+    color: "#C677A5"
+
+- type: entity
+  parent: BaseFactionPortal
+  id: FactionPortalNCWL
+  suffix: NCWL
+  components:
+  - type: FactionMachine
+    faction: NCWL
+  - type: Sprite
+    layers:
+    - state: frame
+    - state: portal
+      shader: unshaded
+      visible: false
+      color: Orange
+      map: ["enum.FactionPortalVisualLayers.Portal"]
+    - state: on
+      shader: unshaded
+      visible: false
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+  - type: PointLight
+    color: Orange
+
+- type: entity
+  parent: BaseFactionPortal
+  id: FactionPortalSHI
+  suffix: SHI
+  components:
+  - type: FactionMachine
+    faction: SHI
+  - type: Sprite
+    layers:
+    - state: frame
+    - state: portal
+      shader: unshaded
+      visible: false
+      color: White
+      map: ["enum.FactionPortalVisualLayers.Portal"]
+    - state: on
+      shader: unshaded
+      visible: false
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+  - type: PointLight
+    color: White
+
+# TFCF member organizations (TAP and the rest) share this network.
+- type: entity
+  parent: BaseFactionPortal
+  id: FactionPortalTFSC
+  suffix: TFCF
+  components:
+  - type: FactionMachine
+    faction: TFSC
+  - type: Sprite
+    layers:
+    - state: frame
+    - state: portal
+      shader: unshaded
+      visible: false
+      color: IndianRed
+      map: ["enum.FactionPortalVisualLayers.Portal"]
+    - state: on
+      shader: unshaded
+      visible: false
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+  - type: PointLight
+    color: IndianRed
+
+- type: entity
+  parent: BaseFactionPortal
+  id: FactionPortalSRM
+  suffix: SRM
+  components:
+  - type: FactionMachine
+    faction: SRM
+  - type: Sprite
+    layers:
+    - state: frame
+    - state: portal
+      shader: unshaded
+      visible: false
+      color: "#D4C06A"
+      map: ["enum.FactionPortalVisualLayers.Portal"]
+    - state: on
+      shader: unshaded
+      visible: false
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+  - type: PointLight
+    color: "#D4C06A"
+
+- type: entity
+  parent: BaseFactionPortal
+  id: FactionPortalCMM
+  suffix: CMM
+  components:
+  - type: FactionMachine
+    faction: CMM
+  - type: Sprite
+    layers:
+    - state: frame
+    - state: portal
+      shader: unshaded
+      visible: false
+      color: "#4A7BD1"
+      map: ["enum.FactionPortalVisualLayers.Portal"]
+    - state: on
+      shader: unshaded
+      visible: false
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+  - type: PointLight
+    color: "#4A7BD1"
+
+# Built on a held territory from level 2. Belongs to whoever holds the ground and shuts while it has no power,
+# no holder, or the territory falls below level 2.
+- type: entity
+  parent: BaseFactionPortal
+  id: PersistentPoiFactionPortal
+  name: territorial faction portal
+  suffix: Persistent territory, built
+  description: A bluespace gate wired into the territory. While it has power, the holding faction's people can step through to their stations and other territories.
+  components:
+  - type: FactionPortal
+    minTerritoryLevel: 2
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: Portal
+  - type: ApcPowerReceiver
+    powerLoad: 5000
+  - type: ExtensionCableReceiver
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: portal
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 4
+            max: 8
+          SheetPlasteel1:
+            min: 2
+            max: 5
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: PersistentPoiFrameBase
+  id: PersistentPoiFramePortal
+  name: faction portal frame
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/gateway.rsi
+    state: frame
+    noRot: true
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: portalFrame

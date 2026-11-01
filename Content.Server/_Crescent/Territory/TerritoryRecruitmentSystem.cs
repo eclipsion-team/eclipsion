@@ -9,6 +9,7 @@ using Content.Shared._Crescent.Territory;
 using Content.Shared.GameTicking;
 using Content.Shared.Popups;
 using Robust.Server.GameObjects;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
 namespace Content.Server._Crescent.Territory;
@@ -20,6 +21,7 @@ namespace Content.Server._Crescent.Territory;
 public sealed class TerritoryRecruitmentSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly GameTicker _ticker = default!;
     [Dependency] private readonly PersistentPoiLevelSystem _levels = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
@@ -68,7 +70,7 @@ public sealed class TerritoryRecruitmentSystem : EntitySystem
 
     private void OnRecruit(Entity<TerritoryRecruitmentConsoleComponent> ent, ref TerritoryRecruitMessage args)
     {
-        if (!TryRecruit(ent, args.Actor, args.Kind, args.Count, args.Source, out var called, out var price, out var error))
+        if (!TryRecruit(ent, args.Actor, args.Kind, args.Role, args.Count, args.Source, out var called, out var price, out var error))
         {
             _popup.PopupEntity(Loc.GetString(error), ent, args.Actor, PopupType.SmallCaution);
             UpdateConsole(ent);
@@ -79,6 +81,7 @@ public sealed class TerritoryRecruitmentSystem : EntitySystem
                 ? "territory-recruit-escort-called"
                 : "territory-recruit-garrison-called",
             ("count", called),
+            ("role", Loc.GetString(_proto.Index(args.Role).Name)),
             ("price", price)), ent, args.Actor);
         UpdateConsole(ent);
     }
@@ -87,6 +90,7 @@ public sealed class TerritoryRecruitmentSystem : EntitySystem
         Entity<TerritoryRecruitmentConsoleComponent> console,
         EntityUid actor,
         TerritoryRecruitKind kind,
+        ProtoId<TerritorySoldierRolePrototype> roleId,
         int count,
         PaymentSource source,
         out int called,
@@ -112,6 +116,25 @@ public sealed class TerritoryRecruitmentSystem : EntitySystem
             return false;
         }
 
+        if (!_garrison.HasSoldiers(standard.Value, owner))
+        {
+            error = "territory-recruit-no-soldiers";
+            return false;
+        }
+
+        if (!TerritoryGarrisonSystem.Offers(owner, kind))
+        {
+            error = "territory-recruit-mercenaries-only";
+            return false;
+        }
+
+        var role = _garrison.GetRoles(standard.Value, owner).FirstOrDefault(r => r.ID == roleId.Id);
+        if (role == null)
+        {
+            error = "territory-recruit-unknown-role";
+            return false;
+        }
+
         if (!this.IsPowered(console, EntityManager))
         {
             error = "territory-recruit-unpowered";
@@ -128,18 +151,24 @@ public sealed class TerritoryRecruitmentSystem : EntitySystem
             return false;
         }
 
-        price = called * (kind == TerritoryRecruitKind.Escort ? console.Comp.EscortPrice : console.Comp.GarrisonPrice);
+        var escort = kind == TerritoryRecruitKind.Escort;
+        price = called * PriceOf(role, kind, console.Comp);
         if (!_payment.TryCharge(actor, owner, source, price, console.Comp.TreasuryShare,
-                $"{called} {kind.ToString().ToLowerInvariant()} soldier(s) on territory '{territory.RegionId}'", out error))
+                $"{called} {kind.ToString().ToLowerInvariant()} {role.ID}(s) on territory '{territory.RegionId}'", out error))
         {
             return false;
         }
 
-        var escort = kind == TerritoryRecruitKind.Escort;
-        _garrison.CallIn(standard.Value, kind, called,
+        _garrison.CallIn(standard.Value, kind, called, role.ID,
             escort ? Transform(console).Coordinates : null,
             escort ? actor : null);
         return true;
+    }
+
+    public static int PriceOf(TerritorySoldierRolePrototype role, TerritoryRecruitKind kind,
+        TerritoryRecruitmentConsoleComponent console)
+    {
+        return role.Price + (kind == TerritoryRecruitKind.Escort ? console.EscortSurcharge : 0);
     }
 
     private int Room(PersistentPoiGridComponent territory, TerritoryRecruitKind kind, EntityUid actor)
@@ -174,8 +203,7 @@ public sealed class TerritoryRecruitmentSystem : EntitySystem
         var state = new TerritoryRecruitmentState
         {
             Powered = this.IsPowered(console, EntityManager),
-            GarrisonPrice = console.Comp.GarrisonPrice,
-            EscortPrice = console.Comp.EscortPrice,
+            EscortSurcharge = console.Comp.EscortSurcharge,
         };
 
         if (Transform(console).GridUid is not { } grid ||
@@ -191,8 +219,21 @@ public sealed class TerritoryRecruitmentSystem : EntitySystem
         state.GarrisonLimit = level?.GarrisonSoldiers ?? 0;
         state.EscortLimit = level?.EscortSoldiers ?? 0;
 
+        // an independent hires mercenaries for their squad and keeps no garrison
+        state.Mercenaries = PersistentTerritoryFactions.IsIndependent(territory.Owner);
+        if (state.Mercenaries)
+            state.GarrisonLimit = 0;
+
         if (territory.Owner is not { } owner)
             return state;
+
+        if (_garrison.TryGetStandard(grid, out var standard))
+        {
+            foreach (var role in _garrison.GetRoles(standard.Value, owner))
+            {
+                state.Roles.Add(role.ID);
+            }
+        }
 
         state.Garrison = _garrison.CountSoldiers(territory.RegionId, owner, TerritoryRecruitKind.Garrison);
         state.Escorts = _garrison.CountSoldiers(territory.RegionId, owner, TerritoryRecruitKind.Escort);

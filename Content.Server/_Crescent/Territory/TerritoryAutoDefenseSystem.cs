@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Server._Crescent.Diplomacy;
+using Content.Server._Crescent.ProximityFuse;
 using Content.Server._Mono.NPC.HTN;
 using Content.Server.NPC.Systems;
 using Content.Server.PointCannons;
@@ -7,9 +8,11 @@ using Content.Server.Power.EntitySystems;
 using Content.Server.Radio.EntitySystems;
 using Content.Shared._Crescent.Diplomacy;
 using Content.Shared._Crescent.Factions;
+using Content.Shared._Crescent.HeatSeeking;
 using Content.Shared._Crescent.Territory;
 using Content.Shared.PointCannons;
 using Content.Shared.Popups;
+using Content.Shared.Projectiles;
 using Content.Shared.Shuttles.Systems;
 using Content.Shared.Weapons.Ranged.Components;
 using Robust.Server.GameObjects;
@@ -27,6 +30,8 @@ namespace Content.Server._Crescent.Territory;
 /// <summary>
 /// Runs the hands-off guard mode for persistent territory point-defence consoles. Opening the targeting UI gives
 /// the operator exclusive fire control; closing it returns every linked point cannon to automatic watch.
+/// The exception is <see cref="TerritoryMissileInterceptorComponent"/> guns, which drop everything for an incoming
+/// missile whether anyone is at the console or not.
 /// </summary>
 public sealed class TerritoryAutoDefenseSystem : EntitySystem
 {
@@ -50,6 +55,19 @@ public sealed class TerritoryAutoDefenseSystem : EntitySystem
     [Dependency] private readonly SharedUserInterfaceSystem _ui = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
+    private static readonly TimeSpan MissileScanInterval = TimeSpan.FromSeconds(0.25);
+
+    private static readonly TimeSpan InterceptorHold = TimeSpan.FromSeconds(0.5);
+
+    // how wide of the hull's bounding circle a rocket may pass and still be shot at
+    private const float MissileMissMargin = 15f;
+
+    private EntityQuery<HeatSeekingComponent> _seekerQuery;
+    private EntityQuery<ProjectileComponent> _projectileQuery;
+    private EntityQuery<TerritoryMissileInterceptorComponent> _interceptorQuery;
+
+    private readonly HashSet<Entity<ProximityFuseTargetComponent>> _missileScratch = new();
+
     private readonly Dictionary<EntityUid, TimeSpan> _nextGridWarning = new();
     private readonly Dictionary<EntityUid, TimeSpan> _nextNeutralRadioWarning = new();
     // Not readonly: FindGridsIntersecting takes it by ref so it can grow the list for us.
@@ -67,6 +85,10 @@ public sealed class TerritoryAutoDefenseSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<MapGridComponent, EntityTerminatingEvent>(OnGridTerminating);
+
+        _seekerQuery = GetEntityQuery<HeatSeekingComponent>();
+        _projectileQuery = GetEntityQuery<ProjectileComponent>();
+        _interceptorQuery = GetEntityQuery<TerritoryMissileInterceptorComponent>();
     }
 
     public override void Update(float frameTime)
@@ -77,20 +99,33 @@ public sealed class TerritoryAutoDefenseSystem : EntitySystem
         var query = EntityQueryEnumerator<TerritoryAutoDefenseComponent, TargetingConsoleComponent>();
         while (query.MoveNext(out var consoleUid, out var defense, out var console))
         {
-            // The normal targeting console system owns the guns for as long as at least one operator has its UI
-            // open. This also prevents an automatic shot from racing a manual order on the same server tick.
-            if (_ui.IsUiOpen(consoleUid, TargetingConsoleUiKey.Key))
-            {
-                ClearTarget(defense);
-                continue;
-            }
-
             var consoleXform = Transform(consoleUid);
             if (consoleXform.GridUid is not { } ownGrid ||
                 !this.IsPowered(consoleUid, EntityManager) ||
                 _iffDiplomacy.GetGridFaction(ownGrid) is not { } ownFaction ||
-                !string.Equals(_factionMachines.GetFaction(consoleUid), ownFaction, StringComparison.Ordinal) ||
-                AnotherConsoleOwnsAutomaticControl(consoleUid, ownGrid) ||
+                !string.Equals(_factionMachines.GetFaction(consoleUid), ownFaction, StringComparison.Ordinal))
+            {
+                ClearTarget(defense);
+                defense.Missile = null;
+                continue;
+            }
+
+            // Keep the ordinary manual console link list authoritative too. This is idempotent and catches
+            // mapped hardpoints that finished anchoring after the console itself initialized. Done with auto fire
+            // off as well, or the missile guns would never be linked.
+            if (now >= defense.NextLinkRefresh)
+            {
+                defense.NextLinkRefresh = now + TimeSpan.FromSeconds(MathF.Max(0.25f, defense.ScanInterval));
+                _pointCannons.LinkAllCannonsToConsole(consoleUid, console);
+            }
+
+            // missiles first and always: shooting down what is locked on us needs no war and no operator
+            InterceptMissiles((consoleUid, console), defense, ownGrid, ownFaction, now);
+
+            // The normal targeting console system owns the guns for as long as at least one operator has its UI
+            // open. This also prevents an automatic shot from racing a manual order on the same server tick.
+            if (_ui.IsUiOpen(consoleUid, TargetingConsoleUiKey.Key) ||
+                AnotherConsoleOwnsAutomaticControl(consoleUid, ownGrid, ownFaction) ||
                 TryComp<PersistentPoiGridComponent>(ownGrid, out var territory) && !territory.AutoDefense)
             {
                 ClearTarget(defense);
@@ -100,10 +135,6 @@ public sealed class TerritoryAutoDefenseSystem : EntitySystem
             if (now >= defense.NextScan)
             {
                 defense.NextScan = now + TimeSpan.FromSeconds(MathF.Max(0.25f, defense.ScanInterval));
-
-                // Keep the ordinary manual console link list authoritative too. This is idempotent and catches
-                // mapped hardpoints that finished anchoring after the console itself initialized.
-                _pointCannons.LinkAllCannonsToConsole(consoleUid, console);
 
                 var previousGrid = defense.TargetGrid;
                 defense.Target = FindNearestTarget(
@@ -128,8 +159,183 @@ public sealed class TerritoryAutoDefenseSystem : EntitySystem
 
             defense.TargetGrid = targetGrid;
 
-            FireTerritoryWeapons((consoleUid, console), ownGrid, ownFaction, target, targetGrid);
+            FireTerritoryWeapons((consoleUid, console), ownGrid, ownFaction, target, targetGrid, now);
         }
+    }
+
+    private void InterceptMissiles(
+        Entity<TargetingConsoleComponent> console,
+        TerritoryAutoDefenseComponent defense,
+        EntityUid ownGrid,
+        string ownFaction,
+        TimeSpan now)
+    {
+        // one console per grid answers for the guns
+        if (LowerConsoleOnGrid(console.Owner, ownGrid, ownFaction) || !HasInterceptor(console.Comp))
+        {
+            defense.Missile = null;
+            return;
+        }
+
+        var origin = _transform.GetMapCoordinates(console.Owner);
+        if (now >= defense.NextMissileScan)
+        {
+            defense.NextMissileScan = now + MissileScanInterval;
+            defense.Missile = FindMissile(origin, defense.MissileRange, ownGrid, ownFaction);
+        }
+
+        if (defense.Missile is not { } missile ||
+            !IsMissileThreat(missile, origin, defense.MissileRange, ownGrid, ownFaction))
+        {
+            defense.Missile = null;
+            return;
+        }
+
+        if (!console.Comp.CannonGroups.TryGetValue("all", out var cannons))
+            return;
+
+        var missilePosition = _transform.GetWorldPosition(missile);
+        var relativeVelocity = _physics.GetMapLinearVelocity(missile) - _physics.GetMapLinearVelocity(ownGrid);
+
+        foreach (var weaponUid in cannons)
+        {
+            if (!_interceptorQuery.TryComp(weaponUid, out var interceptor) ||
+                !TryComp<PointCannonComponent>(weaponUid, out var cannon) ||
+                !TryComp<GunComponent>(weaponUid, out var gun) ||
+                !TryComp<TransformComponent>(weaponUid, out var weaponXform) ||
+                weaponXform.GridUid != ownGrid ||
+                !cannon.LinkedConsoleIds.Contains(console.Owner))
+            {
+                continue;
+            }
+
+            var aimPosition = PredictIntercept(_transform.GetWorldPosition(weaponXform), missilePosition,
+                relativeVelocity, gun.ProjectileSpeedModified);
+
+            if (!_pointCannons.CanAimAt(weaponUid, aimPosition, weaponXform) ||
+                NonHostileGridInLineOfFire(weaponUid, ownGrid, EntityUid.Invalid, ownFaction, missile))
+            {
+                continue;
+            }
+
+            interceptor.EngagedUntil = now + InterceptorHold;
+            _pointCannons.TryFireCannon(weaponUid, aimPosition, weaponXform, gun, cannon);
+        }
+    }
+
+    // only a console that would itself answer counts, or a dead one silences the rest
+    private bool LowerConsoleOnGrid(EntityUid consoleUid, EntityUid ownGrid, string ownFaction)
+    {
+        var consoles = EntityQueryEnumerator<TerritoryAutoDefenseComponent, TargetingConsoleComponent, TransformComponent>();
+        while (consoles.MoveNext(out var otherUid, out _, out var other, out var otherXform))
+        {
+            if (otherXform.GridUid == ownGrid &&
+                otherUid.Id < consoleUid.Id &&
+                this.IsPowered(otherUid, EntityManager) &&
+                string.Equals(_factionMachines.GetFaction(otherUid), ownFaction, StringComparison.Ordinal) &&
+                HasInterceptor(other))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool HasInterceptor(TargetingConsoleComponent console)
+    {
+        if (!console.CannonGroups.TryGetValue("all", out var cannons))
+            return false;
+
+        foreach (var cannon in cannons)
+        {
+            if (_interceptorQuery.HasComp(cannon))
+                return true;
+        }
+
+        return false;
+    }
+
+    private EntityUid? FindMissile(MapCoordinates origin, float range, EntityUid ownGrid, string ownFaction)
+    {
+        _missileScratch.Clear();
+        _lookup.GetEntitiesInRange(origin, range, _missileScratch, LookupFlags.Dynamic | LookupFlags.Sundries);
+
+        EntityUid? nearest = null;
+        var nearestDistance = float.MaxValue;
+        var center = _physics.GetWorldAABB(ownGrid).Center;
+
+        foreach (var (candidate, _) in _missileScratch)
+        {
+            if (!IsMissileThreat(candidate, origin, range, ownGrid, ownFaction))
+                continue;
+
+            var distance = Vector2.DistanceSquared(_transform.GetWorldPosition(candidate), center);
+            if (distance >= nearestDistance)
+                continue;
+
+            nearest = candidate;
+            nearestDistance = distance;
+        }
+
+        return nearest;
+    }
+
+    private bool IsMissileThreat(EntityUid missile, MapCoordinates origin, float range, EntityUid ownGrid,
+        string ownFaction)
+    {
+        // thrusters are proximity fuse targets too, so it has to be a round in flight
+        if (TerminatingOrDeleted(missile) || !_projectileQuery.TryComp(missile, out var projectile))
+            return false;
+
+        // over our own plating our bolts pass straight through it
+        var xform = Transform(missile);
+        if (xform.GridUid == ownGrid)
+            return false;
+
+        var position = _transform.GetMapCoordinates(missile, xform);
+        if (position.MapId != origin.MapId ||
+            Vector2.DistanceSquared(position.Position, origin.Position) > range * range ||
+            FiredByFriend(projectile, ownGrid, ownFaction))
+        {
+            return false;
+        }
+
+        if (_seekerQuery.TryComp(missile, out var seeker) &&
+            seeker.TargetEntity is { } locked &&
+            !TerminatingOrDeleted(locked) &&
+            Transform(locked).GridUid == ownGrid)
+        {
+            return true;
+        }
+
+        // a dumb rocket, or a seeker after somebody else, only counts while it is about to hit us
+        var bounds = _physics.GetWorldAABB(ownGrid);
+        var offset = position.Position - bounds.Center;
+        var velocity = _physics.GetMapLinearVelocity(missile) - _physics.GetMapLinearVelocity(ownGrid);
+        var closing = -Vector2.Dot(offset, velocity);
+        if (closing <= 0f)
+            return false;
+
+        var miss = offset + velocity * (closing / velocity.LengthSquared());
+        var radius = bounds.Size.Length() / 2f + MissileMissMargin;
+        return miss.LengthSquared() <= radius * radius;
+    }
+
+    private bool FiredByFriend(ProjectileComponent projectile, EntityUid ownGrid, string ownFaction)
+    {
+        var source = projectile.Weapon ?? projectile.Shooter;
+        if (source is not { } sourceUid || TerminatingOrDeleted(sourceUid) ||
+            Transform(sourceUid).GridUid is not { } sourceGrid)
+        {
+            return false;
+        }
+
+        if (sourceGrid == ownGrid)
+            return true;
+
+        return _iffDiplomacy.GetGridFaction(sourceGrid) is { } faction &&
+               (faction == ownFaction || _factionDiplomacy.GetRelation(ownFaction, faction) == FactionRelation.Alliance);
     }
 
     private void OnGridTerminating(Entity<MapGridComponent> ent, ref EntityTerminatingEvent args)
@@ -138,7 +344,7 @@ public sealed class TerritoryAutoDefenseSystem : EntitySystem
         _nextNeutralRadioWarning.Remove(ent.Owner);
     }
 
-    private bool AnotherConsoleOwnsAutomaticControl(EntityUid consoleUid, EntityUid ownGrid)
+    private bool AnotherConsoleOwnsAutomaticControl(EntityUid consoleUid, EntityUid ownGrid, string ownFaction)
     {
         var consoles = EntityQueryEnumerator<TerritoryAutoDefenseComponent, TargetingConsoleComponent, TransformComponent>();
         while (consoles.MoveNext(out var otherUid, out _, out _, out var otherXform))
@@ -146,10 +352,18 @@ public sealed class TerritoryAutoDefenseSystem : EntitySystem
             if (otherUid == consoleUid || otherXform.GridUid != ownGrid)
                 continue;
 
-            // Any manual operator pauses the whole battery. With nobody operating, the lowest entity UID is the
-            // sole automatic controller so two mapped consoles cannot issue competing orders to the same guns.
-            if (_ui.IsUiOpen(otherUid, TargetingConsoleUiKey.Key) || otherUid.Id < consoleUid.Id)
+            // Any manual operator pauses the whole battery. With nobody operating, the lowest entity UID that can
+            // actually fire is the sole automatic controller, so two mapped consoles cannot issue competing orders
+            // and an unpowered one does not leave the guns idle.
+            if (_ui.IsUiOpen(otherUid, TargetingConsoleUiKey.Key))
                 return true;
+
+            if (otherUid.Id < consoleUid.Id &&
+                this.IsPowered(otherUid, EntityManager) &&
+                string.Equals(_factionMachines.GetFaction(otherUid), ownFaction, StringComparison.Ordinal))
+            {
+                return true;
+            }
         }
 
         return false;
@@ -279,7 +493,8 @@ public sealed class TerritoryAutoDefenseSystem : EntitySystem
         EntityUid ownGrid,
         string ownFaction,
         EntityUid target,
-        EntityUid targetGrid)
+        EntityUid targetGrid,
+        TimeSpan now)
     {
         // The console already keeps the list of guns bound to it, refreshed on every scan by
         // LinkAllCannonsToConsole. Walking every PointCannon in the world instead ran over every ship gun in the
@@ -300,7 +515,8 @@ public sealed class TerritoryAutoDefenseSystem : EntitySystem
                 !TryComp<GunComponent>(weaponUid, out var gun) ||
                 !TryComp<TransformComponent>(weaponUid, out var weaponXform) ||
                 weaponXform.GridUid != ownGrid ||
-                !cannon.LinkedConsoleIds.Contains(console.Owner))
+                !cannon.LinkedConsoleIds.Contains(console.Owner) ||
+                _interceptorQuery.TryComp(weaponUid, out var interceptor) && interceptor.EngagedUntil > now)
             {
                 continue;
             }

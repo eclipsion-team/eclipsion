@@ -37,15 +37,22 @@ public sealed partial class PersistentPoiEnforceLimit : IGraphAction
     [DataField(required: true)]
     public PersistentPoiWorksCategory Category;
 
+    // a second cap the same works counts against
+    [DataField]
+    public PersistentPoiWorksCategory? Also;
+
     public void PerformAction(EntityUid uid, EntityUid? userUid, IEntityManager entityManager)
     {
-        var ev = new PersistentPoiBuiltEvent(Category, userUid);
+        var ev = new PersistentPoiBuiltEvent(Category, userUid, Also);
         entityManager.EventBus.RaiseLocalEvent(uid, ref ev);
     }
 }
 
 [ByRefEvent]
-public readonly record struct PersistentPoiBuiltEvent(PersistentPoiWorksCategory Category, EntityUid? User);
+public readonly record struct PersistentPoiBuiltEvent(
+    PersistentPoiWorksCategory Category,
+    EntityUid? User,
+    PersistentPoiWorksCategory? Also = null);
 
 [UsedImplicitly]
 [DataDefinition]

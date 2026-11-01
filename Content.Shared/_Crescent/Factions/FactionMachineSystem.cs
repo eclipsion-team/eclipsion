@@ -1,4 +1,5 @@
 using Content.Shared._Crescent.HullrotFaction;
+using Content.Shared._Crescent.Territory;
 using Content.Shared.Ghost;
 using Content.Shared.Popups;
 using Content.Shared.Shuttles.Components;
@@ -51,9 +52,13 @@ public sealed class FactionMachineSystem : EntitySystem
         if (HasComp<GhostComponent>(user))
             return true;
 
-        // Faction membership lives on the body, not the ID card, so read it off the user directly.
-        var userFaction = CompOrNull<HullrotFactionComponent>(user)?.Faction ?? string.Empty;
         var machineFaction = GetFaction(ent);
+
+        // Faction membership lives on the body, not the ID card, so read it off the user directly.
+        // An independent's territory belongs to that one player, not to every IND.
+        var userFaction = PersistentTerritoryFactions.IsIndependent(machineFaction)
+            ? PersistentTerritoryFactions.GetTeam(EntityManager, user) ?? string.Empty
+            : CompOrNull<HullrotFactionComponent>(user)?.Faction ?? string.Empty;
 
         // A restricted but currently unowned machine is locked, not public equipment for every unaligned character.
         return machineFaction.Length != 0 && userFaction == machineFaction;

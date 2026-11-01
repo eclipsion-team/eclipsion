@@ -53,9 +53,16 @@ namespace Content.Client.Administration.UI.Bwoink
             InputTextChanged?.Invoke(args.Text);
         }
 
-        public void ReceiveLine(SharedBwoinkSystem.BwoinkTextMessage message)
+        public void ClearLines()
         {
-            if (!Visible)
+            TextOutput.Clear();
+            Unread = 0;
+            LastMessage = DateTime.MinValue;
+        }
+
+        public void ReceiveLine(SharedBwoinkSystem.BwoinkTextMessage message, bool countUnread = true)
+        {
+            if (countUnread && !Visible)
                 Unread++;
 
             var formatted = new FormattedMessage(1);

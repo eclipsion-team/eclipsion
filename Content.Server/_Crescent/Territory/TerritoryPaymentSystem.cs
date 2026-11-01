@@ -107,8 +107,22 @@ public sealed class TerritoryPaymentSystem : EntitySystem
         return true;
     }
 
+    // hands back a charge whose purchase fell through
+    public void Refund(EntityUid payer, string faction, PaymentSource source, int amount)
+    {
+        if (amount <= 0)
+            return;
+
+        if (source == PaymentSource.Faction && TryComp<ActorComponent>(payer, out var actor))
+            _treasury.RefundCapped(faction, actor.PlayerSession.UserId, amount);
+        else if (source == PaymentSource.Personal)
+            _bank.TryBankDeposit(payer, amount);
+    }
+
+    // an independent has no treasury
     private bool IsMember(EntityUid payer, string faction)
     {
-        return string.Equals(PersistentTerritoryFactions.GetTeam(EntityManager, payer), faction, StringComparison.Ordinal);
+        return !PersistentTerritoryFactions.IsIndependent(faction) &&
+               string.Equals(PersistentTerritoryFactions.GetTeam(EntityManager, payer), faction, StringComparison.Ordinal);
     }
 }

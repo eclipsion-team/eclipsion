@@ -11,6 +11,8 @@ shuttle-console-target-name = Target
 nav-screen-free = Cruise
 nav-screen-dampen = Dampening
 nav-screen-anchor = Anchor
+nav-screen-turn-rate = Turn rate
+nav-screen-turn-rate-description = Limits how fast the ship turns. Braking still uses full thrust.
 
 nav-screen-module-a = Module A
 nav-screen-module-b = Module B

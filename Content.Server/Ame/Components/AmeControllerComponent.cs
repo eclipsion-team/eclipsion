@@ -36,6 +36,20 @@ public sealed partial class AmeControllerComponent : SharedAmeControllerComponen
     public int InjectionAmount = 2;
 
     /// <summary>
+    /// Upper bound players can raise <see cref="InjectionAmount"/> to.
+    /// </summary>
+    [DataField]
+    [ViewVariables(VVAccess.ReadWrite)]
+    public int MaxInjectionAmount = 100;
+
+    /// <summary>
+    /// At <see cref="MaxInjectionAmount"/> the cores take damage as if this much fuel were injected.
+    /// </summary>
+    [DataField]
+    [ViewVariables(VVAccess.ReadWrite)]
+    public int MaxInjectionInstabilityFuel = 1000;
+
+    /// <summary>
     /// How stable the reactor currently is.
     /// When this falls to <= 0 the reactor explodes.
     /// </summary>
@@ -130,7 +144,7 @@ public sealed partial class AmeControllerComponent : SharedAmeControllerComponen
     /// critically unstable the explosion is delayed by this amount so responders get a heads-up.
     /// </summary>
     [DataField]
-    public TimeSpan FinalWarningTime = TimeSpan.FromMinutes(1);
+    public TimeSpan FinalWarningTime = TimeSpan.FromMinutes(2);
 
     /// <summary>
     /// When set, the reactor will explode at this time if the active overload is not stopped.

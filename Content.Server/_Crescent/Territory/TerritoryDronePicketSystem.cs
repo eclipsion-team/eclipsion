@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Content.Server._Crescent.Diplomacy;
 using Content.Server._Crescent.ShipAI;
@@ -13,6 +14,7 @@ using Content.Server.Worldgen.Components.Debris;
 using Content.Shared._Crescent.Diplomacy;
 using Content.Shared._Crescent.DroneControl;
 using Content.Shared._Crescent.Factions;
+using Content.Shared._Crescent.ShipShields;
 using Content.Shared.Shipyard.Components;
 using Content.Shared._Crescent.Territory;
 using Content.Shared.Dataset;
@@ -114,27 +116,81 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
         var spawned = 0;
         for (var slot = 0; slot < count; slot++)
         {
-            var hull = _random.Pick(standard.Comp.Drones);
-            if (!_proto.TryIndex(hull, out var gameMap))
-                continue;
-
-            var position = PickSpawnSpot(center, standard.Comp.PatrolRange);
-            if (!_mapLoader.TryLoadGrid(center.MapId, gameMap.MapPath, out var grid, offset: position))
-            {
-                Log.Error($"Could not put up a {hull} for the picket of {ToPrettyString(standard)}.");
-                continue;
-            }
-
-            if (!TryCommandeer(standard, grid.Value.Owner, gameMap, slot))
-            {
-                Del(grid.Value.Owner);
-                continue;
-            }
-
-            spawned++;
+            if (TryPutUp(standard, _random.Pick(standard.Comp.Drones), center, slot, out _))
+                spawned++;
         }
 
         return spawned;
+    }
+
+    /// <summary>
+    /// Puts up one drone bought at the drone bay. It joins the standard's picket and flies for
+    /// <paramref name="faction"/>, so the picket must not still be flying for anyone else.
+    /// </summary>
+    public bool TryLaunchBought(Entity<TerritoryDronePicketsComponent> standard, ProtoId<GameMapPrototype> hull,
+        string faction, [NotNullWhen(true)] out EntityUid? drone)
+    {
+        drone = null;
+        if (FliesForSomeoneElse(standard.Comp, faction))
+            return false;
+
+        var center = _transform.GetMapCoordinates(standard);
+        if (center.MapId == MapId.Nullspace)
+            return false;
+
+        standard.Comp.Faction = faction;
+        if (!TryPutUp(standard, hull, center, standard.Comp.Pickets.Count, out drone))
+            return false;
+
+        Comp<TerritoryPicketDroneComponent>(drone.Value).Bought = true;
+
+        // bought where nobody could see it go up still has to be awake when they get there
+        standard.Comp.Dormant = false;
+        return true;
+    }
+
+    public bool FliesForSomeoneElse(TerritoryDronePicketsComponent pickets, string faction)
+    {
+        pickets.Pickets.RemoveAll(drone => TerminatingOrDeleted(drone) || Transform(drone).GridUid == null);
+        return pickets.Pickets.Count > 0 && pickets.Faction != faction;
+    }
+
+    public int CountBought(TerritoryDronePicketsComponent pickets)
+    {
+        var count = 0;
+        foreach (var drone in pickets.Pickets)
+        {
+            if (!TerminatingOrDeleted(drone) && Transform(drone).GridUid != null &&
+                _picketQuery.TryComp(drone, out var picket) && picket.Bought)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private bool TryPutUp(Entity<TerritoryDronePicketsComponent> standard, ProtoId<GameMapPrototype> hull,
+        MapCoordinates center, int slot, [NotNullWhen(true)] out EntityUid? drone)
+    {
+        drone = null;
+        if (!_proto.TryIndex(hull, out var gameMap))
+            return false;
+
+        var position = PickSpawnSpot(center, standard.Comp.PatrolRange);
+        if (!_mapLoader.TryLoadGrid(center.MapId, gameMap.MapPath, out var grid, offset: position))
+        {
+            Log.Error($"Could not put up a {hull} for the picket of {ToPrettyString(standard)}.");
+            return false;
+        }
+
+        if (!TryCommandeer(standard, grid.Value.Owner, gameMap, slot, out drone))
+        {
+            Del(grid.Value.Owner);
+            return false;
+        }
+
+        return true;
     }
 
     private Vector2 PickSpawnSpot(MapCoordinates center, float ring)
@@ -156,8 +212,10 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
         return position;
     }
 
-    private bool TryCommandeer(Entity<TerritoryDronePicketsComponent> standard, EntityUid grid, GameMapPrototype gameMap, int slot)
+    private bool TryCommandeer(Entity<TerritoryDronePicketsComponent> standard, EntityUid grid, GameMapPrototype gameMap,
+        int slot, [NotNullWhen(true)] out EntityUid? drone)
     {
+        drone = null;
         EntityUid? server = null;
         var servers = EntityQueryEnumerator<DroneControlComponent, TransformComponent>();
         while (servers.MoveNext(out var uid, out _, out var serverXform))
@@ -175,10 +233,22 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
             return false;
         }
 
+        // territory drones fly without shields
+        var shields = EntityQueryEnumerator<ShipShieldEmitterComponent, TransformComponent>();
+        while (shields.MoveNext(out _, out var shieldXform))
+        {
+            if (shieldXform.GridUid != grid)
+                continue;
+
+            Log.Error($"{gameMap.ID} carries a shield emitter, so it cannot fly in a territory picket.");
+            return false;
+        }
+
         RemComp<AutoDroneComponent>(controller);
         RemComp<DroneControlComponent>(controller);
         RemComp<HTNComponent>(controller);
 
+        drone = controller;
         var picket = EnsureComp<TerritoryPicketDroneComponent>(controller);
         picket.Standard = standard;
         picket.Slot = slot;
@@ -221,6 +291,9 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
         {
             return color;
         }
+
+        if (PersistentTerritoryFactions.IsIndependent(faction))
+            return PersistentTerritoryFactions.IndependentColor(faction);
 
         return _proto.TryIndex<FactionPrototype>(faction, out var proto) ? proto.FactionButtonColor : Color.White;
     }

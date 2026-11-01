@@ -19,6 +19,20 @@ persistent-poi-build-category-furniture = Furniture
 construction-condition-persistent-poi-held-ground = Must be built on territory your faction holds, standing on it.
 construction-condition-persistent-poi-within-limit = The territory's level has no room for another of these. Raise its level at the administration console.
 construction-condition-persistent-poi-capability = The territory is not tooled for this line of production. Retool it at the production console.
+construction-condition-persistent-poi-no-duplicate = There is already one of these on that tile.
+
+persistent-poi-silo-not-holder = Only the holders of this ground can use its silo.
+persistent-poi-silo-stored = { $count ->
+    [one] You load one sheet into the silo.
+   *[other] You load { $count } into the silo.
+}
+persistent-poi-silo-refused = The silo only takes what the territory works are built from.
+persistent-poi-silo-examine-turning = [color=goldenrod]Whatever is stored here is lost at the end of the round - the Turning takes it. What is built from it stays.[/color]
+persistent-poi-silo-examine-empty = It is empty.
+persistent-poi-silo-examine-line = { $material }: { $count }
+persistent-poi-silo-take = { $material }
+persistent-poi-silo-hand-only = This one has to be put together by hand; the silo cannot build it.
+persistent-poi-silo-short = The silo does not hold enough for that.
 
 # # Development
 
@@ -36,6 +50,12 @@ persistent-poi-category-shuttleconsole = Shuttle consoles
 persistent-poi-category-spawnbeacon = Cryo spawners
 persistent-poi-category-gearrack = Equipment racks
 persistent-poi-category-recruitmentconsole = Recruitment consoles
+persistent-poi-category-mediumlaser = 200cc laser emplacements
+persistent-poi-category-heavylaser = 250cc laser emplacements
+persistent-poi-category-portal = Faction portals
+persistent-poi-category-dronebay = Drone bays
+persistent-poi-category-materialsilo = Material silos
+persistent-poi-category-mappingconsole = Works consoles
 
 persistent-poi-admin-not-holder = Only the territory's holder can develop it.
 persistent-poi-admin-max-level = The territory is already fully developed.
@@ -71,7 +91,7 @@ persistent-poi-capability-textiles-desc = Mills spin cotton and weave cloth and 
 persistent-poi-capability-materials = Materials
 persistent-poi-capability-materials-desc = Foundries cast finished steel, glass, plastic and plasteel.
 persistent-poi-capability-trade-goods = Trade goods
-persistent-poi-capability-trade-goods-desc = Works crate alloys, gunparts, ammunition and plasma for export.
+persistent-poi-capability-trade-goods-desc = Works crate alloys, gunparts, ammunition and plasma for export, and write research disks.
 
 persistent-poi-production-status-running = Running
 persistent-poi-production-status-disabled = Switched off
@@ -137,6 +157,7 @@ persistent-poi-recipe-alloys = Crated alloys
 persistent-poi-recipe-gunparts = Crated gunparts
 persistent-poi-recipe-ammo = Crated ammunition
 persistent-poi-recipe-plasma = Crated plasma
+persistent-poi-recipe-research-disk = Research disk (5000)
 
 # # Fire control
 
@@ -204,6 +225,28 @@ territory-console-command-abandon-confirm = Press again to abandon
 # # Territory decal painter
 
 persistent-poi-build-decals = Paint floor markings
+persistent-poi-build-deconstruct = Dismantle
+persistent-poi-deconstruct-start = You start dismantling {THE($target)}.
+persistent-poi-deconstruct-invalid = That cannot be dismantled here.
+persistent-poi-deconstruct-tools = You need a wrench and a crowbar in your hands to dismantle that.
+persistent-poi-deconstruct-permanent = This is the territory's permanent ground around its standard. It cannot be torn up.
+persistent-poi-deconstruct-busy = The works console is already tearing down as much as it can at once.
+
+persistent-poi-mapping-unpowered = The works console has no power.
+persistent-poi-mapping-cannot = You cannot work the territory from here right now.
+persistent-poi-mapping-jolted = The blow throws you out of the works view!
+persistent-poi-mapping-ui-title = Territory Works Console
+persistent-poi-mapping-ui-menu = Works menu
+persistent-poi-mapping-ui-dismantle = Dismantle
+persistent-poi-mapping-ui-paint = Paint floor markings
+persistent-poi-mapping-ui-recenter = Back to the console
+persistent-poi-mapping-ui-leave = Leave the console
+persistent-poi-mapping-ui-silo = Silo: { $total } in store, { $kinds } { $kinds ->
+    [one] kind
+   *[other] kinds
+}
+persistent-poi-mapping-ui-no-silo = [color=#E05A5A]No material silo - nothing can be built from here.[/color]
+persistent-poi-mapping-ui-hint = [color=#9A9AA4]Move to pan the view over the territory. Everything is built from the silo and torn-down works pay back into it; no tools needed. Right click stops placing. Taking any harm, losing power or stepping away ends the view.[/color]
 territory-decal-window-title = Territory markings
 territory-decal-window-hint = Left click paints a tile, right click scrubs it. Hold to drag. Close to stop.
 territory-decal-window-colour = Colour
@@ -270,6 +313,7 @@ persistent-poi-overtime-done = Overtime booked. { $price } cr paid from { $sourc
 persistent-poi-build-ui-title = Territory Works
 persistent-poi-build-ui-search = Search works...
 persistent-poi-build-ui-paint-tooltip = Paint markings onto the floor in your faction's colours.
+persistent-poi-build-ui-deconstruct-tooltip = Click works, walls, machines or floor on held ground to tear them down. Needs a wrench and a crowbar in your hands. Built works hand back their materials; the permanent ground around the standard cannot be torn up. Right-click to stop.
 persistent-poi-build-ui-no-territory = Not on held ground
 persistent-poi-build-ui-summary = Level { $level }/{ $max } · { $line }
 persistent-poi-build-ui-line = Tooled for { $line }
@@ -283,7 +327,9 @@ persistent-poi-build-ui-stage-next = { $number }. Then use on the frame
 persistent-poi-build-ui-carried = you have { $count }
 persistent-poi-build-ui-carried-split = you have { $count }, in small stacks
 persistent-poi-build-ui-place = Place
-persistent-poi-build-ui-footer = Placing costs nothing. Each stage takes its material from one stack in your hands, your bags or the floor beside you - merge stacks that are too small.
+persistent-poi-build-ui-place-silo = Build from silo
+persistent-poi-build-ui-silo-stock = · silo { $count }
+persistent-poi-build-ui-footer = Placing costs nothing. Each stage takes its material from one stack in your hands, your bags or the floor beside you - merge stacks that are too small. With a material silo stocked, whatever it can cover goes up straight from it.
 persistent-poi-build-ui-short-not-held = not held
 persistent-poi-build-ui-short-wrong-line = other line
 persistent-poi-build-ui-short-level = level { $level }
@@ -308,7 +354,7 @@ territory-access-examine-held = [color=goldenrod]A territorial door. It opens on
 
 territory-holder-only-denied = Only the faction holding this ground can use this.
 territory-spawn-beacon-examine-online = [color=green]Online.[/color] Your faction's people can choose to wake up here when they join.
-territory-spawn-beacon-examine-offline = [color=red]Offline.[/color] It needs power, a fully developed territory and a holder.
+territory-spawn-beacon-examine-offline = [color=red]Offline.[/color] It needs power, a level 2 territory and a holder.
 territory-spawn-beacon-unavailable = The territory's cryo spawner could not take you, so you woke up at home instead.
 territory-spawn-beacon-arrived = You wake up in the cryo spawner at { $territory }.
 late-join-deploy-label = Deploy at:
@@ -317,9 +363,14 @@ late-join-deploy-home = Home station
 # # Recruitment console
 
 territory-recruit-ui-title = Territorial Recruitment
-territory-recruit-ui-hint = Soldiers come down by drop pod. The garrison holds the territory; an escort joins your squad. How many may stand at once goes by the territory's level.
+territory-recruit-ui-hint = Soldiers come down by drop pod. The garrison holds the territory; an escort joins your squad. How many may stand at once goes by the territory's level; the price goes by the kind of soldier.
+territory-recruit-ui-role = Soldier:
+territory-recruit-ui-role-option = { $role } - { $price } cr
 territory-recruit-ui-garrison = Garrison - holds the territory
-territory-recruit-ui-escort = Escort - joins your squad
+territory-recruit-ui-escort = Escort - joins your squad, costs more
+territory-recruit-ui-mercenary = Mercenaries - join your squad
+territory-recruit-ui-mercenary-hint = Mercenaries come down by drop pod and join your squad. How many may stand at once goes by the territory's level. Independents keep no garrison.
+territory-recruit-ui-mercenary-note = [color=yellow]Mercenaries only attack what you point at, or whoever attacks you or them.[/color]
 territory-recruit-ui-standing = { $count } of { $limit } standing
 territory-recruit-ui-one = Call 1 - { $price } cr
 territory-recruit-ui-fill = Call { $count } - { $price } cr
@@ -327,15 +378,48 @@ territory-recruit-ui-unclaimed = Nobody holds this territory.
 territory-recruit-ui-unpowered = [color=red]No power.[/color] The console needs an APC.
 territory-recruit-ui-squad-full = Your squad is full.
 territory-recruit-garrison-called = { $count ->
-    [one] A soldier is
-   *[other] { $count } soldiers are
+    [one] A { $role } is
+   *[other] { $count } x { $role } are
 } on the way down to the garrison. { $price } cr paid.
 territory-recruit-escort-called = { $count ->
-    [one] A soldier is
-   *[other] { $count } soldiers are
+    [one] A { $role } is
+   *[other] { $count } x { $role } are
 } on the way down to join you. { $price } cr paid.
+territory-recruit-unknown-role = This territory can't call in that kind of soldier.
+
+territory-soldier-role-rifleman = Rifleman
+territory-soldier-role-rifleman-desc = All-rounder with a service rifle. Cheapest.
+territory-soldier-role-breacher = Breacher
+territory-soldier-role-breacher-desc = Shotgun, fights up close. Best inside corridors and doorways.
+territory-soldier-role-shock = Shocktrooper
+territory-soldier-role-shock-desc = Close-to-mid range assault trooper.
+territory-soldier-role-marksman = Marksman
+territory-soldier-role-marksman-desc = Long rifle, keeps its distance and sees farthest.
+territory-soldier-role-gunner = Machinegunner
+territory-soldier-role-gunner-desc = Belt-fed suppression. Slow, long reloads.
 territory-recruit-round-over = The round is over.
 territory-recruit-not-holder = Only the territory's holder can call soldiers in.
+territory-recruit-no-soldiers = No soldiers answer to this holder.
+territory-recruit-mercenaries-only = Independents keep no garrison. Hire mercenaries to join your squad instead.
 territory-recruit-unpowered = The console has no power.
 territory-recruit-full = As many as the territory's level allows are already standing.
 territory-recruit-squad-full = Your squad has no room for more.
+
+# # Drone bay
+
+territory-drone-bay-ui-title = Territorial Drone Bay
+territory-drone-bay-ui-hint = Bought drones join the territory's picket: they guard it, chase off whoever comes too close and never stray from it. Shieldless hulls with 150cc guns at most. They last the round.
+territory-drone-bay-ui-flying = { $count } of { $limit } bought drones flying
+territory-drone-bay-ui-hull = { $name }
+territory-drone-bay-ui-buy = Launch - { $price } cr
+territory-drone-bay-ui-unclaimed = Nobody holds this territory.
+territory-drone-bay-ui-unpowered = [color=red]No power.[/color] The console needs an APC.
+territory-drone-bay-ui-level = The drone bay needs a level 3 territory.
+territory-drone-bay-ui-old-pickets = The picket still flies for the territory's previous holder.
+territory-drone-bay-launched = { $drone } is up and joining the picket. { $price } cr paid.
+territory-drone-bay-not-holder = Only the territory's holder can buy drones.
+territory-drone-bay-unknown-hull = The drone bay doesn't sell that hull.
+territory-drone-bay-unpowered = The drone bay has no power.
+territory-drone-bay-old-pickets = The picket still flies for the previous holder. Wait until those drones are gone.
+territory-drone-bay-full = As many drones as the territory's level allows are already flying.
+territory-drone-bay-launch-failed = The drone never got off the pad. Your money was returned.

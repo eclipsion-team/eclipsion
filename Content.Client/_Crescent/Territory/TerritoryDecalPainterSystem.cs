@@ -206,7 +206,8 @@ public sealed class TerritoryDecalPainterSystem : EntitySystem
         }
 
         var target = new EntityCoordinates(grid, new Vector2(tile.X + 0.5f, tile.Y + 0.5f));
-        return _transform.InRange(target, Transform(player).Coordinates, TerritoryDecals.Reach);
+        var origin = PersistentPoiMapping.GetReachOrigin(EntityManager, player, TerritoryDecals.Reach, out var reach);
+        return _transform.InRange(target, origin, reach);
     }
 }
 

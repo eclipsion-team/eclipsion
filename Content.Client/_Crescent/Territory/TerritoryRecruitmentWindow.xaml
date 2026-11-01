@@ -2,8 +2,8 @@
                       xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
                       xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
                       Title="{Loc 'territory-recruit-ui-title'}"
-                      MinSize="460 380"
-                      SetSize="500 420">
+                      MinSize="460 440"
+                      SetSize="500 480">
     <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="6"
                   VerticalExpand="True" HorizontalExpand="True">
         <BoxContainer Orientation="Horizontal" SeparationOverride="8">
@@ -30,14 +30,23 @@
             </BoxContainer>
         </PanelContainer>
 
-        <Label Text="{Loc 'territory-recruit-ui-garrison'}" StyleClasses="LabelSecondaryColor"/>
         <BoxContainer Orientation="Horizontal" SeparationOverride="6">
-            <Label Name="GarrisonLabel" HorizontalExpand="True" VerticalAlignment="Center" ClipText="True"/>
-            <Button Name="GarrisonOneButton" StyleClasses="OpenRight" MinWidth="110" ClipText="True"/>
-            <Button Name="GarrisonFillButton" StyleClasses="OpenLeft" MinWidth="130" ClipText="True"/>
+            <Label Text="{Loc 'territory-recruit-ui-role'}" VerticalAlignment="Center"/>
+            <OptionButton Name="RoleSelector" HorizontalExpand="True"/>
+        </BoxContainer>
+        <RichTextLabel Name="RoleDescription" HorizontalExpand="True"/>
+
+        <BoxContainer Name="GarrisonSection" Orientation="Vertical" SeparationOverride="6">
+            <Label Text="{Loc 'territory-recruit-ui-garrison'}" StyleClasses="LabelSecondaryColor"/>
+            <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                <Label Name="GarrisonLabel" HorizontalExpand="True" VerticalAlignment="Center" ClipText="True"/>
+                <Button Name="GarrisonOneButton" StyleClasses="OpenRight" MinWidth="110" ClipText="True"/>
+                <Button Name="GarrisonFillButton" StyleClasses="OpenLeft" MinWidth="130" ClipText="True"/>
+            </BoxContainer>
         </BoxContainer>
 
-        <Label Text="{Loc 'territory-recruit-ui-escort'}" StyleClasses="LabelSecondaryColor"/>
+        <Label Name="EscortHeading" StyleClasses="LabelSecondaryColor"/>
+        <RichTextLabel Name="MercenaryNote" HorizontalExpand="True" Visible="False"/>
         <BoxContainer Orientation="Horizontal" SeparationOverride="6">
             <Label Name="EscortLabel" HorizontalExpand="True" VerticalAlignment="Center" ClipText="True"/>
             <Button Name="EscortOneButton" StyleClasses="OpenRight" MinWidth="110" ClipText="True"/>

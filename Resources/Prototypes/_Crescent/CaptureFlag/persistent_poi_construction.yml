@@ -33,7 +33,17 @@
       - material: Steel
         amount: 10
         doAfter: 2
+    - to: mappingConsoleFrame
+      steps:
+      - material: Steel
+        amount: 10
+        doAfter: 2
     # Defences
+    - to: droneBayFrame
+      steps:
+      - material: Plasteel
+        amount: 15
+        doAfter: 3
     - to: targetingConsoleFrame
       steps:
       - material: Steel
@@ -44,6 +54,16 @@
       - material: Plasteel
         amount: 10
         doAfter: 3
+    - to: mediumLaserFrame
+      steps:
+      - material: Plasteel
+        amount: 20
+        doAfter: 3
+    - to: heavyLaserFrame
+      steps:
+      - material: Plasteel
+        amount: 30
+        doAfter: 4
     - to: antiBoarderTurretFrame
       steps:
       - material: Steel
@@ -102,6 +122,11 @@
       - material: Steel
         amount: 20
         doAfter: 3
+    - to: portalFrame
+      steps:
+      - material: Steel
+        amount: 30
+        doAfter: 4
     - to: gearRackDSMFrame
       steps:
       - material: Steel
@@ -195,6 +220,26 @@
       - material: Steel
         amount: 1
         doAfter: 1
+    - to: cableHV
+      steps:
+      - material: CableHV
+        amount: 1
+        doAfter: 1
+    - to: cableMV
+      steps:
+      - material: CableMV
+        amount: 1
+        doAfter: 1
+    - to: cableLV
+      steps:
+      - material: Cable
+        amount: 1
+        doAfter: 1
+    - to: materialSiloFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
     # Atmospherics
     - to: airVent
       steps:
@@ -435,6 +480,48 @@
   - node: recruitmentConsole
     entity: ComputerPersistentPoiRecruitment
 
+  - node: mappingConsoleFrame
+    entity: PersistentPoiFrameMappingConsole
+    edges:
+    - to: mappingConsoleGlazed
+      steps:
+      - material: Glass
+        amount: 5
+        doAfter: 1
+  - node: mappingConsoleGlazed
+    edges:
+    - to: mappingConsole
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: MappingConsole
+  - node: mappingConsole
+    entity: ComputerPersistentPoiMapping
+
+  - node: droneBayFrame
+    entity: PersistentPoiFrameDroneBay
+    edges:
+    - to: droneBayGlazed
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 2
+  - node: droneBayGlazed
+    edges:
+    - to: droneBay
+      steps:
+      - material: Cable
+        amount: 20
+        doAfter: 3
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: DroneBay
+  - node: droneBay
+    entity: ComputerPersistentPoiDroneBay
+
   # Defences
 
   - node: targetingConsoleFrame
@@ -482,6 +569,68 @@
   # never built directly: it comes up with its emplacement
   - node: pdLaser
     entity: WeaponTurretRetributionPersistentPoi
+
+  - node: mediumLaserFrame
+    entity: PersistentPoiFrameMediumLaser
+    edges:
+    - to: mediumLaserPlated
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 2
+  - node: mediumLaserPlated
+    edges:
+    - to: mediumLaserLensed
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 2
+  - node: mediumLaserLensed
+    edges:
+    - to: mediumLaserEmplacement
+      steps:
+      - material: Cable
+        amount: 15
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: MediumLaser
+        also: PointDefence
+  - node: mediumLaserEmplacement
+    entity: HardpointPersistentPoiMediumLaserEmplacement
+  - node: mediumLaser
+    entity: WeaponTurretWardenPersistentPoi
+
+  - node: heavyLaserFrame
+    entity: PersistentPoiFrameHeavyLaser
+    edges:
+    - to: heavyLaserPlated
+      steps:
+      - material: Steel
+        amount: 30
+        doAfter: 3
+  - node: heavyLaserPlated
+    edges:
+    - to: heavyLaserLensed
+      steps:
+      - material: Glass
+        amount: 15
+        doAfter: 2
+  - node: heavyLaserLensed
+    edges:
+    - to: heavyLaserEmplacement
+      steps:
+      - material: Cable
+        amount: 20
+        doAfter: 3
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: HeavyLaser
+        also: PointDefence
+  - node: heavyLaserEmplacement
+    entity: HardpointPersistentPoiHeavyLaserEmplacement
+  - node: heavyLaser
+    entity: WeaponTurretBastionPersistentPoi
 
   # old machinegun emplacement, only left for saved territories
   - node: pdEmplacement
@@ -826,8 +975,16 @@
       - material: Plasteel
         amount: 3
         doAfter: 2
+    - to: wallPlastitanium
+      steps:
+      - material: Plasteel
+        amount: 6
+        doAfter: 3
   - node: wallReinforced
     entity: WallReinforcedPersistentPoi
+
+  - node: wallPlastitanium
+    entity: WallPlastitaniumPersistentPoi
 
   - node: window
     entity: ReinforcedWindowPersistentPoi
@@ -929,6 +1086,29 @@
 
   - node: smallLight
     entity: PoweredSmallLightPersistentPoi
+
+  - node: cableHV
+    entity: CableHVPersistentPoi
+
+  - node: cableMV
+    entity: CableMVPersistentPoi
+
+  - node: cableLV
+    entity: CableApcExtensionPersistentPoi
+
+  - node: materialSiloFrame
+    entity: PersistentPoiFrameMaterialSilo
+    edges:
+    - to: materialSilo
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 3
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: MaterialSilo
+  - node: materialSilo
+    entity: PersistentPoiMaterialSilo
 
   # Atmospherics
 
@@ -1069,6 +1249,34 @@
         category: SpawnBeacon
   - node: cryoSpawner
     entity: PersistentPoiCryoSpawner
+
+  - node: portalFrame
+    entity: PersistentPoiFramePortal
+    edges:
+    - to: portalPlated
+      steps:
+      - material: Plasteel
+        amount: 25
+        doAfter: 4
+  - node: portalPlated
+    edges:
+    - to: portalGlazed
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 2
+  - node: portalGlazed
+    edges:
+    - to: portal
+      steps:
+      - material: Cable
+        amount: 30
+        doAfter: 3
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: Portal
+  - node: portal
+    entity: PersistentPoiFactionPortal
 
   - node: gearRackDSMFrame
     entity: PersistentPoiFrameGearRackDSM
@@ -1306,6 +1514,36 @@
     category: RecruitmentConsole
   - !type:TileNotBlocked
 
+- type: construction
+  id: PersistentPoiMappingConsole
+  name: territorial works console
+  description: Lifts your view off your body and over the territory, so you can build, tear down and paint it from the material silo as if drawing it up. You cannot fight or reach from it, and any harm throws you out. Needs power and a stocked silo. One per territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: mappingConsole
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Machines/computers.rsi
+    state: engie_cams
+  layers:
+  - sprite: Structures/Machines/computers.rsi
+    state: computer
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: Structures/Machines/computers.rsi
+    state: engie_cams
+  - sprite: Structures/Machines/computers.rsi
+    state: atmos_key
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: MappingConsole
+  - !type:TileNotBlocked
+
 # Defences
 
 - type: construction
@@ -1360,6 +1598,52 @@
   - !type:TileNotBlocked
 
 - type: construction
+  id: PersistentPoiMediumLaserEmplacement
+  name: territorial 200cc laser emplacement
+  description: An energy hardpoint with a 200cc 'Warden' pulse laser on it, hitting harder and reaching further than the 150cc. Needs a level 2 territory and power, and counts as one of the fire-control console's guns.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: mediumLaserEmplacement
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Objects/Turrets/Laser/retribution.rsi
+    state: retribution-dsm
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: MediumLaser
+  - !type:PersistentPoiWithinLimit
+    category: PointDefence
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiHeavyLaserEmplacement
+  name: territorial 250cc laser emplacement
+  description: A medium energy hardpoint with a 250cc 'Bastion' lance laser on it, the heaviest gun a territory can raise. Needs a level 3 territory and power, and counts as one of the fire-control console's guns.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: heavyLaserEmplacement
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Objects/Turrets/Laser/absolution.rsi
+    state: absolution
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: HeavyLaser
+  - !type:PersistentPoiWithinLimit
+    category: PointDefence
+  - !type:TileNotBlocked
+
+- type: construction
   id: PersistentPoiAntiBoarderTurret
   name: territorial anti-boarder turret
   description: Shoots everyone the holder is hostile to. Unclaimed, it shoots nobody.
@@ -1378,6 +1662,36 @@
   - !type:PersistentPoiHeldGround
   - !type:PersistentPoiWithinLimit
     category: AntiBoarderTurret
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiDroneBay
+  name: territorial drone bay
+  description: Buys light drones that join the territory's picket and never leave it. Shieldless hulls with 150cc guns at most. Level 3 only, one per territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: droneBay
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Machines/computers.rsi
+    state: dron_control_monitor
+  layers:
+  - sprite: Structures/Machines/computers.rsi
+    state: computer
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: Structures/Machines/computers.rsi
+    state: dron_control_monitor
+  - sprite: Structures/Machines/computers.rsi
+    state: rd_key
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: DroneBay
   - !type:TileNotBlocked
 
 - type: construction
@@ -1475,7 +1789,7 @@
 - type: construction
   id: PersistentPoiTradeWorks
   name: territorial trade works
-  description: Crates trade goods for export. Trade goods line.
+  description: Crates trade goods for export and writes research disks. Trade goods line.
   graph: PersistentPoiStructures
   startNode: start
   targetNode: tradeWorks
@@ -1742,6 +2056,25 @@
   - !type:TileNotBlocked
 
 - type: construction
+  id: PersistentPoiWallPlastitanium
+  name: territorial plastitanium wall
+  description: A steel girder under a thick plasteel shell. Holds out far longer than a reinforced wall.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: wallPlastitanium
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Walls/plastitanium.rsi
+    state: full
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
   id: PersistentPoiWindow
   name: territorial reinforced window
   description: A full-tile pane of reinforced glass.
@@ -1896,6 +2229,91 @@
   hide: true
   conditions:
   - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+# cable runs go under walls too, so power can be carried through thick hulls; the material silo lays them anywhere in reach
+- type: construction
+  id: PersistentPoiCableHV
+  name: territorial high-voltage cable
+  description: One tile of high-voltage cable. It can be laid under walls - with a stocked material silo it goes in straight from the silo, through any thickness of wall, so generators can feed guns on the outer hull.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: cableHV
+  category: construction-category-structures
+  icon:
+    sprite: Objects/Tools/cable-coils.rsi
+    state: coilhv-30
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiNoPrototypeInTile
+    prototype: CableHV
+
+- type: construction
+  id: PersistentPoiCableMV
+  name: territorial medium-voltage cable
+  description: One tile of medium-voltage cable. It can be laid under walls - with a stocked material silo it goes in straight from the silo, through any thickness of wall, so substations can feed APCs and works on the outer hull.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: cableMV
+  category: construction-category-structures
+  icon:
+    sprite: Objects/Tools/cable-coils.rsi
+    state: coilmv-30
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiNoPrototypeInTile
+    prototype: CableMV
+
+- type: construction
+  id: PersistentPoiCableLV
+  name: territorial low-voltage cable
+  description: One tile of low-voltage cable. It can be laid under walls - with a stocked material silo it goes in straight from the silo, through any thickness of wall, so an APC can feed what stands on the outer hull.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: cableLV
+  category: construction-category-structures
+  icon:
+    sprite: Objects/Tools/cable-coils.rsi
+    state: coillv-30
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiNoPrototypeInTile
+    prototype: CableApcExtension
+
+- type: construction
+  id: PersistentPoiMaterialSilo
+  name: territorial material silo
+  description: Load building materials into it, and everything placed from the build menu that it can cover goes up straight away, drawn from the silo. Its contents do not outlast the round - the Turning takes them - but what is built from them stays. One per territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: materialSilo
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Machines/material_silo.rsi
+    state: material_silo
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: MaterialSilo
   - !type:TileNotBlocked
 
 - type: construction
@@ -2411,7 +2829,7 @@
 - type: construction
   id: PersistentPoiCryoSpawner
   name: territorial cryo spawner
-  description: Lets your faction's people wake up here when they join, instead of at home. Needs power and a fully developed territory. One per territory.
+  description: Lets your faction's people wake up here when they join, instead of at home. Needs power and a level 2 territory. One per territory.
   graph: PersistentPoiStructures
   startNode: start
   targetNode: cryoSpawner
@@ -2427,6 +2845,27 @@
   - !type:PersistentPoiHeldGround
   - !type:PersistentPoiWithinLimit
     category: SpawnBeacon
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiFactionPortal
+  name: territorial faction portal
+  description: Joins the territory to your faction's portal network, so your people can step between it, your stations and your other territories. Needs power and a developed territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: portal
+  category: construction-category-structures
+  icon:
+    sprite: Structures/Machines/gateway.rsi
+    state: frame
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiWithinLimit
+    category: Portal
   - !type:TileNotBlocked
 
 - type: construction

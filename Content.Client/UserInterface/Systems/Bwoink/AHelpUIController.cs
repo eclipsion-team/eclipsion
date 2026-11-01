@@ -15,6 +15,7 @@ using Content.Shared.CCVar;
 using Content.Shared.Input;
 using JetBrains.Annotations;
 using Robust.Client.Audio;
+using Robust.Shared.Audio;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
@@ -46,9 +47,13 @@ public sealed class AHelpUIController: UIController, IOnSystemChanged<BwoinkSyst
     private bool _discordRelayActive;
     private bool _hasUnreadAHelp;
 
+    // Replayed into a fresh handler so deadmin/readmin and reconnects keep the conversations.
+    private readonly List<SharedBwoinkSystem.BwoinkTextMessage> _history = new();
+
     public const string AHelpErrorSound = "/Audio/Admin/ahelp_error.ogg";
     public const string AHelpReceiveSound = "/Audio/Admin/ahelp_receive.ogg";
     public const string AHelpSendSound = "/Audio/Admin/ahelp_send.ogg";
+    public static readonly AudioParams AHelpAudioParams = AudioParams.Default.WithVolume(-10f);
 
 
     public override void Initialize()
@@ -57,6 +62,7 @@ public sealed class AHelpUIController: UIController, IOnSystemChanged<BwoinkSyst
 
         SubscribeNetworkEvent<BwoinkDiscordRelayUpdated>(DiscordRelayUpdated);
         SubscribeNetworkEvent<BwoinkPlayerTypingUpdated>(PeopleTypingUpdated);
+        SubscribeNetworkEvent<BwoinkHistoryMessage>(HistoryReceived);
 
         _adminManager.AdminStatusUpdated += OnAdminStatusUpdated;
     }
@@ -136,14 +142,32 @@ public sealed class AHelpUIController: UIController, IOnSystemChanged<BwoinkSyst
 
         if (message.PlaySound && localPlayer.UserId != message.TrueSender && !UIHelper!.IsOpen)
         {
-            _audio.PlayGlobal(AHelpReceiveSound, Filter.Local(), false);
+            _audio.PlayGlobal(AHelpReceiveSound, Filter.Local(), false, AHelpAudioParams);
             _clyde.RequestWindowAttention();
         }
 
         if (!UIHelper!.IsOpen)
             UnreadAHelpReceived();
 
+        _history.Add(message);
         UIHelper!.Receive(message);
+    }
+
+    private void HistoryReceived(BwoinkHistoryMessage args, EntitySessionEventArgs session)
+    {
+        _history.Clear();
+        _history.AddRange(args.Messages);
+
+        if (UIHelper != null)
+            LoadHistory();
+    }
+
+    private void LoadHistory()
+    {
+        if (UIHelper == null || _playerManager.LocalUser is not { } localUser)
+            return;
+
+        UIHelper.LoadHistory(UIHelper.IsAdmin ? _history : _history.Where(m => m.UserId == localUser));
     }
 
     private void DiscordRelayUpdated(BwoinkDiscordRelayUpdated args, EntitySessionEventArgs session)
@@ -174,6 +198,7 @@ public sealed class AHelpUIController: UIController, IOnSystemChanged<BwoinkSyst
         UIHelper.OnClose += () => { SetAHelpPressed(false); };
         UIHelper.OnOpen +=  () => { SetAHelpPressed(true); };
         SetAHelpPressed(UIHelper.IsOpen);
+        LoadHistory();
     }
 
     public void Open()
@@ -311,6 +336,7 @@ public interface IAHelpUIHandler : IDisposable
     public bool IsAdmin { get; }
     public bool IsOpen { get; }
     public void Receive(SharedBwoinkSystem.BwoinkTextMessage message);
+    public void LoadHistory(IEnumerable<SharedBwoinkSystem.BwoinkTextMessage> messages);
     public void Close();
     public void Open(NetUserId netUserId, bool relayActive);
     public void ToggleWindow();
@@ -343,6 +369,21 @@ public sealed class AdminAHelpUIHandler : IAHelpUIHandler
         var panel = EnsurePanel(message.UserId);
         panel.ReceiveLine(message);
         Control?.OnBwoink(message.UserId);
+    }
+
+    public void LoadHistory(IEnumerable<SharedBwoinkSystem.BwoinkTextMessage> messages)
+    {
+        foreach (var panel in _activePanelMap.Values)
+        {
+            panel.ClearLines();
+        }
+
+        foreach (var message in messages)
+        {
+            EnsurePanel(message.UserId).ReceiveLine(message, countUnread: false);
+        }
+
+        Control?.OnBwoink(_ownerId);
     }
 
     private void OpenWindow()
@@ -501,6 +542,16 @@ public sealed class UserAHelpUIHandler : IAHelpUIHandler
         EnsureInit(_discordRelayActive);
         _chatPanel!.ReceiveLine(message);
         _window!.OpenCentered();
+    }
+
+    public void LoadHistory(IEnumerable<SharedBwoinkSystem.BwoinkTextMessage> messages)
+    {
+        EnsureInit(_discordRelayActive);
+        _chatPanel!.ClearLines();
+        foreach (var message in messages)
+        {
+            _chatPanel.ReceiveLine(message, countUnread: false);
+        }
     }
 
     public void Close()

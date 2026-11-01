@@ -83,6 +83,9 @@ namespace Content.Server.Administration.Systems
         private int _maxAdditionalChars;
         private readonly Dictionary<NetUserId, DateTime> _activeConversations = new();
 
+        private const int HistoryPerChannel = 100;
+        private readonly Dictionary<NetUserId, List<(BwoinkTextMessage? Admin, BwoinkTextMessage? Player)>> _history = new();
+
         public override void Initialize()
         {
             base.Initialize();
@@ -105,10 +108,15 @@ namespace Content.Server.Administration.Systems
             );
             _maxAdditionalChars = GenerateAHelpMessage(defaultParams).Message.Length;
             _playerManager.PlayerStatusChanged += OnPlayerStatusChanged;
+            _adminManager.OnPermsChanged += OnAdminPermsChanged;
 
             SubscribeLocalEvent<GameRunLevelChangedEvent>(OnGameRunLevelChanged);
             SubscribeNetworkEvent<BwoinkClientTypingUpdated>(OnClientTypingUpdated);
-            SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => _activeConversations.Clear());
+            SubscribeLocalEvent<RoundRestartCleanupEvent>(_ =>
+            {
+                _activeConversations.Clear();
+                _history.Clear();
+            });
 
         	_rateLimit.Register(
                 RateLimitKey,
@@ -117,6 +125,58 @@ namespace Content.Server.Administration.Systems
                     CCVars.AhelpRateLimitCount,
                     PlayerRateLimitedAction)
                 );
+        }
+
+        public override void Shutdown()
+        {
+            base.Shutdown();
+
+            _playerManager.PlayerStatusChanged -= OnPlayerStatusChanged;
+            _adminManager.OnPermsChanged -= OnAdminPermsChanged;
+        }
+
+        private void OnAdminPermsChanged(AdminPermsChangedEventArgs args)
+        {
+            SendHistory(args.Player);
+        }
+
+        private void AddHistory(NetUserId channel, BwoinkTextMessage? admin, BwoinkTextMessage? player)
+        {
+            var list = _history.GetOrNew(channel);
+            list.Add((admin, player));
+            if (list.Count > HistoryPerChannel)
+                list.RemoveRange(0, list.Count - HistoryPerChannel);
+        }
+
+        // Admins get every channel, players only their own.
+        private void SendHistory(ICommonSession session)
+        {
+            if (session.Status != SessionStatus.InGame)
+                return;
+
+            var isAdmin = _adminManager.GetAdminData(session)?.HasFlag(AdminFlags.Adminhelp) ?? false;
+            var messages = new List<BwoinkTextMessage>();
+            if (isAdmin)
+            {
+                foreach (var list in _history.Values)
+                {
+                    foreach (var (admin, _) in list)
+                    {
+                        if (admin != null)
+                            messages.Add(admin);
+                    }
+                }
+            }
+            else if (_history.TryGetValue(session.UserId, out var own))
+            {
+                foreach (var (_, player) in own)
+                {
+                    if (player != null)
+                        messages.Add(player);
+                }
+            }
+
+            RaiseNetworkEvent(new BwoinkHistoryMessage(messages), session.Channel);
         }
 
         private async void OnCallChanged(string url)
@@ -203,6 +263,7 @@ namespace Content.Server.Administration.Systems
                 return;
 
             RaiseNetworkEvent(new BwoinkDiscordRelayUpdated(!string.IsNullOrWhiteSpace(_webhookUrl)), e.Session);
+            SendHistory(e.Session);
         }
 
         private void NotifyAdmins(ICommonSession session, string message, PlayerStatusType statusType)
@@ -254,6 +315,8 @@ namespace Content.Server.Administration.Systems
                 sentAt: DateTime.Now,
                 playSound: false
             );
+
+            AddHistory(session.UserId, bwoinkMessage, null);
 
             var admins = GetTargetAdmins();
             foreach (var admin in admins)
@@ -758,39 +821,39 @@ namespace Content.Server.Administration.Systems
                 adminPrefixWebhook = $"[bold]\\[{bwoinkParams.SenderAdmin.Title}\\][/bold] ";
             }
 
-            // Notify player
-            if (_playerManager.TryGetSessionById(bwoinkParams.Message.UserId, out var session))
+            // If _overrideClientName is set, we generate a new message with the override name. The admins name will still be the original name for the webhooks.
+            var playerMsg = msg;
+            if (_overrideClientName != string.Empty)
             {
-                if (!admins.Contains(session.Channel))
-                {
-                    // If _overrideClientName is set, we generate a new message with the override name. The admins name will still be the original name for the webhooks.
-                    if (_overrideClientName != string.Empty)
-                    {
-                        string overrideMsgText;
-                        // Doing the same thing as above, but with the override name. Theres probably a better way to do this.
-                        if (bwoinkParams.SenderAdmin is not null &&
-                            bwoinkParams.SenderAdmin.Flags ==
-                            AdminFlags.Adminhelp) // Mentor. Not full admin. That's why it's colored differently.
-                            overrideMsgText = $"[color=purple]{adminPrefixWebhook}{_overrideClientName}[/color]";
-                        else if (bwoinkParams.SenderAdmin is not null && bwoinkParams.SenderAdmin.HasFlag(AdminFlags.Adminhelp))
-                            overrideMsgText = $"[color=red]{adminPrefixWebhook}{_overrideClientName}[/color]";
-                        else
-                            overrideMsgText = $"{bwoinkParams.SenderName}"; // Not an admin, name is not overridden.
+                string overrideMsgText;
+                // Doing the same thing as above, but with the override name. Theres probably a better way to do this.
+                if (bwoinkParams.SenderAdmin is not null &&
+                    bwoinkParams.SenderAdmin.Flags ==
+                    AdminFlags.Adminhelp) // Mentor. Not full admin. That's why it's colored differently.
+                    overrideMsgText = $"[color=purple]{adminPrefixWebhook}{_overrideClientName}[/color]";
+                else if (bwoinkParams.SenderAdmin is not null && bwoinkParams.SenderAdmin.HasFlag(AdminFlags.Adminhelp))
+                    overrideMsgText = $"[color=red]{adminPrefixWebhook}{_overrideClientName}[/color]";
+                else
+                    overrideMsgText = $"{bwoinkParams.SenderName}"; // Not an admin, name is not overridden.
 
-                        if (bwoinkParams.FromWebhook)
-                            overrideMsgText = $"{_config.GetCVar(CCVars.DiscordReplyPrefix)}{overrideMsgText}";
+                if (bwoinkParams.FromWebhook)
+                    overrideMsgText = $"{_config.GetCVar(CCVars.DiscordReplyPrefix)}{overrideMsgText}";
 
-                        overrideMsgText = $"{(bwoinkParams.Message.PlaySound ? "" : "(S) ")}{overrideMsgText}: {escapedText}";
+                overrideMsgText = $"{(bwoinkParams.Message.PlaySound ? "" : "(S) ")}{overrideMsgText}: {escapedText}";
 
-                        RaiseNetworkEvent(new BwoinkTextMessage(bwoinkParams.Message.UserId,
-                                bwoinkParams.SenderId,
-                                overrideMsgText,
-                                playSound: playSound),
-                            session.Channel);
-                    }
-                    else
-                        RaiseNetworkEvent(msg, session.Channel);
-                }
+                playerMsg = new BwoinkTextMessage(bwoinkParams.Message.UserId,
+                    bwoinkParams.SenderId,
+                    overrideMsgText,
+                    playSound: playSound);
+            }
+
+            AddHistory(msg.UserId, bwoinkParams.UserOnly ? null : msg, playerMsg);
+
+            // Notify player
+            if (_playerManager.TryGetSessionById(bwoinkParams.Message.UserId, out var session) &&
+                !admins.Contains(session.Channel))
+            {
+                RaiseNetworkEvent(playerMsg, session.Channel);
             }
 
             var sendsWebhook = _webhookUrl != string.Empty;

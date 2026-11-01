@@ -21,6 +21,10 @@ public sealed class PersistentPoiTurretSaveTest
         "HardpointPersistentPoiLaserEmplacement",
         "WeaponTurretRetributionPersistentPoi",
         "WeaponTurretAutoPDPersistentPoi",
+        "HardpointPersistentPoiMediumLaserEmplacement",
+        "WeaponTurretWardenPersistentPoi",
+        "HardpointPersistentPoiHeavyLaserEmplacement",
+        "WeaponTurretBastionPersistentPoi",
     };
 
     [Test]
@@ -42,7 +46,7 @@ public sealed class PersistentPoiTurretSaveTest
             var gridEnt = mapSystem.CreateGridEntity(map.MapId);
             grid = gridEnt.Owner;
             var plating = server.ResolveDependency<ITileDefinitionManager>()["Plating"];
-            for (var x = 0; x < 4; x++)
+            for (var x = 0; x < 6; x++)
             {
                 mapSystem.SetTile(gridEnt, new Vector2i(x, 0), new Tile(plating.TileId));
             }
@@ -51,6 +55,8 @@ public sealed class PersistentPoiTurretSaveTest
 
             entMan.SpawnEntity("HardpointPersistentPoiLaserEmplacement", new EntityCoordinates(grid, 0.5f, 0.5f));
             entMan.SpawnEntity("WeaponTurretAutoPDPersistentPoi", new EntityCoordinates(grid, 2.5f, 0.5f));
+            entMan.SpawnEntity("HardpointPersistentPoiMediumLaserEmplacement", new EntityCoordinates(grid, 3.5f, 0.5f));
+            entMan.SpawnEntity("HardpointPersistentPoiHeavyLaserEmplacement", new EntityCoordinates(grid, 5.5f, 0.5f));
         });
 
         await server.WaitRunTicks(5);
@@ -98,8 +104,11 @@ public sealed class PersistentPoiTurretSaveTest
                 Assert.That(entMan.GetComponent<TransformComponent>(found[0]).Anchored, Is.True, $"{proto} anchored {when}");
         }
 
-        var laser = onGrid.Single(u => entMan.GetComponent<MetaDataComponent>(u).EntityPrototype?.ID == Built[1]);
-        Assert.That(entMan.GetComponent<HardpointAnchorableOnlyComponent>(laser).anchoredTo, Is.Not.Null,
-            $"laser mounted {when}");
+        foreach (var proto in new[] { Built[1], Built[4], Built[6] })
+        {
+            var laser = onGrid.Single(u => entMan.GetComponent<MetaDataComponent>(u).EntityPrototype?.ID == proto);
+            Assert.That(entMan.GetComponent<HardpointAnchorableOnlyComponent>(laser).anchoredTo, Is.Not.Null,
+                $"{proto} mounted {when}");
+        }
     }
 }

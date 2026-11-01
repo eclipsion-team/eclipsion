@@ -40,7 +40,9 @@ public sealed class TerritoryProfileSystem : EntitySystem
 
     public bool IsAllowed(string? faction)
     {
-        return PersistentTerritoryFactions.IsSupported(faction) && (Factions == null || Factions.Contains(faction!));
+        // independents have no home station, so no campaign lists them, and every campaign has them
+        return PersistentTerritoryFactions.IsIndependent(faction) ||
+               PersistentTerritoryFactions.IsSupported(faction) && (Factions == null || Factions.Contains(faction!));
     }
 
     public ResPath DirectoryOf(string profile) => Root / Sanitize(profile);

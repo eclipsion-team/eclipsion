@@ -507,15 +507,20 @@ public sealed class MoverController : SharedMoverController
             }
             else
             {
-                var torque = shuttle.AngularThrust * -angularInput;
+                // Eclipsion: console turn rate scales both turning torque and the spin cap.
+                var turnRate = Math.Clamp(shuttle.TurnRate, ShuttleComponent.MinTurnRate, 1f);
+                var maxAngularVelocity = ShuttleComponent.MaxAngularVelocity * turnRate;
+                var torque = shuttle.AngularThrust * turnRate * -angularInput;
 
                 // Need to cap the velocity if 1 tick of input brings us over cap so we don't continuously
                 // edge onto the cap over and over.
                 var torqueMul = body.InvI * frameTime;
 
                 torque = Math.Clamp(torque,
-                    (-ShuttleComponent.MaxAngularVelocity - body.AngularVelocity) / torqueMul,
-                    (ShuttleComponent.MaxAngularVelocity - body.AngularVelocity) / torqueMul);
+                    (-maxAngularVelocity - body.AngularVelocity) / torqueMul,
+                    (maxAngularVelocity - body.AngularVelocity) / torqueMul);
+                // Spinning above a lowered cap slows down on thrusters, not instantly.
+                torque = Math.Clamp(torque, -shuttle.AngularThrust, shuttle.AngularThrust);
 
                 if (!torque.Equals(0f))
                 {

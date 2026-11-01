@@ -48,6 +48,7 @@ public sealed class PersistentCaptureRegionSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
 
     [Dependency] private readonly TerritoryProfileSystem _profiles = default!;
+    [Dependency] private readonly TerritoryIndependentSystem _independents = default!;
 
     private ResPath SavePath => _profiles.PathFor("capture_regions.json");
     private const string RegionIdPlaceholder = "REPLACE_WITH_UNIQUE_REGION_ID";
@@ -342,6 +343,14 @@ public sealed class PersistentCaptureRegionSystem : EntitySystem
 
         var expectedOwner = flag.OwnerTeam;
         var neutralizing = expectedOwner != null;
+
+        // anyone may tear an independent's rival down, but raising colours counts against the one they hold
+        if (!neutralizing && TryGetOtherHolding(team!, ent.Comp.RegionId, out var held))
+        {
+            _popup.PopupEntity(Loc.GetString("territory-capture-independent-limit", ("territory", held)), ent, user);
+            return true;
+        }
+
         var duration = neutralizing ? flag.NeutralizeTime : flag.CaptureTime;
         var doAfter = new DoAfterArgs(EntityManager, user, TimeSpan.FromSeconds(duration),
             new PersistentCaptureRegionCaptureDoAfterEvent(team!, expectedOwner), ent, ent)
@@ -408,6 +417,9 @@ public sealed class PersistentCaptureRegionSystem : EntitySystem
             return;
         }
 
+        if (TryGetOtherHolding(args.Team, ent.Comp.RegionId, out _))
+            return;
+
         flag.OwnerTeam = args.Team;
         Dirty(ent, flag);
         RaiseLocalEvent(new CaptureFlagWonEvent(args.Team));
@@ -428,7 +440,28 @@ public sealed class PersistentCaptureRegionSystem : EntitySystem
 
     private string? TryGetCaptureTeam(EntityUid user)
     {
-        return PersistentTerritoryFactions.GetTeam(EntityManager, user);
+        var team = PersistentTerritoryFactions.GetTeam(EntityManager, user);
+        return team == PersistentTerritoryFactions.IndependentFaction ? _independents.EnsureOwner(user) : team;
+    }
+
+    /// <summary>The other territory an independent already holds, if any. They get one at a time.</summary>
+    private bool TryGetOtherHolding(string owner, string regionId, [NotNullWhen(true)] out string? held)
+    {
+        held = null;
+        if (!PersistentTerritoryFactions.IsIndependent(owner))
+            return false;
+
+        foreach (var status in GetRegions())
+        {
+            if (string.Equals(status.Owner, owner, StringComparison.Ordinal) &&
+                !string.Equals(status.RegionId, regionId, StringComparison.OrdinalIgnoreCase))
+            {
+                held = status.Name;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void OnDeviceStartup(Entity<CaptureRegionDeviceComponent> ent, ref ComponentStartup args)
@@ -888,8 +921,19 @@ public sealed class PersistentCaptureRegionSystem : EntitySystem
         // Refresh immediately even for the neutral state. When there is no new owner there is no following
         // AddFaction call to rebuild the cached friendly/hostile sets for us.
         _npcFactions.ClearFactions((ent.Owner, npcFaction));
-        if (owner != null)
+        RemComp<FactionExceptionComponent>(ent);
+
+        if (owner == null)
+            return;
+
+        if (!PersistentTerritoryFactions.IsIndependent(owner))
+        {
             _npcFactions.AddFaction((ent.Owner, npcFaction), owner);
+            return;
+        }
+
+        _npcFactions.AddFaction((ent.Owner, npcFaction), TerritoryIndependentSystem.TurretFaction);
+        _independents.ExemptHolder(ent, owner);
     }
 
     private void ApplyGridOwner(EntityUid grid, PersistentCaptureRegionComponent region, string? owner)
@@ -914,6 +958,8 @@ public sealed class PersistentCaptureRegionSystem : EntitySystem
 
         if (region.FactionColors.TryGetValue(owner, out var color))
             _shuttles.SetIFFColor(grid, color);
+        else if (PersistentTerritoryFactions.IsIndependent(owner))
+            _shuttles.SetIFFColor(grid, PersistentTerritoryFactions.IndependentColor(owner));
         else if (_prototypes.TryIndex<FactionPrototype>(owner, out var faction))
             _shuttles.SetIFFColor(grid, faction.FactionButtonColor);
     }

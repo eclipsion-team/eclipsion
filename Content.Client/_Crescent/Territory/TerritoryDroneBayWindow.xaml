@@ -1,0 +1,39 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                      Title="{Loc 'territory-drone-bay-ui-title'}"
+                      MinSize="460 380"
+                      SetSize="500 440">
+    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="6"
+                  VerticalExpand="True" HorizontalExpand="True">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+            <Label Name="HolderLabel" StyleClasses="LabelHeading" HorizontalExpand="True" ClipText="True"/>
+            <Label Name="LevelLabel" StyleClasses="LabelSecondaryColor" VerticalAlignment="Center"/>
+        </BoxContainer>
+        <RichTextLabel Name="HintLabel" HorizontalExpand="True"/>
+
+        <PanelContainer Name="PaymentPanel" Visible="False">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#1b1b1e" BorderColor="#5a4a2a" BorderThickness="1"
+                                  ContentMarginLeftOverride="6" ContentMarginRightOverride="6"
+                                  ContentMarginTopOverride="4" ContentMarginBottomOverride="4"/>
+            </PanelContainer.PanelOverride>
+            <BoxContainer Orientation="Vertical" SeparationOverride="4">
+                <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                    <Label Text="{Loc 'territory-payment-pay-from'}" VerticalAlignment="Center"/>
+                    <Button Name="PersonalButton" ToggleMode="True" StyleClasses="OpenRight" HorizontalExpand="True"
+                            ClipText="True"/>
+                    <Button Name="FactionButton" ToggleMode="True" StyleClasses="OpenLeft" HorizontalExpand="True"
+                            ClipText="True"/>
+                </BoxContainer>
+                <RichTextLabel Name="PaymentNote" HorizontalExpand="True"/>
+            </BoxContainer>
+        </PanelContainer>
+
+        <Label Name="FlyingLabel" StyleClasses="LabelSecondaryColor"/>
+        <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+            <BoxContainer Name="HullList" Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True"/>
+        </ScrollContainer>
+        <RichTextLabel Name="StatusLabel" HorizontalExpand="True"/>
+    </BoxContainer>
+</controls:FancyWindow>

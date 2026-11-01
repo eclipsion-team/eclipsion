@@ -14,6 +14,7 @@ namespace Content.Client.Shuttles.UI
         public Action<int>? modulePressed;
         public Action<ShipWeaponTargetingMode>? OnTargetingModeChange;
         public Action<List<string>>? OnRename;
+        public Action<float>? OnTurnRateChange;
 
         private Dictionary<int, Button> _buttons = new();
         private Dictionary<int, LineEdit> _editable = new();
@@ -46,6 +47,14 @@ namespace Content.Client.Shuttles.UI
 
             RenameButton.OnPressed += RenamePressed;
 
+            // Eclipsion: send on release so a drag isn't one message per frame.
+            TurnRateSlider.OnValueChanged += _ => UpdateTurnRateLabel();
+            TurnRateSlider.OnReleased += slider => OnTurnRateChange?.Invoke(slider.Value / 100f);
+        }
+
+        private void UpdateTurnRateLabel()
+        {
+            TurnRateLabel.Text = $"{TurnRateSlider.Value:0}%";
         }
 
         private void RenamePressed(BaseButton.ButtonEventArgs args)
@@ -89,6 +98,11 @@ namespace Content.Client.Shuttles.UI
         private void HullrotUpdateState(NavInterfaceState scc)
         {
             WeaponTargetingMode.SelectId((int) scc.WeaponTargetingMode);
+            if (!TurnRateSlider.Grabbed)
+            {
+                TurnRateSlider.SetValueWithoutEvent(scc.TurnRate * 100f);
+                UpdateTurnRateLabel();
+            }
             console = _entManager.GetEntity(scc.console);
             UpdateButtonNames();
         }

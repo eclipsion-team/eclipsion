@@ -151,6 +151,8 @@ public sealed class PersistentPoiLevelSystem : EntitySystem
     {
         PersistentPoiWorksCategory? category = null;
         ProtoId<PersistentPoiCapabilityPrototype>? line = null;
+        var count = 0;
+        int? limit = null;
 
         foreach (var condition in recipe.Conditions)
         {
@@ -161,14 +163,19 @@ public sealed class PersistentPoiLevelSystem : EntitySystem
                 case PersistentPoiCapabilityRequired capability:
                     line = capability.Capability;
                     break;
+                // with more than one cap, show the first one, unless a later one is the one that's full
                 case PersistentPoiWithinLimit within:
-                    category = within.Category;
+                    var withinCount = CountWorks(territory, within.Category, territory.Comp);
+                    var withinLimit = GetLimit(territory.Comp, within.Category);
+                    if (category == null || withinLimit is { } cap && withinCount >= cap && !(limit is { } shown && count >= shown))
+                    {
+                        category = within.Category;
+                        count = withinCount;
+                        limit = withinLimit;
+                    }
                     break;
             }
         }
-
-        var count = category is { } counted ? CountWorks(territory, counted, territory.Comp) : 0;
-        var limit = category is { } limited ? GetLimit(territory.Comp, limited) : null;
 
         if (territory.Comp.Owner == null || !string.Equals(territory.Comp.Owner, faction, StringComparison.Ordinal))
             return new PersistentPoiRecipeStatus(PersistentPoiBuildBlock.NotHeld, category, count, limit, null, line);

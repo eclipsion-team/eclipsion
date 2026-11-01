@@ -12,6 +12,7 @@ territory-capture-already-yours = Your faction already holds this territory.
 territory-capture-no-faction = You cannot make a recognized territorial claim.
 territory-capture-not-in-campaign = Your faction is not contesting territory in this sector.
 territory-capture-misconfigured = This standard has no valid territorial registry.
+territory-capture-independent-limit = You already hold { $territory }. An independent can hold only one territory at a time.
 
 territory-examine-owner = It flies [color=yellow]{ $faction }[/color] colours.
 territory-examine-unclaimed = It flies no faction's colours. The ground here is unclaimed.

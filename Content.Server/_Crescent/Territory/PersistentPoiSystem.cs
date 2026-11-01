@@ -8,6 +8,7 @@ using Content.Shared._Crescent.Territory;
 using Content.Shared.Construction.Prototypes;
 using Content.Shared.Construction.Steps;
 using Content.Shared.PointCannons;
+using Content.Shared.Stacks;
 using Content.Shared.Popups;
 using Content.Shared.Shuttles.Components;
 using Robust.Shared.Map.Components;
@@ -39,29 +40,41 @@ public sealed class PersistentPoiSystem : EntitySystem
     private void OnStructureBuilt(Entity<PersistentPoiStructureComponent> ent, ref PersistentPoiBuiltEvent args)
     {
         if (Transform(ent).GridUid is not { } grid ||
-            !TryComp<PersistentPoiGridComponent>(grid, out var territory) ||
-            _levels.GetLimit(territory, args.Category) is not { } limit)
+            !TryComp<PersistentPoiGridComponent>(grid, out var territory))
         {
             return;
         }
 
-        var finished = IsCounted(ent, args.Category);
-        var count = _levels.CountWorksLive(grid, args.Category) + (finished ? 0 : 1);
-        if (count <= limit)
-            return;
+        var category = args.Category;
+        if (!IsOverLimit(ent, grid, territory, category))
+        {
+            if (args.Also is not { } also || !IsOverLimit(ent, grid, territory, also))
+                return;
+
+            category = also;
+        }
 
         RefundConstruction(ent);
 
         if (args.User is { } user)
         {
             _popup.PopupEntity(Loc.GetString("persistent-poi-build-over-limit"), ent, user, PopupType.MediumCaution);
-            Log.Info($"{ToPrettyString(user)} finished {ToPrettyString(ent)} past territory '{territory.RegionId}''s {args.Category} limit; refunded.");
+            Log.Info($"{ToPrettyString(user)} finished {ToPrettyString(ent)} past territory '{territory.RegionId}''s {category} limit; refunded.");
         }
 
-        if (finished)
+        if (IsCounted(ent, category))
             QueueDel(ent);
         else
             Del(ent);
+    }
+
+    private bool IsOverLimit(EntityUid uid, EntityUid grid, PersistentPoiGridComponent territory, PersistentPoiWorksCategory category)
+    {
+        if (_levels.GetLimit(territory, category) is not { } limit)
+            return false;
+
+        var count = _levels.CountWorksLive(grid, category) + (IsCounted(uid, category) ? 0 : 1);
+        return count > limit;
     }
 
     private bool IsCounted(EntityUid uid, PersistentPoiWorksCategory category)
@@ -72,18 +85,29 @@ public sealed class PersistentPoiSystem : EntitySystem
         return TryComp<PersistentPoiWorksComponent>(uid, out var works) && works.Category == category;
     }
 
-    private void RefundConstruction(EntityUid uid)
+    // reached: pay back only up to the node it stands on, not the one it was headed for
+    public void RefundConstruction(EntityUid uid, bool reached = false)
     {
+        var coordinates = Transform(uid).Coordinates;
+        foreach (var (material, amount) in GetRefund(uid, reached))
+        {
+            if (_proto.TryIndex(material, out var stack))
+                _stack.SpawnMultiple(stack.Spawn, amount, coordinates);
+        }
+    }
+
+    public Dictionary<ProtoId<StackPrototype>, int> GetRefund(EntityUid uid, bool reached = false)
+    {
+        var refund = new Dictionary<ProtoId<StackPrototype>, int>();
         if (!TryComp<ConstructionComponent>(uid, out var construction) ||
             !_proto.TryIndex<ConstructionGraphPrototype>(construction.Graph, out var graph) ||
             graph.Start is not { } startNode ||
             !graph.Nodes.TryGetValue(startNode, out var node) ||
-            graph.Path(startNode, construction.TargetNode ?? construction.Node) is not { } path)
+            graph.Path(startNode, reached ? construction.Node : construction.TargetNode ?? construction.Node) is not { } path)
         {
-            return;
+            return refund;
         }
 
-        var coordinates = Transform(uid).Coordinates;
         foreach (var next in path)
         {
             if (node.GetEdge(next.Name) is not { } edge)
@@ -91,15 +115,14 @@ public sealed class PersistentPoiSystem : EntitySystem
 
             foreach (var step in edge.Steps)
             {
-                if (step is MaterialConstructionGraphStep material &&
-                    _proto.TryIndex(material.MaterialPrototypeId, out var stack))
-                {
-                    _stack.Spawn(material.Amount, stack, coordinates);
-                }
+                if (step is MaterialConstructionGraphStep material)
+                    refund[material.MaterialPrototypeId] = refund.GetValueOrDefault(material.MaterialPrototypeId) + material.Amount;
             }
 
             node = next;
         }
+
+        return refund;
     }
 
     private void OnRegionRegistered(ref PersistentRegionRegisteredEvent args)

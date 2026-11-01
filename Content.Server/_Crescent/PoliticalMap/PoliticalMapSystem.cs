@@ -175,6 +175,9 @@ public sealed class PoliticalMapSystem : EntitySystem
         if (map.FactionColors.TryGetValue(faction, out var color))
             return color;
 
+        if (PersistentTerritoryFactions.IsIndependent(faction))
+            return PersistentTerritoryFactions.IndependentColor(faction);
+
         if (_proto.TryIndex<FactionPrototype>(faction, out var proto))
             return proto.UiAccent ?? proto.Color;
 

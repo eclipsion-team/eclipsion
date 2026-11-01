@@ -54,6 +54,10 @@ public sealed class NavInterfaceState
     /// </summary>
     public bool HideTarget = true;
 
+    /// <summary>
+    /// Eclipsion: the grid's console-set turn rate, 0-1.
+    /// </summary>
+    public float TurnRate = 1f;
 
     public NavInterfaceState(
         float maxRange,

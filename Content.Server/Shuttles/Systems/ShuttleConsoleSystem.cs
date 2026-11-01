@@ -1075,6 +1075,8 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
             AlignToWorld = entity.Comp1.KeepWorldAligned,
             WeaponTargetingMode = EntityManager.System<ShipWeaponTargetingSystem>().GetMode(entity.Owner),
         }; // Frontier: inertia dampening
+        if (TryComp<ShuttleComponent>(entity.Comp2.GridUid, out var shuttle))
+            state.TurnRate = shuttle.TurnRate;
         state.Target = entity.Comp1.Target;
         state.TargetEntity = GetNetEntity(entity.Comp1.TargetEntity);
         state.HideTarget = entity.Comp1.HideTarget;

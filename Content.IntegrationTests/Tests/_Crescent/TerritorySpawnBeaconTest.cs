@@ -68,8 +68,8 @@ public sealed class TerritorySpawnBeaconTest
             Assert.That(OpensRack(entMan, rack, member), Is.True);
             Assert.That(OpensRack(entMan, rack, outsider), Is.False);
 
-            territory.Level = 2;
-            Assert.That(beacons.IsActive(beacon, out _), Is.False, "the spawner works below level 3");
+            territory.Level = 1;
+            Assert.That(beacons.IsActive(beacon, out _), Is.False, "the spawner works below level 2");
 
             territory.Level = 3;
             territory.Owner = "NCWL";

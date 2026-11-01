@@ -131,7 +131,10 @@ public sealed class AmeControllerSystem : EntitySystem
             else
             {
                 var availableInject = Math.Min(controller.InjectionAmount, fuelContainer.FuelAmount);
-                var powerOutput = group.InjectFuel(availableInject, out overloading);
+                var instabilityFuel = availableInject >= controller.MaxInjectionAmount
+                    ? controller.MaxInjectionInstabilityFuel
+                    : availableInject;
+                var powerOutput = group.InjectFuel(availableInject, out overloading, instabilityFuel);
                 if (TryComp<PowerSupplierComponent>(uid, out var powerOutlet))
                     powerOutlet.MaxSupply = powerOutput;
                 fuelContainer.FuelAmount -= availableInject;
@@ -410,6 +413,7 @@ public sealed class AmeControllerSystem : EntitySystem
     {
         if (!Resolve(uid, ref controller))
             return;
+        value = Math.Clamp(value, 0, controller.MaxInjectionAmount);
         if (controller.InjectionAmount == value)
             return;
 

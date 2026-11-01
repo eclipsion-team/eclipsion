@@ -124,7 +124,7 @@ public sealed class AmeNodeGroup : BaseNodeGroup
         }
     }
 
-    public float InjectFuel(int fuel, out bool overloading)
+    public float InjectFuel(int fuel, out bool overloading, int? instabilityFuel = null)
     {
         overloading = false;
 
@@ -136,7 +136,7 @@ public sealed class AmeNodeGroup : BaseNodeGroup
         if (!IsOverloading(fuel))
             return powerOutput;
         // bigger reactors harder to blow
-        var instability = (fuel - GetSafeFuelLimit()) / CoreCount + 5;
+        var instability = ((instabilityFuel ?? fuel) - GetSafeFuelLimit()) / CoreCount + 5;
 
         overloading = true;
         var integrityCheck = 100;

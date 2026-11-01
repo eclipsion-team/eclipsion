@@ -1,0 +1,13 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      Title="{Loc 'faction-portal-title'}"
+                      SetSize="360 420"
+                      MinSize="300 240">
+    <BoxContainer Orientation="Vertical" Margin="8" VerticalExpand="True" HorizontalExpand="True">
+        <Label Name="StatusLabel" Text="{Loc 'faction-portal-ui-hint'}" HorizontalAlignment="Center"/>
+        <PanelContainer StyleClasses="LowDivider" HorizontalExpand="True" SetHeight="2" Margin="0 6"/>
+        <ScrollContainer VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False">
+            <BoxContainer Name="DestinationList" Orientation="Vertical" HorizontalExpand="True"/>
+        </ScrollContainer>
+    </BoxContainer>
+</controls:FancyWindow>
