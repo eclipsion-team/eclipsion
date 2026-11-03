@@ -1,10 +1,10 @@
 meta:
   format: 7
   category: Grid
-  engineVersion: 288.1.0
+  engineVersion: 289.0.3
   forkId: ""
   forkVersion: ""
-  time: 08/25/2026 16:31:21
+  time: 11/03/2026 19:11:52
   entityCount: 146
 maps: []
 grids:
@@ -106,12 +106,14 @@ entities:
           decals:
             86: -1,-8
             101: -1,-8
+            117: -1,-8
         - node:
             zIndex: 1
             id: LatticeCornerNW
           decals:
             83: 1,-8
             91: 1,-8
+            107: 1,-8
         - node:
             zIndex: 1
             id: LatticeCornerSE
@@ -122,6 +124,7 @@ entities:
             72: -1,-2
             80: -1,-2
             104: -1,-2
+            120: -1,-2
         - node:
             zIndex: 1
             id: LatticeCornerSW
@@ -132,6 +135,7 @@ entities:
             65: 1,-2
             75: 1,-2
             94: 1,-2
+            110: 1,-2
         - node:
             id: LatticeEdgeE
           decals:
@@ -143,6 +147,8 @@ entities:
             84: -1,-8
             99: -1,-8
             103: -1,-2
+            115: -1,-8
+            119: -1,-2
         - node:
             id: LatticeEdgeN
           decals:
@@ -158,6 +164,10 @@ entities:
             95: 3,-8
             97: -3,-8
             100: -1,-8
+            105: 1,-8
+            111: 3,-8
+            113: -3,-8
+            116: -1,-8
         - node:
             id: LatticeEdgeS
           decals:
@@ -181,6 +191,10 @@ entities:
             96: 3,-2
             98: -3,-2
             102: -1,-2
+            108: 1,-2
+            112: 3,-2
+            114: -3,-2
+            118: -1,-2
         - node:
             id: LatticeEdgeW
           decals:
@@ -192,6 +206,8 @@ entities:
             82: 1,-8
             90: 1,-8
             93: 1,-2
+            106: 1,-8
+            109: 1,-2
         - node:
             id: TechE
             color: '#FFFFFFFF'
@@ -302,21 +318,6 @@ entities:
           - 0
           - 0
           - 0
-        - temperature: 293.15
-          volume: 2500
-          moles:
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
         - volume: 2500
           moles:
           - 0
@@ -332,26 +333,41 @@ entities:
           - 0
           - 0
           immutable: True
+        - temperature: 293.15
+          volume: 2500
+          moles:
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
         tiles:
           0,-2:
             0: 4913
-            1: 1024
-            2: 8
+            1: 10
+            2: 1024
           -1,-2:
+            1: 10
             0: 2176
-            1: 5376
-            2: 2
+            2: 5376
           0,-1:
             0: 17
-            2: 2560
-            1: 4
+            1: 2560
+            2: 4
           -1,-1:
-            2: 2560
-            1: 20
+            1: 2560
+            2: 20
           1,-2:
-            1: 4352
+            2: 4352
           1,-1:
-            1: 16
+            2: 16
         chunkSize: 4
     - type: GasTileOverlay
     - type: RadiationGridResistance
@@ -360,6 +376,7 @@ entities:
     - type: ChunkContainer
       chunkEntities: []
     - type: SelfDeleteGrid
+    - type: GridSplitNode
 - proto: AAAHardpointFixed
   entities:
   - uid: 2
@@ -1022,6 +1039,9 @@ entities:
     - type: Transform
       parent: 1
       pos: 1.5,-6.5
+    - type: Thruster
+      thrust: 250
+      baseThrust: 250
 - proto: SubstationWallBasic
   entities:
   - uid: 105
