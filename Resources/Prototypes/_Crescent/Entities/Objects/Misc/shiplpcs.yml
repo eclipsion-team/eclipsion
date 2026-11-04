@@ -905,7 +905,7 @@
   parent: BaseItem
   id: ShipVoucherNazaar
   name: CSEC 'Nazaar' pattern LPC fabprint disk
-  description: An LPC fabprint disk loaded with a CorpSec Nazaar-class security mediunm fighter pattern. Has to be redeemed at a shipyard console.
+  description: An LPC fabprint disk loaded with a CorpSec Nazaar-class security medium fighter pattern. Has to be redeemed at a shipyard console.
   components:
   - type: Item
     size: Small
