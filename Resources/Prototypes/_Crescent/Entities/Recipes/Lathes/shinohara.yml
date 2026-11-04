@@ -743,6 +743,20 @@
     Uranium: 200
 
 - type: latheRecipe
+  id: MissileNazaarLPC
+  category: Shipyard
+  result: ShipVoucherMissileNazaar
+  completetime: 1
+  materials:
+    Steel: 2800
+    Plasma: 1200
+    Silver: 1400
+    Gold: 800
+    Copper: 400
+    Tungsten: 200
+    Uranium: 200
+
+- type: latheRecipe
   id: MusinyaneLPC
   category: Shipyard
   result: ShipVoucherMusinyane
