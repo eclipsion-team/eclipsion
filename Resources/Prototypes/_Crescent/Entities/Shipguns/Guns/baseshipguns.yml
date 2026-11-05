@@ -135,7 +135,7 @@
   - type: WorldLoader
     radius: 256
   - type: Damageable
-    damageContainer: StructuralInorganic
+    damageContainer: Inorganic
     damageModifierSet: StructuralMetallicStrong
   - type: MouseRotator
     angleTolerance: 5
