@@ -24,6 +24,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ProjectileIFF
     - type: ContainerContainer
       containers:
@@ -92,6 +94,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: Gun
       fireOnDropChance: 0
       projectileSpeed: 40
@@ -143,6 +147,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ProjectileIFF
     - type: ContainerContainer
       containers:
@@ -207,6 +213,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ProjectileIFF
     - type: ContainerContainer
       containers:
@@ -271,6 +279,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: Gun
       fireOnDropChance: 0
       projectileSpeed: 95
@@ -327,6 +337,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: Gun
       fireOnDropChance: 0
       projectileSpeed: 90
@@ -385,6 +397,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ProjectileIFF
     - type: ContainerContainer
       containers:
@@ -449,6 +463,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ProjectileIFF
     - type: ContainerContainer
       containers:
@@ -513,6 +529,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ProjectileIFF
     - type: ContainerContainer
       containers:
@@ -581,6 +599,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ProjectileIFF
     - type: ContainerContainer
       containers:
@@ -647,6 +667,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ProjectileIFF
     - type: ContainerContainer
       containers:
@@ -717,6 +739,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ProjectileIFF
     - type: ContainerContainer
       containers:
@@ -779,6 +803,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ProjectileIFF
     - type: ContainerContainer
       containers:

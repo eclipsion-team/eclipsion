@@ -24,6 +24,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ContainerContainer
       containers:
         ballistic-ammo: !type:Container
@@ -94,6 +96,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ContainerContainer
       containers:
         ballistic-ammo: !type:Container
@@ -164,6 +168,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ContainerContainer
       containers:
         ballistic-ammo: !type:Container
