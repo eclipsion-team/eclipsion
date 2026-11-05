@@ -12,9 +12,9 @@
           radius: 0.4
         density: 190
         mask:
-        - TableMask
+        - MachineMask
         layer:
-        - TableLayer
+        - MachineLayer
   - type: Transform
     noRot: false
   - type: Rotatable
@@ -62,9 +62,9 @@
           radius: 0.4
         density: 190
         mask:
-        - TableMask
+        - MachineMask
         layer:
-        - TableLayer
+        - MachineLayer
   - type: Transform
     noRot: false
   - type: Rotatable
@@ -124,9 +124,9 @@
           radius: 0.4
         density: 190
         mask:
-        - TableMask
+        - MachineMask
         layer:
-        - TableLayer
+        - MachineLayer
   - type: Transform
     noRot: false
   - type: Rotatable
