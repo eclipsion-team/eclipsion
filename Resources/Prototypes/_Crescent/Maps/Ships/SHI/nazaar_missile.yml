@@ -1,0 +1,33 @@
+- type: vessel
+  id: Missile_Nazaar
+  name: SHI Missile-Nazaar
+  description: |
+    A CorpSec patrol missile boat.
+    LOADOUT: 1x 'Shortbow' Missile Launcher, 1x 'Azimuth' Missile Launcher
+    SHIELD: Absent
+    SPEED: 35 m/s
+  price: 20000
+  category: Small
+  group: None
+  path: /Maps/_Crescent/Shuttles/SHI/nazaar_missile.yml
+
+- type: gameMap
+  id: Missile_Nazaar
+  mapName: 'SHI Missile-Nazaar'
+  mapPath: /Maps/_Crescent/Shuttles/SHI/nazaar_missile.yml
+  minPlayers: 0
+  stations:
+    Missile_Nazaar:
+      stationProto: StandardCrescentVessel
+      components:
+        - type: VesselIcon
+          iffIcon:
+            sprite: _Crescent/ShipIcons/ifficons.rsi
+            state: fighter
+        - type: StationNameSetup
+          mapNameTemplate: 'SHI Missile-Nazaar {1}'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '14'
+        - type: VesselDesignation
+          designation: vessel-designation-patrol

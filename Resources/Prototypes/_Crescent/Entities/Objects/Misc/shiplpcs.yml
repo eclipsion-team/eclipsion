@@ -905,7 +905,7 @@
   parent: BaseItem
   id: ShipVoucherNazaar
   name: CSEC 'Nazaar' pattern LPC fabprint disk
-  description: An LPC fabprint disk loaded with a CorpSec Nazaar-class security mediun fighter pattern. Has to be redeemed at a shipyard console.
+  description: An LPC fabprint disk loaded with a CorpSec Nazaar-class security medium fighter pattern. Has to be redeemed at a shipyard console.
   components:
   - type: Item
     size: Small
@@ -920,6 +920,26 @@
   - type: ReverseEngineering # SectorCrescent
     recipes:
       - NazaarLPC
+
+- type: entity
+  parent: BaseItem
+  id: ShipVoucherMissileNazaar
+  name: CSEC 'Missile-Nazaar' pattern LPC fabprint disk
+  description: An LPC fabprint disk loaded with a CorpSec Missile-Nazaar-class security medium fighter pattern. Has to be redeemed at a shipyard console.
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _Crescent/Objects/Misc/lpcchip.rsi
+    layers:
+    - state: icon
+  - type: StaticPrice
+    price: 5000
+  - type: ShipVoucher
+    ship: Missile_Nazaar
+  - type: ReverseEngineering # SectorCrescent
+    recipes:
+      - MissileNazaarLPC
 
 - type: entity
   parent: BaseItem
@@ -940,7 +960,7 @@
   - type: ReverseEngineering # SectorCrescent
     recipes:
       - FujinLPC
-      
+
 - type: entity
   parent: BaseItem
   id: ShipVoucherShark
@@ -960,7 +980,7 @@
   - type: ReverseEngineering # SectorCrescent
     recipes:
       - SharkLPC
-      
+
 #tfsc
 
 - type: entity
