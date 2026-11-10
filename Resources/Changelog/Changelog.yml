@@ -1718,3 +1718,12 @@ Entries:
     id: 6133
     time: '2026-11-10T19:30:29.0000000+00:00'
     url: https://github.com/eclipsion-team/eclipsion/pull/58
+  - author: grandalff
+    changes:
+      - type: Add
+        message: Added Missile-Nazaar, which uses 1 Shortbow and 1 Azimuth missile launcher.
+      - type: Tweak
+        message: Fully remapped Nazaar with heavy inspiration (had my eyes glued to it all the time) from the old Nazaar.
+    id: 6134
+    time: '2026-11-10T19:30:42.0000000+00:00'
+    url: https://github.com/eclipsion-team/eclipsion/pull/59
