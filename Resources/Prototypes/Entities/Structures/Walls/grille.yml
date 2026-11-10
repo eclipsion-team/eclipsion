@@ -114,6 +114,8 @@
   name: grille
   description: A flimsy framework of iron rods. It has seen better days.
   components:
+    # Eclipsion - lets the automated repair slip clear this off a tile it is rebuilding.
+    - type: ShipRepairRemnant
     - type: Sprite
       drawdepth: Walls
       sprite: Structures/Walls/grille.rsi

@@ -6,6 +6,8 @@
   placement:
     mode: SnapgridCenter
   components:
+    # Eclipsion - lets the automated repair slip clear this off a tile it is rebuilding.
+    - type: ShipRepairRemnant
     - type: Transform
       anchored: true
     - type: Physics

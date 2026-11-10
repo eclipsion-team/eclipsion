@@ -1,5 +1,6 @@
 - type: entity
   id: HolosignEng
+  parent: HolosignWetFloor
   name: engineering warning sign
   description: What's the worst that could lie beyond?
   components:

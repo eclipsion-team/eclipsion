@@ -113,6 +113,7 @@ public sealed partial class NpcTacticalSystem : EntitySystem
     /// </summary>
     private readonly Dictionary<Vector2i, int> _layerCache = new();
     private readonly List<RayCastResults> _hits = new();
+    private readonly List<ushort> _cancelled = new();
     private readonly List<EntityUid> _threats = new();
     // Threats that aren't on the NPC faction's hostile list: mechs with an enemy aboard, kill-all targets.
     private readonly List<EntityUid> _extraThreats = new();
@@ -1043,6 +1044,34 @@ public sealed partial class NpcTacticalSystem : EntitySystem
 
         if (failed)
             comp.NextHealAttempt = _timing.CurTime + comp.HealRetryDelay;
+    }
+
+    public bool IsUnderFire(EntityUid uid, NpcTacticalComponent? comp = null)
+    {
+        return Resolve(uid, ref comp, false) &&
+               comp.LastShotAt is { } shot &&
+               _timing.CurTime < shot + comp.UnderFireTime;
+    }
+
+    private void InterruptTreatment(EntityUid uid, NpcTacticalComponent comp)
+    {
+        if (TryComp<DoAfterComponent>(uid, out var doAfters))
+        {
+            _cancelled.Clear();
+            foreach (var doAfter in doAfters.DoAfters.Values)
+            {
+                if (doAfter.Args.Event is HealingDoAfterEvent && !doAfter.Cancelled && !doAfter.Completed)
+                    _cancelled.Add(doAfter.Index);
+            }
+
+            foreach (var index in _cancelled)
+            {
+                _doAfter.Cancel(uid, index, doAfters);
+            }
+        }
+
+        StopHealing(uid, comp, failed: true);
+        RequestReplan(uid);
     }
 
     /// <summary>

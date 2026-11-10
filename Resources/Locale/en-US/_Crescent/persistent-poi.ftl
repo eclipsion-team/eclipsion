@@ -264,6 +264,8 @@ persistent-poi-mapping-ui-menu = Build menu
 persistent-poi-mapping-ui-dismantle = Dismantle
 persistent-poi-mapping-ui-paint = Paint floor markings
 persistent-poi-mapping-ui-recenter = Back to the console
+persistent-poi-mapping-ui-lights = Full brightness
+persistent-poi-mapping-ui-lights-tooltip = Lights the view up as in mapping mode. Only your own screen changes, and only while you work the console.
 persistent-poi-mapping-ui-leave = Leave the console
 persistent-poi-mapping-ui-silo = Silo: { $total } in store, { $kinds } { $kinds ->
     [one] kind
@@ -290,6 +292,7 @@ persistent-poi-build-category-shipyard = Shipyard & dockyard
 persistent-poi-build-category-deployment = Deployment
 persistent-poi-category-shipyard = Shipyards
 persistent-poi-category-dockingport = External airlocks
+persistent-poi-category-repairconsole = Repair slips
 construction-condition-persistent-poi-faction = Only its own faction can build this.
 
 # # Remote fire control

@@ -284,7 +284,9 @@ public sealed class PointCannonSystem : EntitySystem
         if (!_xformQuery.TryGetComponent(cannonUid, out var xform) || xform.GridUid is not { } gridUid)
             return true;
 
-        return GetFireControlLimit(gridUid) is not { } limit || GetFireControlled(gridUid, limit).Contains(cannonUid);
+        return !_territoryLevels.IsFireControlGun(cannonUid) ||
+               GetFireControlLimit(gridUid) is not { } limit ||
+               GetFireControlled(gridUid, limit).Contains(cannonUid);
     }
 
     public int? GetFireControlLimit(EntityUid gridUid)
@@ -304,7 +306,8 @@ public sealed class PointCannonSystem : EntitySystem
 
         cache.ControlledCannons.Clear();
         foreach (var cannon in cannons
-                     .Where(uid => _xformQuery.TryGetComponent(uid, out var xform) && xform.Anchored)
+                     .Where(uid => _xformQuery.TryGetComponent(uid, out var xform) && xform.Anchored &&
+                                   _territoryLevels.IsFireControlGun(uid))
                      .OrderBy(uid => uid.Id)
                      .Take(Math.Max(0, limit)))
         {
@@ -324,7 +327,8 @@ public sealed class PointCannonSystem : EntitySystem
         var anchored = 0;
         foreach (var cannon in GetGridCannons(gridUid))
         {
-            if (_xformQuery.TryGetComponent(cannon, out var xform) && xform.Anchored)
+            if (_xformQuery.TryGetComponent(cannon, out var xform) && xform.Anchored &&
+                _territoryLevels.IsFireControlGun(cannon))
                 anchored++;
         }
 

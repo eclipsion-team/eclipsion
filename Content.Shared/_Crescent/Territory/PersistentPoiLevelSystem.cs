@@ -1,4 +1,5 @@
 using Content.Shared.Construction.Prototypes;
+using Content.Shared.Mobs.Components;
 using Content.Shared.PointCannons;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
@@ -57,6 +58,12 @@ public sealed class PersistentPoiLevelSystem : EntitySystem
             : null;
     }
 
+    // anti-boarder turrets carry a PointCannon too, but they are mobs with a cap of their own
+    public bool IsFireControlGun(EntityUid gun)
+    {
+        return !HasComp<MobStateComponent>(gun);
+    }
+
     public int CountWorks(EntityUid grid, PersistentPoiWorksCategory category, PersistentPoiGridComponent? territory = null)
     {
         if (_net.IsClient)
@@ -72,9 +79,9 @@ public sealed class PersistentPoiLevelSystem : EntitySystem
         if (category == PersistentPoiWorksCategory.PointDefence)
         {
             var guns = AllEntityQuery<PointCannonComponent, TransformComponent>();
-            while (guns.MoveNext(out _, out _, out var xform))
+            while (guns.MoveNext(out var gun, out _, out var xform))
             {
-                if (xform.GridUid == grid && xform.Anchored)
+                if (xform.GridUid == grid && xform.Anchored && IsFireControlGun(gun))
                     count++;
             }
 
@@ -103,9 +110,10 @@ public sealed class PersistentPoiLevelSystem : EntitySystem
         }
 
         var guns = AllEntityQuery<PointCannonComponent, TransformComponent>();
-        while (guns.MoveNext(out _, out _, out var xform))
+        while (guns.MoveNext(out var gun, out _, out var xform))
         {
-            if (xform.Anchored && xform.GridUid is { } grid && counts.TryGetValue(grid, out var perGrid))
+            if (xform.Anchored && xform.GridUid is { } grid && counts.TryGetValue(grid, out var perGrid) &&
+                IsFireControlGun(gun))
                 perGrid[PersistentPoiWorksCategory.PointDefence] = perGrid.GetValueOrDefault(PersistentPoiWorksCategory.PointDefence) + 1;
         }
 

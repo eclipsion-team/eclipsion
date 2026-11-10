@@ -55,28 +55,29 @@ public sealed class EventManagerSystem : EntitySystem
     /// <summary>
     /// Randomly runs an event from provided EntityTableSelector.
     /// </summary>
-    public void RunRandomEvent(EntityTableSelector limitedEventsTable)
+    public bool RunRandomEvent(EntityTableSelector limitedEventsTable)
     {
         if (!TryBuildLimitedEvents(limitedEventsTable, out var limitedEvents))
         {
             Log.Warning("Provided event table could not build dict!");
-            return;
+            return false;
         }
 
         var randomLimitedEvent = FindEvent(limitedEvents); // this picks the event, It might be better to use the GetSpawns to do it, but that will be a major rebalancing fuck.
         if (randomLimitedEvent == null)
         {
             Log.Warning("The selected random event is null!");
-            return;
+            return false;
         }
 
         if (!_prototype.TryIndex(randomLimitedEvent, out _))
         {
             Log.Warning("A requested event is not available!");
-            return;
+            return false;
         }
 
         GameTicker.AddGameRule(randomLimitedEvent);
+        return true;
     }
 
     /// <summary>
@@ -163,7 +164,7 @@ public sealed class EventManagerSystem : EntitySystem
         {
             sumOfWeights -= (int) stationEvent.Weight;
 
-            if (sumOfWeights <= 0)
+            if (sumOfWeights < 0)
             {
                 return proto.ID;
             }

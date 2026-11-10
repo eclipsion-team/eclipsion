@@ -16,6 +16,8 @@
           iffIcon:
             sprite: _Crescent/ShipIcons/ifficons.rsi
             state: pointofinterest
+        - type: WorldLoader # Builds the wrecks at round start instead of when a ship first arrives.
+          radius: 256
       components:
         - type: StationNameSetup
           mapNameTemplate: 'Imperial Fourth Defense Battalion Grave'
@@ -34,6 +36,8 @@
           iffIcon:
             sprite: _Crescent/ShipIcons/ifficons.rsi
             state: pointofinterest
+        - type: WorldLoader # Builds the wrecks at round start instead of when a ship first arrives.
+          radius: 256
       components:
         - type: StationNameSetup
           mapNameTemplate: 'Chengrdiz Battalion Grave'

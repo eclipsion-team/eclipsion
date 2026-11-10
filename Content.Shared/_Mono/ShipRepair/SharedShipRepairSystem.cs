@@ -71,7 +71,7 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
         _lookup.GetLocalEntitiesIntersecting(gridUid, grid.LocalAABB, repairables);
         foreach (var childEnt in repairables)
         {
-            if (TerminatingOrDeleted(childEnt))
+            if (TerminatingOrDeleted(childEnt) || EntityManager.IsQueuedForDeletion(childEnt)) // Eclipsion: queued deletions
                 continue;
 
             var childXform = Transform(childEnt);

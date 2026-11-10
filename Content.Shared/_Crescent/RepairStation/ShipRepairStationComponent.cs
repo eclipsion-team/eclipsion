@@ -78,24 +78,29 @@ public sealed partial class ShipRepairStationComponent : Component
     public int FallbackTilePrice = 25;
 
     /// <summary>
-    /// Seconds of work per reinstated part. The whole job is squeezed into
-    /// <see cref="MaxRepairSeconds"/> by welding several parts per tick when a wreck is big enough
-    /// that one-at-a-time would take all round.
+    /// Seconds per unit of work. A rebuilt part or relaid tile is one unit, lighter jobs are a fraction
+    /// of one (see JobWeight in the system). The total is clamped to the min/max below.
     /// </summary>
     [DataField]
-    public float SecondsPerPart = 0.4f;
+    public float SecondsPerPart = 0.15f;
 
     /// <summary>
     /// Floor on how long a repair takes, so a one-tile scratch still spends time in the slip.
     /// </summary>
     [DataField]
-    public float MinRepairSeconds = 8f;
+    public float MinRepairSeconds = 5f;
 
     /// <summary>
     /// Ceiling on how long a repair takes, however wrecked the hull is.
     /// </summary>
     [DataField]
-    public float MaxRepairSeconds = 420f;
+    public float MaxRepairSeconds = 150f;
+
+    /// <summary>
+    /// Seconds between work batches. A batch always finishes every tile it starts on.
+    /// </summary>
+    [DataField]
+    public float BatchInterval = 0.5f;
 
     /// <summary>
     /// Credits charged per point of damage beaten out of a structure that is still standing.
@@ -176,10 +181,26 @@ public sealed partial class ShipRepairStationComponent : Component
     public int JobsDone;
 
     /// <summary>
-    /// Parts welded per tick, raised above 1 only when <see cref="MaxRepairSeconds"/> demands it.
+    /// Work units added to <see cref="WorkBudget"/> each batch.
     /// </summary>
     [ViewVariables]
-    public int PartsPerTick = 1;
+    public float WorkPerTick = 1f;
+
+    [ViewVariables]
+    public float WorkBudget;
+
+    /// <summary>
+    /// What the survey found standing and on file, plus everything the slip spawned since. Anything else
+    /// anchored in a part's slot belongs to the crew and blocks the rebuild.
+    /// </summary>
+    [ViewVariables]
+    public HashSet<EntityUid> Filed = new();
+
+    /// <summary>
+    /// Slip-only parts rebuilt this job, relinked to their signal partners and device lists afterwards.
+    /// </summary>
+    [ViewVariables]
+    public List<DrydockPart> Rebuilt = new();
 
     [ViewVariables]
     public TimeSpan NextTickTime;
@@ -190,11 +211,8 @@ public sealed partial class ShipRepairStationComponent : Component
     [ViewVariables]
     public TimeSpan EndTime;
 
-    /// <summary>
-    /// Interval between job ticks, derived from <see cref="SecondsPerPart"/> at job start.
-    /// </summary>
     [ViewVariables]
-    public TimeSpan TickInterval = TimeSpan.FromSeconds(0.4);
+    public TimeSpan TickInterval = TimeSpan.FromSeconds(0.5);
 
     /// <summary>
     /// Credits taken up front, refunded pro rata if the job is cut short.

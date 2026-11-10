@@ -450,6 +450,10 @@ public sealed class NPCUtilitySystem : EntitySystem
         if (target == owner)
             return;
 
+        // a territory gun lets its own holder past by body, whatever card they wear (spacers' IND reads as hostile)
+        if (_npcFaction.IsIgnored(owner, target))
+            return;
+
         // Service bots are not boarders, however unsuited they look. An emagged one is fair game again.
         if (HasComp<AntiBoarderIgnoredComponent>(target) && !HasComp<EmaggedComponent>(target))
             return;

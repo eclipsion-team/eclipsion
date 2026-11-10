@@ -531,7 +531,7 @@
   chunkComponents:
   - type: DebrisFeaturePlacerController
     densityNoiseChannel: Density
-    randomCancelChance: 0.75 # A handful of hulls, not a second Ship Graveyard.
+    randomCancelChance: 0.6 # A handful of hulls, not a second Ship Graveyard.
     safetyZoneRadius: 100
     regenerate: false
   - type: SimpleDebrisSelector

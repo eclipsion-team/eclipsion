@@ -341,18 +341,20 @@ namespace Content.Server.Lathe
                     var toAdd = new Solution(
                         resultReagents.Select(p => new ReagentQuantity(p.Key.Id, p.Value, null)));
 
-                    // dispense it in the container if we have it and dump it if we don't
                     if (_container.TryGetContainer(uid, slotId, out var container) &&
-                        container.ContainedEntities.Count == 1 &&
-                        _solution.TryGetFitsInDispenser(container.ContainedEntities.First(), out var solution, out _))
+                        container.ContainedEntities.Count == 1)
                     {
-                        _solution.AddSolution(solution.Value, toAdd);
+                        var held = container.ContainedEntities[0];
+                        if (_solution.TryGetFitsInDispenser(held, out var solution, out _) ||
+                            _solution.TryGetRefillableSolution(held, out solution, out _))
+                        {
+                            var added = _solution.AddSolution(solution.Value, toAdd.Clone());
+                            toAdd.SplitSolution(added);
+                        }
                     }
-                    else
-                    {
-                        _popup.PopupEntity(Loc.GetString("lathe-reagent-dispense-no-container", ("name", uid)), uid);
-                        _puddle.TrySpillAt(uid, toAdd, out _);
-                    }
+
+                    if (toAdd.Volume > 0)
+                        DispenseReagentOverflow(uid, comp, toAdd);
                 }
             }
 
@@ -372,6 +374,35 @@ namespace Content.Server.Lathe
                 UpdateUserInterfaceState(uid, comp);
                 UpdateRunningAppearance(uid, false);
             }
+        }
+
+        private void DispenseReagentOverflow(EntityUid uid, LatheComponent comp, Solution toAdd)
+        {
+            if (comp.ReagentOutputFallback is { } fallback)
+            {
+                var coords = Transform(uid).Coordinates;
+                while (toAdd.Volume > 0)
+                {
+                    var bottle = Spawn(fallback, coords);
+                    // Free glass from biomass otherwise.
+                    RemComp<PhysicalCompositionComponent>(bottle);
+
+                    if (!_solution.TryGetRefillableSolution(bottle, out var soln, out _) ||
+                        soln.Value.Comp.Solution.AvailableVolume <= 0)
+                    {
+                        Del(bottle);
+                        break;
+                    }
+
+                    toAdd.SplitSolution(_solution.AddSolution(soln.Value, toAdd.Clone()));
+                }
+
+                if (toAdd.Volume <= 0)
+                    return;
+            }
+
+            _popup.PopupEntity(Loc.GetString("lathe-reagent-dispense-no-container", ("name", uid)), uid);
+            _puddle.TrySpillAt(uid, toAdd, out _);
         }
 
         /// <summary>

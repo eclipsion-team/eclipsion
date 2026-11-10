@@ -1,3 +1,7 @@
+using System.Numerics;
+using Content.Shared.Conveyor;
+using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
 using Content.Server.Power.EntitySystems;
 using Robust.Server.GameObjects;
 using Content.Shared._Crescent.Misc;
@@ -18,6 +22,7 @@ public sealed class PassiveSpawningMachineSystem : EntitySystem
     [Dependency] private readonly PowerReceiverSystem _powerReceiver = default!;
     [Dependency] private readonly IGameTiming _gameTiming = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
+    [Dependency] private readonly SharedMapSystem _map = default!;
 
     public override void Initialize()
     {
@@ -77,7 +82,68 @@ public sealed class PassiveSpawningMachineSystem : EntitySystem
                 continue;
             }
             var ent = _random.Pick(entityListProto.EntityIds);
-            SpawnNextToOrDrop(ent, uid);
+            if (TryGetBeltOutput(uid, out var output))
+                Spawn(ent, output);
+            else
+                SpawnNextToOrDrop(ent, uid);
         }
     }
+
+    /// <summary>
+    /// With no belt under the machine, output goes onto an adjacent belt that doesn't run back into it,
+    /// preferring one that runs away from it.
+    /// </summary>
+    private bool TryGetBeltOutput(EntityUid uid, out EntityCoordinates output)
+    {
+        output = default;
+        var xform = Transform(uid);
+        if (!xform.Anchored || xform.GridUid is not { } gridUid || !TryComp<MapGridComponent>(gridUid, out var grid))
+            return false;
+
+        var tile = _map.TileIndicesFor(gridUid, grid, xform.Coordinates);
+        if (TryGetBeltDirection(gridUid, grid, tile, out _))
+            return false;
+
+        var found = false;
+        foreach (var dir in Cardinals)
+        {
+            var offset = dir.ToIntVec();
+            if (!TryGetBeltDirection(gridUid, grid, tile + offset, out var beltDir))
+                continue;
+
+            var dot = Vector2.Dot(beltDir, new Vector2(offset.X, offset.Y));
+            if (dot < -0.5f)
+                continue;
+
+            output = _map.GridTileToLocal(gridUid, grid, tile + offset);
+            found = true;
+
+            if (dot > 0.5f)
+                return true;
+        }
+
+        return found;
+    }
+
+    private bool TryGetBeltDirection(EntityUid gridUid, MapGridComponent grid, Vector2i tile, out Vector2 direction)
+    {
+        direction = default;
+        var anchored = _map.GetAnchoredEntitiesEnumerator(gridUid, grid, tile);
+        while (anchored.MoveNext(out var ent))
+        {
+            if (!TryComp<ConveyorComponent>(ent, out var conveyor))
+                continue;
+
+            var rot = Transform(ent.Value).LocalRotation + conveyor.Angle;
+            if (conveyor.State == ConveyorState.Reverse)
+                rot += MathF.PI;
+
+            direction = rot.ToWorldVec();
+            return true;
+        }
+
+        return false;
+    }
+
+    private static readonly Direction[] Cardinals = { Direction.South, Direction.East, Direction.North, Direction.West };
 }

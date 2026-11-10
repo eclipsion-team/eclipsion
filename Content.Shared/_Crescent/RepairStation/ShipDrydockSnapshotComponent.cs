@@ -64,4 +64,14 @@ public sealed class DrydockPart
     /// valuable equipment into an apparently unprotected missing part.
     /// </summary>
     public bool ReplacementRequiresDestruction;
+
+    /// <summary>
+    /// Signal links out of this part into other parts on file, with every port pair between the two.
+    /// </summary>
+    public List<(DrydockPart Sink, List<(string Source, string Sink)> Ports)> Links = new();
+
+    /// <summary>
+    /// Parts this one keeps in its device list (air alarms and the like).
+    /// </summary>
+    public List<DrydockPart> ListedDevices = new();
 }

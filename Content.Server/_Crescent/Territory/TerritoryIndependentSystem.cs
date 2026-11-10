@@ -80,12 +80,14 @@ public sealed class TerritoryIndependentSystem : EntitySystem
     private void Apply(EntityUid body, string owner)
     {
         var comp = EnsureComp<TerritoryIndependentComponent>(body);
-        if (comp.Owner == owner)
-            return;
+        if (comp.Owner != owner)
+        {
+            comp.Owner = owner;
+            Dirty(body, comp);
+        }
 
-        comp.Owner = owner;
-        Dirty(body, comp);
-
+        // not left out once the token is set: the faction may only turn IND after spawn, and the next call has to
+        // still let them past their own guns
         if (PersistentTerritoryFactions.GetTeam(EntityManager, body) != owner)
             return;
 

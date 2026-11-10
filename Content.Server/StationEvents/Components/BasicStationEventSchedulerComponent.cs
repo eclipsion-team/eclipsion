@@ -32,4 +32,10 @@ public sealed partial class BasicStationEventSchedulerComponent : Component
     /// As such, we want to pass a list of acceptable game rules, which are then parsed for restrictions by the <see cref="EventManagerSystem"/>.
     [DataField(required: true)]
     public EntityTableSelector ScheduledGameRules = default!;
+
+    /// <summary>
+    /// Seconds until the next try when nothing in the table could run. Null waits the full interval.
+    /// </summary>
+    [DataField]
+    public float? RetryDelay;
 }

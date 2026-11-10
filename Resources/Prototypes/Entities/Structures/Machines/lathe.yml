@@ -1692,6 +1692,7 @@
         whitelist:
           components:
           - FitsInDispenser
+          - RefillableSolution
   - type: ContainerContainer
     containers:
       machine_board: !type:Container
@@ -1699,6 +1700,7 @@
       beaker_slot: !type:ContainerSlot
   - type: Lathe
     reagentOutputSlotId: beaker_slot
+    reagentOutputFallback: ChemistryEmptyBottle01
     idleState: icon
     runningState: building
     staticRecipes:

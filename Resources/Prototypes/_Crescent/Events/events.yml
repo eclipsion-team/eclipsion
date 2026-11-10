@@ -100,7 +100,7 @@
      startDelay: 10
      duration: 2100
      maxDuration: 3000
-     maxOccurrences: 3
+     # No maxOccurrences: this and InfestedStation are the only T3 part source (HullrotT3EventScheduler), a cap dries them up late round.
    - type: BluespaceErrorRule
      gridPath: /Maps/_Crescent/Bluespace/derelictprobe.yml
      rewardFactor: 0.5 # Filler to make the bank go up
@@ -122,7 +122,6 @@
      startDelay: 10
      duration: 2100
      maxDuration: 3000
-     maxOccurrences: 1
    - type: BluespaceErrorRule
      gridPath: /Maps/_Crescent/Bluespace/hearthruins.yml
      rewardFactor: 0.5 # Filler to make the bank go up

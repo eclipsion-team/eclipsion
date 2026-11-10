@@ -5,6 +5,8 @@
   name: table frame
   description: Pieces of metal that make the frame of a table.
   components:
+  # Eclipsion - lets the automated repair slip clear this off a tile it is rebuilding.
+  - type: ShipRepairRemnant
   - type: Sprite
     sprite: Structures/Furniture/Tables/frame.rsi
   - type: Icon

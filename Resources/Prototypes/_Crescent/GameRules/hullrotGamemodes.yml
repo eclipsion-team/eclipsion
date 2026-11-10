@@ -80,6 +80,7 @@
   rules:
   - Adventure
   - HullrotEventScheduler
+  - HullrotT3EventScheduler
   - HullrotRoundTimeLimit
   - HullrotConquest
 
@@ -282,6 +283,7 @@
   rules:
   - FreeplayDSMNCWL
   - HullrotEventScheduler
+  - HullrotT3EventScheduler
   - HullrotRoundTimeLimit
   - HullrotConquest
 
@@ -471,6 +473,7 @@
   rules:
   - FreeplayTFSCSHI
   - HullrotEventScheduler
+  - HullrotT3EventScheduler
   - HullrotRoundTimeLimit
   - HullrotConquest
 
@@ -660,6 +663,7 @@
   rules:
   - FreeplayTAPGLIESSTFCF
   - HullrotEventScheduler
+  - HullrotT3EventScheduler
   - HullrotRoundTimeLimit
   - HullrotConquest
 
@@ -846,6 +850,7 @@
   rules:
   - Hyperwar
   - HullrotEventScheduler
+  - HullrotT3EventScheduler
   - HullrotRoundTimeLimit
   - HullrotConquest # without this the conquest banners on both stations do nothing and the round never ends
 

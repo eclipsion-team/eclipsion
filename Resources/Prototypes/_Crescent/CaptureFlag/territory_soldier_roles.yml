@@ -12,6 +12,7 @@
     NCWL: MobSoldierAINCWLRifleman
     TFSC: MobSoldierAITFSCRifleman
     SHI: MobSoldierAISHIRifleman
+    CMM: MobSoldierAICMMRifleman
     IND: MobSoldierAIMercenaryRifleman
 
 - type: territorySoldierRole
@@ -24,6 +25,7 @@
     NCWL: MobSoldierAINCWLShotgunner
     TFSC: MobSoldierAITFSCShotgunner
     SHI: MobSoldierAISHIShotgunner
+    CMM: MobSoldierAICMMShotgunner
     IND: MobSoldierAIMercenaryShotgunner
 
 - type: territorySoldierRole
@@ -36,6 +38,7 @@
     NCWL: MobSoldierAINCWLShock
     TFSC: MobSoldierAITFSCShock
     SHI: MobSoldierAISHIShock
+    CMM: MobSoldierAICMMShock
     IND: MobSoldierAIMercenaryShock
 
 - type: territorySoldierRole
@@ -48,6 +51,7 @@
     NCWL: MobSoldierAINCWLMarksman
     TFSC: MobSoldierAITFSCMarksman
     SHI: MobSoldierAISHIMarksman
+    CMM: MobSoldierAICMMMarksman
     IND: MobSoldierAIMercenaryMarksman
 
 - type: territorySoldierRole

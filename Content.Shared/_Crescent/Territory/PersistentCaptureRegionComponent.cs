@@ -12,7 +12,13 @@ namespace Content.Shared._Crescent.Territory;
 /// </summary>
 public static class PersistentTerritoryFactions
 {
-    private static readonly string[] Ids = ["DSM", "NCWL", "TFSC", "SHI"];
+    private static readonly string[] Ids = ["DSM", "NCWL", "TFSC", "SHI", "CMM"];
+
+    /// <summary>
+    /// The Minutemen arrive mid-round with the Analiesse and no campaign lists a station of theirs, so every
+    /// campaign lets them hold ground.
+    /// </summary>
+    public const string MinutemenFaction = "CMM";
 
     /// <summary>
     /// Every faction that may hold territory, in a fixed order suitable for admin console hints and help text.
@@ -38,7 +44,7 @@ public static class PersistentTerritoryFactions
 
     public static bool IsSupported(string? faction)
     {
-        return faction is "DSM" or "NCWL" or "TFSC" or "SHI" || IsIndependent(faction);
+        return faction is "DSM" or "NCWL" or "TFSC" or "SHI" or MinutemenFaction || IsIndependent(faction);
     }
 
     /// <summary>A single independent's owner id, "IND" followed by their number.</summary>
@@ -154,6 +160,7 @@ public sealed partial class PersistentCaptureRegionComponent : Component
         ["NCWL"] = Color.Orange,
         ["SHI"] = Color.White,
         ["TFSC"] = Color.IndianRed,
+        ["CMM"] = Color.FromHex("#4E8FD6"),
     };
 
     /// <summary>Radar colour used while nobody owns the region.</summary>

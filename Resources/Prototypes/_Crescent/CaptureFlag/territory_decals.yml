@@ -157,3 +157,14 @@
   - "#FFFFFF"
   - "#A6A6AD"
   - "#1E1E22"
+
+- type: territoryDecalPalette
+  id: CMM
+  colors:
+  - "#4E8FD6"
+  - "#2E4E78"
+  - "#D9C9A3"
+  - "#334E6DC8" # departmental command
+  - "#FFFFFF"
+  - "#A6A6AD"
+  - "#1E1E22"

@@ -40,8 +40,9 @@ public sealed class TerritoryProfileSystem : EntitySystem
 
     public bool IsAllowed(string? faction)
     {
-        // independents have no home station, so no campaign lists them, and every campaign has them
+        // independents and the Minutemen have no round-start station, so no campaign lists them, and every campaign has them
         return PersistentTerritoryFactions.IsIndependent(faction) ||
+               faction == PersistentTerritoryFactions.MinutemenFaction ||
                PersistentTerritoryFactions.IsSupported(faction) && (Factions == null || Factions.Contains(faction!));
     }
 

@@ -43,6 +43,12 @@ namespace Content.Shared.Lathe
         public string? ReagentOutputSlotId;
 
         /// <summary>
+        /// Empty container spawned for reagent output that doesn't fit in the slot. Null spills it instead.
+        /// </summary>
+        [DataField]
+        public EntProtoId? ReagentOutputFallback;
+
+        /// <summary>
         /// The default amount that's displayed in the UI for selecting the print amount.
         /// </summary>
         [DataField, AutoNetworkedField]

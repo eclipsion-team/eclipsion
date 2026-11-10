@@ -2,6 +2,7 @@ using System.Numerics;
 using Content.Server._Crescent.Diplomacy;
 using Content.Server._Crescent.Economy;
 using Content.Server._Crescent.ShipAI;
+using Content.Server._Crescent.Territory;
 using Content.Server._Mono.NPC.HTN;
 using Content.Server.DeviceNetwork.Systems;
 using Content.Server.Explosion.EntitySystems;
@@ -55,6 +56,7 @@ public sealed class AutoDroneSystem : EntitySystem
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly MetaDataSystem _metaData = default!;
     [Dependency] private readonly PowerReceiverSystem _power = default!;
+    [Dependency] private readonly TerritoryDronePicketSystem _pickets = default!;
     [Dependency] private readonly ShipyardSystem _shipyard = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedShuttleSystem _shuttle = default!;
@@ -68,6 +70,7 @@ public sealed class AutoDroneSystem : EntitySystem
     private EntityQuery<ApcPowerReceiverComponent> _powerQuery;
     private EntityQuery<AutoDroneComponent> _autoQuery;
     private EntityQuery<DroneControlComponent> _droneServerQuery;
+    private EntityQuery<TerritoryPicketDroneComponent> _picketQuery;
     private EntityQuery<MapGridComponent> _gridQuery;
     private EntityQuery<ShipTargetingComponent> _targetingQuery;
     private EntityQuery<ShipSteererComponent> _steererQuery;
@@ -108,6 +111,7 @@ public sealed class AutoDroneSystem : EntitySystem
         _powerQuery = GetEntityQuery<ApcPowerReceiverComponent>();
         _autoQuery = GetEntityQuery<AutoDroneComponent>();
         _droneServerQuery = GetEntityQuery<DroneControlComponent>();
+        _picketQuery = GetEntityQuery<TerritoryPicketDroneComponent>();
         _gridQuery = GetEntityQuery<MapGridComponent>();
         _targetingQuery = GetEntityQuery<ShipTargetingComponent>();
         _steererQuery = GetEntityQuery<ShipSteererComponent>();
@@ -1311,7 +1315,16 @@ public sealed class AutoDroneSystem : EntitySystem
             // ships, stations we happen to be parked at, and - critically - our own freshly produced drones,
             // which are unaligned for the moment between spawning and being stamped with our IFF.
             if (GetGridFaction(targetGrid.Value) is not { } targetFaction)
+            {
+                // territory pickets (unclaimed or independent) carry no diplomacy faction but still shoot us
+                if (_picketQuery.HasComp(target) && _pickets.IsHostilePicket(target, carrierGrid))
+                {
+                    _enemies.Add(targetGrid.Value);
+                    _enemyDrones.Add(targetGrid.Value);
+                }
+
                 continue;
+            }
 
             var relation = faction == null ? Relations.Neutral : _diplomacy.GetRelations(faction, targetFaction);
             // Enemies mode: only War. All mode: every faction except our own and our allies.
@@ -1323,7 +1336,7 @@ public sealed class AutoDroneSystem : EntitySystem
 
             // An enemy whose targetable point is a drone control server is an enemy drone; we prioritise
             // killing those first (destroying the server disables the drone).
-            if (_droneServerQuery.HasComp(target))
+            if (_droneServerQuery.HasComp(target) || _picketQuery.HasComp(target))
                 _enemyDrones.Add(targetGrid.Value);
         }
     }

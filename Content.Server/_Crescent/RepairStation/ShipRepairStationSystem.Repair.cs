@@ -7,10 +7,12 @@ using Content.Shared.Bank.Components;
 using Content.Shared.Damage;
 using Content.Shared.Database;
 using Content.Shared.Decals;
+using Content.Shared.DeviceNetwork.Components;
 using Content.Shared.FixedPoint;
 using Content.Shared.Fluids.Components;
 using Content.Shared.Popups;
 using Content.Shared.Weapons.Ranged.Components;
+using System.Numerics;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 
@@ -79,6 +81,8 @@ public sealed partial class ShipRepairStationSystem
         comp.Jobs = survey.Jobs;
         comp.JobsTotal = survey.Jobs.Count;
         comp.JobsDone = 0;
+        comp.Filed = survey.Filed;
+        comp.Rebuilt = new List<DrydockPart>();
 
         // Nothing was taken for a free job, so there is nothing to hand back if it is cut short.
         comp.AmountPaid = comp.Free ? 0 : survey.Quote;
@@ -98,26 +102,16 @@ public sealed partial class ShipRepairStationSystem
     }
 
     /// <summary>
-    /// Works out the pace of the job. One part per tick unless that would keep the ship in the slip
-    /// past <see cref="ShipRepairStationComponent.MaxRepairSeconds"/>, and a stretched tick when the
-    /// damage is too light to fill <see cref="ShipRepairStationComponent.MinRepairSeconds"/>.
+    /// Spreads the weighted work over fixed batches so the job ends when the quote said it would.
     /// </summary>
     private void ScheduleWork(Entity<ShipRepairStationComponent> station)
     {
         var comp = station.Comp;
-        var parts = comp.JobsTotal;
-        var perPart = MathF.Max(comp.SecondsPerPart, 0.05f);
+        var seconds = MathF.Max(EstimateSeconds(comp, comp.Jobs), 0.05f);
+        var ticks = Math.Max(1, (int) MathF.Ceiling(seconds / MathF.Max(comp.BatchInterval, 0.05f)));
 
-        comp.PartsPerTick = 1;
-        if (parts * perPart > comp.MaxRepairSeconds && comp.MaxRepairSeconds > 0)
-            comp.PartsPerTick = (int) MathF.Ceiling(parts / (comp.MaxRepairSeconds / perPart));
-
-        var ticks = (int) MathF.Ceiling(parts / (float) comp.PartsPerTick);
-        var seconds = ticks * perPart;
-
-        if (seconds < comp.MinRepairSeconds)
-            seconds = comp.MinRepairSeconds;
-
+        comp.WorkPerTick = TotalWork(comp.Jobs) / ticks;
+        comp.WorkBudget = 0f;
         comp.TickInterval = TimeSpan.FromSeconds(seconds / ticks);
         comp.NextTickTime = _timing.CurTime + comp.TickInterval;
         comp.StartTime = _timing.CurTime;
@@ -185,22 +179,36 @@ public sealed partial class ShipRepairStationSystem
         // file is simply not there to do.
         var data = CompOrNull<ShipRepairDataComponent>(ship);
 
+        comp.WorkBudget += comp.WorkPerTick;
+
+        // The last batch takes whatever rounding left over, so the hull is done when the bar says so.
+        var final = _timing.CurTime >= comp.EndTime - comp.TickInterval / 2;
+
         var worked = 0;
-        var lastIndices = Vector2i.Zero;
-        while (worked < comp.PartsPerTick && comp.Jobs.Count > 0)
+        Vector2i? lastIndices = null;
+        while (comp.Jobs.Count > 0)
         {
             var job = comp.Jobs[^1];
+
+            // Out of budget, but a tile already started is finished in the same batch.
+            if (!final && comp.WorkBudget <= 0f && job.Indices != lastIndices)
+                break;
+
             comp.Jobs.RemoveAt(comp.Jobs.Count - 1);
             comp.JobsDone++;
+            comp.WorkBudget -= JobWeight(job.Kind);
             worked++;
-            lastIndices = job.Indices;
 
+            if (job.Indices != lastIndices)
+                Spawn(comp.ConstructEffect, new EntityCoordinates(ship, _map.TileCenterToVector(ship, gridComp, job.Indices)));
+
+            lastIndices = job.Indices;
             PerformJob(station, ship, data, gridComp, job);
         }
 
         // One welding note per tick rather than one per part, or a big batch turns into a wall of noise.
-        if (worked > 0)
-            _audio.PlayPvs(comp.RepairSound, new EntityCoordinates(ship, _map.TileCenterToVector(ship, gridComp, lastIndices)));
+        if (worked > 0 && lastIndices is { } soundTile)
+            _audio.PlayPvs(comp.RepairSound, new EntityCoordinates(ship, _map.TileCenterToVector(ship, gridComp, soundTile)));
 
         if (comp.Jobs.Count > 0)
             return;
@@ -224,11 +232,11 @@ public sealed partial class ShipRepairStationSystem
                 break;
 
             case ShipRepairJobKind.ToolPart when data != null:
-                SeedRefill(station, job.Indices, ReinstatePart((ship, data), gridComp, job));
+                SeedRefill(station, job.Indices, ReinstatePart(station, (ship, data), gridComp, job));
                 break;
 
             case ShipRepairJobKind.DrydockPart when job.Part is { } part:
-                SeedRefill(station, part.Tile, ReinstateDrydockPart(ship, gridComp, part));
+                SeedRefill(station, part.Tile, ReinstateDrydockPart(station, ship, gridComp, part));
                 break;
 
             case ShipRepairJobKind.Heal:
@@ -256,8 +264,6 @@ public sealed partial class ShipRepairStationSystem
                 _autoDrone.RestockHangars(ship);
                 break;
         }
-
-        Spawn(station.Comp.ConstructEffect, new EntityCoordinates(ship, _map.TileCenterToVector(ship, gridComp, job.Indices)));
     }
 
     /// <summary>
@@ -391,6 +397,16 @@ public sealed partial class ShipRepairStationSystem
 
         if (TryGetFuelDeficit(target, out var solution, out var deficit, out var reagent))
             _solution.TryAddReagent(solution, reagent, deficit, out _);
+
+        if (NeedsBulb(target, out var bulbProto))
+        {
+            if (_light.GetBulb(target) is { } old)
+                Del(old);
+
+            var bulb = Spawn(bulbProto, Transform(target).Coordinates);
+            if (!_light.InsertBulb(target, bulb))
+                Del(bulb);
+        }
     }
 
     /// <summary>
@@ -398,7 +414,11 @@ public sealed partial class ShipRepairStationSystem
     /// doafter completion, including patching client-side snapshot state without dirtying the whole
     /// chunk map, so the two never disagree about what is still missing.
     /// </summary>
-    private EntityUid? ReinstatePart(Entity<ShipRepairDataComponent> ship, MapGridComponent gridComp, ShipRepairJob job)
+    private EntityUid? ReinstatePart(
+        Entity<ShipRepairStationComponent> station,
+        Entity<ShipRepairDataComponent> ship,
+        MapGridComponent gridComp,
+        ShipRepairJob job)
     {
         if (!_shipRepair.TryGetChunk(ship.Comp, job.Indices, out var chunk)
             || job.SpecId is not { } specId
@@ -407,10 +427,6 @@ public sealed partial class ShipRepairStationSystem
             return null;
         }
 
-        // A crewman may have welded this back himself between the survey and now.
-        if (!IsSpecMissing(spec))
-            return null;
-
         if (spec.ProtoIndex < 0 || spec.ProtoIndex >= ship.Comp.EntityPalette.Count)
             return null;
 
@@ -418,19 +434,32 @@ public sealed partial class ShipRepairStationSystem
         if (!_proto.HasIndex(protoId))
             return null;
 
-        // Or he may have built a fresh one rather than reviving the original, which the spec cannot see.
-        if (TileHolds(ship.Owner, gridComp, job.Indices, protoId))
+        // A crewman may have welded this back himself between the survey and now.
+        if (!IsSpecMissing(spec, protoId))
             return null;
+
+        // Or he may have built a fresh one rather than reviving the original, which the spec cannot see,
+        // or put up a wall of another kind in its place.
+        if (TileHolds(ship.Owner, gridComp, job.Indices, protoId)
+            || SlotTaken(ship.Owner, gridComp, job.Indices, protoId, spec.Rotation, station.Comp.Filed))
+        {
+            return null;
+        }
 
         ClearRemnants(ship.Owner, gridComp, job.Indices, protoId);
 
-        // Whatever is left of the old part is floating debris; it goes with the replacement.
-        if (spec.OriginalEntity is { } net && TryGetEntity(net, out var original) && !TerminatingOrDeleted(original.Value))
+        // Whatever is left of the old part is floating debris; it goes with the replacement. Checked
+        // against the prototype because a handle saved with a persistent grid can point at anything.
+        if (spec.OriginalEntity is { } net
+            && TryGetEntity(net, out var original)
+            && !TerminatingOrDeleted(original.Value)
+            && IsOriginalOf(original.Value, protoId))
+        {
             QueueDel(original.Value);
+        }
 
-        var spawned = Spawn(protoId, new EntityCoordinates(ship.Owner, spec.LocalPosition));
-        _transform.SetLocalRotation(spawned, spec.Rotation);
-        _dynamicCodes.ApplyGridKeys(ship.Owner, spawned);
+        var spawned = SpawnPart(protoId, (ship.Owner, gridComp), spec.LocalPosition, spec.Rotation);
+        station.Comp.Filed.Add(spawned);
 
         spec.OriginalEntity = GetNetEntity(spawned);
         RaiseNetworkEvent(new RepairEntityMessage(GetNetEntity(ship.Owner), job.Indices, specId, spec));
@@ -441,30 +470,38 @@ public sealed partial class ShipRepairStationSystem
     /// Rebuilds a structure only the slip tracks. Nothing here touches the hand device's snapshot,
     /// which never knew about this structure in the first place.
     /// </summary>
-    private EntityUid? ReinstateDrydockPart(EntityUid grid, MapGridComponent gridComp, DrydockPart part)
+    private EntityUid? ReinstateDrydockPart(
+        Entity<ShipRepairStationComponent> station,
+        EntityUid grid,
+        MapGridComponent gridComp,
+        DrydockPart part)
     {
         // Check the protected original again at execution time as it may have been moved after the
         // quote was accepted. A live shield, console or weapon must never yield a second copy.
         if (StillStanding(part, grid) || _drydock.OriginalPreventsReplacement(part))
             return null;
 
-        // A crewman may have rebuilt this between the survey and now.
-        if (TileHolds(grid, gridComp, part.Tile, part.Proto, out var present))
+        // A crewman may have rebuilt this between the survey and now. What the slip filed or just
+        // built is not his, e.g. the other window of a corner.
+        if (TileHolds(grid, gridComp, part.Tile, part.Proto, out var present, station.Comp.Filed))
         {
             part.Original = present;
             return null;
         }
 
-        if (!_proto.HasIndex(part.Proto))
+        if (!_proto.HasIndex(part.Proto)
+            || SlotTaken(grid, gridComp, part.Tile, part.Proto, part.Rotation, station.Comp.Filed))
+        {
             return null;
+        }
 
         ClearRemnants(grid, gridComp, part.Tile, part.Proto);
 
-        var spawned = Spawn(part.Proto, new EntityCoordinates(grid, part.LocalPosition));
-        _transform.SetLocalRotation(spawned, part.Rotation);
-        _dynamicCodes.ApplyGridKeys(grid, spawned);
+        var spawned = SpawnPart(part.Proto, (grid, gridComp), part.LocalPosition, part.Rotation);
 
         part.Original = spawned;
+        station.Comp.Filed.Add(spawned);
+        station.Comp.Rebuilt.Add(part);
 
         AdoptUnmountedWeapon(grid, gridComp, part, spawned);
         return spawned;
@@ -495,9 +532,13 @@ public sealed partial class ShipRepairStationSystem
     /// A snapshotted part counts as missing when nothing is left of it, or when what is left is
     /// floating off the grid as debris.
     /// </summary>
-    private bool IsSpecMissing(ShipRepairEntitySpecifier spec)
+    private bool IsSpecMissing(ShipRepairEntitySpecifier spec, string protoId)
     {
         if (spec.OriginalEntity is not { } net || !TryGetEntity(net, out var original) || TerminatingOrDeleted(original.Value))
+            return true;
+
+        // A stale handle off a reloaded grid that now names some unrelated entity.
+        if (!IsOriginalOf(original.Value, protoId))
             return true;
 
         // The hand-tool snapshot normally replaces a live entity floating in map space and deletes
@@ -515,12 +556,83 @@ public sealed partial class ShipRepairStationSystem
         return Transform(original.Value).GridUid == null;
     }
 
+    /// <summary>
+    /// Everything on file was anchored when it was filed. Wall fittings such as buttons do not anchor
+    /// themselves on spawn, so they are bolted down here or they come back loose and dead.
+    /// </summary>
+    private EntityUid SpawnPart(string protoId, Entity<MapGridComponent> grid, Vector2 localPosition, Angle rotation)
+    {
+        var spawned = Spawn(protoId, new EntityCoordinates(grid, localPosition));
+        var xform = Transform(spawned);
+        _transform.SetLocalRotation(spawned, rotation, xform);
+
+        if (!xform.Anchored)
+            _transform.AnchorEntity((spawned, xform), grid);
+
+        _dynamicCodes.ApplyGridKeys(grid, spawned);
+        return spawned;
+    }
+
+    private bool IsOriginalOf(EntityUid uid, string protoId)
+    {
+        if (MetaData(uid).EntityPrototype?.ID == protoId)
+            return true;
+
+        return TryComp<ShipRepairableComponent>(uid, out var repairable) && repairable.RepairTo == protoId;
+    }
+
+    /// <summary>
+    /// Puts back the signal links and device-list entries the rebuilt parts had with the rest of the hull.
+    /// A spawned button or vent comes up linked to nothing otherwise.
+    /// </summary>
+    private void RestoreConnections(ShipRepairStationComponent comp, EntityUid ship)
+    {
+        if (comp.Rebuilt.Count == 0 || !TryComp<ShipDrydockSnapshotComponent>(ship, out var drydock))
+            return;
+
+        var rebuilt = new HashSet<DrydockPart>(comp.Rebuilt);
+
+        foreach (var part in drydock.Parts)
+        {
+            if (!IsAboard(part, ship, out var uid))
+                continue;
+
+            foreach (var (sink, ports) in part.Links)
+            {
+                if ((rebuilt.Contains(part) || rebuilt.Contains(sink)) && IsAboard(sink, ship, out var sinkUid))
+                    _deviceLink.SaveLinks(null, uid, sinkUid, ports);
+            }
+
+            if (part.ListedDevices.Count == 0 || !HasComp<DeviceListComponent>(uid))
+                continue;
+
+            var devices = new List<EntityUid>();
+            foreach (var device in part.ListedDevices)
+            {
+                if ((rebuilt.Contains(part) || rebuilt.Contains(device)) && IsAboard(device, ship, out var deviceUid))
+                    devices.Add(deviceUid);
+            }
+
+            if (devices.Count > 0)
+                _deviceList.UpdateDeviceList(uid, devices, merge: true);
+        }
+    }
+
+    private bool IsAboard(DrydockPart part, EntityUid ship, out EntityUid uid)
+    {
+        uid = part.Original ?? EntityUid.Invalid;
+        return part.Original is { } original
+               && !TerminatingOrDeleted(original)
+               && Transform(original).GridUid == ship;
+    }
+
     private void CompleteRepair(Entity<ShipRepairStationComponent> station, EntityUid ship)
     {
         // Reinstated guns announced themselves before they were seated on their mounts, so the
         // targeting consoles drew their groups without them. Re-derive now the hull is whole.
         _pointCannons.InvalidateGridCannons(ship);
 
+        RestoreConnections(station.Comp, ship);
         ScheduleAtmosRefresh(station, ship);
 
         _audio.PlayPvs(station.Comp.ConfirmSound, station.Owner);
@@ -536,8 +648,11 @@ public sealed partial class ShipRepairStationSystem
     private void AbortRepair(Entity<ShipRepairStationComponent> station, bool refund)
     {
         var comp = station.Comp;
-        if (comp.Target == null)
+        if (comp.Target is not { } target)
             return;
+
+        if (!TerminatingOrDeleted(target))
+            RestoreConnections(comp, target);
 
         // Refunded on what is left undone rather than on how much of the list is left. The yard works
         // the expensive framing first and the mopping last, so counting entries would hand most of the
@@ -564,7 +679,10 @@ public sealed partial class ShipRepairStationSystem
         comp.Jobs = new List<ShipRepairJob>();
         comp.JobsTotal = 0;
         comp.JobsDone = 0;
-        comp.PartsPerTick = 1;
+        comp.WorkPerTick = 1f;
+        comp.WorkBudget = 0f;
+        comp.Filed = new HashSet<EntityUid>();
+        comp.Rebuilt = new List<DrydockPart>();
         comp.AmountPaid = 0;
         comp.Payer = null;
         comp.StartTime = TimeSpan.Zero;

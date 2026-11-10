@@ -156,6 +156,8 @@
   description: A broken solar panel.
   suffix: Broken
   components:
+  # Eclipsion - lets the automated repair slip clear this off a tile it is rebuilding.
+  - type: ShipRepairRemnant
   - type: Sprite
     state: solar_panel_glass_broken
   - type: Damageable

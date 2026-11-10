@@ -13,6 +13,7 @@ public sealed class GravityGeneratorSystem : EntitySystem
     {
         base.Initialize();
 
+        SubscribeLocalEvent<GravityGeneratorComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<GravityGeneratorComponent, EntParentChangedMessage>(OnParentChanged);
         SubscribeLocalEvent<GravityGeneratorComponent, ChargedMachineActivatedEvent>(OnActivated);
         SubscribeLocalEvent<GravityGeneratorComponent, ChargedMachineDeactivatedEvent>(OnDeactivated);
@@ -31,6 +32,18 @@ public sealed class GravityGeneratorSystem : EntitySystem
             _lights.SetRadius(uid, MathHelper.Lerp(grav.LightRadiusMin, grav.LightRadiusMax, charge.Charge),
                 pointLight);
         }
+    }
+
+    // GravityActive isn't saved, and a generator loaded already charged never raises its activation again
+    private void OnStartup(Entity<GravityGeneratorComponent> ent, ref ComponentStartup args)
+    {
+        if (!TryComp<PowerChargeComponent>(ent, out var charge) || !charge.Active)
+            return;
+
+        ent.Comp.GravityActive = true;
+        var parent = Transform(ent).ParentUid;
+        if (TryComp(parent, out GravityComponent? gravity))
+            _gravitySystem.EnableGravity(parent, gravity);
     }
 
     private void OnActivated(Entity<GravityGeneratorComponent> ent, ref ChargedMachineActivatedEvent args)

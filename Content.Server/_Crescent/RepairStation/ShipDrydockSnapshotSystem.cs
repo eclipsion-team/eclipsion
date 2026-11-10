@@ -3,6 +3,11 @@ using Content.Shared._Crescent.RepairStation;
 using Content.Shared._Crescent.Hardpoints;
 using Content.Shared._Mono.ShipRepair.Components;
 using Content.Shared.Decals;
+using Content.Shared.DeviceLinking;
+using Content.Shared.DeviceNetwork.Components;
+using Content.Shared.DeviceNetwork.Systems;
+using Content.Shared.Tag;
+using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Whitelist;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
@@ -17,9 +22,13 @@ namespace Content.Server._Crescent.RepairStation;
 public sealed class ShipDrydockSnapshotSystem : EntitySystem
 {
     [Dependency] private readonly EntityWhitelistSystem _whitelist = default!;
+    [Dependency] private readonly SharedDeviceListSystem _deviceList = default!;
     [Dependency] private readonly IComponentFactory _compFactory = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
+    [Dependency] private readonly TagSystem _tag = default!;
+
+    private static readonly ProtoId<TagPrototype> DocumentTag = "Document";
 
     private readonly List<ShipRepairScopePrototype> _scopes = new();
 
@@ -77,7 +86,7 @@ public sealed class ShipDrydockSnapshotSystem : EntitySystem
         var children = Transform(grid).ChildEnumerator;
         while (children.MoveNext(out var child))
         {
-            if (TerminatingOrDeleted(child))
+            if (TerminatingOrDeleted(child) || EntityManager.IsQueuedForDeletion(child))
                 continue;
 
             // Walls and the like are already on the hand device's file. Recording them twice would
@@ -105,6 +114,48 @@ public sealed class ShipDrydockSnapshotSystem : EntitySystem
                 IsMount = HasComp<HardpointComponent>(child),
                 ReplacementRequiresDestruction = ReplacementRequiresDestruction(child),
             });
+        }
+
+        CaptureConnections(snapshot);
+    }
+
+    /// <summary>
+    /// Records signal links and device-list entries between parts on file, so a rebuilt button still
+    /// opens its door and a rebuilt vent rejoins its air alarm.
+    /// </summary>
+    private void CaptureConnections(ShipDrydockSnapshotComponent snapshot)
+    {
+        var byEntity = new Dictionary<EntityUid, DrydockPart>();
+        foreach (var part in snapshot.Parts)
+        {
+            if (part.Original is { } uid)
+                byEntity[uid] = part;
+        }
+
+        foreach (var part in snapshot.Parts)
+        {
+            if (part.Original is not { } uid)
+                continue;
+
+            if (TryComp<DeviceLinkSourceComponent>(uid, out var source))
+            {
+                foreach (var (sink, ports) in source.LinkedPorts)
+                {
+                    if (!byEntity.TryGetValue(sink, out var sinkPart) || ports.Count == 0)
+                        continue;
+
+                    part.Links.Add((sinkPart, ports.Select(p => (p.source.Id, p.sink.Id)).ToList()));
+                }
+            }
+
+            if (TryComp<DeviceListComponent>(uid, out var list))
+            {
+                foreach (var device in _deviceList.GetAllDevices(uid, list))
+                {
+                    if (byEntity.TryGetValue(device, out var devicePart))
+                        part.ListedDevices.Add(devicePart);
+                }
+            }
         }
     }
 
@@ -153,6 +204,14 @@ public sealed class ShipDrydockSnapshotSystem : EntitySystem
     /// </summary>
     public bool IsDebris(EntityUid uid)
     {
+        // Spent brass; a live round on the floor is still somebody's ammunition.
+        if (TryComp<CartridgeAmmoComponent>(uid, out var cartridge) && cartridge.Spent)
+            return true;
+
+        // Paper carries the Trash tag too, and someone's notes are not wreckage.
+        if (_tag.HasTag(uid, DocumentTag))
+            return false;
+
         foreach (var scope in _scopes)
         {
             if (scope.Debris != null && _whitelist.IsWhitelistPass(scope.Debris, uid))

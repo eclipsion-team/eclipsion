@@ -88,6 +88,11 @@ public sealed class ShipRepairStationUiState : BoundUserInterfaceState
     /// </summary>
     public int Quote;
 
+    /// <summary>
+    /// How long the quoted job would take, in seconds.
+    /// </summary>
+    public float EstimatedSeconds;
+
     public int JobsTotal;
     public int JobsDone;
 

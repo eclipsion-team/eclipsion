@@ -118,6 +118,13 @@
                     <Label Name="QuoteLabel" StyleClasses="ConsoleHeading"/>
                 </BoxContainer>
 
+                <BoxContainer Orientation="Horizontal" Margin="0 2 0 0">
+                    <Label Text="{Loc 'ship-repair-station-estimate'}" StyleClasses="ConsoleText"
+                           VerticalAlignment="Center"/>
+                    <Control HorizontalExpand="True"/>
+                    <Label Name="EstimateLabel" StyleClasses="ConsoleText" VerticalAlignment="Center"/>
+                </BoxContainer>
+
                 <BoxContainer Name="DroneFeeRow" Orientation="Horizontal" Margin="0 2 0 0" Visible="False">
                     <Label Text="{Loc 'ship-repair-station-drone-fee'}" StyleClasses="ConsoleText"
                            VerticalAlignment="Center"/>

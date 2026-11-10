@@ -15,6 +15,12 @@ public sealed partial class NpcSelfHealOperator : HTNOperator
     [Dependency] private readonly IEntityManager _entManager = default!;
     private NpcTacticalSystem _tactical = default!;
 
+    /// <summary>
+    /// Fails while the NPC is being shot, so it fights back instead of bandaging where it stands.
+    /// </summary>
+    [DataField]
+    public bool RequireSafe;
+
     public override void Initialize(IEntitySystemManager sysManager)
     {
         base.Initialize(sysManager);
@@ -25,7 +31,7 @@ public sealed partial class NpcSelfHealOperator : HTNOperator
         CancellationToken cancelToken)
     {
         var owner = blackboard.GetValue<EntityUid>(NPCBlackboard.Owner);
-        return (_tactical.NeedsHealing(owner), null);
+        return (_tactical.NeedsHealing(owner) && !(RequireSafe && _tactical.IsUnderFire(owner)), null);
     }
 
     public override void Startup(NPCBlackboard blackboard)
@@ -44,6 +50,9 @@ public sealed partial class NpcSelfHealOperator : HTNOperator
 
         if (_tactical.IsTreating(owner))
             return HTNOperatorStatus.Continuing;
+
+        if (RequireSafe && _tactical.IsUnderFire(owner))
+            return HTNOperatorStatus.Failed;
 
         // One application done, or interrupted. Keep going while there's still work and supplies for it.
         if (!_tactical.NeedsHealing(owner))

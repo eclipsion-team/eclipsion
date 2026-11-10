@@ -501,6 +501,33 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
         return false;
     }
 
+    /// <summary>
+    /// For other ships' drones: is this picket drone a fair target for <paramref name="grid"/>?
+    /// Unclaimed pickets shoot everyone, so everyone may shoot them back.
+    /// </summary>
+    public bool IsHostilePicket(EntityUid controller, EntityUid grid)
+    {
+        if (!TryComp<TerritoryPicketDroneComponent>(controller, out var picket) ||
+            !TryComp<TerritoryDronePicketsComponent>(picket.Standard, out var pickets))
+            return false;
+
+        if (pickets.Faction is not { } faction)
+            return true;
+
+        if (_diplomacy.GetGridFaction(grid) is { } gridFaction)
+            return !IsFriendlyFaction(faction, gridFaction);
+
+        // unaligned hull, e.g. an independent's own ship
+        var players = EntityQueryEnumerator<ActorComponent, TransformComponent>();
+        while (players.MoveNext(out var player, out _, out var playerXform))
+        {
+            if (playerXform.GridUid == grid && IsFriend(faction, player))
+                return false;
+        }
+
+        return true;
+    }
+
     private bool IsFriend(string? faction, EntityUid person)
     {
         return IsFriendlyFaction(faction, PersistentTerritoryFactions.GetTeam(EntityManager, person));

@@ -260,10 +260,11 @@ Frames cannot be taken apart, only shot down.
 | Furniture        | sink, shower, toilet                  | `SinkPersistentPoi`, `ShowerPersistentPoi`, `ToiletPersistentPoi` | 3 / 5 / 5 steel           |
 | Posters          | 24 posters (DSM, faction and general)  | `Poster<Name>PersistentPoi`, on a wall tile, one per tile (`PersistentPoiOnWall`) | 1 cloth                  |
 | Production       | one works per line of production      | see below; other lines are greyed out              | 20-30 steel, then plasteel/cloth/glass, cable |
-| Shipyard         | (faction) shipyard        | `ComputerPersistentPoiShipyard<DSM/NCWL/TFSC/SHI>` | 20 steel, 20 steel, 20 plasteel, 10 glass, 5 gold, 20 cable |
+| Shipyard         | (faction) shipyard        | `ComputerPersistentPoiShipyard<DSM/NCWL/TFSC/SHI/CMM>`| 20 steel, 20 steel, 20 plasteel, 10 glass, 5 gold, 20 cable |
 | Shipyard         | external airlock          | the same recipe as under Doors & airlocks          |                                            |
+| Shipyard         | (faction) repair slip     | `ComputerPersistentPoiRepairSlip<DSM/NCWL/TFSC/SHI/CMM>` | 20 steel, 15 plasteel, 10 glass, 5 silver, 15 cable |
 | Deployment       | cryo spawner              | `PersistentPoiCryoSpawner`                         | 20 steel, 20 plasteel, 10 glass, 10 silver, 20 cable |
-| Deployment       | (faction) equipment rack  | `PersistentPoiGearRack<DSM/NCWL/TFSC/SHI>`         | 20 steel, 10 plasteel, 10 cable            |
+| Deployment       | (faction) equipment rack  | `PersistentPoiGearRack<DSM/NCWL/TFSC/SHI/CMM>`     | 20 steel, 10 plasteel, 10 cable            |
 
 **Floor markings** has a button of its own under the pages; see below.
 
@@ -303,7 +304,7 @@ every time the ground changes hands (`CaptureRegionDevice`), so the doors change
 ground they open for anybody. Membership is read off the body, like the consoles do, not off an ID card. Forcing one
 works as on any door: cut its power and pry it, or shoot it down. Public airlocks open for everyone.
 
-**Shipyard and dockyard.** Each of the four factions has its own shipyard: its own fleet's listing (the
+**Shipyard and dockyard.** Each of the five factions has its own shipyard and repair slip: its own fleet's listing (the
 same one as its home yard), usable only by its own people (`FactionMachine` with `restrictAccess`), and the bought
 ship docks on the territory's external airlocks - the same docking airlock every ship uses (`AirlockShuttle`). The
 menu shows a holder only their own faction's yard (`PersistentPoiFactionRequired`). A yard stays its faction's after
@@ -367,11 +368,12 @@ Precursor electronic parts (`NanotrasenElectronics`) are salvage only - nothing 
 makes the top level a real prize. Anti-boarder turrets go up to eight at level 3.
 
 Every level allows one console of each kind - fire control, production, administration - counting mapped ones.
-A shipyard needs level 2 (one at levels 2 and 3), external airlocks go 2 / 4 / 6, and so do territorial
+A shipyard and a repair slip need level 3 (one each), external airlocks go 2 / 4 / 6, and so do territorial
 generators. The cryo spawner (one) needs level 2, the equipment racks (two) level 3.
 
-**Fire control is capped by level.** Every anchored ship gun on the territory counts, whoever put it there. Past the
-cap, the newest guns are left out of fire control entirely: no console links them and they will not fire, whatever
+**Fire control is capped by level.** Every anchored ship gun on the territory counts, whoever put it there (anti-boarder
+turrets do not: they have their own cap). Past the cap, the newest guns are left out of fire control entirely: no
+console links them and they will not fire, whatever
 console asks. The fire-control console's status strip warns about it. Raising the level brings them back.
 
 The level and the production capability are kept per region ID in the campaign's `territory_progress.json`, like

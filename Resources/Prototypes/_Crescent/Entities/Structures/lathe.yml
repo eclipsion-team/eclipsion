@@ -413,6 +413,11 @@
       - RCDAmmoAstronautics
       - AmeJarT2Craft
       - AmeJarT3Craft
+      - FuelCanisterBoriaticT2Craft
+      - FuelCanisterBoriaticT3Craft
+      - BoriaticFuelTankCraft
+      - AmeFuelTankCraft
+      - FuelExtractorFlatpackCraft
       - MiningDrill
       - BorgModuleMining
       - MechEquipmentDrill

@@ -234,6 +234,33 @@ public sealed partial class NpcTacticalComponent : Component
     public float AlertRadius = 12f;
 
     /// <summary>
+    /// Only this many of the nearest idle friends answer one call, so a whole garrison doesn't converge at once.
+    /// </summary>
+    [DataField]
+    public int MaxAlertedAllies = 3;
+
+    [DataField]
+    public TimeSpan AlertCooldown = TimeSpan.FromSeconds(10);
+
+    /// <summary>
+    /// How long an alerted friend takes to set off.
+    /// </summary>
+    [DataField]
+    public float AlertDelayMin = 0.8f;
+
+    [DataField]
+    public float AlertDelayMax = 3f;
+
+    [ViewVariables]
+    public TimeSpan NextAlert;
+
+    /// <summary>
+    /// A lead passed on by a friend isn't acted on before this.
+    /// </summary>
+    [ViewVariables]
+    public TimeSpan LeadDelayUntil;
+
+    /// <summary>
     /// How long the NPC looks around once it reaches the spot it is searching.
     /// </summary>
     [DataField]
@@ -308,6 +335,15 @@ public sealed partial class NpcTacticalComponent : Component
 
     [ViewVariables]
     public TimeSpan NextHealAttempt;
+
+    /// <summary>
+    /// Last hit from someone else. Shot recently, it fights back instead of bandaging in the open.
+    /// </summary>
+    [ViewVariables]
+    public TimeSpan? LastShotAt;
+
+    [DataField]
+    public TimeSpan UnderFireTime = TimeSpan.FromSeconds(3);
 
     /// <summary>
     /// Whether the NPC is currently in the middle of treating itself, which switches it over to

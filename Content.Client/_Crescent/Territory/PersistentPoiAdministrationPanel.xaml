@@ -11,6 +11,14 @@
                 <Label Name="HolderLabel" HorizontalExpand="True"/>
                 <Label Name="CapabilityLabel" StyleClasses="LabelSecondaryColor"/>
             </BoxContainer>
+            <BoxContainer Name="RenameBox" Orientation="Horizontal" SeparationOverride="4">
+                <Label Name="PrefixLabel" StyleClasses="LabelHeading" VerticalAlignment="Center"/>
+                <LineEdit Name="NameEdit" HorizontalExpand="True"
+                          PlaceHolder="{Loc 'territory-console-command-name-placeholder'}"
+                          ToolTip="{Loc 'territory-console-command-name-hint'}"/>
+                <Button Name="RenameButton" Text="{Loc 'territory-console-command-rename'}" StyleClasses="OpenRight"/>
+                <Button Name="ResetNameButton" Text="{Loc 'territory-console-command-reset-name'}" StyleClasses="OpenLeft"/>
+            </BoxContainer>
 
             <Label Text="{Loc 'persistent-poi-admin-ui-limits'}" StyleClasses="LabelSecondaryColor"/>
             <BoxContainer Name="LimitsGrid" Orientation="Vertical" SeparationOverride="2"/>

@@ -10,13 +10,32 @@
       min: 1500 # min 25 minutes between events (ECLIPSION CHANGES)
       max: 2400 # max 40 minutes between events (ECLIPSION CHANGES)
 
+# T3 part derelicts on their own clock so the trader/anomaly rolls don't starve them.
+- type: entity
+  id: HullrotT3EventScheduler
+  parent: BaseGameRule
+  components:
+  - type: BasicStationEventScheduler
+    scheduledGameRules: !type:NestedSelector
+      tableId: HullrotT3EventsTable
+    minimumTimeUntilFirstEvent: 900
+    minMaxEventTiming:
+      min: 900
+      max: 1500
+    retryDelay: 60
+
+- type: entityTable
+  id: HullrotT3EventsTable
+  table: !type:AllSelector
+    children:
+    - id: NanoTrasenProbe
+    - id: InfestedStation
+
 - type: entityTable
   id: HullrotEventsTable
   table: !type:AllSelector
     children:
     - id: PangTaiTrader
-    - id: NanoTrasenProbe
-    - id: InfestedStation
 
     # Rat-start
     - id: RatAnomalyStationEvent

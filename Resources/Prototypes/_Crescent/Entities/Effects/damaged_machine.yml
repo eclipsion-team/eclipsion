@@ -1,0 +1,27 @@
+# Spawned by DamagedMachineEffectsSystem on badly damaged powered machines.
+
+- type: entity
+  id: EffectDamagedMachineFlame
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 2
+  - type: Sprite
+    drawdepth: Effects
+    noRot: true
+    scale: 0.6, 0.6
+    layers:
+    - sprite: _RMC14/Effects/fire.rsi
+      state: red_1
+      shader: unshaded
+    - sprite: _RMC14/Effects/effects.rsi
+      state: smoke
+      offset: 0, 0.35
+      color: "#ffffff99"
+  - type: PointLight
+    radius: 1.5
+    energy: 1.2
+    color: "#e8862c"
+  - type: Tag
+    tags:
+    - HideContextMenu

@@ -42,6 +42,8 @@ public enum PersistentPoiWorksCategory : byte
     MaterialSilo,
 
     MappingConsole,
+
+    RepairConsole,
 }
 
 [Prototype("persistentPoiLevel")]
@@ -147,6 +149,9 @@ public sealed class PersistentPoiAdministrationState : BoundUserInterfaceState
     public int Level;
     public int MaxLevel;
 
+    // what the holder named it, without the faction prefix
+    public string? CustomName;
+
     public string? Capability;
 
     public List<PersistentPoiLimitState> Limits = new();
@@ -160,6 +165,13 @@ public sealed class PersistentPoiAdministrationState : BoundUserInterfaceState
 
 [Serializable, NetSerializable]
 public sealed class PersistentPoiUpgradeMessage : BoundUserInterfaceMessage;
+
+/// <summary>Names the territory; empty gives it back its own name.</summary>
+[Serializable, NetSerializable]
+public sealed class PersistentPoiRenameMessage(string name) : BoundUserInterfaceMessage
+{
+    public readonly string Name = name;
+}
 
 [Serializable, NetSerializable]
 public sealed class PersistentPoiDrawFromSiloMessage : BoundUserInterfaceMessage;

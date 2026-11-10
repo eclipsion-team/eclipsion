@@ -11,6 +11,8 @@
         <Button Name="DismantleButton" Text="{Loc 'persistent-poi-mapping-ui-dismantle'}" StyleClasses="OpenBoth" MinHeight="30" ToggleMode="True"/>
         <Button Name="PaintButton" Text="{Loc 'persistent-poi-mapping-ui-paint'}" StyleClasses="OpenBoth" MinHeight="30"/>
         <Button Name="RecenterButton" Text="{Loc 'persistent-poi-mapping-ui-recenter'}" StyleClasses="OpenBoth" MinHeight="30"/>
+        <Button Name="LightsButton" Text="{Loc 'persistent-poi-mapping-ui-lights'}" ToolTip="{Loc 'persistent-poi-mapping-ui-lights-tooltip'}"
+                StyleClasses="OpenBoth" MinHeight="30" ToggleMode="True"/>
         <PanelContainer StyleClasses="LowDivider"/>
         <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
             <RichTextLabel Name="HintLabel" HorizontalExpand="True"/>

@@ -109,6 +109,20 @@ public sealed class UseDelaySystem : EntitySystem
     }
 
     /// <summary>
+    /// Ends every delay on the entity, e.g. ones loaded from a save made under another server clock.
+    /// </summary>
+    public void CancelAllDelays(Entity<UseDelayComponent> ent)
+    {
+        foreach (var entry in ent.Comp.Delays.Values)
+        {
+            entry.StartTime = TimeSpan.Zero;
+            entry.EndTime = TimeSpan.Zero;
+        }
+
+        Dirty(ent);
+    }
+
+    /// <summary>
     /// Tries to get info about the delay with the specified ID. See <see cref="UseDelayInfo"/>.
     /// </summary>
     /// <param name="ent"></param>

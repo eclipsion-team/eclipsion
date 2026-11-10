@@ -116,6 +116,36 @@
       - material: Steel
         amount: 20
         doAfter: 3
+    - to: shipyardCMMFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: repairSlipDSMFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: repairSlipNCWLFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: repairSlipTFSCFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: repairSlipSHIFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: repairSlipCMMFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
     # Deployment
     - to: cryoSpawnerFrame
       steps:
@@ -143,6 +173,11 @@
         amount: 20
         doAfter: 3
     - to: gearRackSHIFrame
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+    - to: gearRackCMMFrame
       steps:
       - material: Steel
         amount: 20
@@ -1659,6 +1694,244 @@
   - node: gearRackSHI
     entity: PersistentPoiGearRackSHI
 
+  - node: gearRackCMMFrame
+    entity: PersistentPoiFrameGearRackCMM
+    edges:
+    - to: gearRackCMMPlated
+      steps:
+      - material: Plasteel
+        amount: 10
+        doAfter: 3
+  - node: gearRackCMMPlated
+    edges:
+    - to: gearRackCMM
+      steps:
+      - material: Cable
+        amount: 10
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: GearRack
+  - node: gearRackCMM
+    entity: PersistentPoiGearRackCMM
+
+  - node: shipyardCMMFrame
+    entity: PersistentPoiFrameShipyardCMM
+    edges:
+    - to: shipyardCMMHull
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 3
+  - node: shipyardCMMHull
+    edges:
+    - to: shipyardCMMPlated
+      steps:
+      - material: Plasteel
+        amount: 20
+        doAfter: 4
+  - node: shipyardCMMPlated
+    edges:
+    - to: shipyardCMMGlazed
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 2
+  - node: shipyardCMMGlazed
+    edges:
+    - to: shipyardCMMGilded
+      steps:
+      - material: Gold
+        amount: 5
+        doAfter: 2
+  - node: shipyardCMMGilded
+    edges:
+    - to: shipyardCMM
+      steps:
+      - material: Cable
+        amount: 20
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: Shipyard
+  - node: shipyardCMM
+    entity: ComputerPersistentPoiShipyardCMM
+
+  - node: repairSlipDSMFrame
+    entity: PersistentPoiFrameRepairSlipDSM
+    edges:
+    - to: repairSlipDSMPlated
+      steps:
+      - material: Plasteel
+        amount: 15
+        doAfter: 3
+  - node: repairSlipDSMPlated
+    edges:
+    - to: repairSlipDSMGlazed
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 2
+  - node: repairSlipDSMGlazed
+    edges:
+    - to: repairSlipDSMWired
+      steps:
+      - material: Silver
+        amount: 5
+        doAfter: 2
+  - node: repairSlipDSMWired
+    edges:
+    - to: repairSlipDSM
+      steps:
+      - material: Cable
+        amount: 15
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: RepairConsole
+  - node: repairSlipDSM
+    entity: ComputerPersistentPoiRepairSlipDSM
+
+  - node: repairSlipNCWLFrame
+    entity: PersistentPoiFrameRepairSlipNCWL
+    edges:
+    - to: repairSlipNCWLPlated
+      steps:
+      - material: Plasteel
+        amount: 15
+        doAfter: 3
+  - node: repairSlipNCWLPlated
+    edges:
+    - to: repairSlipNCWLGlazed
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 2
+  - node: repairSlipNCWLGlazed
+    edges:
+    - to: repairSlipNCWLWired
+      steps:
+      - material: Silver
+        amount: 5
+        doAfter: 2
+  - node: repairSlipNCWLWired
+    edges:
+    - to: repairSlipNCWL
+      steps:
+      - material: Cable
+        amount: 15
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: RepairConsole
+  - node: repairSlipNCWL
+    entity: ComputerPersistentPoiRepairSlipNCWL
+
+  - node: repairSlipTFSCFrame
+    entity: PersistentPoiFrameRepairSlipTFSC
+    edges:
+    - to: repairSlipTFSCPlated
+      steps:
+      - material: Plasteel
+        amount: 15
+        doAfter: 3
+  - node: repairSlipTFSCPlated
+    edges:
+    - to: repairSlipTFSCGlazed
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 2
+  - node: repairSlipTFSCGlazed
+    edges:
+    - to: repairSlipTFSCWired
+      steps:
+      - material: Silver
+        amount: 5
+        doAfter: 2
+  - node: repairSlipTFSCWired
+    edges:
+    - to: repairSlipTFSC
+      steps:
+      - material: Cable
+        amount: 15
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: RepairConsole
+  - node: repairSlipTFSC
+    entity: ComputerPersistentPoiRepairSlipTFSC
+
+  - node: repairSlipSHIFrame
+    entity: PersistentPoiFrameRepairSlipSHI
+    edges:
+    - to: repairSlipSHIPlated
+      steps:
+      - material: Plasteel
+        amount: 15
+        doAfter: 3
+  - node: repairSlipSHIPlated
+    edges:
+    - to: repairSlipSHIGlazed
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 2
+  - node: repairSlipSHIGlazed
+    edges:
+    - to: repairSlipSHIWired
+      steps:
+      - material: Silver
+        amount: 5
+        doAfter: 2
+  - node: repairSlipSHIWired
+    edges:
+    - to: repairSlipSHI
+      steps:
+      - material: Cable
+        amount: 15
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: RepairConsole
+  - node: repairSlipSHI
+    entity: ComputerPersistentPoiRepairSlipSHI
+
+  - node: repairSlipCMMFrame
+    entity: PersistentPoiFrameRepairSlipCMM
+    edges:
+    - to: repairSlipCMMPlated
+      steps:
+      - material: Plasteel
+        amount: 15
+        doAfter: 3
+  - node: repairSlipCMMPlated
+    edges:
+    - to: repairSlipCMMGlazed
+      steps:
+      - material: Glass
+        amount: 10
+        doAfter: 2
+  - node: repairSlipCMMGlazed
+    edges:
+    - to: repairSlipCMMWired
+      steps:
+      - material: Silver
+        amount: 5
+        doAfter: 2
+  - node: repairSlipCMMWired
+    edges:
+    - to: repairSlipCMM
+      steps:
+      - material: Cable
+        amount: 15
+        doAfter: 2
+      completed:
+      - !type:PersistentPoiEnforceLimit
+        category: RepairConsole
+  - node: repairSlipCMM
+    entity: ComputerPersistentPoiRepairSlipCMM
+
 # Command
 
 - type: construction
@@ -2109,7 +2382,7 @@
 - type: construction
   id: PersistentPoiShipyardDSM
   name: imperial shipyard
-  description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a developed territory.
+  description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a level 3 territory.
   graph: PersistentPoiStructures
   startNode: start
   targetNode: shipyardDSM
@@ -2141,7 +2414,7 @@
 - type: construction
   id: PersistentPoiShipyardNCWL
   name: NCWL shipyard
-  description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a developed territory.
+  description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a level 3 territory.
   graph: PersistentPoiStructures
   startNode: start
   targetNode: shipyardNCWL
@@ -2173,7 +2446,7 @@
 - type: construction
   id: PersistentPoiShipyardTFSC
   name: TFCF shipyard
-  description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a developed territory.
+  description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a level 3 territory.
   graph: PersistentPoiStructures
   startNode: start
   targetNode: shipyardTFSC
@@ -2205,7 +2478,7 @@
 - type: construction
   id: PersistentPoiShipyardSHI
   name: Shinohara shipyard
-  description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a developed territory.
+  description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a level 3 territory.
   graph: PersistentPoiStructures
   startNode: start
   targetNode: shipyardSHI
@@ -3755,4 +4028,224 @@
     faction: SHI
   - !type:PersistentPoiWithinLimit
     category: GearRack
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiShipyardCMM
+  name: minutemen shipyard
+  description: Sells your faction's ships at the front and docks them on the territory's external airlocks. Only your faction can use it. Needs a level 3 territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: shipyardCMM
+  category: construction-category-structures
+  icon:
+    sprite: _NF/Structures/Machines/computers.rsi
+    state: shipyard
+  layers:
+  - sprite: _NF/Structures/Machines/computers.rsi
+    state: computer
+  - sprite: _NF/Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: _Crescent/Structures/Machines/shipyard_console.rsi
+    state: screen
+  - sprite: _NF/Structures/Machines/computers.rsi
+    state: telesci_key
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiFactionRequired
+    faction: CMM
+  - !type:PersistentPoiWithinLimit
+    category: Shipyard
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiGearRackCMM
+  name: minutemen equipment rack
+  description: Your faction's standard kits - armour, a primary weapon, ammunition and utilities - drawn once per life. Only your faction can use it, and only while it holds the ground. Needs a fully developed territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: gearRackCMM
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Machines/Vendors/armory_cmm.rsi
+    state: "off"
+  layers:
+  - sprite: _Crescent/Structures/Machines/Vendors/armory_cmm.rsi
+    state: "off"
+  - sprite: _Crescent/Structures/Machines/Vendors/armory_cmm.rsi
+    state: normal-unshaded
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiFactionRequired
+    faction: CMM
+  - !type:PersistentPoiWithinLimit
+    category: GearRack
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiRepairSlipDSM
+  name: imperial repair slip
+  description: Surveys a hull docked on the territory's external airlocks and welds back what it lost, billed to whoever authorises the job. Only your faction can use it. Needs a level 3 territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: repairSlipDSM
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Machines/computers.rsi
+    state: repair
+  layers:
+  - sprite: Structures/Machines/computers.rsi
+    state: computer
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: _Crescent/Structures/Machines/computers.rsi
+    state: repair
+  - sprite: Structures/Machines/computers.rsi
+    state: tech_key
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiFactionRequired
+    faction: DSM
+  - !type:PersistentPoiWithinLimit
+    category: RepairConsole
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiRepairSlipNCWL
+  name: union repair slip
+  description: Surveys a hull docked on the territory's external airlocks and welds back what it lost, billed to whoever authorises the job. Only your faction can use it. Needs a level 3 territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: repairSlipNCWL
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Machines/computers.rsi
+    state: repair
+  layers:
+  - sprite: Structures/Machines/computers.rsi
+    state: computer
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: _Crescent/Structures/Machines/computers.rsi
+    state: repair
+  - sprite: Structures/Machines/computers.rsi
+    state: tech_key
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiFactionRequired
+    faction: NCWL
+  - !type:PersistentPoiWithinLimit
+    category: RepairConsole
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiRepairSlipTFSC
+  name: TFCF repair slip
+  description: Surveys a hull docked on the territory's external airlocks and welds back what it lost, billed to whoever authorises the job. Only your faction can use it. Needs a level 3 territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: repairSlipTFSC
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Machines/computers.rsi
+    state: repair
+  layers:
+  - sprite: Structures/Machines/computers.rsi
+    state: computer
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: _Crescent/Structures/Machines/computers.rsi
+    state: repair
+  - sprite: Structures/Machines/computers.rsi
+    state: tech_key
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiFactionRequired
+    faction: TFSC
+  - !type:PersistentPoiWithinLimit
+    category: RepairConsole
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiRepairSlipSHI
+  name: Shinohara repair slip
+  description: Surveys a hull docked on the territory's external airlocks and welds back what it lost, billed to whoever authorises the job. Only your faction can use it. Needs a level 3 territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: repairSlipSHI
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Machines/computers.rsi
+    state: repair
+  layers:
+  - sprite: Structures/Machines/computers.rsi
+    state: computer
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: _Crescent/Structures/Machines/computers.rsi
+    state: repair
+  - sprite: Structures/Machines/computers.rsi
+    state: tech_key
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiFactionRequired
+    faction: SHI
+  - !type:PersistentPoiWithinLimit
+    category: RepairConsole
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiRepairSlipCMM
+  name: minutemen repair slip
+  description: Surveys a hull docked on the territory's external airlocks and welds back what it lost, billed to whoever authorises the job. Only your faction can use it. Needs a level 3 territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: repairSlipCMM
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Machines/computers.rsi
+    state: repair
+  layers:
+  - sprite: Structures/Machines/computers.rsi
+    state: computer
+  - sprite: Structures/Machines/computers.rsi
+    state: generic_keyboard
+  - sprite: _Crescent/Structures/Machines/computers.rsi
+    state: repair
+  - sprite: Structures/Machines/computers.rsi
+    state: tech_key
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:PersistentPoiFactionRequired
+    faction: CMM
+  - !type:PersistentPoiWithinLimit
+    category: RepairConsole
   - !type:TileNotBlocked

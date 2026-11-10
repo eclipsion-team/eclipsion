@@ -20,6 +20,12 @@
     # Bodies are not hull, and a slip that reprinted one would be a duplicator.
     - MobState
     - Body
+    # Spawner markers delete themselves once they have rolled their loot. Rebuilding one rolls it
+    # again on top of what is already there.
+    - ConditionalSpawner
+    - RandomSpawner
+    - EntityTableSpawner
+    - TimedSpawner
   # Wreckage the slip clears off a tile before rebuilding what stood there. Bare frames only: a wall
   # beaten down to its girder leaves the girder in the way, and welding the new wall through it would
   # leave the tile holding both.
@@ -46,6 +52,7 @@
     tags:
     - Sheet       # steel, plasteel, brass, glass and plastic sheets
     - RawMaterial # scrap blasted off the hull, planks, cloth, cardboard
+    - Trash       # wrappers, cans and the rest left after a fight
     - CableCoil
     - GlassShard
     - ReinforcedGlassShard

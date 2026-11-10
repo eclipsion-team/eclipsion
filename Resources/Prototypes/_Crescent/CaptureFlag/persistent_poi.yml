@@ -75,6 +75,11 @@
       - PersistentPoiAirlockGlass
       - PersistentPoiAirlockPublic
       - PersistentPoiDockingPort
+      - PersistentPoiRepairSlipDSM
+      - PersistentPoiRepairSlipNCWL
+      - PersistentPoiRepairSlipTFSC
+      - PersistentPoiRepairSlipSHI
+      - PersistentPoiRepairSlipCMM
     - name: persistent-poi-build-category-structure
       icon:
         sprite: Structures/Walls/solid.rsi
@@ -154,7 +159,13 @@
       - PersistentPoiShipyardNCWL
       - PersistentPoiShipyardTFSC
       - PersistentPoiShipyardSHI
+      - PersistentPoiShipyardCMM
       - PersistentPoiDockingPort
+      - PersistentPoiRepairSlipDSM
+      - PersistentPoiRepairSlipNCWL
+      - PersistentPoiRepairSlipTFSC
+      - PersistentPoiRepairSlipSHI
+      - PersistentPoiRepairSlipCMM
     - name: persistent-poi-build-category-deployment
       icon:
         sprite: _NF/Structures/Machines/cryopod.rsi
@@ -166,6 +177,7 @@
       - PersistentPoiGearRackNCWL
       - PersistentPoiGearRackTFSC
       - PersistentPoiGearRackSHI
+      - PersistentPoiGearRackCMM
 
 - type: entity
   parent: ComputerTargetingCapturable
@@ -2270,3 +2282,284 @@
   - type: Construction
     graph: PersistentPoiStructures
     node: gearRackSHIFrame
+
+- type: entity
+  parent: RatCMMMothershipComputer
+  id: ComputerPersistentPoiShipyardCMM
+  name: minutemen shipyard
+  suffix: Persistent territory, built
+  description: Sells the Minutemen's ships to their own people, and docks them right here.
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: Shipyard
+  - type: FactionMachine
+    faction: CMM
+    explicit: true
+    restrictAccess: true
+    normalizeFaction: false
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: shipyardCMM
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 4
+            max: 8
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameShipyardCMM
+  name: minutemen shipyard frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: shipyardCMMFrame
+
+- type: entity
+  parent: [ PersistentPoiGearRackBase, ColMarTechEquipmentCMM ]
+  id: PersistentPoiGearRackCMM
+  name: minutemen equipment rack
+  suffix: Persistent territory, built
+  description: The Minutemen's standard kits, racked at the front. Only the Minutemen's own can draw from it, and only while they hold the ground.
+  components:
+  - type: AccessReader
+    access: []
+  - type: FactionMachine
+    faction: CMM
+    explicit: true
+    restrictAccess: true
+    normalizeFaction: false
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: gearRackCMM
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameGearRackCMM
+  name: minutemen equipment rack frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: gearRackCMMFrame
+
+# fleet repair slips for docked hulls. like the shipyards they stay their faction's when the ground changes hands
+
+- type: entity
+  parent: ComputerShipRepairStationDSM
+  id: ComputerPersistentPoiRepairSlipDSM
+  name: imperial repair slip
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: RepairConsole
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: repairSlipDSM
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 4
+            max: 8
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameRepairSlipDSM
+  name: imperial repair slip frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: repairSlipDSMFrame
+
+- type: entity
+  parent: ComputerShipRepairStationNCWL
+  id: ComputerPersistentPoiRepairSlipNCWL
+  name: union repair slip
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: RepairConsole
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: repairSlipNCWL
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 4
+            max: 8
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameRepairSlipNCWL
+  name: union repair slip frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: repairSlipNCWLFrame
+
+- type: entity
+  parent: ComputerShipRepairStationTFSC
+  id: ComputerPersistentPoiRepairSlipTFSC
+  name: TFCF repair slip
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: RepairConsole
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: repairSlipTFSC
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 4
+            max: 8
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameRepairSlipTFSC
+  name: TFCF repair slip frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: repairSlipTFSCFrame
+
+- type: entity
+  parent: ComputerShipRepairStationSHI
+  id: ComputerPersistentPoiRepairSlipSHI
+  name: Shinohara repair slip
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: RepairConsole
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: repairSlipSHI
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 4
+            max: 8
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameRepairSlipSHI
+  name: Shinohara repair slip frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: repairSlipSHIFrame
+
+- type: entity
+  parent: ComputerShipRepairStationCMM
+  id: ComputerPersistentPoiRepairSlipCMM
+  name: minutemen repair slip
+  suffix: Persistent territory, built
+  components:
+  - type: PersistentPoiStructure
+  - type: PersistentPoiWorks
+    category: RepairConsole
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: repairSlipCMM
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 4
+            max: 8
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: PersistentPoiConsoleFrameBase
+  id: PersistentPoiFrameRepairSlipCMM
+  name: minutemen repair slip frame
+  components:
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: repairSlipCMMFrame

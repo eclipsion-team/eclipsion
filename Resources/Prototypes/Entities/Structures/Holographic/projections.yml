@@ -28,6 +28,7 @@
   - type: Tag
     tags:
       - NoPaint
+  - type: Clickable
 
 - type: entity
   id: HoloFan

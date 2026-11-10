@@ -67,6 +67,8 @@ public sealed partial class NpcTacticalSystem
     /// </summary>
     private readonly List<Vector2> _allyClaims = new();
 
+    private readonly List<(float Distance, Entity<NpcTacticalComponent> Ally)> _alerted = new();
+
     private void InitializeMovement()
     {
         SubscribeLocalEvent<NpcTacticalComponent, NPCSteeringEvent>(OnSteering);
@@ -113,7 +115,8 @@ public sealed partial class NpcTacticalSystem
             ClearLead(comp);
     }
 
-    private void SetLead(NpcTacticalComponent comp, EntityCoordinates lead, EntityUid? leadTarget, TimeSpan now)
+    private void SetLead(NpcTacticalComponent comp, EntityCoordinates lead, EntityUid? leadTarget, TimeSpan now,
+        TimeSpan delay = default)
     {
         if (comp.Lead is not { } old ||
             !old.TryDistance(EntityManager, _transform, lead, out var moved) ||
@@ -125,6 +128,7 @@ public sealed partial class NpcTacticalSystem
         comp.Lead = lead;
         comp.LeadTarget = leadTarget;
         comp.LeadTime = now;
+        comp.LeadDelayUntil = now + delay;
     }
 
     public void ClearLead(EntityUid uid, NpcTacticalComponent? comp = null)
@@ -146,10 +150,15 @@ public sealed partial class NpcTacticalSystem
     /// </summary>
     private void AlertAllies(EntityUid uid, NpcTacticalComponent comp, TimeSpan now)
     {
-        if (comp.Lead is not { } lead)
+        if (comp.Lead is not { } lead || now < comp.NextAlert)
             return;
 
-        foreach (var ally in _lookup.GetEntitiesInRange<NpcTacticalComponent>(_transform.GetMapCoordinates(uid), comp.AlertRadius))
+        comp.NextAlert = now + comp.AlertCooldown;
+
+        var pos = _transform.GetMapCoordinates(uid);
+        _alerted.Clear();
+
+        foreach (var ally in _lookup.GetEntitiesInRange<NpcTacticalComponent>(pos, comp.AlertRadius))
         {
             if (ally.Owner == uid ||
                 HasComp<ActorComponent>(ally) ||
@@ -163,8 +172,18 @@ public sealed partial class NpcTacticalSystem
             if (ally.Comp.Lead != null && now - ally.Comp.LeadTime < FreshLeadTime)
                 continue;
 
-            SetLead(ally.Comp, lead, comp.LeadTarget, now);
-            RequestReplan(ally);
+            _alerted.Add(((_transform.GetMapCoordinates(ally).Position - pos.Position).LengthSquared(), ally));
+        }
+
+        _alerted.Sort((a, b) => a.Distance.CompareTo(b.Distance));
+
+        for (var i = 0; i < Math.Min(_alerted.Count, comp.MaxAlertedAllies); i++)
+        {
+            var ally = _alerted[i].Ally;
+            var delay = TimeSpan.FromSeconds(_random.NextFloat(comp.AlertDelayMin, comp.AlertDelayMax));
+            SetLead(ally.Comp, lead, comp.LeadTarget, now, delay);
+            if (ally.Comp.NextAlert < now + delay)
+                ally.Comp.NextAlert = now + delay;
         }
     }
 
@@ -177,11 +196,17 @@ public sealed partial class NpcTacticalSystem
         if (!args.DamageIncreased || args.Origin is not { } origin || origin == ent.Owner)
             return;
 
+        var now = _timing.CurTime;
+        ent.Comp.LastShotAt = now;
+
+        // bandaging in the line of fire just made it a punching bag
+        if (ent.Comp.Healing && !HasComp<ActorComponent>(ent))
+            InterruptTreatment(ent, ent.Comp);
+
         // Busy with it already; the fight keeps the lead up to date.
         if (IsFighting(ent) || HasComp<ActorComponent>(ent) || !_mobState.IsAlive(ent))
             return;
 
-        var now = _timing.CurTime;
         if (ent.Comp.Lead != null && now - ent.Comp.LeadTime < DamageLeadCooldown)
             return;
 
@@ -237,6 +262,7 @@ public sealed partial class NpcTacticalSystem
             return false;
 
         if (_timing.CurTime - comp.LeadTime > comp.LeadMemory ||
+            _timing.CurTime < comp.LeadDelayUntil ||
             comp.SearchAttempts >= MaxSearchAttempts ||
             !lead.IsValid(EntityManager))
         {

@@ -14,7 +14,8 @@
 #
 # Air: the double emergency tank in a pocket, and 125 minutes of oxygen in the jetpack in suit storage
 # (see JetpackSoldierAIFilled below). NpcStartInternals only opens a tank while the air around them is
-# unbreathable, and moves them onto the next one when the tank they are on runs low.
+# unbreathable, and moves them onto the next one when the tank they are on runs low. Once the pocket tank is
+# spent they fetch a full one - lying loose nearby, or out of a vending machine - and drop the empty.
 
 # Imperial Mandate
 

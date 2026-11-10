@@ -1,5 +1,7 @@
 using System.Numerics;
+using Content.Server.Light.Components;
 using Content.Server.Power.Generator;
+using Content.Shared.Light.Components;
 using Content.Shared._Crescent.RepairStation;
 using Content.Shared.Decals;
 using Content.Shared._Mono.ShipRepair.Components;
@@ -59,7 +61,16 @@ public sealed partial class ShipRepairStationSystem
         /// Price with the yard's markup already applied.
         /// </summary>
         public int Quote;
+
+        public float Seconds;
+
+        public HashSet<EntityUid> Filed;
     }
+
+    /// <summary>
+    /// Structures the current survey matched against a file entry.
+    /// </summary>
+    private readonly HashSet<EntityUid> _filed = new();
 
     /// <summary>
     /// Compares a docked hull against its snapshots and against the state of what is still aboard.
@@ -71,7 +82,7 @@ public sealed partial class ShipRepairStationSystem
     /// </summary>
     private ShipRepairSurvey Survey(Entity<ShipRepairStationComponent> station, EntityUid ship, ShipRepairDataComponent? data)
     {
-        var survey = new ShipRepairSurvey { Jobs = new List<ShipRepairJob>() };
+        var survey = new ShipRepairSurvey { Jobs = new List<ShipRepairJob>(), Filed = new HashSet<EntityUid>() };
 
         if (!TryComp<MapGridComponent>(ship, out var gridComp))
             return survey;
@@ -81,6 +92,7 @@ public sealed partial class ShipRepairStationSystem
         _protoPrices.Clear();
         _protoSurcharges.Clear();
         _healed.Clear();
+        _filed.Clear();
 
         // A crew slip does no work on a hull with no blueprint - except restocking a drone carrier's
         // hangar, which reads nothing off the file.
@@ -88,6 +100,7 @@ public sealed partial class ShipRepairStationSystem
         {
             SurveyDroneHangar(ship, gridComp, ref survey);
             survey.Quote = survey.DroneRestockCost;
+            survey.Seconds = EstimateSeconds(station.Comp, survey.Jobs);
             return survey;
         }
 
@@ -103,14 +116,22 @@ public sealed partial class ShipRepairStationSystem
         var drydock = CompOrNull<ShipDrydockSnapshotComponent>(ship);
         if (drydock != null)
         {
+            // Standing parts claim their tile first, or a missing twin of the same kind on that tile
+            // (the other window of a corner) could claim the survivor and never get rebuilt.
+            foreach (var part in drydock.Parts)
+            {
+                if (!StillStanding(part, ship))
+                    continue;
+
+                TryClaim(standing, part.Tile, part.Proto, out _);
+                _filed.Add(part.Original!.Value);
+                AddHealJob(station, ref survey, ref raw, part.Original!.Value, part.Tile);
+            }
+
             foreach (var part in drydock.Parts)
             {
                 if (StillStanding(part, ship))
-                {
-                    TryClaim(standing, part.Tile, part.Proto, out _);
-                    AddHealJob(station, ref survey, ref raw, part.Original!.Value, part.Tile);
                     continue;
-                }
 
                 // Shields, ship consoles and weapons keep their identity after being unanchored or
                 // carried onto another grid. As long as that exact entity survives, the empty spot
@@ -139,9 +160,12 @@ public sealed partial class ShipRepairStationSystem
                 survey.MissingParts++;
                 raw += drydockPrice;
             }
-
-            SurveyDecals(station, ship, gridComp, drydock, ref survey, ref raw);
         }
+
+        DropBlockedParts(ship, gridComp, data, ref survey, ref raw);
+
+        if (drydock != null)
+            SurveyDecals(station, ship, gridComp, drydock, ref survey, ref raw);
 
         // Without a blueprint there is nothing to compare the hull against, so the damage still standing on it
         // is found by walking the deck instead. Only a blueprint retires that pass: it is the one record that
@@ -159,7 +183,106 @@ public sealed partial class ShipRepairStationSystem
         survey.Jobs.Sort(static (a, b) => JobOrder(b).CompareTo(JobOrder(a)));
 
         survey.Quote = (int) Math.Min(int.MaxValue, MathF.Ceiling(raw * station.Comp.PriceMarkup) + survey.DroneRestockCost);
+        survey.Seconds = EstimateSeconds(station.Comp, survey.Jobs);
+        survey.Filed.UnionWith(_filed);
         return survey;
+    }
+
+    /// <summary>
+    /// Takes missing parts off the list when something the crew put there fills their slot - a wall of a
+    /// different kind, a machine of their own - and when the file holds the same part twice on a tile.
+    /// Rebuilding either would stack two structures on one tile.
+    /// </summary>
+    private void DropBlockedParts(
+        EntityUid ship,
+        MapGridComponent gridComp,
+        ShipRepairDataComponent? data,
+        ref ShipRepairSurvey survey,
+        ref long raw)
+    {
+        // rotation is part of the key: two directional windows or lights on one corner tile are not a duplicate
+        var placed = new HashSet<(Vector2i, string, Angle)>();
+
+        for (var i = 0; i < survey.Jobs.Count; i++)
+        {
+            var job = survey.Jobs[i];
+            if (!TryGetPartPlacement(data, job, out var protoId, out var rotation))
+                continue;
+
+            if (placed.Add((job.Indices, protoId, rotation)) && !SlotTaken(ship, gridComp, job.Indices, protoId, rotation, _filed))
+                continue;
+
+            survey.Jobs.RemoveAt(i--);
+            survey.MissingParts--;
+            raw -= job.Cost;
+        }
+    }
+
+    private bool TryGetPartPlacement(ShipRepairDataComponent? data, ShipRepairJob job, out string protoId, out Angle rotation)
+    {
+        protoId = string.Empty;
+        rotation = Angle.Zero;
+
+        switch (job.Kind)
+        {
+            case ShipRepairJobKind.DrydockPart when job.Part is { } part:
+                protoId = part.Proto;
+                rotation = part.Rotation;
+                return true;
+
+            case ShipRepairJobKind.ToolPart when data != null
+                                                 && job.SpecId is { } specId
+                                                 && _shipRepair.TryGetChunk(data, job.Indices, out var chunk)
+                                                 && chunk.Entities.TryGetValue(specId, out var spec)
+                                                 && spec.ProtoIndex >= 0
+                                                 && spec.ProtoIndex < data.EntityPalette.Count:
+                protoId = data.EntityPalette[spec.ProtoIndex];
+                rotation = spec.Rotation;
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// How much of a work unit each kind of job is. Rebuilding is the slow part; mopping and sweeping
+    /// are close to free.
+    /// </summary>
+    private static float JobWeight(ShipRepairJobKind kind)
+    {
+        return kind switch
+        {
+            ShipRepairJobKind.Tile => 0.5f,
+            ShipRepairJobKind.ToolPart or ShipRepairJobKind.DrydockPart => 1f,
+            ShipRepairJobKind.Heal => 0.3f,
+            ShipRepairJobKind.Restock => 0.2f,
+            ShipRepairJobKind.DroneRestock => 2f,
+            ShipRepairJobKind.Decal => 0.05f,
+            _ => 0.02f,
+        };
+    }
+
+    private static float TotalWork(List<ShipRepairJob> jobs)
+    {
+        var work = 0f;
+        foreach (var job in jobs)
+        {
+            work += JobWeight(job.Kind);
+        }
+
+        return work;
+    }
+
+    private static float EstimateSeconds(ShipRepairStationComponent comp, List<ShipRepairJob> jobs)
+    {
+        if (jobs.Count == 0)
+            return 0f;
+
+        var seconds = TotalWork(jobs) * MathF.Max(comp.SecondsPerPart, 0f);
+        if (comp.MaxRepairSeconds > 0)
+            seconds = MathF.Min(seconds, comp.MaxRepairSeconds);
+
+        return MathF.Max(seconds, comp.MinRepairSeconds);
     }
 
     /// <summary>
@@ -256,7 +379,7 @@ public sealed partial class ShipRepairStationSystem
                     continue;
                 }
 
-                if (!IsSpecMissing(spec))
+                if (!IsSpecMissing(spec, data.EntityPalette[spec.ProtoIndex]))
                     continue;
 
                 var partPrice = GetPartPrice(data, spec.ProtoIndex);
@@ -543,7 +666,31 @@ public sealed partial class ShipRepairStationSystem
             cost += (int) MathF.Ceiling(deficit.Float() * GetReagentPrice(station, reagent));
         }
 
+        if (NeedsBulb(uid, out var bulb))
+        {
+            needed = true;
+            cost += GetRoundPrice(station, bulb);
+        }
+
         return needed;
+    }
+
+    /// <summary>
+    /// A fitting that came with a bulb and now has none, or a broken or burnt one.
+    /// </summary>
+    private bool NeedsBulb(EntityUid uid, out string bulbProto)
+    {
+        bulbProto = string.Empty;
+
+        if (!TryComp<PoweredLightComponent>(uid, out var light) || light.HasLampOnSpawn is not { } lamp)
+            return false;
+
+        bulbProto = lamp;
+
+        if (_light.GetBulb(uid, light) is not { } bulb)
+            return true;
+
+        return TryComp<LightBulbComponent>(bulb, out var state) && state.State != LightBulbState.Normal;
     }
 
     /// <summary>
@@ -666,7 +813,7 @@ public sealed partial class ShipRepairStationSystem
                && MetaData(original).EntityPrototype?.ID == part.Proto.Id;
     }
 
-    private static bool TryClaim(
+    private bool TryClaim(
         Dictionary<(Vector2i, string), List<EntityUid>> standing,
         Vector2i tile,
         string proto,
@@ -679,6 +826,7 @@ public sealed partial class ShipRepairStationSystem
 
         claimed = list[^1];
         list.RemoveAt(list.Count - 1);
+        _filed.Add(claimed);
         return true;
     }
 
@@ -691,10 +839,14 @@ public sealed partial class ShipRepairStationSystem
         return TileHolds(grid, gridComp, tile, proto, out _);
     }
 
-    private bool TileHolds(EntityUid grid, MapGridComponent gridComp, Vector2i tile, string proto, out EntityUid present)
+    private bool TileHolds(EntityUid grid, MapGridComponent gridComp, Vector2i tile, string proto, out EntityUid present,
+        HashSet<EntityUid>? ignore = null)
     {
         foreach (var ent in _map.GetAnchoredEntities(grid, gridComp, tile))
         {
+            if (ignore != null && ignore.Contains(ent))
+                continue;
+
             if (!TerminatingOrDeleted(ent) && MetaData(ent).EntityPrototype?.ID == proto)
             {
                 present = ent;
@@ -732,6 +884,9 @@ public sealed partial class ShipRepairStationSystem
     /// </summary>
     private bool IsWornDownTo(int stored, int current)
     {
+        if (IsDamagedVariant(stored, current))
+            return true;
+
         var id = stored;
 
         // Nothing stacks more than a handful of layers deep; the bound is only here so a base-turf
@@ -750,6 +905,42 @@ public sealed partial class ShipRepairStationSystem
                 return true;
 
             id = below.TileId;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Burnt and damaged decking (PlatingBurnt, FloorSteelDamaged...) sits on the same base as the tile it
+    /// stands in for, so it is not on the base-turf chain but is still wear rather than a choice.
+    /// </summary>
+    private bool IsDamagedVariant(int stored, int current)
+    {
+        if (!_tileDefs.TryGetDefinition(current, out var currentDef)
+            || currentDef is not ContentTileDefinition currentContent
+            || string.IsNullOrEmpty(currentContent.BaseTurf))
+        {
+            return false;
+        }
+
+        var id = currentContent.ID;
+        if (!id.Contains("Damaged") && !id.Contains("Burnt") && !id.Contains("Broken"))
+            return false;
+
+        // Anywhere on the stored tile's own chain: burnt plating under what was steel decking counts too.
+        var layer = stored;
+        for (var depth = 0; depth < 8; depth++)
+        {
+            if (!_tileDefs.TryGetDefinition(layer, out var def) || def is not ContentTileDefinition content)
+                return false;
+
+            if (content.BaseTurf == currentContent.BaseTurf || content.ID == currentContent.BaseTurf)
+                return true;
+
+            if (string.IsNullOrEmpty(content.BaseTurf) || !_tileDefs.TryGetDefinition(content.BaseTurf, out var below))
+                return false;
+
+            layer = below.TileId;
         }
 
         return false;

@@ -16,6 +16,9 @@ public sealed partial class PersistentPoiAdministrationPanel : BoxContainer
     public event Action? OnUpgrade;
     public event Action? OnDraw;
     public event Action<string, bool>? OnReturn;
+    public event Action<string>? OnRename;
+
+    private string? _shownName;
 
     public PersistentPoiAdministrationPanel()
     {
@@ -24,6 +27,14 @@ public sealed partial class PersistentPoiAdministrationPanel : BoxContainer
 
         UpgradeButton.OnPressed += _ => OnUpgrade?.Invoke();
         DrawButton.OnPressed += _ => OnDraw?.Invoke();
+
+        RenameButton.OnPressed += _ => OnRename?.Invoke(NameEdit.Text);
+        NameEdit.OnTextEntered += args => OnRename?.Invoke(args.Text);
+        ResetNameButton.OnPressed += _ =>
+        {
+            NameEdit.Text = string.Empty;
+            OnRename?.Invoke(string.Empty);
+        };
     }
 
     private bool _remote;
@@ -38,6 +49,7 @@ public sealed partial class PersistentPoiAdministrationPanel : BoxContainer
                 : "persistent-poi-admin-ui-deposit-hint"));
             UpgradeButton.Visible &= !value;
             DrawButton.Visible &= !value;
+            RenameBox.Visible &= !value;
         }
     }
 
@@ -51,6 +63,19 @@ public sealed partial class PersistentPoiAdministrationPanel : BoxContainer
         CapabilityLabel.SetTextIfChanged(state.Capability == null
             ? Loc.GetString("persistent-poi-admin-ui-no-capability")
             : Loc.GetString("persistent-poi-admin-ui-capability", ("capability", state.Capability)));
+
+        // the mainframe renames from its own Command tab
+        RenameBox.Visible = !_remote && state.Owner != null;
+        PrefixLabel.Text = state.Owner == null ? string.Empty : FactionDisplay.Abbreviation(state.Owner) + "-";
+
+        var name = state.CustomName ?? string.Empty;
+        if (name != _shownName && !NameEdit.HasKeyboardFocus())
+        {
+            NameEdit.Text = name;
+            _shownName = name;
+        }
+
+        ResetNameButton.Disabled = state.CustomName == null;
 
         UpdateLimits(state);
         UpdateCost(state);

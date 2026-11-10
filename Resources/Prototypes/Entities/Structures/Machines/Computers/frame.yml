@@ -72,6 +72,8 @@
   name: broken computer
   description: This computer has seen better days.
   components:
+  # Eclipsion - lets the automated repair slip clear this off a tile it is rebuilding.
+  - type: ShipRepairRemnant
   - type: Construction
     graph: Computer
     node: monitorBroken

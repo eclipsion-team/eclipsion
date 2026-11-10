@@ -13,12 +13,20 @@
 # NpcSquadSystem.
 #
 # Branch order is priority order: the HTN replans every half second and switches to any plan that comes
-# from an earlier branch, so treating a wound interrupts a firefight but a firefight never interrupts
-# treating a wound.
+# from an earlier branch, so treating a wound interrupts a firefight. Getting hit interrupts the treatment
+# and it shoots back for a few seconds before trying again.
 
 - type: htnCompound
   id: FactionSoldierCompound
   branches:
+  # Suffocating with every tank it carries spent: go get a fresh one, orders or not (NpcStartInternals).
+  - preconditions:
+    - !type:NpcNeedsAirPrecondition
+      urgent: true
+    tasks:
+    - !type:HTNCompoundTask
+      task: SoldierFetchAirCompound
+
   # Squad ordered to hold: stay exactly where it is and don't start anything. Above everything else, so it
   # doesn't walk off to find cover, run over to the leader or chase a lead either.
   - preconditions:
@@ -100,6 +108,13 @@
   - tasks:
     - !type:HTNCompoundTask
       task: SoldierMeleeCombatCompound
+
+  # Down to its jetpack's air, or out of air in a room it can breathe in: restock once nothing is shooting.
+  - preconditions:
+    - !type:NpcNeedsAirPrecondition
+    tasks:
+    - !type:HTNCompoundTask
+      task: SoldierFetchAirCompound
 
   # Another squadmate is patching the leader up: everyone else rings the two of them, looking outward. Below
   # the fighting on purpose - anyone who shows up gets shot at, and the guard picks up again after.
@@ -361,6 +376,26 @@
     - !type:HTNCompoundTask
       task: BeforeMeleeAttackTargetCompound
 
+# A fresh tank: off the floor nearby, or out of a vending machine that stocks them. The spent one is dropped.
+- type: htnCompound
+  id: SoldierFetchAirCompound
+  branches:
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcPickAirSourceOperator
+        targetKey: AirSourceCoordinates
+        rangeKey: AirSourceRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: false
+        removeKeyOnFinish: false
+        targetKey: AirSourceCoordinates
+        rangeKey: AirSourceRange
+
+    - !type:HTNPrimitiveTask
+      operator: !type:NpcTakeAirOperator
+
 - type: htnCompound
   id: SoldierSelfHealCompound
   branches:
@@ -381,10 +416,11 @@
     - !type:HTNPrimitiveTask
       operator: !type:NpcSelfHealOperator
 
-  # Nowhere to hide: treat it where it stands. Treatment doesn't stop for being shot at.
+  # Nowhere to hide: treat it where it stands, unless someone is shooting at it - then it shoots back.
   - tasks:
     - !type:HTNPrimitiveTask
       operator: !type:NpcSelfHealOperator
+        requireSafe: true
 
 # Holding: patch itself up where it stands if it needs to, get back on its spot if it was pushed off it,
 # otherwise stand there and look around.
@@ -432,6 +468,7 @@
     tasks:
     - !type:HTNPrimitiveTask
       operator: !type:NpcSelfHealOperator
+        requireSafe: true
 
   - preconditions:
     - !type:NpcShouldTendLeaderPrecondition

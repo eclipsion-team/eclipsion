@@ -85,6 +85,8 @@
   name: broken disposal pipe
   description: A BBP (big broken pipe)
   components:
+  # Eclipsion - lets the automated repair slip clear this off a tile it is rebuilding.
+  - type: ShipRepairRemnant
   - type: Sprite
     drawdepth: ThickPipe
     sprite: Structures/Piping/disposal.rsi

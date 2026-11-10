@@ -57,8 +57,10 @@ namespace Content.Server.StationEvents
                     continue;
                 }
 
-                _event.RunRandomEvent(eventScheduler.ScheduledGameRules);
-                ResetTimer(eventScheduler);
+                if (!_event.RunRandomEvent(eventScheduler.ScheduledGameRules) && eventScheduler.RetryDelay is { } retry)
+                    eventScheduler.TimeUntilNextEvent = retry;
+                else
+                    ResetTimer(eventScheduler);
             }
         }
 

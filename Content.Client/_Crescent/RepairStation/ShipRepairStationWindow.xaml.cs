@@ -292,6 +292,9 @@ public sealed partial class ShipRepairStationWindow : FancyWindow
             ? Loc.GetString("ship-repair-station-no-charge")
             : Loc.GetString("ship-repair-station-credits", ("amount", state.Quote)));
 
+        var estimate = TimeSpan.FromSeconds(Math.Ceiling(state.EstimatedSeconds));
+        EstimateLabel.SetTextIfChanged($"{(int) estimate.TotalMinutes:0}:{estimate.Seconds:00}");
+
         QuoteLabel.FontColorOverride = state.Free
             ? ConsolePalette.Good
             : affordable

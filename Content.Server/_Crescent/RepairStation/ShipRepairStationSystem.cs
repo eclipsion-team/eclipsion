@@ -6,6 +6,10 @@ using Content.Server.Chemistry.Containers.EntitySystems;
 using Content.Server.Cargo.Systems;
 using Content.Server._Crescent.DynamicAcces;
 using Content.Server.Decals;
+using Content.Server.DeviceNetwork.Systems;
+using Content.Server.Light.EntitySystems;
+using Content.Shared.DeviceLinking;
+using Content.Shared.Tag;
 using Content.Server.PointCannons;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Popups;
@@ -45,6 +49,10 @@ public sealed partial class ShipRepairStationSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly ITileDefinitionManager _tileDefs = default!;
     [Dependency] private readonly PointCannonSystem _pointCannons = default!;
+    [Dependency] private readonly PoweredLightSystem _light = default!;
+    [Dependency] private readonly TagSystem _tag = default!;
+    [Dependency] private readonly SharedDeviceLinkSystem _deviceLink = default!;
+    [Dependency] private readonly DeviceListSystem _deviceList = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly PowerReceiverSystem _power = default!;
     [Dependency] private readonly PricingSystem _pricing = default!;
@@ -241,6 +249,7 @@ public sealed partial class ShipRepairStationSystem : EntitySystem
                 state.DroneRestocks = survey.DroneRestocks;
                 state.DroneRestockCost = survey.DroneRestockCost;
                 state.Quote = survey.Quote;
+                state.EstimatedSeconds = survey.Seconds;
                 state.Status = survey.Jobs.Count == 0 ? ShipRepairStatus.Intact : ShipRepairStatus.Quoted;
             }
         }

@@ -1,3 +1,4 @@
+using System.Numerics;
 using Content.Server._Crescent.NPC;
 using Content.Server.NPC.Components;
 using Content.Shared.CombatMode;
@@ -19,6 +20,7 @@ public sealed partial class NPCCombatSystem
     [Dependency] private readonly MapSystem _map = default!;
     [Dependency] private readonly NpcGunHandlingSystem _npcGun = default!; // Crescent
     [Dependency] private readonly NpcTacticalSystem _npcTactical = default!; // Crescent
+    [Dependency] private readonly NpcAimSystem _npcAim = default!; // Crescent
 
     private EntityQuery<CombatModeComponent> _combatQuery;
     private EntityQuery<NPCSteeringComponent> _steeringQuery;
@@ -155,6 +157,14 @@ public sealed partial class NPCCombatSystem
 
                 // Crescent: soldier AI doesn't waste rounds on cover that sight passes over but bullets don't.
                 comp.ShotBlocked = comp.TargetInLOS && _npcTactical.UpdateLineOfFire(uid, comp.Target);
+
+                // Crescent: reaction time on spotting someone, for anyone aiming a held gun.
+                if (gunUid != uid &&
+                    _npcAim.UpdateSight((uid, EnsureComp<NpcAimComponent>(uid)), comp.Target, comp.TargetInLOS, oldInLos) is { } reaction)
+                {
+                    comp.ShootDelay = reaction;
+                    comp.ShootAccumulator = 0f;
+                }
             }
 
             if (!comp.TargetInLOS)
@@ -212,13 +222,6 @@ public sealed partial class NPCCombatSystem
             if (!Enabled || !_gun.CanShoot(gun))
                 continue;
 
-            EntityCoordinates targetCordinates;
-
-            if (_mapManager.TryFindGridAt(xform.MapID, targetPos, out var gridUid, out var mapGrid))
-                targetCordinates = new EntityCoordinates(gridUid, _mapManager.WorldToLocal(gridUid, mapGrid, targetSpot));
-            else
-                targetCordinates = new EntityCoordinates(xform.MapUid!.Value, targetSpot);
-
             comp.Status = CombatStatus.Normal;
 
             // Crescent: continue, not return - returning here ended the whole loop, so one NPC waiting on
@@ -228,9 +231,32 @@ public sealed partial class NPCCombatSystem
                 continue;
             }
 
+            // Crescent: held guns get human aim and trigger discipline; turrets keep their perfect lead.
+            Entity<NpcAimComponent>? aim = null;
+            if (gunUid != uid)
+            {
+                aim = (uid, EnsureComp<NpcAimComponent>(uid));
+
+                if (!_npcAim.CanFire(aim.Value))
+                    continue;
+
+                var shooterVel = _physicsQuery.TryGetComponent(uid, out var ownBody) ? ownBody.LinearVelocity : Vector2.Zero;
+                targetSpot = _npcAim.GetShotSpot(aim.Value, worldPos, shooterVel, targetPos, mapVelocity, ShootSpeed);
+            }
+
+            EntityCoordinates targetCordinates;
+
+            if (_mapManager.TryFindGridAt(xform.MapID, targetPos, out var gridUid, out var mapGrid))
+                targetCordinates = new EntityCoordinates(gridUid, _mapManager.WorldToLocal(gridUid, mapGrid, targetSpot));
+            else
+                targetCordinates = new EntityCoordinates(xform.MapUid!.Value, targetSpot);
+
             gun.Target = comp.AlwaysDirectTargets || _random.Prob(comp.DirectTargetChance) ? comp.Target : null;
 
             _gun.AttemptShoot(uid, gunUid, gun, targetCordinates);
+
+            if (aim != null && gun.NextFire > _timing.CurTime)
+                _npcAim.OnShot(aim.Value, gun);
         }
     }
 }

@@ -26,6 +26,7 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
     [Dependency] private readonly IResourceManager _resources = default!;
     [Dependency] private readonly PersistentPoiLevelSystem _levels = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
+    [Dependency] private readonly PersistentCaptureRegionSystem _regions = default!;
     [Dependency] private readonly PersistentPoiSiloSystem _silo = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly StackSystem _stack = default!;
@@ -37,12 +38,14 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
     private const int SaveVersion = 1;
 
     private static readonly TimeSpan RefreshInterval = TimeSpan.FromSeconds(1);
+    private static readonly TimeSpan RenameCooldown = TimeSpan.FromSeconds(30);
 
     private static readonly PersistentPoiWorksCategory[] WorksCategories = Enum.GetValues<PersistentPoiWorksCategory>();
 
     private readonly Dictionary<string, TerritoryProgress> _progress = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<EntityUid, Dictionary<PersistentPoiWorksCategory, int>> _counts = new();
     private TimeSpan _nextRefresh;
+    private readonly Dictionary<string, TimeSpan> _nextRename = new(StringComparer.OrdinalIgnoreCase);
 
     public override void Initialize()
     {
@@ -60,6 +63,7 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
         {
             subs.Event<BoundUIOpenedEvent>(OnAdministrationOpened);
             subs.Event<PersistentPoiUpgradeMessage>(OnUpgrade);
+            subs.Event<PersistentPoiRenameMessage>(OnRename);
             subs.Event<PersistentPoiDrawFromSiloMessage>(OnDrawFromSilo);
             subs.Event<PersistentPoiReturnDepositMessage>(OnReturnDeposit);
         });
@@ -547,6 +551,31 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
         UpdateAdministrationConsole(ent);
     }
 
+    private void OnRename(Entity<PersistentPoiAdministrationConsoleComponent> ent, ref PersistentPoiRenameMessage args)
+    {
+        if (!TryGetTerritory(ent, out _, out var territory) || !IsHolder(args.Actor, territory))
+            return;
+
+        var now = _timing.CurTime;
+        if (now < _nextRename.GetValueOrDefault(territory.RegionId))
+        {
+            _popup.PopupEntity(Loc.GetString("territory-rename-cooldown"), ent, args.Actor, PopupType.SmallCaution);
+            return;
+        }
+
+        if (!_regions.TrySetCustomName(territory.RegionId, args.Name, out var error))
+        {
+            _popup.PopupEntity(Loc.GetString(error), ent, args.Actor, PopupType.SmallCaution);
+            return;
+        }
+
+        _nextRename[territory.RegionId] = now + RenameCooldown;
+        _adminLog.Add(LogType.Action, LogImpact.Medium,
+            $"{ToPrettyString(args.Actor):player} renamed territory '{territory.RegionId}' to \"{args.Name}\" from {ToPrettyString(ent):console}");
+        _popup.PopupEntity(Loc.GetString("territory-rename-done"), ent, args.Actor);
+        UpdateAdministrationConsole(ent);
+    }
+
     public bool RaiseLevel(EntityUid grid, EntityUid actor)
     {
         if (!TryUpgrade(grid) || !TryComp<PersistentPoiGridComponent>(grid, out var territory))
@@ -620,6 +649,7 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
         {
             state.Owner = territory.Owner;
             state.RegionName = PersistentTerritoryFactions.StripOwnerPrefix(Name(grid));
+            state.CustomName = territory.Owner == null ? null : _regions.GetCustomName(territory.RegionId);
             state.Level = territory.Level;
             state.Capability = territory.Capability is { } capability &&
                                _proto.TryIndex(capability, out var capabilityProto)

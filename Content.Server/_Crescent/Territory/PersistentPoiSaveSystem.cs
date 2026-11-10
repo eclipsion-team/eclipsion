@@ -21,6 +21,7 @@ using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Projectiles;
 using Content.Shared.Storage;
+using Content.Shared.Timing;
 using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
 using Robust.Shared.ContentPack;
@@ -46,6 +47,7 @@ public sealed class PersistentPoiSaveSystem : EntitySystem
     [Dependency] private readonly SharedContainerSystem _container = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly UseDelaySystem _useDelay = default!;
 
     [Dependency] private readonly TerritoryProfileSystem _profiles = default!;
 
@@ -183,12 +185,33 @@ public sealed class PersistentPoiSaveSystem : EntitySystem
         if (_map.TryGetMap(map, out var mapUid))
             _transform.SetCoordinates(loadedGrid, new EntityCoordinates(mapUid.Value, position));
 
+        ClearUseDelays(loadedGrid);
+
         var ev = new PersistentPoiGridLoadedEvent(loadedGrid);
         RaiseLocalEvent(ref ev);
 
         grid = loadedGrid;
         Log.Info($"Persistent territory '{key}' loaded from its save.");
         return SaveLoadResult.Loaded;
+    }
+
+    // use delays are saved as absolute server time, so after a restart they would lock things for hours
+    private void ClearUseDelays(EntityUid grid)
+    {
+        var stack = new Stack<EntityUid>();
+        stack.Push(grid);
+
+        while (stack.TryPop(out var uid))
+        {
+            if (TryComp<UseDelayComponent>(uid, out var delay))
+                _useDelay.CancelAllDelays((uid, delay));
+
+            var children = Transform(uid).ChildEnumerator;
+            while (children.MoveNext(out var child))
+            {
+                stack.Push(child);
+            }
+        }
     }
 
     public void MarkPersistent(EntityUid grid, string key, int version = 1)

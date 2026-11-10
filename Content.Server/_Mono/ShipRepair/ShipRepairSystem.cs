@@ -3,6 +3,7 @@ using Content.Server.Shuttles.Components;
 using Content.Server.Station.Events;
 using Content.Shared._Mono.ShipRepair;
 using Content.Shared._Mono.ShipRepair.Components;
+using Robust.Shared.Timing;
 
 namespace Content.Server._Mono.ShipRepair;
 
@@ -11,6 +12,7 @@ public sealed partial class ShipRepairSystem : SharedShipRepairSystem
     [Dependency] private readonly SharedEyeSystem _eye = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
 
     public override void Initialize()
     {
@@ -37,17 +39,54 @@ public sealed partial class ShipRepairSystem : SharedShipRepairSystem
             if (HasComp<ShipRepairDataComponent>(grid))
                 continue;
 
-            GenerateRepairData(grid);
+            QueueSnapshot(grid);
         }
     }
 
     private void OnShipBought(Entity<ShuttleComponent> ent, ref ShipBoughtEvent ev)
     {
-        GenerateRepairData(ent);
+        QueueSnapshot(ent);
     }
 
     private void OnInitSnapshot(Entity<InitRepairSnapshotComponent> ent, ref MapInitEvent ev)
     {
-        GenerateRepairData(ent);
+        QueueSnapshot(ent);
+    }
+
+    // Eclipsion: snapshots wait until the grid is map-initialised and a tick has passed. Before that
+    // the hull still holds its spawner markers (round-start stations, or the purchase tick while they
+    // sit in the deletion queue), and the slip would file them and respawn their loot over the
+    // original - wall randomizers, vending, potted plants.
+    private readonly Dictionary<EntityUid, GameTick> _pendingSnapshots = new();
+    private readonly List<EntityUid> _snapshotsDue = new();
+
+    private void QueueSnapshot(EntityUid grid)
+    {
+        _pendingSnapshots.TryAdd(grid, _timing.CurTick);
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        if (_pendingSnapshots.Count == 0)
+            return;
+
+        _snapshotsDue.Clear();
+        foreach (var (grid, queued) in _pendingSnapshots)
+        {
+            if (TerminatingOrDeleted(grid)
+                || queued != _timing.CurTick && LifeStage(grid) >= EntityLifeStage.MapInitialized)
+            {
+                _snapshotsDue.Add(grid);
+            }
+        }
+
+        foreach (var grid in _snapshotsDue)
+        {
+            _pendingSnapshots.Remove(grid);
+            if (!TerminatingOrDeleted(grid))
+                GenerateRepairData(grid);
+        }
     }
 }

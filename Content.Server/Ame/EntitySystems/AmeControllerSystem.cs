@@ -84,6 +84,10 @@ public sealed class AmeControllerSystem : EntitySystem
                 }
             }
 
+            // saved under an older server clock, e.g. a territory reloaded after a restart
+            if (controller.NextUpdate > curTime + controller.UpdatePeriod)
+                controller.NextUpdate = curTime;
+
             if (controller.NextUpdate <= curTime)
                 UpdateController(uid, curTime, controller, nodes);
             else if (controller.NextUIUpdate <= curTime)

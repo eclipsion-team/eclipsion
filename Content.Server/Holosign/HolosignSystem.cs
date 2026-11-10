@@ -42,9 +42,18 @@ public sealed class HolosignSystem : EntitySystem
     private void OnBeforeInteract(EntityUid uid, HolosignProjectorComponent component, BeforeRangedInteractEvent args)
     {
 
-        if (args.Handled
-            || !args.CanReach // prevent placing out of range
-            || HasComp<StorageComponent>(args.Target) // if it's a storage component like a bag, we ignore usage so it can be stored
+        if (args.Handled || !args.CanReach) // prevent placing out of range
+            return;
+
+        // clicking a projection of our own type dismisses it
+        if (args.Target is { } target && MetaData(target).EntityPrototype?.ID == component.SignProto.Id)
+        {
+            QueueDel(target);
+            args.Handled = true;
+            return;
+        }
+
+        if (HasComp<StorageComponent>(args.Target) // if it's a storage component like a bag, we ignore usage so it can be stored
             || !_powerCell.TryUseCharge(uid, component.ChargeUse) // if no battery or no charge, doesn't work
             )
             return;

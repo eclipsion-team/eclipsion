@@ -28,6 +28,7 @@
     DroneBay: 0
     MaterialSilo: 1
     MappingConsole: 1
+    RepairConsole: 0
   productionSpeed: 1
   extraStorage: 0
   stockRewardMultiplier: 1
@@ -58,7 +59,7 @@
     HeavyLaser: 0
     AntiBoarderTurret: 6
     Factory: 3
-    Shipyard: 1
+    Shipyard: 0
     DockingPort: 4
     Generator: 4
     SpawnBeacon: 1
@@ -68,6 +69,7 @@
     DroneBay: 0
     MaterialSilo: 1
     MappingConsole: 1
+    RepairConsole: 0
   productionSpeed: 1.5
   extraStorage: 3
   stockRewardMultiplier: 1.5
@@ -109,6 +111,7 @@
     DroneBay: 1
     MaterialSilo: 1
     MappingConsole: 1
+    RepairConsole: 1
   productionSpeed: 2
   extraStorage: 6
   stockRewardMultiplier: 2

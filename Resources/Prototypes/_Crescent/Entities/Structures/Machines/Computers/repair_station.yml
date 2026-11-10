@@ -118,9 +118,9 @@
     serviceOwnGrid: true
     repairUnregistered: true
     priceMarkup: 1.0
-    secondsPerPart: 0.05
-    minRepairSeconds: 2
-    maxRepairSeconds: 120
+    secondsPerPart: 0.02
+    minRepairSeconds: 1
+    maxRepairSeconds: 45
   - type: ApcPowerReceiver
     needsPower: false
   - type: Anchorable
@@ -155,8 +155,8 @@
 #     the crewman who authorises the job at 35% over. Nobody is competing for the work, the yard answers to a
 #     quartermaster rather than a customer, and the commercial slip is meant to stay worth the trip out to it.
 #
-#   * It is slower. Twice the time on every part, a longer floor under a trivial job and a ceiling of a quarter
-#     hour rather than seven minutes, so a badly mauled hull genuinely sits in the clamps instead of being
+#   * It is slower. Twice the time on every part, a longer floor under a trivial job and a ceiling of five
+#     minutes rather than two and a half, so a badly mauled hull genuinely sits in the clamps instead of being
 #     welded back together at a pace no yard could keep. A ship in a fleet slip is a ship out of the war.
 #
 # BaseFactionComputerShipRepairStation carries both, plus restrictAccess so only the owning faction may
@@ -173,9 +173,9 @@
     restrictAccess: true
   - type: ShipRepairStation
     priceMarkup: 1.35
-    secondsPerPart: 0.8
-    minRepairSeconds: 20
-    maxRepairSeconds: 900
+    secondsPerPart: 0.3
+    minRepairSeconds: 10
+    maxRepairSeconds: 300
 
 - type: entity
   parent: BaseFactionComputerShipRepairStation

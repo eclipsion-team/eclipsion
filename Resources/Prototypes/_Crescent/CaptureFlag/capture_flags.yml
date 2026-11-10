@@ -46,6 +46,7 @@
         NCWL: brown-ncwl
         SHI: charcoal-russet
         TFSC: burgundy-gold
+        CMM: azure-buff
         IND: teal-steel
     - type: TerritoryDronePickets
       drones:

@@ -448,9 +448,10 @@
   duration: 240
   outputs:
     SteelOre1: 20
+    SpaceQuartz1: 14
     CopperOre1: 12
-    Coal1: 12
-    PlasmaOre1: 6
+    Coal1: 10
+    TungstenOre1: 6
     SilverOre1: 4
     GoldOre1: 2
 

@@ -85,6 +85,49 @@ public sealed class PersistentPoiTurretSaveTest
         await pair.CleanReturnAsync();
     }
 
+    [Test]
+    public async Task AntiBoarderTurretsTakeNoFireControlSlot()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+        var entMan = server.EntMan;
+        var mapSystem = server.System<SharedMapSystem>();
+        var levels = server.System<PersistentPoiLevelSystem>();
+
+        EntityUid grid = default;
+        EntityUid turret = default;
+
+        await server.WaitAssertion(() =>
+        {
+            var gridEnt = mapSystem.CreateGridEntity(map.MapId);
+            grid = gridEnt.Owner;
+            var plating = server.ResolveDependency<ITileDefinitionManager>()["Plating"];
+            for (var x = 0; x < 4; x++)
+            {
+                mapSystem.SetTile(gridEnt, new Vector2i(x, 0), new Tile(plating.TileId));
+            }
+
+            entMan.SpawnEntity("HardpointPersistentPoiLaserEmplacement", new EntityCoordinates(grid, 0.5f, 0.5f));
+            turret = entMan.SpawnEntity("WeaponTurretAutoPDPersistentPoi", new EntityCoordinates(grid, 2.5f, 0.5f));
+            entMan.SpawnEntity("WeaponTurretAutoPDPersistentPoi", new EntityCoordinates(grid, 3.5f, 0.5f));
+        });
+
+        await server.WaitRunTicks(5);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(levels.IsFireControlGun(turret), Is.False);
+            Assert.That(levels.CountWorksLive(grid, PersistentPoiWorksCategory.PointDefence), Is.EqualTo(1));
+            Assert.That(levels.CountWorksLive(grid, PersistentPoiWorksCategory.AntiBoarderTurret), Is.EqualTo(2));
+
+            var counts = new Dictionary<EntityUid, Dictionary<PersistentPoiWorksCategory, int>> { [grid] = new() };
+            levels.CountAllWorksLive(counts);
+            Assert.That(counts[grid].GetValueOrDefault(PersistentPoiWorksCategory.PointDefence), Is.EqualTo(1));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
     private static void AssertBuilt(IEntityManager entMan, EntityUid grid, string when)
     {
         var onGrid = new List<EntityUid>();

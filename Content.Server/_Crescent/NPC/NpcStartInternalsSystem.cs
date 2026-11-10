@@ -10,7 +10,7 @@ using Robust.Shared.Timing;
 namespace Content.Server._Crescent.NPC;
 
 /// <inheritdoc cref="NpcStartInternalsComponent"/>
-public sealed class NpcStartInternalsSystem : EntitySystem
+public sealed partial class NpcStartInternalsSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly AtmosphereSystem _atmos = default!;
@@ -61,13 +61,19 @@ public sealed class NpcStartInternalsSystem : EntitySystem
 
             // The dead don't breathe. The critical still do, and a wounded soldier in vacuum needs its tank most.
             if (_mobState.IsDead(uid) || internals.BreathTools.Count == 0)
+            {
+                comp.AirNeed = NpcAirNeed.None;
+                ClearAirSource(comp);
                 continue;
+            }
 
-            UpdateInternals((uid, comp, internals, respirator), now);
+            var breathable = UpdateInternals((uid, comp, internals, respirator), now);
+            UpdateAirSource((uid, comp, internals, respirator), breathable, now);
         }
     }
 
-    private void UpdateInternals(
+    /// <returns>Whether the air around it is breathable.</returns>
+    private bool UpdateInternals(
         Entity<NpcStartInternalsComponent, InternalsComponent, RespiratorComponent> ent,
         TimeSpan now)
     {
@@ -81,7 +87,7 @@ public sealed class NpcStartInternalsSystem : EntitySystem
             if (_internals.AreInternalsWorking(internals) && now - comp.BreathableSince >= comp.SwitchOffDelay)
                 _internals.DisconnectTank(internals);
 
-            return;
+            return true;
         }
 
         comp.BreathableSince = null;
@@ -94,13 +100,14 @@ public sealed class NpcStartInternalsSystem : EntitySystem
             && _respirator.CanMetabolizeGas((uid, respirator), current.Air)
             && (!HasComp<JetpackComponent>(internals.GasTankEntity) || FindFullestTank(ent, jetpacks: false) == null))
         {
-            return;
+            return false;
         }
 
         if (FindFullestTank(ent) is not { } best || best.Owner == internals.GasTankEntity)
-            return;
+            return false;
 
         _gasTank.ConnectToInternals(best);
+        return false;
     }
 
     /// <summary>

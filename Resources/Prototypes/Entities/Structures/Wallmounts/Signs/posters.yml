@@ -33,6 +33,8 @@
   name: broken poster
   description: "You can't make out anything from the poster's original print. It's ruined."
   components:
+  # Eclipsion - lets the automated repair slip clear this off a tile it is rebuilding.
+  - type: ShipRepairRemnant
   - type: Sprite
     drawdepth: WallTops
     sprite: Structures/Wallmounts/posters.rsi

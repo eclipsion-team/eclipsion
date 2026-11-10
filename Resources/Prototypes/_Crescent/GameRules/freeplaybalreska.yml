@@ -37,6 +37,7 @@
   rules:
   - FreeplayBalreska
   - HullrotEventScheduler
+  - HullrotT3EventScheduler
   - HullrotRoundTimeLimit
   - HullrotConquest
 

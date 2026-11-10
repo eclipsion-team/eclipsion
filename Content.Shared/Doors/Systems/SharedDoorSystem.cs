@@ -8,6 +8,8 @@ using Content.Shared.Database;
 using Content.Shared.Doors.Components;
 using Content.Shared.Emag.Systems;
 using Content.Shared.Interaction;
+using Content.Shared.Item;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Physics;
 using Content.Shared.Popups;
 using Content.Shared.Power.EntitySystems;
@@ -593,6 +595,10 @@ public abstract partial class SharedDoorSystem : EntitySystem
                 continue;
 
             if ((physics.CollisionMask & otherPhysics.CollisionLayer) == 0 && (otherPhysics.CollisionMask & physics.CollisionLayer) == 0)
+                continue;
+
+            // Loose items don't block closing; pickupable mobs still get crushed.
+            if (HasComp<ItemComponent>(otherPhysics.Owner) && !HasComp<MobStateComponent>(otherPhysics.Owner))
                 continue;
 
             if (_entityLookup.GetWorldAABB(otherPhysics.Owner).IntersectPercentage(doorAABB) < IntersectPercentage)
