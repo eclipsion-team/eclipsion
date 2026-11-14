@@ -11,6 +11,9 @@ using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 using System.Linq;
+using Content.Shared._Crescent.Territory;
+using Content.Shared.Roles;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client.Holopad;
 
@@ -20,6 +23,7 @@ public sealed partial class HolopadWindow : FancyWindow
     [Dependency] private readonly IEntityManager _entManager = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly IPrototypeManager _proto = default!;
 
     private readonly SharedHolopadSystem _holopadSystem = default!;
     private readonly SharedTelephoneSystem _telephoneSystem = default!;
@@ -32,6 +36,9 @@ public sealed partial class HolopadWindow : FancyWindow
     private TelephoneState _previousState;
     private TimeSpan _buttonUnlockTime;
     private float _updateTimer = 0.25f;
+
+    private const string UnaffiliatedGroup = "";
+    private List<(string Group, NetEntity Pad, string Label)> _shownLayout = new();
 
     private const float UpdateTime = 0.25f;
     private TimeSpan _buttonUnlockDelay = TimeSpan.FromSeconds(0.5f);
@@ -167,7 +174,7 @@ public sealed partial class HolopadWindow : FancyWindow
         }
     }
 
-    public void UpdateState(Dictionary<NetEntity, string> holopads)
+    public void UpdateState(Dictionary<NetEntity, string> holopads, Dictionary<NetEntity, string> factions, string? ownFaction)
     {
         if (_owner == null || !_entManager.TryGetComponent<TelephoneComponent>(_owner.Value, out var telephone))
             return;
@@ -180,38 +187,113 @@ public sealed partial class HolopadWindow : FancyWindow
         HolopadIdText.SetMessage(FormattedMessage.FromMarkupOrThrow(holoapdId));
         LockOutIdText.SetMessage(FormattedMessage.FromMarkupOrThrow(callerId));
 
-        // Sort holopads alphabetically
-        var holopadArray = holopads.ToArray();
-        Array.Sort(holopadArray, AlphabeticalSort);
-
-        // Clear excess children from the contact list
-        while (ContactsList.ChildCount > holopadArray.Length)
-            ContactsList.RemoveChild(ContactsList.GetChild(ContactsList.ChildCount - 1));
-
-        // Make / update required children
-        for (int i = 0; i < holopadArray.Length; i++)
+        // Eclipsion - group by faction, the pad's own faction on top, then the rest by name
+        var groups = new Dictionary<string, List<KeyValuePair<NetEntity, string>>>();
+        foreach (var pad in holopads)
         {
-            var (netEntity, label) = holopadArray[i];
+            factions.TryGetValue(pad.Key, out var faction);
+            var key = FactionGroupKey(faction);
 
-            if (i >= ContactsList.ChildCount)
+            if (!groups.TryGetValue(key, out var list))
             {
-                var newContactButton = new HolopadContactButton();
-                newContactButton.OnPressed += args => { OnSendHolopadStartNewCallMessage(newContactButton.NetEntity); };
-
-                ContactsList.AddChild(newContactButton);
+                list = new();
+                groups[key] = list;
             }
 
-            var child = ContactsList.GetChild(i);
+            list.Add(pad);
+        }
 
-            if (child is not HolopadContactButton)
-                continue;
+        var ownKey = FactionGroupKey(ownFaction);
+        var order = groups.Keys.OrderBy(k => GroupRank(k, ownKey)).ThenBy(FactionGroupName).ToList();
 
-            var contactButton = (HolopadContactButton)child;
-            contactButton.UpdateValues(netEntity, label);
+        var layout = new List<(string Group, NetEntity Pad, string Label)>();
+        foreach (var key in order)
+        {
+            var list = groups[key];
+            list.Sort(AlphabeticalSort);
+            foreach (var (pad, label) in list)
+                layout.Add((key, pad, label));
+        }
+
+        // rebuilding every second would eat clicks, only redo it when something changed
+        if (layout.SequenceEqual(_shownLayout))
+        {
+            UpdateAppearance();
+            return;
+        }
+
+        _shownLayout = layout;
+        ContactsList.RemoveAllChildren();
+
+        foreach (var key in order)
+        {
+            var group = new BoxContainer
+            {
+                Orientation = BoxContainer.LayoutOrientation.Vertical,
+                HorizontalExpand = true,
+                Margin = new Thickness(0, 0, 0, 6),
+            };
+
+            group.AddChild(new Label
+            {
+                Text = FactionGroupName(key),
+                FontColorOverride = FactionGroupColor(key),
+                Margin = new Thickness(2, 2, 0, 2),
+            });
+
+            foreach (var (pad, label) in groups[key])
+            {
+                var button = new HolopadContactButton();
+                button.UpdateValues(pad, label);
+                button.OnPressed += _ => OnSendHolopadStartNewCallMessage(button.NetEntity);
+                group.AddChild(button);
+            }
+
+            ContactsList.AddChild(group);
         }
 
         // Update buttons
         UpdateAppearance();
+    }
+
+    private string FactionGroupKey(string? faction)
+    {
+        if (string.IsNullOrEmpty(faction))
+            return UnaffiliatedGroup;
+
+        if (PersistentTerritoryFactions.IsIndependent(faction) || faction == PersistentTerritoryFactions.IndependentFaction)
+            return PersistentTerritoryFactions.IndependentFaction;
+
+        return _proto.HasIndex<FactionPrototype>(faction) ? faction : UnaffiliatedGroup;
+    }
+
+    private static int GroupRank(string key, string ownKey)
+    {
+        if (key == ownKey && key != UnaffiliatedGroup)
+            return 0;
+        if (key == PersistentTerritoryFactions.IndependentFaction)
+            return 2;
+        if (key == UnaffiliatedGroup)
+            return 3;
+        return 1;
+    }
+
+    private string FactionGroupName(string key)
+    {
+        if (key == UnaffiliatedGroup)
+            return Loc.GetString("holopad-window-faction-unaffiliated");
+        if (key == PersistentTerritoryFactions.IndependentFaction)
+            return Loc.GetString("holopad-window-faction-independent");
+
+        return _proto.TryIndex<FactionPrototype>(key, out var proto) ? proto.Name : key;
+    }
+
+    private Color FactionGroupColor(string key)
+    {
+        if (_proto.TryIndex<FactionPrototype>(key, out var proto))
+            return proto.UiAccent ?? proto.Color;
+
+        return Color.LightGray;
     }
 
     private void UpdateAppearance()
@@ -239,16 +321,34 @@ public sealed partial class HolopadWindow : FancyWindow
         var lockButtons = _timing.CurTime < _buttonUnlockTime;
 
         // Make / update required children
-        foreach (var child in ContactsList.Children)
+        var search = SearchLineEdit.Text;
+        foreach (var group in ContactsList.Children)
         {
-            if (child is not HolopadContactButton contactButton)
-                continue;
+            // typing a faction name shows its whole group
+            var groupMatches = false;
+            var anyVisible = false;
 
-            var passesFilter = string.IsNullOrEmpty(SearchLineEdit.Text) ||
-                               contactButton.Text?.Contains(SearchLineEdit.Text, StringComparison.CurrentCultureIgnoreCase) == true;
+            foreach (var child in group.Children)
+            {
+                if (child is Label header)
+                {
+                    groupMatches = !string.IsNullOrEmpty(search) &&
+                                   header.Text?.Contains(search, StringComparison.CurrentCultureIgnoreCase) == true;
+                    continue;
+                }
 
-            contactButton.Visible = passesFilter;
-            contactButton.Disabled = (_currentState != TelephoneState.Idle || lockButtons);
+                if (child is not HolopadContactButton contactButton)
+                    continue;
+
+                var passesFilter = string.IsNullOrEmpty(search) || groupMatches ||
+                                   contactButton.Text?.Contains(search, StringComparison.CurrentCultureIgnoreCase) == true;
+
+                contactButton.Visible = passesFilter;
+                contactButton.Disabled = (_currentState != TelephoneState.Idle || lockButtons);
+                anyVisible |= passesFilter;
+            }
+
+            group.Visible = anyVisible;
         }
 
         // Update control text

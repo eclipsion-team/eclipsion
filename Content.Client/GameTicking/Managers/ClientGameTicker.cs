@@ -144,6 +144,19 @@ namespace Content.Client.GameTicking.Managers
         {
             ServerInfoBlob = message.TextBlob;
 
+            // build it here so it comes out in our language, server only knows its own
+            if (message.ModeTitle != null)
+            {
+                ServerInfoBlob = Loc.GetString(
+                    message.Preround ? "game-ticker-get-info-preround-text" : "game-ticker-get-info-text",
+                    ("roundId", message.RoundId),
+                    ("playerCount", message.PlayerCount.ToString()),
+                    ("readyCount", message.ReadyCount),
+                    ("mapName", message.MapName),
+                    ("gmTitle", Loc.GetString(message.ModeTitle)),
+                    ("desc", string.IsNullOrEmpty(message.ModeDesc) ? string.Empty : Loc.GetString(message.ModeDesc)));
+            }
+
             InfoBlobUpdated?.Invoke();
         }
 

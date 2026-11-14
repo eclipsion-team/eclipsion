@@ -1,0 +1,15 @@
+piercing-induced-blunt = Проникающий дробящий урон
+advertisement-arcadiadrobe-1 = Товары,
+advertisement-nfsddrobe-1 = Оружие.
+advertisement-ship-1 = Корабли.
+advertisement-war-1 = Война.
+reagent-name-Boriatic-fuel = Бориатное топливо
+reagent-desc-Boriatic-fuel = Смесь изотопов плазмы с водородом и лёгкими нефтепродуктами.
+narcan = Наркан
+narcan-desc = Химическое вещество, используемое для стабилизации пациентов с передозировкой наркотиков.
+workers-league-console = Консоль наград Рабочей Лиги. Использует имперские ID в качестве валюты.
+imperial-console = Консоль наград Мандата. Использует коммунарские ID в качестве валюты.
+saw-console = Консоль наград Скрэпалоидов. Использует лом в качестве валюты.
+gsc-console = Консоль наград GSC. Использует добычу в качестве валюты.
+ipm-console = Консоль наград Interdyne. Использует экзотические белки в качестве валюты.
+ship-comm-console = Консоль корабельных коммуникаций

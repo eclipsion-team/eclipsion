@@ -158,6 +158,11 @@ public sealed class PowerChargeSystem : EntitySystem
                 UpdateState(ent);
                 updateUI = true;
             }
+            // a full machine loaded from a save never changes charge, so also catch power coming on
+            else if (chargingMachine.ShownStatus != GetStatus(chargingMachine, powerReceiver))
+            {
+                UpdateState(ent);
+            }
 
             if (updateUI)
                 UpdateUI(ent, chargeRate);
@@ -232,22 +237,35 @@ public sealed class PowerChargeSystem : EntitySystem
         _appearance.SetData(uid, PowerChargeVisuals.Active, machine.Active);
 
 
+        var status = GetStatus(machine, powerReceiver);
+        machine.ShownStatus = status;
+
+        switch (status)
+        {
+            case PowerChargeStatus.Broken:
+                MakeBroken((uid, machine), appearance);
+                break;
+            case PowerChargeStatus.Unpowered:
+                MakeUnpowered((uid, machine), appearance);
+                break;
+            case PowerChargeStatus.Off:
+                MakeOff((uid, machine), appearance);
+                break;
+            default:
+                MakeOn((uid, machine), appearance);
+                break;
+        }
+    }
+
+    private static PowerChargeStatus GetStatus(PowerChargeComponent machine, ApcPowerReceiverComponent powerReceiver)
+    {
         if (!machine.Intact)
-        {
-            MakeBroken((uid, machine), appearance);
-        }
-        else if (powerReceiver.PowerReceived < machine.IdlePowerUse)
-        {
-            MakeUnpowered((uid, machine), appearance);
-        }
-        else if (!machine.SwitchedOn)
-        {
-            MakeOff((uid, machine), appearance);
-        }
-        else
-        {
-            MakeOn((uid, machine), appearance);
-        }
+            return PowerChargeStatus.Broken;
+
+        if (powerReceiver.PowerReceived < machine.IdlePowerUse)
+            return PowerChargeStatus.Unpowered;
+
+        return machine.SwitchedOn ? PowerChargeStatus.On : PowerChargeStatus.Off;
     }
 
     private void MakeBroken(Entity<PowerChargeComponent> ent, AppearanceComponent? appearance)

@@ -1,0 +1,13 @@
+grid-blueprint-disabled = Сохранение чертежей отключено на этом сервере.
+grid-blueprint-no-body = Чтобы сохранить чертёж, нужно находиться в своём теле.
+grid-blueprint-no-grid = Вы не стоите на корабле или станции.
+grid-blueprint-cooldown = Следующий чертёж можно сохранить через {$seconds} с.
+grid-blueprint-failed = Не удалось сохранить этот грид.
+grid-blueprint-too-large = Этот грид слишком большой для сохранения в чертёж.
+grid-blueprint-write-failed = Не удалось записать чертёж на диск. Подробности в логе клиента.
+grid-blueprint-saved = Чертёж {$name} сохранён в {$path} в папке пользовательских данных. Введите blueprintfolder в консоли, чтобы открыть её.
+cmd-saveblueprint-desc = Сохраняет на ваш компьютер чертёж грида, на котором вы стоите.
+cmd-saveblueprint-help = Использование: saveblueprint
+cmd-saveblueprint-requested = Запрос чертежа...
+cmd-blueprintfolder-desc = Открывает папку с сохранёнными чертежами.
+cmd-blueprintfolder-help = Использование: blueprintfolder

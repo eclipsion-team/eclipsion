@@ -1,0 +1,13 @@
+cuffable-component-cannot-interact-message = Вы не можете этого сделать!
+cuffable-component-cannot-remove-cuffs-too-far-message = Вы слишком далеко, чтобы снять наручники.
+cuffable-component-start-uncuffing-self = Ты начинаешь снимать с себя наручники.
+cuffable-component-start-uncuffing-observer = { $user } начинает расстегивать наручники с { $target }!
+cuffable-component-start-uncuffing-target-message = Ты начинаешь снимать наручники с { $targetName }.
+cuffable-component-start-uncuffing-by-other-message = { $otherName } начинает снимать с тебя наручники!
+cuffable-component-remove-cuffs-success-message = Вы успешно снимаете наручники.
+cuffable-component-remove-cuffs-by-other-success-message = { $otherName } снимает с вас наручники.
+cuffable-component-remove-cuffs-to-other-partial-success-message = Вы успешно снимаете часть оков. Скованных рук у { $otherName } осталось: { $cuffedHandCount }.
+cuffable-component-remove-cuffs-by-other-partial-success-message = { $otherName } снимает с вас часть оков. Скованных рук осталось: { $cuffedHandCount }.
+cuffable-component-remove-cuffs-partial-success-message = Вы успешно снимаете часть оков. Скованных рук осталось: { $cuffedHandCount }.
+cuffable-component-remove-cuffs-fail-message = Вам не удалось снять наручники.
+uncuff-verb-get-data-text = Освободить

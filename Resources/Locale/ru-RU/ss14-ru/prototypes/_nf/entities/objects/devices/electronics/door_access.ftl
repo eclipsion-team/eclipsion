@@ -1,0 +1,10 @@
+ent-DoorElectronicsFrontier = { ent-DoorElectronics }
+    .desc = { ent-DoorElectronics.desc }
+ent-DoorElectronicsFrontierBridge = { ent-DoorElectronics }
+    .desc = { ent-DoorElectronics.desc }
+ent-DoorElectronicsFrontierCommand = { ent-DoorElectronics }
+    .desc = { ent-DoorElectronics.desc }
+ent-DoorElectronicsMailCarrier = { ent-DoorElectronics }
+    .desc = { ent-DoorElectronics.desc }
+ent-DoorElectronicsMercenary = { ent-DoorElectronics }
+    .desc = { ent-DoorElectronics.desc }

@@ -66,7 +66,7 @@ public sealed partial class IFFConsoleWindow : FancyWindow,
 
     public void UpdateState(IFFConsoleBoundUserInterfaceState state)
     {
-        ShowHeat.Text = $"HEAT : {state.CurrentHeat} / {state.HeatCapacity}";
+        ShowHeat.Text = Loc.GetString("iff-console-heat", ("heat", state.CurrentHeat), ("max", state.HeatCapacity));
         if ((state.AllowedFlags & IFFFlags.HideLabel) != 0x0)
         {
             ShowIFFOffButton.Disabled = false;

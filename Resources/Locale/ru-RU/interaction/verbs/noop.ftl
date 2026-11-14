@@ -1,0 +1,12 @@
+interaction-LookAt-name = Смотреть на
+interaction-LookAt-description = Взглянуть в пустоту и ощутить её взгляд на себе.
+interaction-Hug-name = Обнять
+interaction-Hug-description = Объятия в день избавляют от непостижимых психологических ужасов.
+interaction-Pet-name = Погладить
+interaction-Pet-description = Погладьте своего коллегу по работе, чтобы облегчить его стресс.
+interaction-PetAnimal-name = { interaction-Pet-name }
+interaction-KnockOn-name = Постучать
+interaction-KnockOn-description = Постучите по цели, чтобы привлечь внимание.
+interaction-Rattle-name = Греметь
+interaction-WaveAt-name = Помахать рукой
+interaction-WaveAt-description = Помахать рукой в сторону цели. Если вы держите в руках предмет, вы помашете им.

@@ -1,0 +1,14 @@
+ent-ClothingHeadHatDraugr = боевая мантия драугра
+    .desc = Головная мантия и повязка для отличившегося племенного воина.
+ent-ClothingHeadHatServile = повязка слуги
+    .desc = Головная повязка для начинающего племенного воина.
+ent-ClothingHeadHelmetHardsuitDraugr = экзошлем драугра
+    .desc = Герметичная защита для вашей хрупкой черепной коробки.
+ent-ClothingHeadHelmetHardsuitIzdari = шлем скафандра поясника
+    .desc = Герметичная защита для вашей хрупкой черепной коробки.
+ent-ClothingHeadHelmetHardsuitThukker = шлем инженерного скафандра туккера
+    .desc = Герметичная защита для вашей хрупкой черепной коробки.
+ent-ClothingHeadHelmetHardsuitArabet = шлем скафандра арабета
+    .desc = Герметичная защита для вашей хрупкой черепной коробки.
+ent-ClothingHeadHelmetIzdariEVA = шлем скафандра поясника
+    .desc = EVA шлем поясника из семьи Издари.

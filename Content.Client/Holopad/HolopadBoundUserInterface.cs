@@ -38,7 +38,7 @@ public sealed class HolopadBoundUserInterface : BoundUserInterface
             uiKey = HolopadUiKey.InteractionWindowForAi;
 
         _window.SetState(Owner, uiKey);
-        _window.UpdateState(new Dictionary<NetEntity, string>());
+        _window.UpdateState(new Dictionary<NetEntity, string>(), new Dictionary<NetEntity, string>(), null);
 
         // Set message actions
         _window.SendHolopadStartNewCallMessageAction += SendHolopadStartNewCallMessage;
@@ -64,7 +64,7 @@ public sealed class HolopadBoundUserInterface : BoundUserInterface
         var castState = (HolopadBoundInterfaceState)state;
         EntMan.TryGetComponent<TransformComponent>(Owner, out var xform);
 
-        _window?.UpdateState(castState.Holopads);
+        _window?.UpdateState(castState.Holopads, castState.Factions, castState.OwnFaction);
     }
 
     public void SendHolopadStartNewCallMessage(NetEntity receiver)

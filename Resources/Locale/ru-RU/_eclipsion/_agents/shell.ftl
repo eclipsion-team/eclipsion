@@ -1,0 +1,11 @@
+shell-need-minimum-arguments = Нужно как минимум {$minimum} аргументов!
+shell-need-minimum-one-argument = Нужен как минимум один аргумент!
+shell-argument-must-be-prototype = Аргумент {$index} должен быть {LOC($prototypeName)}!
+shell-argument-username-hint = <имя пользователя>
+shell-entity-is-not-node-container = У этой сущности нет контейнера узлов.
+shell-node-group-is-invalid = Эта группа узлов недействительна.
+cmd-parse-failure-int = "{$arg}" не является допустимым целым числом.
+cmd-savemap-server = Карту можно сохранить только на сервере.
+upgradeaction-command-help = Использование: upgradeaction <uid> [level]
+color-network-command-description = Задаёт цвет всех кабелей в сети узлов.
+color-network-command-help-text = Использование: {$command} <entity uid> <node group> <color>

@@ -1,0 +1,15 @@
+- type: constructionGraph
+  id: CrescentOreBox
+  start: start
+  graph:
+    - node: start
+      edges:
+        - to: orebox
+          completed:
+            - !type:SnapToGrid { }
+          steps:
+            - material: WoodPlank
+              amount: 5
+              doAfter: 3
+    - node: orebox
+      entity: OreBox

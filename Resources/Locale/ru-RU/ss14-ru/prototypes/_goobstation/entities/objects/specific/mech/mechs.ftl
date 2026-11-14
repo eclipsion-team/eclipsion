@@ -1,0 +1,10 @@
+ent-CombatMech = { "" }
+    .desc = { "" }
+ent-IndustrialMech = { "" }
+    .desc = { "" }
+ent-SpecialMech = { "" }
+    .desc = { "" }
+ent-SmallMech = { "" }
+    .desc = { "" }
+ent-MechHonkerFilled = { ent-MechHonkerBattery }
+    .desc = { ent-MechHonkerBattery.desc }

@@ -8,6 +8,16 @@
   category: cargoproduct-category-name-engineering
   group: generic
 
+- type: cargoProduct
+  id: EngineeringRCDGeneric
+  icon:
+    sprite: Objects/Tools/rcd.rsi
+    state: icon
+  product: CrateRCD
+  cost: 5000
+  category: cargoproduct-category-name-engineering
+  group: generic
+
 # Three jars per crate.
 - type: cargoProduct
   id: EngineAmeJarGeneric

@@ -1,0 +1,11 @@
+npc-faction-name = { $first } { $last }
+npc-faction-name-nickname = { $first } «{ $nick }» { $last }
+npc-faction-name-rank = { $rank } { $name }
+npc-rank-dsm-gefreiter = Ефрейтор
+npc-rank-dsm-korporal = Капрал
+npc-rank-ncwl-homeguard = Хоумгардовец
+npc-rank-tfsc-infanteer = Пехотинец
+npc-rank-tfsc-contractor = Контрактник
+npc-rank-shi-officer = Офицер СБ корпорации
+npc-rank-shi-associate = Сотрудник
+npc-rank-cmm-ranger = Рейнджер

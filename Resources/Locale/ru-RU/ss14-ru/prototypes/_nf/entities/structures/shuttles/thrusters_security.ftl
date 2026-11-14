@@ -1,0 +1,10 @@
+ent-ThrusterSecurity = двигатель
+    .desc = { ent-BaseStructureUnanchorable.desc }
+ent-DebugThrusterSecurity = двигатель
+    .desc = { ent-BaseStructureDisableToolUse.desc }
+ent-GyroscopeSecurity = { ent-Gyroscope }
+    .desc = { ent-Gyroscope.desc }
+ent-DebugGyroscopeSecurity = гироскоп
+    .desc = { ent-DebugGyroscope.desc }
+ent-SmallGyroscopeSecurity = малый гироскоп
+    .desc = { ent-GyroscopeSecurity.desc }

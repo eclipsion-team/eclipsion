@@ -109,9 +109,9 @@ public sealed class TerritoryGarrisonTest
 
             Assert.That(server.System<PersistentCaptureRegionSystem>().SetOwner(regionId, "DSM"), Is.True);
             server.System<PersistentPoiProgressionSystem>().SetLevel(regionId, 2);
-            Assert.That(garrison.SpawnGarrison(standard), Is.EqualTo(4));
+            Assert.That(garrison.SpawnGarrison(standard), Is.EqualTo(3));
             Assert.That(Soldiers(entMan, grid), Is.Empty, "The garrison was there before its pods came down.");
-            Assert.That(garrison.CountSoldiers(regionId, "DSM", TerritoryRecruitKind.Garrison), Is.EqualTo(4),
+            Assert.That(garrison.CountSoldiers(regionId, "DSM", TerritoryRecruitKind.Garrison), Is.EqualTo(3),
                 "Pods still in the air don't count toward the garrison.");
         });
 
@@ -119,7 +119,7 @@ public sealed class TerritoryGarrisonTest
         await server.WaitAssertion(() =>
         {
             var soldiers = Soldiers(entMan, null);
-            Assert.That(soldiers, Has.Count.EqualTo(4));
+            Assert.That(soldiers, Has.Count.EqualTo(3));
             foreach (var soldier in soldiers)
             {
                 Assert.That(entMan.GetComponent<NpcFactionMemberComponent>(soldier).Factions, Does.Contain("DSM"));
@@ -245,6 +245,13 @@ public sealed class TerritoryGarrisonTest
                 Assert.That(entMan.GetComponent<NpcSquadMemberComponent>(escort).Leader, Is.EqualTo(holder),
                     "An escort didn't join the squad of whoever called it.");
             }
+
+            // a higher level makes room on the territory, but not past two per player
+            server.System<PersistentPoiProgressionSystem>().SetLevel(regionId, 3);
+            var ent = (console, entMan.GetComponent<TerritoryRecruitmentConsoleComponent>(console));
+            Assert.That(server.System<TerritoryRecruitmentSystem>().TryRecruit(ent, holder, TerritoryRecruitKind.Escort,
+                "Rifleman", 1, PaymentSource.Personal, out _, out _, out var error), Is.False, "A third escort came.");
+            Assert.That(error, Is.EqualTo("territory-recruit-squad-full"));
 
             entMan.DeleteEntity(entMan.GetComponent<TransformComponent>(grid).MapUid);
             server.System<TerritoryProfileSystem>().ArchiveProfile(campaign);

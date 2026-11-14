@@ -1,0 +1,9 @@
+advertisement-shi-sustenance-1 = Шинохара Хеви Индастриз. Снабжаем сектор, паёк за пайком.
+advertisement-shi-sustenance-2 = Компактное военное питание. Готово к употреблению, куда бы ни позвал долг.
+advertisement-shi-sustenance-3 = Ваша форма может смениться. Ваш поставщик пайков — не обязательно.
+advertisement-shi-sustenance-4 = Впереди долгий патруль? Запаситесь полевыми пайками SHI.
+advertisement-shi-sustenance-5 = От верфи до линии фронта — Шинохара не даст вам голодать.
+advertisement-shi-sustenance-6 = Обслуживаем все флаги сектора. Держите кредиты наготове.
+thankyou-shi-sustenance-1 = Спасибо, что выбрали Шинохара Хеви Индастриз.
+thankyou-shi-sustenance-2 = Пайки получены. Счастливого пути, клиент.
+thankyou-shi-sustenance-3 = Не забывайте пополнять полевые запасы в ближайшем автомате SHI.

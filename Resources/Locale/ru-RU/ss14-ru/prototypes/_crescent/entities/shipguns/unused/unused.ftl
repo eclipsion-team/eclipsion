@@ -1,0 +1,14 @@
+ent-BaseBulletEmp = базовая ЭМИ пуля
+    .desc = { ent-BaseBulletTrigger.desc }
+ent-BulletBoosterWave = волна ускорителя
+    .desc = { ent-BaseBullet.desc }
+ent-CartridgeRailArmorPiercing = 1000 бронебойный рельс
+    .desc = 1000-калиберный рельс для рельсотрона. Сделан из цельного вольфрамового стержня, пропитанного плазмой. Пробивает корпус как масло.
+ent-BulletRailArmorPiercing = рельс
+    .desc = { ent-BaseBulletTrigger.desc }
+ent-BulletRailEMP = рельс
+    .desc = { ent-BaseBulletTrigger.desc }
+ent-CartridgeRailEMP = 1000 ЭМИ рельс
+    .desc = 1000-калиберный рельс для рельсотрона. Сделан из цельного вольфрамового стержня, пропитанного плазмой. Пробивает корпус как масло.
+ent-ThermonuclearMissile = подготовленная термоядерная ракета
+    .desc = Вы вздрагиваете от древних генетических воспоминаний, говорящих: «Это причинило мне боль. Это разрушило меня. Я когда-то был человеком». Но другого пути нет. Пистолет. Меч. Бомба. Виброкхопеш. Другого пути нет.

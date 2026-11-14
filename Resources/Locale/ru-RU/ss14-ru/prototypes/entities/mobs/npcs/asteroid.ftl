@@ -1,0 +1,10 @@
+ent-BaseMobAsteroid = { ent-BaseMob }
+    .desc = { ent-BaseMob.desc }
+ent-GoliathTentacle = щупальце
+    .desc = { "" }
+ent-BaseEffectGoliathTentacleSpawn =
+    .desc = { "" }
+ent-EffectGoliathTentacleSpawn = щупальце
+    .desc = { ent-BaseEffectGoliathTentacleSpawn.desc }
+ent-EffectGoliathTentacleRetract = щупальце
+    .desc = { ent-BaseEffectGoliathTentacleSpawn.desc }

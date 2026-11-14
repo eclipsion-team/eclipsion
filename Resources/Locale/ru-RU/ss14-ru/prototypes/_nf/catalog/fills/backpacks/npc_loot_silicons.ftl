@@ -1,0 +1,10 @@
+ent-RogueSiliconGiftBox =
+    .desc = { ent-BaseItem.desc }
+ent-ClothingBackpackRogueSiliconT1 = набор мятежного юнита
+    .desc = { ent-RogueSiliconGiftBox.desc }
+ent-ClothingBackpackRogueSiliconT2 = набор мятежного юнита
+    .desc = { ent-RogueSiliconGiftBox.desc }
+ent-ClothingBackpackRogueSiliconT3 = набор мятежного юнита
+    .desc = { ent-RogueSiliconGiftBox.desc }
+ent-ClothingBackpackRogueSiliconT4 = набор мятежного юнита
+    .desc = { ent-RogueSiliconGiftBox.desc }

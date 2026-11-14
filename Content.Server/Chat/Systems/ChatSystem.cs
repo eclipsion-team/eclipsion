@@ -44,6 +44,7 @@ using Robust.Shared.Utility;
 using Content.Server.Shuttles.Components;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Dynamics.Joints;
+using Content.Server._Crescent.Translator; // Eclipsion
 
 namespace Content.Server.Chat.Systems;
 
@@ -80,6 +81,7 @@ public sealed partial class ChatSystem : SharedChatSystem
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
     [Dependency] private readonly SharedMindSystem _mindSystem = default!;
     [Dependency] private readonly SharedJobSystem _jobSystem = default!;
+    [Dependency] private readonly ChatTranslatorSystem _translator = default!; // Eclipsion
 
     public const int VoiceRange = 10; // how far voice goes in world units
     public const int WhisperClearRange = 2; // how far whisper goes while still being understandable, in world units
@@ -592,7 +594,9 @@ public sealed partial class ChatSystem : SharedChatSystem
                 wrappedMessage = WrapWhisperMessage(source, "chat-manager-entity-whisper-unknown-wrap-message", string.Empty, result, language);
             }
 
-            _chatManager.ChatMessageToOne(ChatChannel.Whisper, result, wrappedMessage, source, false, session.Channel);
+            // Eclipsion - garbled whispers are not worth translating
+            using (result == message ? default(ChatTranslatorSystem.UntranslatedScope?) : _translator.Untranslated())
+                _chatManager.ChatMessageToOne(ChatChannel.Whisper, result, wrappedMessage, source, false, session.Channel);
         }
 
         var replayWrap = WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, message, language);
@@ -786,7 +790,8 @@ public sealed partial class ChatSystem : SharedChatSystem
             }
             else
             {
-                _chatManager.ChatMessageToOne(channel, obfuscated, obfuscatedWrappedMessage, source, entHideChat, session.Channel, author: author);
+                using (_translator.Untranslated()) // Eclipsion - nothing to translate in a language they don't know
+                    _chatManager.ChatMessageToOne(channel, obfuscated, obfuscatedWrappedMessage, source, entHideChat, session.Channel, author: author);
             }
         }
 

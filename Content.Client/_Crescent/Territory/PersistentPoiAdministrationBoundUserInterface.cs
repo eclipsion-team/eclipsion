@@ -21,6 +21,10 @@ public sealed class PersistentPoiAdministrationBoundUserInterface : BoundUserInt
         _window.Panel.OnDraw += () => SendMessage(new PersistentPoiDrawFromSiloMessage());
         _window.Panel.OnReturn += (material, toSilo) => SendMessage(new PersistentPoiReturnDepositMessage(material, toSilo));
         _window.Panel.OnRename += name => SendMessage(new PersistentPoiRenameMessage(name));
+        _window.Panel.OnSetDrones += off => SendMessage(new PersistentPoiSetDronesMessage(off));
+        _window.Panel.OnAddMember += body => SendMessage(new PersistentPoiAddMemberMessage(body));
+        _window.Panel.OnRemoveMember += user => SendMessage(new PersistentPoiRemoveMemberMessage(user));
+        _window.Panel.OnSetCoOwner += (user, coOwner) => SendMessage(new PersistentPoiSetCoOwnerMessage(user, coOwner));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

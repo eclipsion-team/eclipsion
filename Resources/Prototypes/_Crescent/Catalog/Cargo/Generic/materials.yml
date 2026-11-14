@@ -57,3 +57,23 @@
 #   cost: 3000
 #   category: cargoproduct-category-name-materials
 #   group:
+
+- type: cargoProduct
+  id: MaterialWoodGeneric
+  icon:
+    sprite: Objects/Materials/materials.rsi
+    state: wood_3
+  product: CrateMaterialWood
+  cost: 5000
+  category: cargoproduct-category-name-materials
+  group: generic
+
+- type: cargoProduct
+  id: OreBoxGeneric
+  icon:
+    sprite: Structures/Storage/orebox.rsi
+    state: orebox
+  product: OreBox
+  cost: 500
+  category: cargoproduct-category-name-materials
+  group: generic

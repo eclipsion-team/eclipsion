@@ -716,7 +716,8 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
 
             // Floor coverings should reveal their protected subfloor instead of allowing the same explosion to
             // immediately roll through every layer beneath them. An already exposed subfloor is still breakable.
-            if (tileDef.StopsExplosionBreakChain)
+            // only weak blasts stop here, a big one keeps going
+            if (tileDef.StopsExplosionBreakChain && type.TileBreakChance(effectiveIntensity) < 1f)
                 break;
         }
 

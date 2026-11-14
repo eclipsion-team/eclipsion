@@ -74,6 +74,52 @@ public sealed class ConveyorSpawnedItemTest
     }
 
     [Test]
+    public async Task JammedItemRestsAndMovesOnWhenFreed()
+    {
+        var (pair, map) = await Setup();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var conveyor = server.System<Content.Server.Physics.Controllers.ConveyorController>();
+        EntityUid ore = default;
+        EntityUid wall = default;
+
+        await server.WaitPost(() =>
+        {
+            for (var x = 1; x < 4; x++)
+                SpawnBelt(entMan, map.Grid, x, 1, Angle.FromDegrees(90));
+
+            wall = entMan.SpawnEntity("WallSolid", new EntityCoordinates(map.Grid, 4.5f, 1.5f));
+            ore = entMan.SpawnEntity("SteelOre", new EntityCoordinates(map.Grid, 1.5f, 1.5f));
+        });
+
+        // belt end is a wall, so the ore gets stuck against it and should be left alone for a while
+        var rested = false;
+        for (var i = 0; i < 30 && !rested; i++)
+        {
+            await pair.RunTicksSync(5);
+            await server.WaitPost(() => rested = conveyor.IsResting(ore));
+        }
+
+        Assert.That(rested, Is.True, "Ore stuck against a wall was still pushed every tick.");
+
+        await server.WaitPost(() =>
+        {
+            entMan.DeleteEntity(wall);
+            SpawnBelt(entMan, map.Grid, 4, 1, Angle.FromDegrees(90));
+        });
+
+        await pair.RunTicksSync(150);
+
+        await server.WaitAssertion(() =>
+        {
+            var pos = entMan.GetComponent<TransformComponent>(ore).LocalPosition;
+            Assert.That(pos.X, Is.GreaterThan(4.3f), $"Ore didn't move on after the jam cleared (at {pos}).");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
     public async Task DrillOutputsOntoAdjacentBelt()
     {
         var (pair, map) = await Setup();

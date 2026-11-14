@@ -32,8 +32,7 @@ public sealed partial class ResearchSystem
         if (!PrototypeManager.TryIndex<TechnologyPrototype>(args.Id, out var technologyPrototype))
             return;
 
-        // The tree exposes every supported technology, so enforce the rotating card
-        // selection authoritatively instead of trusting the client-side disabled button.
+        // don't trust the client button, check the server's list
         if (!TryComp<ResearchClientComponent>(uid, out var researchClient) ||
             researchClient.Server is not { } serverUid ||
             !TryComp<ResearchServerComponent>(serverUid, out var researchServer) ||
@@ -73,6 +72,10 @@ public sealed partial class ResearchSystem
 
     private void OnConsoleBeforeUiOpened(EntityUid uid, ResearchConsoleComponent component, BeforeActivatableUIOpenEvent args)
     {
+        // old saves still have the 3 random cards in them
+        if (TryComp<ResearchClientComponent>(uid, out var client) && client.Server is { } server)
+            UpdateTechnologyCards(server);
+
         SyncClientWithServer(uid);
         component.LastUiState = null;
         UpdateConsoleInterface(uid, component);

@@ -4,6 +4,7 @@ using Content.Client.Actions.UI;
 using Content.Client.Cooldown;
 using Content.Client.Stylesheets;
 using Content.Shared.Actions;
+using Content.Shared.Input;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
@@ -48,6 +49,7 @@ public sealed class ActionButton : Control, IEntityControl
     public readonly CooldownGraphic Cooldown;
     private readonly SpriteView _smallItemSpriteView;
     private readonly SpriteView _bigItemSpriteView;
+    private readonly TextureRect _pinStar;
 
     private Texture? _buttonBackgroundTexture;
 
@@ -139,6 +141,16 @@ public sealed class ActionButton : Control, IEntityControl
             }
         });
         Cooldown = new CooldownGraphic {Visible = false};
+        _pinStar = new TextureRect
+        {
+            HorizontalAlignment = HAlignment.Right,
+            VerticalAlignment = VAlignment.Top,
+            SetSize = new Vector2(14, 14),
+            Margin = new Thickness(0, 3, 3, 0),
+            Stretch = StretchMode.KeepAspectCentered,
+            MouseFilter = MouseFilterMode.Ignore,
+            Visible = false
+        };
 
         AddChild(Button);
         AddChild(_bigActionIcon);
@@ -147,6 +159,7 @@ public sealed class ActionButton : Control, IEntityControl
         AddChild(Label);
         AddChild(Cooldown);
         AddChild(paddingBoxItemIcon);
+        AddChild(_pinStar);
 
         Button.Modulate = new Color(255, 255, 255, 150);
 
@@ -165,8 +178,27 @@ public sealed class ActionButton : Control, IEntityControl
         Label.FontColorOverride = Theme.ResolveColorOrSpecified("whiteText");
     }
 
+    // pinned slot with nothing in it gets a faded star so you can see the spot is kept
+    public void SetPinned(bool pinned)
+    {
+        if (pinned && _pinStar.Texture == null)
+        {
+            _spriteSys ??= _entities.System<SpriteSystem>();
+            _pinStar.Texture = _spriteSys.Frame0(new SpriteSpecifier.Texture(new ResPath("/Textures/Interface/VerbIcons/star-solid-yellow.svg.192dpi.png")));
+        }
+
+        _pinStar.Visible = pinned;
+        _pinStar.Modulate = _action != null ? Color.White : Color.White.WithAlpha(0.35f);
+    }
+
     private void OnPressed(GUIBoundKeyEventArgs args)
     {
+        if (args.Function == ContentKeyFunctions.MouseMiddle)
+        {
+            ActionPressed?.Invoke(args, this);
+            return;
+        }
+
         if (args.Function != EngineKeyFunctions.UIClick && args.Function != EngineKeyFunctions.UIRightClick)
             return;
 
@@ -346,6 +378,7 @@ public sealed class ActionButton : Control, IEntityControl
         Cooldown.Visible = false;
         Cooldown.Progress = 1;
         Label.Visible = false;
+        _pinStar.Visible = false;
         UpdateIcons();
     }
 

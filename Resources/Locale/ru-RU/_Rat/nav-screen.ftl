@@ -1,0 +1,9 @@
+nav-screen-free = Круиз
+nav-screen-dampen = Драйв
+nav-screen-anchor = Якорь
+nav-screen-module-a = Модуль А
+nav-screen-module-b = Модуль Б
+nav-screen-module-c = Модуль В
+nav-screen-module-d = Модуль Г
+nav-screen-module-e = Модуль Д
+nav-screen-renaming-mode = режим переименования

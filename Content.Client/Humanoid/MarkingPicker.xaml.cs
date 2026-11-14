@@ -222,7 +222,7 @@ public sealed partial class MarkingPicker : Control
             };
             var customize = new Button
             {
-                Text = "Customize",
+                Text = Loc.GetString("humanoid-profile-editor-loadouts-customize"),
                 StyleClasses = { StyleBase.ButtonOpenLeft, },
                 Disabled = !item.Pressed,
             };

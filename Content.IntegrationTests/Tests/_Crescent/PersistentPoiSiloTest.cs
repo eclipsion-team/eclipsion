@@ -131,6 +131,79 @@ public sealed class PersistentPoiSiloTest
     }
 
     [Test]
+    public async Task SiloBuildKeepsPlacedDirection()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+        var entMan = server.EntMan;
+        var mapSystem = server.System<SharedMapSystem>();
+        var xforms = server.System<SharedTransformSystem>();
+        var silos = server.System<PersistentPoiSiloSystem>();
+
+        EntityUid grid = default;
+        var plating = server.ResolveDependency<ITileDefinitionManager>()["Plating"];
+        var builds = new (string Recipe, Vector2i Tile, Direction Dir, string Proto)[]
+        {
+            ("PersistentPoiDockingPort", new Vector2i(7, 1), Direction.East, "AirlockPersistentPoiDock"),
+            ("PersistentPoiDockingPort", new Vector2i(8, 1), Direction.North, "AirlockPersistentPoiDock"),
+            ("PersistentPoiAirlock", new Vector2i(9, 1), Direction.West, "AirlockPersistentPoi"),
+        };
+
+        await server.WaitAssertion(() =>
+        {
+            var gridEnt = mapSystem.CreateGridEntity(map.MapId);
+            grid = gridEnt.Owner;
+            for (var x = 0; x < 12; x++)
+            {
+                for (var y = 0; y < 3; y++)
+                {
+                    mapSystem.SetTile(gridEnt, new Vector2i(x, y), new Tile(plating.TileId));
+                }
+            }
+
+            xforms.SetLocalRotation(grid, Angle.FromDegrees(37));
+
+            var territory = entMan.EnsureComponent<PersistentPoiGridComponent>(grid);
+            territory.Owner = "DSM";
+            territory.Level = 3;
+            territory.ProtectedCenter = new Vector2(6.5f, 0.5f);
+            territory.ProtectedRadius = 0.6f;
+
+            var user = entMan.SpawnEntity("MobHuman", new EntityCoordinates(grid, 6.5f, 1.5f));
+            entMan.EnsureComponent<HullrotFactionComponent>(user).Faction = "DSM";
+            entMan.EnsureComponent<PersistentPoiBuilderComponent>(user);
+
+            var silo = entMan.SpawnEntity("PersistentPoiMaterialSilo", new EntityCoordinates(grid, 1.5f, 1.5f));
+            var stored = entMan.GetComponent<PersistentPoiMaterialSiloComponent>(silo).Stored;
+            foreach (var material in new[] { "Steel", "Plasteel", "Cable" })
+            {
+                stored[material] = 100;
+            }
+
+            foreach (var (recipe, tile, dir, _) in builds)
+            {
+                Assert.That(silos.TryBuild(user, recipe, new EntityCoordinates(grid, tile.X + 0.5f, tile.Y + 0.5f), dir),
+                    Is.True, $"{recipe} facing {dir} was refused");
+            }
+        });
+
+        await server.WaitRunTicks(300);
+        await server.WaitAssertion(() =>
+        {
+            foreach (var (_, tile, dir, proto) in builds)
+            {
+                var built = AnchoredAt(entMan, mapSystem, grid, tile, proto);
+                Assert.That(built, Is.Not.EqualTo(EntityUid.Invalid), $"no {proto} at {tile}");
+                var local = entMan.GetComponent<TransformComponent>(built).LocalRotation;
+                Assert.That(local.GetCardinalDir(), Is.EqualTo(dir), $"{proto} at {tile} faces {local.GetCardinalDir()}");
+            }
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
     public async Task AdministrationDrawsFromSiloAndHandsBack()
     {
         await using var pair = await PoolManager.GetServerClient();

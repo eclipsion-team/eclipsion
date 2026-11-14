@@ -1,0 +1,13 @@
+ent-HandheldCrewMonitor = портативный монитор экипажа
+    .desc = Ручной монитор экипажа, отображающий состояние датчиков костюма.
+    .suffix = { "" }
+ent-HandheldCrewMonitorEmpty = { ent-HandheldCrewMonitor }
+    .desc = { ent-HandheldCrewMonitor.desc }
+ent-SpyCrewMonitor = шпионский монитор
+    .desc = Шпионское устройство, способное подключаться к серверам мониторинга экипажа.
+ent-SpyCrewMonitorEmpty = { ent-SpyCrewMonitor }
+    .desc = { ent-SpyCrewMonitor.desc }
+ent-SyndiCrewMonitor = монитор экипажа Синдиката
+    .desc = Версия монитора экипажа от Синдиката, перехватывающая информацию с сервера.
+ent-SyndiCrewMonitorEmpty = { ent-SyndiCrewMonitor }
+    .desc = { ent-SyndiCrewMonitor.desc }

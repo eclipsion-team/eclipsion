@@ -1,0 +1,1 @@
+marking-ADTHumanHairShavedside = Выбритый висок

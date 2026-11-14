@@ -1,4 +1,6 @@
+using System.Numerics;
 using Content.Server.Maps;
+using Content.Shared._Crescent.Territory;
 using Content.Shared.Dataset;
 using Robust.Shared.Prototypes;
 
@@ -38,6 +40,12 @@ public sealed partial class TerritoryDronePicketsComponent : Component
     [DataField]
     public float AimScatter = 20f;
 
+    public const float DefaultAttackRange = 1500f;
+
+    // max distance from the standard for attack orders
+    [DataField]
+    public float AttackRange = DefaultAttackRange;
+
     // with no player body this close to the standard the pickets park and stop thinking
     [DataField]
     public float WakeRange = 1500f;
@@ -56,6 +64,10 @@ public sealed partial class TerritoryDronePicketsComponent : Component
 
     [ViewVariables]
     public bool Dormant;
+
+    // turned off from the administration console, drones just sit there
+    [ViewVariables]
+    public bool StoodDown;
 
     // who the picket flies for, set when it goes up; null shoots everyone
     [ViewVariables]
@@ -84,4 +96,13 @@ public sealed partial class TerritoryPicketDroneComponent : Component
     // paid for at the drone bay, not part of the round-start garrison
     [ViewVariables]
     public bool Bought;
+
+    [ViewVariables]
+    public TerritoryDroneOrder Order = TerritoryDroneOrder.Defend;
+
+    [ViewVariables]
+    public EntityUid? OrderTarget;
+
+    [ViewVariables]
+    public Vector2 HoldPoint;
 }

@@ -126,6 +126,43 @@
     idleState: icon
     runningState: building
     staticRecipes:
+    # ship ammo
+    - SluggieHE
+    - SluggieAP
+    - SluggieEMP
+    - Automortar90
+    - Needler60
+    - MagazineVulcan
+    - MagazineFlak
+    - 48mmEMPRocket
+    - 48mmHighYieldRocket
+    - 48mmLowYieldRocket
+    - RocketMagazineEmpty
+    - LensInfaredRecipe
+    - LensPlasmaRecipe
+    - LensXrayRecipe
+    - Type99ShellAPRecipe
+    - Type99ShellHERecipe
+    - HeavyMortarShellRecipe
+    - JeongDrumRecipe
+    - LancerBoxRecipe
+    - Screamer20mmRegularRecipe
+    - Scout35mmRegularRecipe
+    - Striker50mmRegularRecipe
+    - 88mmFlakRegularRecipe
+    - Resolute90mmRegularRecipe
+    - Anvil120mmRegularRecipe
+    - Leviathan300mmRecipe
+    - Pila30mmRegularRecipe
+    - Magazine30mmPilaEmptyRecipe
+    - Shortbow48mmRegularRecipe
+    - Magazine48mmRocketEmptyRecipe
+    - Azimuth60mmRegularRecipe
+    - Magazine60mmEmptyRecipe
+    - Arbalest95mmRegularRecipe
+    - Magazine95mmRocketEmptyRecipe
+    - Gargoyle240mmRegularRecipe
+    - Catapult330mmRegularRecipe
     - Wirecutter
     - Igniter
     - Signaller
@@ -143,12 +180,9 @@
     - CableHVStack
     - HandheldGPSBasic
     - TRayScanner
-    - AirTank
     - GasAnalyzer
     - UtilityBelt
-    - Pickaxe
     - ModularReceiver
-    - AppraisalTool
     - SheetRGlass
     - Beaker
     - Syringe
@@ -183,8 +217,6 @@
     - PowerCellSmall
     - PowerCellMedium
     - RollerBedSpawnFolded
-    - CheapRollerBedSpawnFolded
-    - EmergencyRollerBedSpawnFolded
     - MicroManipulatorStockPart
     - MatterBinStockPart
     - CapacitorStockPart
@@ -1214,22 +1246,27 @@
       idleState: icon
       runningState: icon
       staticRecipes:
-        #- SluggieHE
-        #- SluggieAP
-        #- SluggieEMP
+        - SluggieHE
+        - SluggieAP
+        - SluggieEMP
         #- IdnaTorpedoRecipe
-        #- Automortar90
+        - Automortar90
         #- MagazineGrenadeEmpty
-        #- Needler60
-        #- MagazineVulcan
-        #- MagazineFlak
-        #- 48mmEMPRocket
-        #- 48mmHighYieldRocket
-        #- 48mmLowYieldRocket
-        #- RocketMagazineEmpty
-        #- LensInfaredRecipe
-        #- LensPlasmaRecipe
-        #- LensXrayRecipe
+        - Needler60
+        - MagazineVulcan
+        - MagazineFlak
+        - 48mmEMPRocket
+        - 48mmHighYieldRocket
+        - 48mmLowYieldRocket
+        - RocketMagazineEmpty
+        - LensInfaredRecipe
+        - LensPlasmaRecipe
+        - LensXrayRecipe
+        - Type99ShellAPRecipe
+        - Type99ShellHERecipe
+        - HeavyMortarShellRecipe
+        - JeongDrumRecipe
+        - LancerBoxRecipe
         # NEW SHIPGUN AMMO RECIPIES START
         - Screamer20mmRegularRecipe
         # - Screamer20mmGyrostableRecipe
@@ -1242,22 +1279,27 @@
         - Resolute90mmRegularRecipe
         # - Resolute90mmGyrostableRecipe
         # - Resolute90mmPlasmaRecipe
-        #- Anvil120mmRegularRecipe #shellfab
+        - Anvil120mmRegularRecipe
         #- Anvil120mmGyrostableRecipe #shellfab
         #- Anvil120mmPlasmaRecipe #shellfab
-        #- Leviathan300mmRecipe #shellfab
+        - Leviathan300mmRecipe
+        - Pila30mmRegularRecipe
+        - Magazine30mmPilaEmptyRecipe
         - Shortbow48mmRegularRecipe
+        - Magazine48mmRocketEmptyRecipe
         # - Shortbow48mmGorlexRecipe
         - Azimuth60mmRegularRecipe
+        - Magazine60mmEmptyRecipe
         # - Azimuth60mmGorlexRecipe
         # - Azimuth60mmNCWLRecipe
         # - Azimuth60mmAdvancedRecipe
         - Arbalest95mmRegularRecipe
+        - Magazine95mmRocketEmptyRecipe
         # - Arbalest95mmNCWLRecipe
         # - Arbalest95mmGorlexRecipe
-        #- Gargoyle240mmRegularRecipe #shellfab
+        - Gargoyle240mmRegularRecipe
         #- Gargoyle240mmNCWLRecipe #shellfab
-        #- Catapult330mmRegularRecipe #shellfab
+        - Catapult330mmRegularRecipe
         #NEW SHIPGUN AMMO RECIPIES END
         - Cartridge40mmFrag
         - Cartridge40mmCan
@@ -1375,8 +1417,6 @@
     - BodyBag
     - ChemistryEmptyBottle01
     - RollerBedSpawnFolded
-    - CheapRollerBedSpawnFolded
-    - EmergencyRollerBedSpawnFolded
     - Medkit
     - MedkitBurn
     - MedkitToxin

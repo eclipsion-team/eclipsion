@@ -69,6 +69,18 @@ public sealed class InfoUIController : UIController, IOnStateExited<GameplayStat
         LayoutContainer.SetAnchorPreset(_rulesPopup, LayoutContainer.LayoutPreset.Wide);
     }
 
+    // Eclipsion - rebuild the rules in the new language, keeps the time left
+    public void RebuildRules()
+    {
+        if (_rulesPopup == null)
+            return;
+
+        var time = _rulesPopup.Timer;
+        _rulesPopup.Orphan();
+        _rulesPopup = null;
+        ShowRules(time);
+    }
+
     private void OnQuitPressed()
     {
         _consoleHost.ExecuteCommand("quit");

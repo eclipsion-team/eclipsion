@@ -1,0 +1,483 @@
+persistent-poi-floor-tool-denied = Пол вокруг штандарта территории — постоянная основа. Снять его могут только владельцы.
+persistent-poi-structure-examine = [color=goldenrod]Сооружение территории: стоит там, где построено, пока его не разрушат или не разберут.[/color]
+persistent-poi-structure-unanchor-denied = Сооружения территории намертво закреплены в постоянной основе.
+persistent-poi-structure-integrity = Прочность: [color={ $colour }]{ $left }/{ $max }[/color]
+persistent-poi-build-not-held = Строить сооружения территории можно только на земле, которую удерживает ваша фракция.
+persistent-poi-build-over-limit = Пока шло строительство, появились другие такие же сооружения, и места на территории не осталось. Постройку разбирают, а материалы возвращают.
+persistent-poi-build-category-defence = Оборона
+persistent-poi-build-category-command = Управление
+persistent-poi-build-category-production = Производство
+persistent-poi-build-category-power = Энергия и свет
+persistent-poi-build-category-doors = Двери и шлюзы
+persistent-poi-build-category-structure = Стены и окна
+persistent-poi-build-category-atmos = Атмосфера
+persistent-poi-build-category-furniture = Мебель
+persistent-poi-build-category-posters = Плакаты
+construction-condition-persistent-poi-held-ground = Строить нужно на территории вашей фракции, стоя на ней.
+construction-condition-persistent-poi-within-limit = На этом уровне территории больше нет места для такого сооружения. Повысьте уровень в консоли администрации.
+construction-condition-persistent-poi-capability = Территория не оснащена для этого производства. Переоснастите её в консоли производства.
+construction-condition-persistent-poi-no-duplicate = На этой клетке уже есть такое сооружение.
+construction-condition-persistent-poi-on-wall = Ставится на стену, на которой больше ничего не закреплено.
+persistent-poi-silo-not-holder = Хранилищем могут пользоваться только владельцы этой земли.
+persistent-poi-silo-stored = { $count ->
+    [one] Вы загружаете в хранилище один лист.
+    [few] Вы загружаете в хранилище { $count } листа.
+   *[other] Вы загружаете в хранилище { $count } листов.
+}
+persistent-poi-silo-refused = Хранилище принимает только то, из чего строят сооружения территории и чем повышают её уровень.
+persistent-poi-silo-examine-turning = [color=goldenrod]Всё, что здесь хранится, пропадает в конце раунда — его забирает Поворот. Построенное из этого остаётся.[/color]
+persistent-poi-silo-examine-empty = Оно пустое.
+persistent-poi-silo-examine-line = { $material }: { $count }
+persistent-poi-silo-take = { $material }
+persistent-poi-silo-hand-only = Это собирается только вручную, хранилище не может это построить.
+persistent-poi-silo-short = В хранилище недостаточно материалов.
+persistent-poi-silo-ui-title = Хранилище материалов
+persistent-poi-silo-ui-hint = [color=#9A9AA4]Чтобы загрузить хранилище, используйте на нём стопки материалов или сумку либо ящик с ними. Здесь можно забрать сколько нужно. Содержимое не переживает раунд.[/color]
+persistent-poi-silo-ui-stack = Стопка
+persistent-poi-silo-ui-stack-tooltip = Полная стопка или всё, что осталось.
+persistent-poi-ui-level = Уровень { $level }
+persistent-poi-category-targetingconsole = Консоли управления огнём
+persistent-poi-category-productionconsole = Консоли производства
+persistent-poi-category-administrationconsole = Консоли администрации
+persistent-poi-category-pointdefence = Орудия ПРО
+persistent-poi-category-antiboarderturret = Турели против абордажа
+persistent-poi-category-factory = Производственные цеха
+persistent-poi-category-generator = Генераторы
+persistent-poi-category-radarconsole = Консоли радара
+persistent-poi-category-shuttleconsole = Консоли шаттла
+persistent-poi-category-spawnbeacon = Крио-точки появления
+persistent-poi-category-gearrack = Стойки снаряжения
+persistent-poi-category-recruitmentconsole = Консоли вербовки
+persistent-poi-category-mediumlaser = Лазерные установки 200cc
+persistent-poi-category-heavylaser = Лазерные установки 250cc
+persistent-poi-category-portal = Порталы фракции
+persistent-poi-category-dronebay = Управление дронами
+persistent-poi-category-materialsilo = Хранилища материалов
+persistent-poi-category-mappingconsole = Консоли строительства
+persistent-poi-admin-not-holder = Развивать территорию может только её владелец.
+persistent-poi-admin-max-level = Территория уже полностью развита.
+persistent-poi-admin-not-needed = Для следующего уровня это не нужно.
+persistent-poi-admin-already-enough = Этого для следующего уровня уже достаточно.
+persistent-poi-admin-deposited = Внесено: { $amount } { $material } ({ $total }/{ $required }).
+persistent-poi-admin-nothing-needed-in = Ничего из { THE($container) } для следующего уровня не нужно.
+persistent-poi-admin-missing-materials = Для следующего уровня ещё не хватает материалов.
+persistent-poi-admin-upgraded = Территория теперь уровня { $level }.
+persistent-poi-admin-silo-nothing = В хранилище нет ничего, что ещё нужно для следующего уровня.
+persistent-poi-admin-silo-drawn = Взято из хранилища: { $materials }.
+persistent-poi-admin-no-silo = На территории нет хранилища материалов.
+persistent-poi-admin-returned = Вы забираете из внесённого { $amount } { $material }.
+persistent-poi-admin-returned-silo = { $amount } { $material } перенесено из внесённого в хранилище.
+persistent-poi-admin-ui-title = Администрация территории
+persistent-poi-admin-ui-level = Уровень { $level }/{ $max }
+persistent-poi-admin-ui-capability = Оснащена для: { $capability }
+persistent-poi-admin-ui-no-capability = Не оснащена для производства
+persistent-poi-admin-ui-limits = Что позволяет этот уровень
+persistent-poi-admin-ui-used = { $used }/{ $limit }
+persistent-poi-admin-ui-used-unlimited = { $used }
+persistent-poi-admin-ui-next-limit = след. уровень: { $limit }
+persistent-poi-admin-ui-top-level = Территория полностью развита.
+persistent-poi-admin-ui-next-level = Для уровня { $level }
+persistent-poi-admin-ui-deposit-hint = Используйте на консоли стопки материалов, чтобы внести их, или сумку либо ящик, чтобы сдать всё содержимое сразу. Консоль берёт только то, что ещё нужно. Если на территории есть хранилище материалов, консоль может брать и оттуда, а при повышении уровня сама добирает из него недостающее.
+persistent-poi-admin-ui-upgrade = Повысить до уровня { $level }
+persistent-poi-admin-ui-deposited = { $deposited }/{ $required }
+persistent-poi-admin-ui-draw = Взять из хранилища
+persistent-poi-admin-ui-draw-tooltip = Перенести из хранилища материалов территории всё, что ещё нужно для следующего уровня. При повышении уровня это происходит само.
+persistent-poi-admin-ui-in-silo = в хранилище { $count }
+persistent-poi-admin-ui-take = Забрать
+persistent-poi-admin-ui-take-tooltip = Забрать одну стопку этого из внесённого.
+persistent-poi-admin-ui-to-silo = В хранилище
+persistent-poi-admin-ui-to-silo-tooltip = Перенести всё это из внесённого в хранилище материалов. В отличие от внесённого, хранилище не сохраняет это после раунда.
+persistent-poi-admin-ui-drones = Дроны территории
+persistent-poi-admin-ui-drones-on = Включены, охраняют
+persistent-poi-admin-ui-drones-off = Выключены, дрейфуют
+persistent-poi-admin-ui-drones-turn-off = Выключить
+persistent-poi-admin-ui-drones-turn-on = Включить
+persistent-poi-admin-ui-drones-tooltip = Выключенные дроны территории, включая купленные, останавливаются где были и ни по чему не стреляют. Так остаётся между раундами, пока вы не включите их снова или территорию не захватит кто-то другой.
+persistent-poi-admin-drones-turned-off = Дроны территории отключены.
+persistent-poi-admin-drones-turned-on = Дроны территории снова на страже.
+persistent-poi-admin-ui-members = Участники ({ $count }/{ $max })
+persistent-poi-admin-ui-founder = Основатель: { $name }
+persistent-poi-admin-ui-founder-unknown = Основатель: не в сети
+persistent-poi-admin-ui-no-members = Больше никого пока не пустили.
+persistent-poi-admin-ui-co-owner = совладелец
+persistent-poi-admin-ui-member = участник
+persistent-poi-admin-ui-make-co-owner = Сделать совладельцем
+persistent-poi-admin-ui-make-member = Сделать участником
+persistent-poi-admin-ui-remove = Убрать
+persistent-poi-admin-ui-leave = Уйти
+persistent-poi-admin-ui-add-header = Космонавты на этой территории
+persistent-poi-admin-ui-add = Добавить
+persistent-poi-admin-ui-no-candidates = На этой территории больше нет других космонавтов.
+persistent-poi-admin-ui-members-hint = Участники пользуются территорией так же, как вы: машины, двери и орудия считают их владельцем. Совладельцы также могут добавлять и убирать участников. Совладельцев назначает только основатель.
+persistent-poi-admin-members-not-allowed = Добавлять участников могут только основатель или совладелец.
+persistent-poi-admin-members-holds-own = У { $name } есть своя земля, сначала от неё нужно отказаться.
+persistent-poi-admin-members-full = Места для нового участника нет.
+persistent-poi-admin-members-added = { $name } теперь участник.
+persistent-poi-admin-members-you-joined = Вас пустили на землю { $owner }. Чтобы уйти, нажмите ПКМ по себе.
+persistent-poi-admin-members-leave-verb = Уйти с земли { $owner }
+persistent-poi-admin-members-removed = { $name } больше не участник.
+persistent-poi-admin-members-left = Вы выходите из участников территории.
+persistent-poi-capability-general-ore = Добыча смешанной руды
+persistent-poi-capability-general-ore-desc = Установки поднимают из-под территории смесь руд: в основном сталь, медь и уголь, немного плазмы, серебра и золота.
+persistent-poi-capability-targeted-ore = Целевая добыча руды
+persistent-poi-capability-targeted-ore-desc = Каждая установка разрабатывает одну жилу, выбранную для неё, — этой руды намного больше, чем даёт смешанная установка.
+persistent-poi-capability-textiles = Текстиль
+persistent-poi-capability-textiles-desc = Фабрики прядут хлопок и ткут ткань и дюраткань.
+persistent-poi-capability-materials = Материалы
+persistent-poi-capability-materials-desc = Литейные выпускают готовые сталь, стекло, пластик и пласталь.
+persistent-poi-capability-trade-goods = Торговые товары
+persistent-poi-capability-trade-goods-desc = Цеха упаковывают в ящики сплавы, оружейные детали, боеприпасы и плазму на экспорт и записывают диски исследований.
+persistent-poi-production-status-running = Работает
+persistent-poi-production-status-disabled = Выключено
+persistent-poi-production-status-no-recipe = Нечего производить
+persistent-poi-production-status-unclaimed = Территория ничья
+persistent-poi-production-status-unpowered = Нет питания
+persistent-poi-production-status-no-console = Нет работающей консоли производства
+persistent-poi-production-status-full = Склад заполнен
+persistent-poi-production-status-wrong-capability = Территория оснащена под другое производство
+persistent-poi-production-status-over-limit = Сверх лимита территории
+persistent-poi-production-status-starting = Запускается
+persistent-poi-production-status-low-power = Не хватает питания: скорость { $percent }%
+persistent-poi-production-examine-capability = Относится к производству [color=cornflowerblue]{ $capability }[/color].
+persistent-poi-production-examine-status = Состояние: [color=cornflowerblue]{ $status }[/color].
+persistent-poi-production-examine-stored = В нём [color=cornflowerblue]{ $stored }/{ $max }[/color] готовых партий.
+persistent-poi-production-examine-power = Во время работы берёт [color=orange]{ $kw } кВт[/color] из кабеля среднего напряжения под собой.
+persistent-poi-production-nothing-stored = Выдавать пока нечего.
+persistent-poi-production-round-over = Раунд окончен, территория сохранена. До следующего раунда цеха заказов не принимают.
+persistent-poi-production-decommissioned = { CAPITALIZE($works) } разобран.
+persistent-poi-production-ui-title = Производство территории
+persistent-poi-production-ui-capability = Производство
+persistent-poi-production-ui-tool = Оснастить под это производство
+persistent-poi-production-ui-retool = Переоснастить
+persistent-poi-production-ui-no-capability = Территория ещё ни под что не оснащена. Выберите производство и оснастите её — тогда можно будет строить только его цеха.
+persistent-poi-production-ui-factories = Цехов: { $count }/{ $limit }
+persistent-poi-production-ui-factories-unlimited = Цехов: { $count }
+persistent-poi-production-ui-hint = Цеха работают на удерживаемой земле, пока у этой консоли есть питание. Каждый сильно нагружает проложенный под ним кабель среднего напряжения, но только во время работы; при нехватке питания он работает медленнее. Готовые партии ждут здесь, пока их не выдадут, — и достаются следующему владельцу территории.
+persistent-poi-production-ui-empty = На этой территории нет производственных цехов. Постройте их действием строительства территории.
+persistent-poi-production-ui-unclaimed = Ничейная территория
+persistent-poi-production-ui-holder = Удерживает { $faction }
+persistent-poi-production-ui-count = { $count ->
+    [one] { $count } цех
+    [few] { $count } цеха
+   *[other] { $count } цехов
+}
+persistent-poi-production-ui-output = За партию: { $output }
+persistent-poi-production-ui-stored = На складе { $stored }/{ $max }
+persistent-poi-production-ui-turn-on = Включить
+persistent-poi-production-ui-turn-off = Выключить
+persistent-poi-production-ui-dispense = Выдать
+persistent-poi-production-ui-decommission = Разобрать
+persistent-poi-production-ui-decommission-confirm = Точно?
+persistent-poi-recipe-mixed-ore = Смешанная руда
+persistent-poi-recipe-steel-ore = Железная руда
+persistent-poi-recipe-copper-ore = Медная руда
+persistent-poi-recipe-plasma-ore = Плазменная руда
+persistent-poi-recipe-silver-ore = Серебряная руда
+persistent-poi-recipe-gold-ore = Золотая руда
+persistent-poi-recipe-tungsten-ore = Вольфрамовая руда
+persistent-poi-recipe-quartz = Кварц
+persistent-poi-recipe-uranium-ore = Урановая руда
+persistent-poi-recipe-cotton = Хлопок
+persistent-poi-recipe-cloth = Ткань
+persistent-poi-recipe-durathread = Дюраткань
+persistent-poi-recipe-steel = Листы стали
+persistent-poi-recipe-glass = Листы стекла
+persistent-poi-recipe-plastic = Листы пластика
+persistent-poi-recipe-plasteel = Листы пластали
+persistent-poi-recipe-alloys = Сплавы в ящиках
+persistent-poi-recipe-gunparts = Оружейные детали в ящиках
+persistent-poi-recipe-ammo = Боеприпасы в ящиках
+persistent-poi-recipe-plasma = Плазма в ящиках
+persistent-poi-recipe-research-disk = Диск исследований (5000)
+targeting-console-alert-fire-control-overload = ПЕРЕГРУЗКА УПРАВЛЕНИЯ ОГНЁМ: { $count } ОРУДИЙ СВЕРХ ЛИМИТА ТЕРРИТОРИИ ({ $limit }) СТРЕЛЯТЬ НЕ БУДУТ
+point-cannon-examine-outside-fire-control = [color=red]Это орудие сверх лимита управления огнём территории. Ни одна консоль не будет им управлять, пока территорию не разовьют дальше или не уберут более старое орудие.[/color]
+territory-console-list-heading = ТЕРРИТОРИИ
+territory-console-tab-development = Развитие
+territory-console-tab-production = Производство
+territory-console-list-empty = В секторе не известно ни одной территории.
+territory-console-faction-cannot-hold = Ваша фракция не может удерживать территории. Можно только следить, кто чем владеет.
+territory-console-row = { $name } — уровень { $level }
+territory-console-unclaimed = ничья
+territory-console-status-held = Удерживается — цехов { $running }/{ $works }, ждёт { $stored }
+territory-console-status-under-attack = ПОД АТАКОЙ — { $attacker }, { $percent }%
+territory-console-status-contested = ОСПАРИВАЕТСЯ — { $attacker } сражается у штандарта
+territory-console-status-other = Удерживает { $holder }
+territory-console-status-not-loaded = В этом раунде не в секторе — { $holder }
+territory-console-nothing-selected = Территория не выбрана
+territory-console-pick-hint = Выберите территорию из списка.
+territory-console-not-held-details = Эта территория не принадлежит вашей фракции. Захватите её, чтобы управлять ею отсюда.
+territory-console-not-loaded-details = В этом раунде этой территории нет в секторе. Её уровень и владелец сохранятся до раунда, в котором она вернётся.
+territory-console-production-linked = Связь с производством: есть
+territory-console-production-unlinked = Связь с производством: на территории нет консоли производства с питанием
+territory-console-no-production-link = На территории нет консоли производства с питанием, чтобы выполнить приказ.
+territory-console-recipe-locked = В этом цехе ждут партии. Выдайте их на территории, прежде чем менять рецепт.
+territory-console-not-member = Эта консоль подчиняется только людям своей фракции.
+territory-console-command-denied = Этот приказ может отдать только командование вашей фракции.
+territory-console-command-locked = Приказы обороны, управление огнём, название и отказ от территории — дело командования вашей фракции.
+persistent-poi-production-ui-remote-hint = Приказы проходят через консоль производства территории. Выдавать продукцию и разбирать цеха можно только там.
+persistent-poi-production-ui-remote-recipe-locked = В цехах ждут партии. Выдайте их на территории, прежде чем менять рецепт.
+persistent-poi-admin-ui-remote-deposit-hint = Материалы вносятся, а уровень повышается только в консоли администрации самой территории.
+territory-console-tab-command = Командование
+territory-console-command-defence = ОБОРОНА
+territory-console-command-fire-control = Управление огнём: консолей с питанием { $powered }/{ $consoles }
+territory-console-command-fire-control-none = Управление огнём: на территории нет консоли управления огнём
+territory-console-command-manned = Ручное — оператор держит орудия сам
+territory-console-command-engaging = Ведёт бой: { $target }
+territory-console-command-idle = Нет цели
+territory-console-command-guns = Корабельные орудия: { $guns }/{ $limit } под управлением огнём
+territory-console-command-guns-unlimited = Корабельные орудия: { $guns }
+territory-console-command-turrets = Турели против абордажа: { $turrets }
+territory-console-command-auto = Автоматическое управление огнём
+territory-console-command-auto-desc = Когда за консолью никого нет, батарея открывает огонь сама.
+territory-console-command-zone = Держать запретную зону
+territory-console-command-zone-desc = Атаковать любого не союзника, который приближается, а не только фракции, воюющие с вами.
+territory-console-command-turrets-armed = Турели против абордажа активны
+territory-console-command-turrets-desc = Турели стреляют по враждебным вашей фракции абордажникам.
+territory-console-command-on = ВКЛ
+territory-console-command-off = ВЫКЛ
+territory-console-command-not-loaded = В этом раунде территории нет в секторе. Приказы обороны подождут, пока она не появится.
+territory-console-command-name = НАЗВАНИЕ
+territory-console-command-name-hint = Видно на радаре, политической карте и в оповещениях об атаке. Всегда начинается с названия вашей фракции.
+territory-console-command-name-placeholder = Введите название или оставьте пустым для собственного
+territory-console-command-rename = Переименовать
+territory-console-command-reset-name = Сбросить
+territory-console-command-abandon-heading = ОТКАЗАТЬСЯ
+territory-console-command-abandon-desc = Спустить флаг и оставить землю ничьей. Территория может потерять развитие, как при захвате.
+territory-console-command-abandon = Покинуть территорию
+territory-console-command-abandon-confirm = Нажмите ещё раз, чтобы покинуть
+persistent-poi-build-decals = Нанести разметку на пол
+persistent-poi-deconstruct-start = Разбираем {THE($target)}...
+persistent-poi-deconstruct-invalid = Здесь это разобрать нельзя.
+persistent-poi-deconstruct-console-only = Сооружения территории разбираются через консоль строительства.
+persistent-poi-deconstruct-done = { CAPITALIZE($target) } разобрано: { $refund } осталось на полу.
+persistent-poi-deconstruct-done-silo = { CAPITALIZE($target) } разобрано: { $refund } вернулось в хранилище.
+persistent-poi-deconstruct-refund-none = возвращать нечего
+persistent-poi-deconstruct-refund-entry = { $count } { $material }
+persistent-poi-deconstruct-cursor = Разобрать: { $target }
+persistent-poi-deconstruct-cursor-tile = Снять пол
+persistent-poi-deconstruct-permanent = Это постоянная основа территории вокруг штандарта. Её нельзя снять.
+persistent-poi-deconstruct-busy = Консоль строительства уже разбирает столько, сколько может за раз.
+persistent-poi-mapping-unpowered = У консоли строительства нет питания.
+persistent-poi-mapping-cannot = Сейчас отсюда нельзя работать с территорией.
+persistent-poi-mapping-jolted = Удар выбивает вас из режима строительства!
+persistent-poi-mapping-ui-title = Консоль строительства территории
+persistent-poi-mapping-ui-menu = Меню строительства
+persistent-poi-mapping-ui-dismantle = Разобрать
+persistent-poi-mapping-ui-paint = Нанести разметку
+persistent-poi-mapping-ui-recenter = Вернуться к консоли
+persistent-poi-mapping-ui-lights = Полная яркость
+persistent-poi-mapping-ui-lights-tooltip = Освещает обзор, как в режиме маппинга. Меняется только ваш экран и только пока вы работаете за консолью.
+persistent-poi-mapping-ui-subfloor = Показать подпол
+persistent-poi-mapping-ui-subfloor-tooltip = Показывает трубы, кабели и всё остальное под плиткой. Меняется только ваш экран и только пока вы работаете за консолью.
+persistent-poi-mapping-ui-leave = Отойти от консоли
+persistent-poi-mapping-ui-silo = Хранилище: { $total } на складе, { $kinds } { $kinds ->
+    [one] вид
+    [few] вида
+   *[other] видов
+}
+persistent-poi-mapping-ui-no-silo = [color=#E05A5A]Нет хранилища материалов — отсюда ничего нельзя построить.[/color]
+persistent-poi-mapping-ui-hint = [color=#9A9AA4]Двигайтесь, чтобы перемещать обзор по территории. Всё строится из хранилища, инструменты не нужны. «Разобрать» подсвечивает красным то, что под курсором, — нажмите, чтобы снести, и потраченное вернётся в хранилище, включая стены и машины с карты. Правая кнопка мыши прекращает установку или разборку. Любой урон, потеря питания или уход от консоли закрывают обзор.[/color]
+territory-decal-window-title = Разметка территории
+territory-decal-window-hint = Левая кнопка наносит разметку на клетку, правая стирает. Удерживайте, чтобы вести. Закройте, чтобы закончить.
+territory-decal-window-colour = Цвет
+territory-decal-window-rotate = Повернуть
+territory-decal-window-facing = Поворот { $degrees }°
+territory-decal-page-emblems = Эмблемы
+territory-decal-page-markings = Разметка
+territory-decal-page-tiling = Плитка
+territory-decal-page-borders = Края и окантовка
+territory-decal-page-signs = Цифры и знаки
+territory-decal-tile-full = На эту клетку больше не нанести разметку. Сначала сотрите её.
+territory-decal-grid-full = Территория покрыта разметкой. Сотрите часть, прежде чем рисовать ещё.
+persistent-poi-build-category-shipyard = Верфь и доки
+persistent-poi-build-category-deployment = Развёртывание
+persistent-poi-category-shipyard = Верфи
+persistent-poi-category-dockingport = Внешние шлюзы
+persistent-poi-category-repairconsole = Ремонтные стапели
+construction-condition-persistent-poi-faction = Это может строить только своя фракция.
+territory-console-command-remote-fire = Взять управление огнём
+territory-console-command-remote-fire-hint = Открывает здесь консоль наведения территории. Если уйти с этой вкладки, управление вернётся в автоматический режим.
+territory-console-command-remote-fire-unavailable = Нужна ваша консоль управления огнём с питанием на территории.
+territory-remote-fire-no-console = На территории нет вашей консоли управления огнём.
+territory-remote-fire-unpowered = У консоли управления огнём территории нет питания.
+territory-payment-pay-from = Платить из:
+territory-payment-personal-button = Личный счёт ({ $balance } кр)
+territory-payment-personal-none = Личный счёт (нет счёта)
+territory-payment-faction-button = Казна { $faction } ({ $allowance } кр)
+territory-payment-faction-none = Казна фракции (не ваша)
+territory-payment-personal-note = Оплачивается из вашего кармана.
+territory-payment-faction-note = Казна: { $balance } кр — за раунд вы можете потратить { $percent }% от неё.
+territory-payment-source-personal = вашего счёта
+territory-payment-source-faction = казны фракции
+territory-payment-no-account = У вас нет банковского счёта для оплаты.
+territory-payment-personal-short = Вам это не по карману.
+territory-payment-not-member = Тратить казну могут только люди фракции-владельца.
+territory-payment-treasury-short = В казне на это не хватает.
+territory-payment-share-spent = Вы уже потратили свою долю казны в этом раунде.
+persistent-poi-rush-button = Ускорить — { $price } кр
+persistent-poi-rush-button-idle = Ускорить
+persistent-poi-rush-tooltip = Закончить текущую партию сейчас. Стоит столько, сколько стоил бы её остаток, и ещё сверху.
+persistent-poi-rush-unavailable = Этот цех не работает, ускорять нечего.
+persistent-poi-rush-done = Партия готова. Оплачено { $price } кр из { $source }.
+persistent-poi-overtime-off = Обычные часы. Сверхурочные ускоряют все цеха в { $speed } раза.
+persistent-poi-overtime-active = СВЕРХУРОЧНЫЕ x{ $speed } — осталось { $time }
+persistent-poi-overtime-button = Сверхурочные +{ $minutes } мин — { $price } кр
+persistent-poi-overtime-button-idle = Сверхурочные +{ $minutes } мин
+persistent-poi-overtime-button-maxed = Сверхурочные заказаны до предела
+persistent-poi-overtime-unavailable = На территории не работает ни один цех, сверхурочные ничего не дадут.
+persistent-poi-overtime-maxed = Сверхурочные уже заказаны на максимальный срок.
+persistent-poi-overtime-done = Сверхурочные заказаны. Оплачено { $price } кр из { $source }.
+persistent-poi-build-ui-title = Сооружения территории
+persistent-poi-build-ui-search = Поиск сооружений...
+persistent-poi-build-ui-paint-tooltip = Нанести на пол разметку в цветах вашей фракции.
+persistent-poi-build-ui-no-territory = Не на удерживаемой земле
+persistent-poi-build-ui-summary = Уровень { $level }/{ $max } · { $line }
+persistent-poi-build-ui-line = Оснащена для: { $line }
+persistent-poi-build-ui-no-line = Не оснащена для производства
+persistent-poi-build-ui-no-match = Ничего не найдено.
+persistent-poi-build-ui-empty-page = Здесь нет ничего для вашей фракции.
+persistent-poi-build-ui-pick = Выберите, что построить.
+persistent-poi-build-ui-stages = Что нужно
+persistent-poi-build-ui-stage-first = { $number }. Поставить призрак с помощью
+persistent-poi-build-ui-stage-next = { $number }. Затем использовать на каркасе
+persistent-poi-build-ui-carried = у вас { $count }
+persistent-poi-build-ui-carried-split = у вас { $count }, мелкими стопками
+persistent-poi-build-ui-place = Поставить
+persistent-poi-build-ui-place-silo = Построить из хранилища
+persistent-poi-build-ui-silo-stock = · хранилище { $count }
+persistent-poi-build-ui-footer = Установка бесплатна. Каждый этап берёт материал из одной стопки в руках, в сумках или на полу рядом — слишком маленькие стопки объедините. Если хранилище материалов заполнено, всё, что оно покрывает, строится сразу из него.
+persistent-poi-build-ui-short-not-held = не ваша
+persistent-poi-build-ui-short-wrong-line = другое производство
+persistent-poi-build-ui-short-level = уровень { $level }
+persistent-poi-build-ui-short-full = заполнено { $count }/{ $limit }
+persistent-poi-build-ui-short-used = { $count }/{ $limit }
+persistent-poi-build-ui-status-ready = [color=#7FD67A]Можно ставить[/color]
+persistent-poi-build-ui-status-not-held = [color=#E05A5A]Только на земле вашей фракции[/color]
+persistent-poi-build-ui-status-wrong-line = [color=#E05A5A]Территория должна быть оснащена для: { $line }[/color]
+persistent-poi-build-ui-status-level = [color=#E05A5A]Нужен уровень { $level }[/color]
+persistent-poi-build-ui-status-full = [color=#E05A5A]Территория вместила всё, что могла[/color]
+persistent-poi-build-ui-status-full-next = [color=#E05A5A]Заполнено — уровень { $level } позволит больше[/color]
+persistent-poi-build-ui-unlimited = Без ограничений.
+persistent-poi-build-ui-limit = { $category }: { $count }/{ $limit } на этом уровне
+persistent-poi-build-ui-limit-unlimited = { $category }: { $count }, без ограничений
+territory-access-examine-open = [color=goldenrod]Дверь территории. Земля ничья, поэтому она открывается для всех.[/color]
+territory-access-examine-held = [color=goldenrod]Дверь территории. Открывается только для { $faction }.[/color]
+territory-holder-only-denied = Пользоваться этим может только фракция, удерживающая эту землю.
+territory-spawn-beacon-examine-online = [color=green]В сети.[/color] Люди вашей фракции могут при входе выбрать пробуждение здесь.
+territory-spawn-beacon-examine-offline = [color=red]Не в сети.[/color] Нужны питание, территория 2-го уровня и владелец.
+territory-spawn-beacon-unavailable = Крио-точка территории не смогла вас принять, поэтому вы проснулись дома.
+territory-spawn-beacon-arrived = Вы просыпаетесь в крио-точке на { $territory }.
+late-join-deploy-label = Высадка:
+late-join-deploy-home = Домашняя станция
+territory-recruit-ui-title = Вербовка на территории
+territory-recruit-ui-hint = Солдаты прибывают в десантных капсулах. Гарнизон удерживает территорию, эскорт присоединяется к вашему отряду. Сколько их может быть одновременно, зависит от уровня территории, цена — от типа солдата.
+territory-recruit-ui-role = Солдат:
+territory-recruit-ui-role-option = { $role } — { $price } кр
+territory-recruit-ui-garrison = Гарнизон — удерживает территорию
+territory-recruit-ui-escort = Эскорт — идёт с вашим отрядом, дороже
+territory-recruit-ui-mercenary = Наёмники — идут с вашим отрядом
+territory-recruit-ui-mercenary-hint = Наёмники прибывают в десантных капсулах и присоединяются к вашему отряду. Сколько их может быть одновременно, зависит от уровня территории. Независимые не держат гарнизон.
+territory-recruit-ui-mercenary-note = [color=yellow]Наёмники атакуют только то, на что вы укажете, или тех, кто нападает на вас или на них.[/color]
+territory-recruit-ui-standing = { $count } из { $limit } на месте
+territory-recruit-ui-one = Вызвать 1 — { $price } кр
+territory-recruit-ui-fill = Вызвать { $count } — { $price } кр
+territory-recruit-ui-unclaimed = Этой территорией никто не владеет.
+territory-recruit-ui-unpowered = [color=red]Нет питания.[/color] Консоли нужен ЛКП.
+territory-recruit-ui-squad-full = Больше эскорта взять нельзя: двое на человека, включая летящие капсулы.
+territory-recruit-garrison-called = { $count ->
+    [one] { $role } спускается
+   *[other] { $count } x { $role } спускаются
+} в гарнизон. Оплачено { $price } кр.
+territory-recruit-escort-called = { $count ->
+    [one] { $role } спускается
+   *[other] { $count } x { $role } спускаются
+}, чтобы присоединиться к вам. Оплачено { $price } кр.
+territory-recruit-unknown-role = Эта территория не может вызвать такого солдата.
+territory-garrison-soldier-name = гарнизон { $name }
+territory-soldier-role-rifleman = Стрелок
+territory-soldier-role-rifleman-desc = Универсал со служебной винтовкой. Самый дешёвый.
+territory-soldier-role-breacher = Штурмовик-взломщик
+territory-soldier-role-breacher-desc = Дробовик, бьётся вблизи. Лучший в коридорах и дверных проёмах.
+territory-soldier-role-shock = Ударник
+territory-soldier-role-shock-desc = Штурмовик ближней и средней дистанции.
+territory-soldier-role-marksman = Меткий стрелок
+territory-soldier-role-marksman-desc = Длинная винтовка, держит дистанцию и видит дальше всех.
+territory-soldier-role-gunner = Пулемётчик
+territory-soldier-role-gunner-desc = Подавление ленточным питанием. Медленный, долго перезаряжается.
+territory-recruit-round-over = Раунд окончен.
+territory-recruit-not-holder = Вызывать солдат может только владелец территории.
+territory-recruit-no-soldiers = Этому владельцу не подчиняются никакие солдаты.
+territory-recruit-mercenaries-only = Независимые не держат гарнизон. Вместо этого наймите наёмников в свой отряд.
+territory-recruit-unpowered = У консоли нет питания.
+territory-recruit-full = На месте уже столько, сколько позволяет уровень территории.
+territory-recruit-squad-full = Больше эскорта взять нельзя: двое на человека, включая летящие капсулы.
+territory-drone-bay-ui-title = Управление дронами
+territory-drone-bay-ui-tab-squadron = Эскадрилья
+territory-drone-bay-ui-tab-hangar = Ангар
+territory-drone-bay-ui-hint = Купленные дроны вливаются в дозор территории рядом с гарнизонными и подчиняются этой консоли. Корпуса без щитов, орудия не больше 150cc. Служат до конца раунда.
+territory-drone-bay-ui-flying = Купленных дронов в полёте: { $count } из { $limit }
+territory-drone-bay-ui-buy = Запустить
+territory-drone-bay-ui-price = { $price } кр
+territory-drone-bay-ui-cannot-buy = Сейчас ангар ничего не продаёт. Причина указана под списком.
+territory-drone-bay-ui-cannot-afford = С выбранного счёта не оплатить этот корпус.
+territory-drone-bay-ui-unclaimed = Этой территорией никто не владеет.
+territory-drone-bay-ui-unpowered = [color=#D65C5C]Нет питания.[/color] Консоли нужен ЛКП.
+territory-drone-bay-ui-level = Для покупки дронов нужна территория 2-го уровня.
+territory-drone-bay-ui-full = В полёте уже столько купленных дронов, сколько позволяет уровень территории.
+territory-drone-bay-ui-old-pickets = Дозор всё ещё служит прежнему владельцу территории. Приказов отсюда он не принимает.
+territory-drone-bay-ui-not-holder = Отдавать приказы здесь может только владелец территории.
+territory-drone-bay-ui-no-rank = Приказы дронам может отдавать только командование фракции.
+territory-drone-bay-ui-summary = Дронов в дозоре: { $count }    Куплено: { $bought } из { $limit }
+territory-drone-bay-ui-all = ПРИКАЗЫ ВСЕМ ДРОНАМ
+territory-drone-bay-ui-drones-heading = ДРОНЫ
+territory-drone-bay-ui-targets-heading = ЦЕЛИ В ПРЕДЕЛАХ { $range } М
+territory-drone-bay-ui-no-targets = В пределах { $range } м нет враждебных корпусов.
+territory-drone-bay-ui-no-faction = без фракции
+territory-drone-bay-ui-metres = { $distance } м
+territory-drone-bay-ui-target-none = Выберите цель выше, затем нажмите «Атаковать» для всех дронов или для одного.
+territory-drone-bay-ui-target-selected = Цель: [color=#D65C5C]{ $target }[/color]
+territory-drone-bay-ui-no-drones = За эту территорию не летает ни одного дрона. Купите его на вкладке [bold]Ангар[/bold].
+territory-drone-bay-ui-no-drones-tip = За эту территорию не летает ни одного дрона.
+territory-drone-bay-ui-cannot-order = Сейчас консоль не может отдавать приказы. Причина указана сверху.
+territory-drone-bay-ui-pick-target-tip = Сначала выберите цель из списка.
+territory-drone-bay-ui-defend = Оборонять
+territory-drone-bay-ui-attack = Атаковать
+territory-drone-bay-ui-hold = Стоять
+territory-drone-bay-ui-power-down = Отключить
+territory-drone-bay-ui-power-up = Включить
+territory-drone-bay-ui-scuttle = Подорвать
+territory-drone-bay-ui-scuttle-confirm = Точно?
+territory-drone-bay-ui-defend-tip = Патрулировать вокруг территории и атаковать всё враждебное в пределах 500 м.
+territory-drone-bay-ui-attack-tip = Идти за выбранной целью. Дроны вернутся, когда её не станет или она уйдёт из зоны.
+territory-drone-bay-ui-hold-tip = Остановиться на месте и держать позицию. Огонь не открывать.
+territory-drone-bay-ui-power-down-tip = Отключить дрон. Он замирает и дрейфует, пока его не включат.
+territory-drone-bay-ui-power-up-tip = Снова запустить дрон. Он вернётся к обороне.
+territory-drone-bay-ui-scuttle-tip = Взорвать дрон. Освобождает место в ангаре, деньги не возвращаются. Нажмите дважды.
+territory-drone-bay-ui-order-defend = ОБОРОНЯЕТ
+territory-drone-bay-ui-order-attack = АТАКУЕТ
+territory-drone-bay-ui-order-hold = СТОИТ
+territory-drone-bay-ui-order-offline = ОТКЛЮЧЁН
+territory-drone-bay-ui-origin-bought = Куплен
+territory-drone-bay-ui-origin-garrison = Гарнизон
+territory-drone-bay-ui-drone-info = { $origin }  |  { $distance } м от штандарта  |  корпус [color={ $color }]{ $integrity }%[/color]
+territory-drone-bay-ui-activity-unpowered = [color=#D65C5C]На борту нет питания.[/color] Дрейфует, пока его не починят.
+territory-drone-bay-ui-activity-offline = Отключён, дрейфует там, где остановился.
+territory-drone-bay-ui-activity-hold = Держит позицию, огонь не открывает.
+territory-drone-bay-ui-activity-attack = Атакует [color=#D65C5C]{ $target }[/color].
+territory-drone-bay-ui-activity-engaging = Ведёт бой с [color=#D65C5C]{ $target }[/color].
+territory-drone-bay-ui-activity-returning = Возвращается к территории.
+territory-drone-bay-ui-activity-patrol = Патрулирует вокруг территории.
+territory-drone-bay-launched = { $drone } взлетел и вливается в дозор. Оплачено { $price } кр.
+territory-drone-bay-not-holder = Покупать дронов может только владелец территории.
+territory-drone-bay-not-holder-command = Отдавать приказы дронам может только владелец территории.
+territory-drone-bay-no-rank = Приказы дронам может отдавать только командование фракции.
+territory-drone-bay-unknown-hull = Ангар не продаёт такой корпус.
+territory-drone-bay-unpowered = У консоли дронов нет питания.
+territory-drone-bay-old-pickets = Дозор всё ещё служит прежнему владельцу. Дождитесь, пока этих дронов не станет.
+territory-drone-bay-old-pickets-command = Дозор всё ещё служит прежнему владельцу и не подчиняется вам.
+territory-drone-bay-full = В полёте уже столько дронов, сколько позволяет уровень территории.
+territory-drone-bay-launch-failed = Дрон так и не взлетел с площадки. Деньги возвращены.
+territory-drone-bay-lost-drone = Этого дрона больше нет в дозоре.
+territory-drone-bay-scuttle-crewed = На борту этого дрона кто-то есть, затопить его нельзя.
+territory-drone-bay-no-drones = За эту территорию не летает ни одного дрона.
+territory-drone-bay-bad-target = Цель вне зоны, союзная или исчезла.

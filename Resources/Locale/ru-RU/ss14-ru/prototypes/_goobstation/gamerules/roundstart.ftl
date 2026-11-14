@@ -1,0 +1,10 @@
+ent-Changeling = { ent-BaseGameRule }
+    .desc = { ent-BaseGameRule.desc }
+ent-Devil = { ent-BaseGameRule }
+    .desc = { ent-BaseGameRule.desc }
+ent-BlobRule = { ent-BaseGameRule }
+    .desc = { ent-BaseGameRule.desc }
+ent-BlobGameMode = { ent-BaseGameRule }
+    .desc = { ent-BaseGameRule.desc }
+ent-BlobSpawn = { ent-BaseGameRule }
+    .desc = { ent-BaseGameRule.desc }

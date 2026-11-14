@@ -1,5 +1,6 @@
 using Content.Shared.Crescent.Radar;
 using Content.Server.Shuttles.Systems;
+using Robust.Shared.Timing;
 
 namespace Content.Server.Crescent.Radar;
 
@@ -8,8 +9,12 @@ public sealed partial class TurretIFFSystem : SharedTurretIFFSystem
     [Dependency] private readonly ShuttleConsoleSystem _shuttleConsole = default!;
     [Dependency] private readonly RadarConsoleSystem _radarConsole = default!;
 
-    // Refreshing is expensive, so batch any turret changes that occur in the same tick.
+    [Dependency] private readonly IGameTiming _timing = default!;
+
+    // Refreshing is expensive, so batch turret changes and refresh at most every RefreshInterval.
+    private static readonly TimeSpan RefreshInterval = TimeSpan.FromSeconds(0.5);
     private bool _turretsDirty;
+    private TimeSpan _nextRefresh;
 
     public override void Initialize()
     {
@@ -31,11 +36,7 @@ public sealed partial class TurretIFFSystem : SharedTurretIFFSystem
 
     private void OnShutdown(EntityUid uid, TurretIFFComponent component, ComponentShutdown args)
     {
-        if (EntityManager.GetComponent<MetaDataComponent>(uid).EntityLifeStage > EntityLifeStage.MapInitialized)
-        {
-            return;
-        }
-
+        // destroyed turrets have to refresh the radar too
         _turretsDirty = true;
     }
 
@@ -43,10 +44,11 @@ public sealed partial class TurretIFFSystem : SharedTurretIFFSystem
     {
         base.Update(frameTime);
 
-        if (!_turretsDirty)
+        if (!_turretsDirty || _timing.CurTime < _nextRefresh)
             return;
 
         _turretsDirty = false;
+        _nextRefresh = _timing.CurTime + RefreshInterval;
 
         _shuttleConsole.RefreshIFFState();
         _radarConsole.RefreshIFFState();

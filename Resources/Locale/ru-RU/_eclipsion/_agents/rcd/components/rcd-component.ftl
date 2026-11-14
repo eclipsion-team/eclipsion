@@ -1,0 +1,9 @@
+rcd-component-examine-build-details = Сейчас он настроен на постройку: {MAKEPLURAL($name)}.
+rcd-component-change-build-mode = РЦД теперь настроен на постройку: {MAKEPLURAL($name)}.
+rcd-component-walls-and-flooring = Стены и полы
+rcd-component-windows-and-grilles = Окна и решётки
+rcd-component-electrical = Электрика
+rcd-component-lighting = Освещение
+rcd-component-piping = Трубы
+rcd-component-atmosphericutility = Атмосферное оборудование
+rcd-component-pumps = Насосы и клапаны

@@ -1,5 +1,6 @@
 using Content.Shared.Stacks;
 using Robust.Shared.GameStates;
+using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
@@ -161,6 +162,58 @@ public sealed class PersistentPoiAdministrationState : BoundUserInterfaceState
     public bool CanUpgrade;
 
     public bool HasSilo;
+
+    public bool HasDrones;
+    public bool DronesOff;
+
+    // only filled in for an independent's ground
+    public bool Independent;
+    public NetUserId? Founder;
+    public string? FounderName;
+    public List<PersistentPoiMemberState> Members = new();
+    public List<PersistentPoiCandidateState> Candidates = new();
+    public int MaxMembers;
+}
+
+[Serializable, NetSerializable]
+public sealed class PersistentPoiMemberState
+{
+    public NetUserId User;
+    public string Name = string.Empty;
+    public bool CoOwner;
+}
+
+[Serializable, NetSerializable]
+public sealed class PersistentPoiCandidateState
+{
+    public NetEntity Body;
+    public string Name = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class PersistentPoiSetDronesMessage(bool off) : BoundUserInterfaceMessage
+{
+    public readonly bool Off = off;
+}
+
+[Serializable, NetSerializable]
+public sealed class PersistentPoiAddMemberMessage(NetEntity body) : BoundUserInterfaceMessage
+{
+    public readonly NetEntity Body = body;
+}
+
+// also used to leave, with your own id
+[Serializable, NetSerializable]
+public sealed class PersistentPoiRemoveMemberMessage(NetUserId user) : BoundUserInterfaceMessage
+{
+    public readonly NetUserId User = user;
+}
+
+[Serializable, NetSerializable]
+public sealed class PersistentPoiSetCoOwnerMessage(NetUserId user, bool coOwner) : BoundUserInterfaceMessage
+{
+    public readonly NetUserId User = user;
+    public readonly bool CoOwner = coOwner;
 }
 
 [Serializable, NetSerializable]

@@ -1,0 +1,12 @@
+ent-ClothingBackpackSatchelSrFilled = { ent-ClothingBackpackSatchel }
+    .desc = { ent-ClothingBackpackSatchel.desc }
+ent-ClothingBackpackSatchelNfsdBrownFilled = сумка NFSD
+    .desc = { ent-ClothingBackpackSatchelNfsdBrown.desc }
+ent-ClothingBackpackSatchelNfsdCreamFilled = сумка NFSD
+    .desc = { ent-ClothingBackpackSatchelNfsdBrownFilled.desc }
+ent-ClothingBackpackSatchelNfsdBrownDetectiveFilled = сумка NFSD
+    .desc = { ent-ClothingBackpackSatchelNfsdBrown.desc }
+ent-ClothingBackpackSatchelNfsdBrownRadioFilled = сумка NFSD
+    .desc = { ent-ClothingBackpackSatchelNfsdBrown.desc }
+ent-ClothingBackpackSatchelNfsdBrownSheriffFilled = сумка NFSD
+    .desc = { ent-ClothingBackpackSatchelNfsdBrown.desc }

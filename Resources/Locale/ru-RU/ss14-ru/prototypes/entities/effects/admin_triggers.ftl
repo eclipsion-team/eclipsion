@@ -1,0 +1,16 @@
+ent-AdminInstantEffectBase =
+    .desc = { "" }
+ent-AdminInstantEffectEMP = мгновенный эффект
+    .desc = { ent-AdminInstantEffectBase.desc }
+ent-AdminInstantEffectFlash = мгновенный эффект
+    .desc = { ent-AdminInstantEffectBase.desc }
+ent-AdminInstantEffectSmoke3 = мгновенный эффект
+    .desc = { ent-AdminInstantEffectBase.desc }
+ent-AdminInstantEffectSmoke10 = мгновенный эффект
+    .desc = { ent-AdminInstantEffectBase.desc }
+ent-AdminInstantEffectSmoke30 = мгновенный эффект
+    .desc = { ent-AdminInstantEffectBase.desc }
+ent-AdminInstantEffectTearGas = мгновенный эффект
+    .desc = { ent-AdminInstantEffectBase.desc }
+ent-AdminInstantEffectGravityWell = мгновенный эффект
+    .desc = { ent-AdminInstantEffectBase.desc }

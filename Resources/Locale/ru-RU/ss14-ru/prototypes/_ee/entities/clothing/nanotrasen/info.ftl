@@ -1,0 +1,2 @@
+ent-NTInfo = { "" }
+    .desc = { "" }

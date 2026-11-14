@@ -2,16 +2,20 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Content.Server.Popups;
 using Content.Server.Stack;
+using Content.Shared._Crescent.HullrotFaction;
 using Content.Shared._Crescent.Territory;
 using Content.Shared.Database;
 using Content.Server.Administration.Logs;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
 using Content.Shared.Storage;
 using Robust.Server.GameObjects;
+using Robust.Server.Player;
 using Robust.Shared.ContentPack;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -33,6 +37,11 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
 
     [Dependency] private readonly TerritoryProfileSystem _profiles = default!;
+    [Dependency] private readonly TerritoryDronePicketSystem _pickets = default!;
+    [Dependency] private readonly TerritoryConsoleSystem _consoles = default!;
+    [Dependency] private readonly TerritoryIndependentSystem _independents = default!;
+    [Dependency] private readonly MobStateSystem _mobState = default!;
+    [Dependency] private readonly IPlayerManager _players = default!;
 
     private ResPath SavePath => _profiles.PathFor("territory_progress.json");
     private const int SaveVersion = 1;
@@ -66,6 +75,10 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
             subs.Event<PersistentPoiRenameMessage>(OnRename);
             subs.Event<PersistentPoiDrawFromSiloMessage>(OnDrawFromSilo);
             subs.Event<PersistentPoiReturnDepositMessage>(OnReturnDeposit);
+            subs.Event<PersistentPoiSetDronesMessage>(OnSetDrones);
+            subs.Event<PersistentPoiAddMemberMessage>(OnAddMember);
+            subs.Event<PersistentPoiRemoveMemberMessage>(OnRemoveMember);
+            subs.Event<PersistentPoiSetCoOwnerMessage>(OnSetCoOwner);
         });
     }
 
@@ -206,6 +219,8 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
 
         RefreshCounts(args.Grid, territory);
         Dirty(args.Grid, territory);
+
+        _pickets.SetStoodDown(args.Grid, DronesOff(territory));
     }
 
     private void OnRegionNeutralized(ref PersistentRegionNeutralizedEvent args)
@@ -230,6 +245,27 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
             if (xform.GridUid == args.Grid)
                 _ui.CloseUi(uid, PersistentPoiAdministrationUiKey.Key);
         }
+
+        if (!TryComp<PersistentPoiGridComponent>(args.Grid, out var territory))
+            return;
+
+        // lost or taken, the switch goes back on
+        if (_progress.TryGetValue(territory.RegionId, out var progress) &&
+            progress.DronesOffBy != null &&
+            progress.DronesOffBy != args.Owner)
+        {
+            progress.DronesOffBy = null;
+            Save();
+        }
+
+        _pickets.SetStoodDown(args.Grid, DronesOff(territory));
+    }
+
+    private bool DronesOff(PersistentPoiGridComponent territory)
+    {
+        return territory.Owner != null &&
+               _progress.TryGetValue(territory.RegionId, out var progress) &&
+               progress.DronesOffBy == territory.Owner;
     }
 
     private TerritoryProgress GetOrCreate(string regionId)
@@ -576,6 +612,165 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
         UpdateAdministrationConsole(ent);
     }
 
+    private void OnSetDrones(Entity<PersistentPoiAdministrationConsoleComponent> ent, ref PersistentPoiSetDronesMessage args)
+    {
+        if (!TryGetTerritory(ent, out var grid, out var territory) || !IsHolder(args.Actor, territory))
+            return;
+
+        // same rank the drone control console asks for, or anyone in the faction could switch the defence off here
+        if (!_consoles.HasCommandRank(territory.Owner!, args.Actor))
+        {
+            _popup.PopupEntity(Loc.GetString("territory-drone-bay-no-rank"), ent, args.Actor, PopupType.SmallCaution);
+            return;
+        }
+
+        var progress = GetOrCreate(territory.RegionId);
+        progress.DronesOffBy = args.Off ? territory.Owner : null;
+        Save();
+        _pickets.SetStoodDown(grid, args.Off);
+
+        _adminLog.Add(LogType.Action, LogImpact.Low,
+            $"{ToPrettyString(args.Actor):player} turned the drones of territory '{territory.RegionId}' {(args.Off ? "off" : "on")}");
+        _popup.PopupEntity(Loc.GetString(args.Off ? "persistent-poi-admin-drones-turned-off" : "persistent-poi-admin-drones-turned-on"), ent, args.Actor);
+        UpdateAdministrationConsole(ent);
+    }
+
+    private bool TryGetManager(EntityUid console, EntityUid actor, [NotNullWhen(true)] out string? owner)
+    {
+        owner = null;
+        if (!TryGetTerritory(console, out _, out var territory) ||
+            !PersistentTerritoryFactions.IsIndependent(territory.Owner) ||
+            !IsHolder(actor, territory) ||
+            !TryComp<ActorComponent>(actor, out var user) ||
+            !_independents.CanManage(user.PlayerSession.UserId, territory.Owner!))
+        {
+            return false;
+        }
+
+        owner = territory.Owner!;
+        return true;
+    }
+
+    private void OnAddMember(Entity<PersistentPoiAdministrationConsoleComponent> ent, ref PersistentPoiAddMemberMessage args)
+    {
+        if (!TryGetManager(ent, args.Actor, out var owner))
+        {
+            _popup.PopupEntity(Loc.GetString("persistent-poi-admin-members-not-allowed"), ent, args.Actor, PopupType.SmallCaution);
+            return;
+        }
+
+        if (!TryGetEntity(args.Body, out var body) || !IsCandidate(ent, body.Value, owner))
+            return;
+
+        var user = Comp<ActorComponent>(body.Value).PlayerSession.UserId;
+        if (_independents.GetOwner(user) is { } own && _regions.GetRegions().Any(region => region.Owner == own))
+        {
+            _popup.PopupEntity(Loc.GetString("persistent-poi-admin-members-holds-own", ("name", Name(body.Value))), ent, args.Actor, PopupType.SmallCaution);
+            return;
+        }
+
+        if (!_independents.TryAddMember(body.Value, owner))
+        {
+            _popup.PopupEntity(Loc.GetString("persistent-poi-admin-members-full"), ent, args.Actor, PopupType.SmallCaution);
+            return;
+        }
+
+        _adminLog.Add(LogType.Action, LogImpact.Medium,
+            $"{ToPrettyString(args.Actor):player} added {ToPrettyString(body.Value):player} as a member of {owner}");
+        _popup.PopupEntity(Loc.GetString("persistent-poi-admin-members-added", ("name", Name(body.Value))), ent, args.Actor);
+        _popup.PopupEntity(Loc.GetString("persistent-poi-admin-members-you-joined", ("owner", owner)), body.Value, body.Value, PopupType.Medium);
+        UpdateAdministrationConsole(ent);
+    }
+
+    private void OnRemoveMember(Entity<PersistentPoiAdministrationConsoleComponent> ent, ref PersistentPoiRemoveMemberMessage args)
+    {
+        if (!TryGetTerritory(ent, out _, out var territory) ||
+            !PersistentTerritoryFactions.IsIndependent(territory.Owner) ||
+            !TryComp<ActorComponent>(args.Actor, out var actor))
+        {
+            return;
+        }
+
+        var target = args.User;
+        var member = _independents.GetMembers(territory.Owner!).FirstOrDefault(m => m.User == target).Member;
+        if (member == null)
+            return;
+
+        // anyone can leave, only the founder and co-owners kick
+        var self = actor.PlayerSession.UserId == args.User;
+        if (!self && !TryGetManager(ent, args.Actor, out _))
+            return;
+
+        _independents.RemoveMember(args.User);
+        _adminLog.Add(LogType.Action, LogImpact.Medium,
+            $"{ToPrettyString(args.Actor):player} removed {member.Name} ({args.User}) from {territory.Owner}");
+        _popup.PopupEntity(Loc.GetString(self ? "persistent-poi-admin-members-left" : "persistent-poi-admin-members-removed",
+            ("name", member.Name)), ent, args.Actor);
+        UpdateAdministrationConsole(ent);
+    }
+
+    private void OnSetCoOwner(Entity<PersistentPoiAdministrationConsoleComponent> ent, ref PersistentPoiSetCoOwnerMessage args)
+    {
+        // only the founder hands out co-owner
+        if (!TryGetTerritory(ent, out _, out var territory) ||
+            !PersistentTerritoryFactions.IsIndependent(territory.Owner) ||
+            !TryComp<ActorComponent>(args.Actor, out var actor) ||
+            _independents.GetFounder(territory.Owner!) != actor.PlayerSession.UserId ||
+            !IsHolder(args.Actor, territory))
+        {
+            return;
+        }
+
+        var target = args.User;
+        if (_independents.GetMembers(territory.Owner!).All(m => m.User != target))
+            return;
+
+        _independents.SetCoOwner(args.User, args.CoOwner);
+        UpdateAdministrationConsole(ent);
+    }
+
+    // an independent standing on this ground who isn't in on it yet
+    private bool IsCandidate(EntityUid console, EntityUid body, string owner)
+    {
+        if (!TryComp<ActorComponent>(body, out var actor) ||
+            !_mobState.IsAlive(body) ||
+            CompOrNull<HullrotFactionComponent>(body)?.Faction != PersistentTerritoryFactions.IndependentFaction ||
+            Transform(body).GridUid != Transform(console).GridUid)
+        {
+            return false;
+        }
+
+        var user = actor.PlayerSession.UserId;
+        return !_independents.IsMember(user) && _independents.GetOwner(user) != owner;
+    }
+
+    private void FillMembers(EntityUid? console, PersistentPoiGridComponent territory, PersistentPoiAdministrationState state)
+    {
+        if (territory.Owner is not { } owner || !PersistentTerritoryFactions.IsIndependent(owner))
+            return;
+
+        state.Independent = true;
+        state.MaxMembers = TerritoryIndependentSystem.MaxMembers;
+        state.Founder = _independents.GetFounder(owner);
+        if (state.Founder is { } founder && _players.TryGetSessionById(founder, out var session))
+            state.FounderName = session.AttachedEntity is { } founderBody ? Name(founderBody) : session.Name;
+
+        foreach (var (user, member) in _independents.GetMembers(owner))
+        {
+            state.Members.Add(new PersistentPoiMemberState { User = user, Name = member.Name, CoOwner = member.CoOwner });
+        }
+
+        if (console == null)
+            return;
+
+        var bodies = EntityQueryEnumerator<ActorComponent, HullrotFactionComponent>();
+        while (bodies.MoveNext(out var body, out _, out _))
+        {
+            if (IsCandidate(console.Value, body, owner))
+                state.Candidates.Add(new PersistentPoiCandidateState { Body = GetNetEntity(body), Name = Name(body) });
+        }
+    }
+
     public bool RaiseLevel(EntityUid grid, EntityUid actor)
     {
         if (!TryUpgrade(grid) || !TryComp<PersistentPoiGridComponent>(grid, out var territory))
@@ -635,10 +830,10 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
     private void UpdateAdministrationConsole(EntityUid console)
     {
         var grid = TryGetTerritory(console, out var territoryGrid, out _) ? territoryGrid : (EntityUid?) null;
-        _ui.SetUiState(console, PersistentPoiAdministrationUiKey.Key, BuildAdministrationState(grid));
+        _ui.SetUiState(console, PersistentPoiAdministrationUiKey.Key, BuildAdministrationState(grid, console));
     }
 
-    public PersistentPoiAdministrationState BuildAdministrationState(EntityUid? territoryGrid)
+    public PersistentPoiAdministrationState BuildAdministrationState(EntityUid? territoryGrid, EntityUid? console = null)
     {
         var state = new PersistentPoiAdministrationState
         {
@@ -655,6 +850,10 @@ public sealed class PersistentPoiProgressionSystem : EntitySystem
                                _proto.TryIndex(capability, out var capabilityProto)
                 ? Loc.GetString(capabilityProto.Name)
                 : null;
+
+            state.HasDrones = territory.Owner != null && _pickets.HasPickets(grid);
+            state.DronesOff = DronesOff(territory);
+            FillMembers(console, territory, state);
 
             var current = _levels.GetLevel(territory.Level);
             var next = _levels.GetNextLevel(territory.Level);
@@ -794,6 +993,9 @@ public sealed class TerritoryProgress
     public string? Capability { get; set; }
 
     public Dictionary<string, int> Deposits { get; set; } = new();
+
+    // owner who switched the drones off, a new holder gets them back on
+    public string? DronesOffBy { get; set; }
 }
 
 internal sealed class TerritoryProgressSaveData

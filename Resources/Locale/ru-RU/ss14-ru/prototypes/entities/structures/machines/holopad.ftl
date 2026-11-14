@@ -1,0 +1,2 @@
+ent-HolopadHologram = голограмма
+    .desc = { "" }

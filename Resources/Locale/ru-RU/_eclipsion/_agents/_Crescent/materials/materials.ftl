@@ -1,0 +1,13 @@
+materials-iron = чугун
+materials-ordnanceCompound = мощный взрывчатый состав
+materials-structuralcomposite = конструкционный композит
+materials-ballisticsteel = баллистическая сталь
+materials-heavyordnancesteel = сталь для тяжёлых боеприпасов
+materials-lightgaugecasing = гильзы малого калибра
+materials-mediumgaugecasing = гильзы среднего калибра
+materials-largegaugecasing = гильзы крупного калибра
+materials-compositecasing = композитные гильзы
+materials-brass = латунь
+materials-clockwork-glass = заводное стекло
+materials-uranium-glass = урановое стекло
+materials-reinforced-uranium-glass = укреплённое урановое стекло

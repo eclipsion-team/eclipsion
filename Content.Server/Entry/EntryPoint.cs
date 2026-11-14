@@ -1,3 +1,4 @@
+using Content.Server._Crescent.LagMonitor;
 using Content.Server.Acz;
 using Content.Server.Administration;
 using Content.Server.Administration.Logs;
@@ -49,6 +50,7 @@ namespace Content.Server.Entry
         private PlayTimeTrackingManager? _playTimeTracking;
         private IEntitySystemManager? _sysMan;
         private IServerDbManager? _dbManager;
+        private LagMonitorManager? _lagMonitor;
 
         /// <inheritdoc />
         public override void Init()
@@ -89,7 +91,7 @@ namespace Content.Server.Entry
             factory.GenerateNetIds();
             var configManager = IoCManager.Resolve<IConfigurationManager>();
             var dest = configManager.GetCVar(CCVars.DestinationFile);
-            IoCManager.Resolve<ContentLocalizationManager>().Initialize();
+            IoCManager.Resolve<ContentLocalizationManager>().InitializeServer();
             if (string.IsNullOrEmpty(dest)) //hacky but it keeps load times for the generator down.
             {
                 _euiManager = IoCManager.Resolve<EuiManager>();
@@ -119,6 +121,8 @@ namespace Content.Server.Entry
                 _playTimeTracking.Initialize();
                 IoCManager.Resolve<JobWhitelistManager>().Initialize();
                 IoCManager.Resolve<PlayerRateLimitManager>().Initialize();
+                _lagMonitor = IoCManager.Resolve<LagMonitorManager>();
+                _lagMonitor.Initialize();
             }
         }
 
@@ -164,6 +168,10 @@ namespace Content.Server.Entry
 
             switch (level)
             {
+                case ModUpdateLevel.PreEngine:
+                    _lagMonitor?.TickStarted();
+                    break;
+
                 case ModUpdateLevel.PostEngine:
                 {
                     _euiManager.SendUpdates();

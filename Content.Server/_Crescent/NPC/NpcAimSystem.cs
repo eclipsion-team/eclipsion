@@ -18,6 +18,18 @@ public sealed class NpcAimSystem : EntitySystem
         SubscribeLocalEvent<NpcAimComponent, DamageChangedEvent>(OnDamageChanged);
     }
 
+    // trained hands, below 1 shoots straighter and quicker
+    public void Sharpen(EntityUid uid, float factor)
+    {
+        var aim = EnsureComp<NpcAimComponent>(uid);
+        aim.BaseSpread *= factor;
+        aim.SettleSpread *= factor;
+        aim.MovingSpread *= factor;
+        aim.TargetMovingSpread *= factor;
+        aim.ReactionMin *= factor;
+        aim.ReactionMax *= factor;
+    }
+
     private void OnDamageChanged(Entity<NpcAimComponent> ent, ref DamageChangedEvent args)
     {
         if (args.DamageIncreased && args.Origin is { } origin && origin != ent.Owner)

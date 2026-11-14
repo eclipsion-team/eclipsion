@@ -1,0 +1,14 @@
+ent-GunSafeShuttleCaptain = сейф шаттла
+    .desc = { ent-GunSafe.desc }
+ent-GunSafeShuttleT1 = оружейный сейф шаттла
+    .desc = { ent-GunSafeShuttleCaptain.desc }
+ent-GunSafeShuttleT2 = оружейный сейф шаттла
+    .desc = { ent-GunSafeShuttleCaptain.desc }
+ent-GunSafeShuttleT3 = оружейный сейф шаттла
+    .desc = { ent-GunSafeShuttleCaptain.desc }
+ent-GunSafeShuttleT1Spawner = оружейный сейф шаттла
+    .desc = { ent-MarkerBase.desc }
+ent-GunSafeShuttleT2Spawner = оружейный сейф шаттла
+    .desc = { ent-MarkerBase.desc }
+ent-GunSafeShuttleT3Spawner = оружейный сейф шаттла
+    .desc = { ent-MarkerBase.desc }

@@ -74,6 +74,8 @@
       - PersistentPoiAirlock
       - PersistentPoiAirlockGlass
       - PersistentPoiAirlockPublic
+      - PersistentPoiAirlockHorizontal
+      - PersistentPoiAirlockPublicHorizontal
       - PersistentPoiDockingPort
       - PersistentPoiRepairSlipDSM
       - PersistentPoiRepairSlipNCWL
@@ -792,6 +794,31 @@
     node: airlockPublic
   - type: AccessReader
     containerAccessProvider: null
+
+# side facing ones, the normal airlock sprite faces down whichever way you rotate it
+- type: entity
+  parent: AirlockPersistentPoi
+  id: AirlockHorizontalPersistentPoi
+  name: airlock
+  suffix: Horizontal, Persistent territory, built
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Doors/commandhorizontal.rsi
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: airlockHorizontal
+
+- type: entity
+  parent: AirlockPublicPersistentPoi
+  id: AirlockPublicHorizontalPersistentPoi
+  name: public airlock
+  suffix: Horizontal, Persistent territory, built
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Doors/basicrightleft.rsi
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: airlockPublicHorizontal
 
 # Structure
 
@@ -1683,7 +1710,7 @@
 - type: entity
   parent: PersistentPoiConsoleFrameBase
   id: PersistentPoiFrameDroneBay
-  name: drone bay console frame
+  name: drone control console frame
   components:
   - type: Construction
     graph: PersistentPoiStructures
@@ -1859,6 +1886,30 @@
   - type: Construction
     graph: PersistentPoiStructures
     node: airlockPublicFrame
+
+- type: entity
+  parent: PersistentPoiDoorFrameBase
+  id: PersistentPoiFrameAirlockHorizontal
+  name: airlock assembly
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Doors/commandhorizontal.rsi
+    state: assembly
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: airlockHorizontalFrame
+
+- type: entity
+  parent: PersistentPoiDoorFrameBase
+  id: PersistentPoiFrameAirlockPublicHorizontal
+  name: public airlock assembly
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Doors/basicrightleft.rsi
+    state: assembly
+  - type: Construction
+    graph: PersistentPoiStructures
+    node: airlockPublicHorizontalFrame
 
 - type: entity
   parent: PersistentPoiFrameBase

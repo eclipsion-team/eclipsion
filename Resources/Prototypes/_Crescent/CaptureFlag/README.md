@@ -230,7 +230,7 @@ Frames cannot be taken apart, only shot down.
 | Defences         | 200cc laser emplacement   | `HardpointPersistentPoiMediumLaserEmplacement` + 200cc 'Warden' laser, level 2+ (3 at L2, 4 at L3) | 20 plasteel, 20 steel, 10 glass, 5 plasma, 15 cable |
 | Defences         | 250cc laser emplacement   | `HardpointPersistentPoiHeavyLaserEmplacement` (medium hardpoint) + 250cc 'Bastion' laser, level 3 only (2) | 30 plasteel, 30 steel, 15 glass, 10 plasma, 5 gold, 20 cable |
 | Defences         | anti-boarder turret       | `WeaponTurretAutoPDPersistentPoi`                  | 15 steel, 5 cable                          |
-| Defences         | drone bay                 | `ComputerPersistentPoiDroneBay`, level 3 only (1)  | 15 plasteel, 10 glass, 10 silver, 5 uranium, 20 cable |
+| Defences         | drone control console     | `ComputerPersistentPoiDroneBay`, level 2+ (1)      | 15 plasteel, 10 glass, 10 silver, 5 uranium, 20 cable |
 | Power & light    | boriatic generator        | `BoriaticGeneratorPersistentPoi` (50 kW, empty tank) | 15 steel, 10 plastic, 5 gold, 10 cable   |
 | Power & light    | SMES                      | `SMESPersistentPoi` (built empty)                  | 10 steel, 5 plasteel, 5 silver, 10 cable   |
 | Power & light    | substation                | `SubstationPersistentPoi`                          | 10 steel, 10 cable                         |
@@ -663,14 +663,21 @@ and only soldiers of the current holder count. A pod (`TerritoryDropPod`) marks 
 for 4 seconds with a flame trail, lands with a bang that shakes nearby cameras, lets its soldier out and is gone 20
 seconds later.
 
-**Drone bay.** Level 3 only, one per territory, from the Defences page (`ComputerPersistentPoiDroneBay`, needs APC
-power). The holder buys a drone from `TerritoryDroneBayConsole.hulls`, paying from their own account or the
+**Drone control console.** Level 2 and up, one per territory, from the Defences page (`ComputerPersistentPoiDroneBay`,
+needs APC power). On the Hangar tab the holder buys a drone from `TerritoryDroneBayConsole.hulls`, paying from their own account or the
 treasury: Hornet and Wasp 8000, Valor and Rocinante 12000. Only the territory drone hulls belong in that list, no
 shields and 150cc guns at most; the picket refuses any hull carrying a shield emitter, and
 `TerritoryDroneDefenceTest` checks every listed hull. A bought drone joins the standard's picket under the holder's
 IFF and flies exactly like the garrison drones: it guards the territory and breaks off past `returnRange`. Up to the
-level's `bayDrones` (0 / 0 / 4) bought drones fly at once, on top of the garrison's. They last until shot down or the
-round ends, and are never saved. While the picket still flies for a previous holder the bay sells nothing.
+level's `bayDrones` (0 / 2 / 4) bought drones fly at once, on top of the garrison's. They last until shot down or the
+round ends, and are never saved. While the picket still flies for a previous holder the console sells nothing and
+takes no orders.
+
+The Squadron tab gives every picket drone, garrison drones included, its orders, all at once or one by one:
+**Defend** (the default patrol), **Attack** a hull picked from the target list (hostile hulls with thrust within
+`attackRange`, 1500 m; the drone drops back to Defend once the target is gone, friendly or out of range),
+**Hold** (keep station where it is, weapons cold), **Power down** / **Power up** (dead stop and drift), and
+**Scuttle** (blows the drone up, frees its hangar slot, no refund). Orders last the round.
 
 ## The political map
 

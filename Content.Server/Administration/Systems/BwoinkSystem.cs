@@ -1,3 +1,4 @@
+using Content.Server._Crescent.Translator; // Eclipsion
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -45,6 +46,7 @@ namespace Content.Server.Administration.Systems
         [Dependency] private readonly IServerDbManager _dbManager = default!;
         [Dependency] private readonly PlayerRateLimitManager _rateLimit = default!;
         [Dependency] private readonly IServerPreferencesManager _preferencesManager = default!;
+        [Dependency] private readonly ChatTranslatorSystem _translator = default!; // Eclipsion
 
         [GeneratedRegex(@"^https://(?:(?:canary|ptb)\.)?discord\.com/api/webhooks/(\d+)/((?!.*/).*)$")]
         private static partial Regex DiscordRegex();
@@ -745,6 +747,20 @@ namespace Content.Server.Administration.Systems
             OnBwoinkInternal(bwoinkParams);
         }
 
+        // Eclipsion - admins and the player each read the ahelp in the language they picked
+        private void SendInOwnLanguage(BwoinkTextMessage msg, BwoinkParams bwoinkParams, IEnumerable<INetChannel> channels)
+        {
+            var original = bwoinkParams.Message.Text;
+            _translator.Deliver(original, bwoinkParams.SenderId, null, channels, (channel, translated) =>
+            {
+                var sent = translated == null
+                    ? msg
+                    : new BwoinkTextMessage(msg.UserId, msg.TrueSender,
+                        ChatTranslatorSystem.SwapInWrapped(msg.Text, original, translated), msg.SentAt, msg.PlaySound);
+                RaiseNetworkEvent(sent, channel);
+            });
+        }
+
         /// <summary>
         /// Sends a bwoink. Common to both internal messages (sent via the ahelp or admin interface) and webhook messages (sent through the webhook, e.g. via Discord)
         /// </summary>
@@ -808,10 +824,7 @@ namespace Content.Server.Administration.Systems
             // Notify all admins
             if (!bwoinkParams.UserOnly)
             {
-                foreach (var channel in admins)
-                {
-                    RaiseNetworkEvent(msg, channel);
-                }
+                SendInOwnLanguage(msg, bwoinkParams, admins); // Eclipsion - chat translator
             }
 
             string adminPrefixWebhook = "";
@@ -853,7 +866,7 @@ namespace Content.Server.Administration.Systems
             if (_playerManager.TryGetSessionById(bwoinkParams.Message.UserId, out var session) &&
                 !admins.Contains(session.Channel))
             {
-                RaiseNetworkEvent(playerMsg, session.Channel);
+                SendInOwnLanguage(playerMsg, bwoinkParams, new[] { session.Channel }); // Eclipsion - chat translator
             }
 
             var sendsWebhook = _webhookUrl != string.Empty;

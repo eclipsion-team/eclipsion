@@ -1,0 +1,12 @@
+ent-Bullet6mm = пуля (6мм)
+    .desc = { ent-BaseBullet.desc }
+ent-CartridgePistol6mm = патрон (6мм авто)
+    .desc = { ent-BaseCartridgePistol.desc }
+ent-MagazinePistol6mm = 16-зарядный пистолетный магазин (6мм)
+    .desc = { ent-BaseMagazinePistol.desc }
+ent-BaseMagazinePistol6mmSmg = 40-зарядный магазин ПП (6мм Авто)
+    .desc = { ent-BaseItem.desc }
+ent-MagazinePistol6mmSmgEmpty = 40-зарядный магазин ПП (6мм Авто любой)
+    .desc = { ent-BaseMagazinePistol6mmSmg.desc }
+ent-MagazinePistol6mmSmg = 40-зарядный магазин ПП (6мм Авто)
+    .desc = { ent-BaseMagazinePistol6mmSmg.desc }

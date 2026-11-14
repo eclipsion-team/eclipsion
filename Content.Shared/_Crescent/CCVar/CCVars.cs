@@ -36,7 +36,7 @@ namespace Content.Shared._Crescent.CCVar
         /// shown in the late-join window, but nobody is refused.
         /// </summary>
         public static readonly CVarDef<bool> FactionBalanceEnabled =
-            CVarDef.Create("game.faction_balance_enabled", false, CVar.SERVERONLY | CVar.ARCHIVE);
+            CVarDef.Create("game.faction_balance_enabled", true, CVar.SERVERONLY | CVar.ARCHIVE);
 
         /// <summary>
         /// Headcount every balanced faction may always reach regardless of the population maths, so an

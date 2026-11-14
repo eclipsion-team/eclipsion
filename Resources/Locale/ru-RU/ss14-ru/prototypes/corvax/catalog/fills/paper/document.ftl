@@ -1,0 +1,1 @@
+ent-PrintedDocument = { ent-Paper }

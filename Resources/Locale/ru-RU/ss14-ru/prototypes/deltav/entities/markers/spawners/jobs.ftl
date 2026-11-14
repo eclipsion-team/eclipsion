@@ -1,0 +1,10 @@
+ent-SpawnPointMedicalBorg = медицинский киборг
+    .desc = { ent-SpawnPointJobBase.desc }
+ent-SpawnPointChiefJustice = главный судья
+    .desc = { ent-SpawnPointJobBase.desc }
+ent-SpawnPointClerk = клерк
+    .desc = { ent-SpawnPointJobBase.desc }
+ent-SpawnPointProsecutor = прокурор
+    .desc = { ent-SpawnPointJobBase.desc }
+ent-SpawnPointAdminAssistant = административный ассистент
+    .desc = { ent-SpawnPointJobBase.desc }

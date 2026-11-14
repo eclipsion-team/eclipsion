@@ -1,0 +1,9 @@
+ghost-gui-toggle-ghost-visibility-popup-on = Видимость призраков включена.
+ghost-gui-toggle-ghost-visibility-popup-off = Видимость призраков выключена.
+ghost-gui-toggle-lighting-manager-popup-normal = Обычное освещение.
+ghost-gui-toggle-lighting-manager-popup-personal-light = Личный свет включён.
+ghost-gui-toggle-lighting-manager-popup-fullbright = Режим полной яркости.
+ghost-target-window-category-territory = Территории
+ghost-target-window-category-asteroid = Пояса астероидов
+ghost-target-window-category-wreck = Обломки
+ghost-target-window-category-other = Другие места

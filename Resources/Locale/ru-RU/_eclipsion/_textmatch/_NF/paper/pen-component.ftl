@@ -1,0 +1,1 @@
+pen-mode-sign = Жесты

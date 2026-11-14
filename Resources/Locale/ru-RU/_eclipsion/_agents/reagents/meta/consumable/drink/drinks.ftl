@@ -1,0 +1,10 @@
+reagent-name-coconut-water = кокосовая вода
+reagent-desc-coconut-water = Любимый напиток выживших на необитаемых островах.
+reagent-name-cream-of-coconut = кокосовые сливки
+reagent-desc-cream-of-coconut = Сладкие сиропные кокосовые сливки с добавлением сахара.
+reagent-name-arnold-palmer = арнольд палмер
+reagent-desc-arnold-palmer = А теперь смотрите на этот удар.
+reagent-name-hot-cocoa = горячее какао
+reagent-desc-hot-cocoa = Пахнет праздниками!
+reagent-name-mopwata = швабровода
+reagent-desc-mopwata = Грязная застоявшаяся вода из-под швабры.

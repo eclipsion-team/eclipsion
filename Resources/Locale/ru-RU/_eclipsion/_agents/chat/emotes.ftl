@@ -1,0 +1,12 @@
+chat-emote-name-robotbeep = Робот
+chat-emote-name-harpyring = Звонок
+chat-emote-name-harpypew = Пиу
+chat-emote-name-harpybang = Бах
+chat-emote-name-harpyrev = Рёв мотора
+chat-emote-name-harpycaw = Карканье
+chat-emote-name-harpyhoot = Уханье
+chat-emote-name-vulpsnarl = Оскал
+chat-emote-name-vulpwhine = Скулёж
+chat-emote-name-vulphowl = Вой
+chat-emote-msg-catmeow = мяукает.
+chat-emote-msg-cathisses = шипит!

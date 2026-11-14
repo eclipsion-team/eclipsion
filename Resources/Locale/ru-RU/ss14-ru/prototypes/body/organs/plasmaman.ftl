@@ -1,0 +1,12 @@
+ent-BasePlasmamanOrgan = { "" }
+    .desc = { "" }
+ent-OrganPlasmamanEyes = глаза плазмолюда
+    .desc = { ent-BasePlasmamanOrgan.desc }
+ent-OrganPlasmamanLiver = печень плазмолюда
+    .desc = { ent-BasePlasmamanOrgan.desc }
+ent-OrganPlasmamanTongue = язык плазмолюда
+    .desc = { ent-BasePlasmamanOrgan.desc }
+ent-OrganPlasmamanKidneys = почки плазмолюда
+    .desc = { ent-BasePlasmamanOrgan.desc }
+ent-OrganPlasmamanBrain = мозг плазмолюда
+    .desc = { ent-BasePlasmamanOrgan.desc }

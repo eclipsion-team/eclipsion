@@ -1,0 +1,10 @@
+ent-ClothingEyesBurlapSack = мешок из мешковины
+    .desc = Грубый, но эффективный инструмент для перевозки заключённых в удалённые места.
+ent-ClothingNeckWearableCamera = носимый разведывательный порт
+    .desc = Глаза командира на поле боя.
+ent-ClothingNeckWearableCameraImperial = имперский носимый разведывательный порт
+    .desc = Глаза лорда-адмирала при операциях по извлечению.
+ent-ClothingNeckWearableCameraCommunardNCWL = коммунарский носимый разведывательный порт
+    .desc = Глаза майора на поле боя.
+ent-ClothingNeckWearableCameraInterdyne = носимый разведывательный порт Interdyne
+    .desc = Глаза координатора при операциях по извлечению.

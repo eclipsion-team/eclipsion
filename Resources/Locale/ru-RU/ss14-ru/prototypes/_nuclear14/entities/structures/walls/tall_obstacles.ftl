@@ -1,0 +1,16 @@
+ent-N14BaseTallObstacle = { ent-BaseStructure }
+    .desc = { ent-BaseStructure.desc }
+ent-N14BarricadeWoodTall = деревянная баррикада
+    .desc = { ent-N14BaseTallObstacle.desc }
+ent-N14CellBars = решётка камеры
+    .desc = { ent-N14BaseTallObstacle.desc }
+ent-N14CellBarsSlot = решётка камеры
+    .desc = { ent-N14CellBars.desc }
+ent-N14CellBarsCorner = решётка камеры
+    .desc = { ent-N14CellBars.desc }
+ent-N14CellBarsRust = решётка камеры
+    .desc = { ent-N14CellBars.desc }
+ent-N14CellBarsSlotRust = решётка камеры
+    .desc = { ent-N14CellBarsSlot.desc }
+ent-N14CellBarsCornerRust = решётка камеры
+    .desc = { ent-N14CellBarsCorner.desc }

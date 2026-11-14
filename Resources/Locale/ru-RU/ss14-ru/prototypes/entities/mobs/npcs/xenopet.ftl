@@ -1,0 +1,16 @@
+ent-neutralXenoVents = { ent-BaseGameRule }
+    .desc = { ent-BaseGameRule.desc }
+ent-ArgocyteVents = { ent-BaseGameRule }
+    .desc = { ent-BaseGameRule.desc }
+ent-MeatVents = { ent-BaseGameRule }
+    .desc = { ent-BaseGameRule.desc }
+ent-TickVents = { ent-BaseGameRule }
+    .desc = { ent-BaseGameRule.desc }
+ent-CarpVents = { ent-BaseGameRule }
+    .desc = { ent-BaseGameRule.desc }
+ent-SpaceVents = { ent-BaseGameRule }
+    .desc = { ent-BaseGameRule.desc }
+ent-LightVents = { ent-BaseGameRule }
+    .desc = { ent-BaseGameRule.desc }
+ent-friendlyxenoSpawner = спавнер дружелюбного ксено
+    .desc = { ent-MarkerBase.desc }

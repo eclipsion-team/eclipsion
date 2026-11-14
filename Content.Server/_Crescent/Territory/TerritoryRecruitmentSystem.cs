@@ -7,6 +7,7 @@ using Content.Server.Power.EntitySystems;
 using Content.Shared._Crescent.Economy;
 using Content.Shared._Crescent.Territory;
 using Content.Shared.GameTicking;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
@@ -24,8 +25,10 @@ public sealed class TerritoryRecruitmentSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly GameTicker _ticker = default!;
     [Dependency] private readonly PersistentPoiLevelSystem _levels = default!;
+    [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly TerritoryGarrisonSystem _garrison = default!;
+    [Dependency] private readonly NpcSquadSystem _squad = default!;
     [Dependency] private readonly TerritoryPaymentSystem _payment = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
 
@@ -141,11 +144,11 @@ public sealed class TerritoryRecruitmentSystem : EntitySystem
             return false;
         }
 
-        var room = Room(territory, kind, actor);
+        var room = Room(territory, kind, actor, console.Comp);
         called = Math.Min(count, room);
         if (called <= 0)
         {
-            error = kind == TerritoryRecruitKind.Escort && SquadRoom(actor) <= 0
+            error = kind == TerritoryRecruitKind.Escort && SquadRoom(actor, console.Comp) <= 0
                 ? "territory-recruit-squad-full"
                 : "territory-recruit-full";
             return false;
@@ -171,7 +174,8 @@ public sealed class TerritoryRecruitmentSystem : EntitySystem
         return role.Price + (kind == TerritoryRecruitKind.Escort ? console.EscortSurcharge : 0);
     }
 
-    private int Room(PersistentPoiGridComponent territory, TerritoryRecruitKind kind, EntityUid actor)
+    private int Room(PersistentPoiGridComponent territory, TerritoryRecruitKind kind, EntityUid actor,
+        TerritoryRecruitmentConsoleComponent console)
     {
         if (territory.Owner is not { } owner)
             return 0;
@@ -181,15 +185,29 @@ public sealed class TerritoryRecruitmentSystem : EntitySystem
         var room = limit - _garrison.CountSoldiers(territory.RegionId, owner, kind);
 
         if (kind == TerritoryRecruitKind.Escort)
-            room = Math.Min(room, SquadRoom(actor));
+            room = Math.Min(room, SquadRoom(actor, console));
 
         return Math.Max(0, room);
     }
 
-    private int SquadRoom(EntityUid actor)
+    // how many more escorts this player can take: squad space and the per-player cap
+    private int SquadRoom(EntityUid actor, TerritoryRecruitmentConsoleComponent console)
     {
-        var members = TryComp<NpcSquadLeaderComponent>(actor, out var leader) ? leader.Members.Count : 0;
-        return Math.Max(0, NpcSquadSystem.MaxMembers - members - _garrison.CountInbound(actor));
+        var escorts = 0;
+        if (TryComp<NpcSquadLeaderComponent>(actor, out var leader))
+        {
+            foreach (var member in leader.Members)
+            {
+                if (TryComp<TerritoryGarrisonSoldierComponent>(member, out var soldier) && soldier.Escort &&
+                    !string.IsNullOrEmpty(soldier.RegionId) && !_mobState.IsDead(member))
+                {
+                    escorts++;
+                }
+            }
+        }
+
+        var own = console.EscortsPerPlayer - escorts - _garrison.CountInbound(actor);
+        return Math.Max(0, Math.Min(_squad.Room(actor), own));
     }
 
     private void UpdateConsole(Entity<TerritoryRecruitmentConsoleComponent> ent)
@@ -240,7 +258,7 @@ public sealed class TerritoryRecruitmentSystem : EntitySystem
 
         if (viewer is { } player)
         {
-            state.SquadRoom = SquadRoom(player);
+            state.SquadRoom = SquadRoom(player, console.Comp);
             state.Payment = _payment.GetState(player, owner, console.Comp.TreasuryShare);
         }
 

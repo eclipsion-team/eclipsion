@@ -1,0 +1,14 @@
+job-supervisors-captain = капитану
+job-supervisors-hop = главе персонала
+job-supervisors-hos = главе службы безопасности
+job-supervisors-ce = старшему инженеру
+job-supervisors-cmo = главному врачу
+job-supervisors-rd = мистагогу
+job-supervisors-qm = офицеру логистики
+job-supervisors-service = шеф-поварам, ботаникам, бармену и главе персонала
+job-supervisors-engineering = станционным инженерам, атмосферным техникам и старшему инженеру
+job-supervisors-medicine = врачам, химикам и главному врачу
+job-supervisors-security = офицерам СБ, смотрителю и главе службы безопасности
+job-supervisors-science = учёным и мистагогу
+job-supervisors-hire = тому, кто вас нанял
+job-supervisors-everyone = абсолютно всем

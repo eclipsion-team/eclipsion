@@ -1,0 +1,1 @@
+connecting-state-Handshake = Рукопожатие

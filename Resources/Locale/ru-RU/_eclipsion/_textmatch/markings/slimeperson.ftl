@@ -1,0 +1,6 @@
+marking-SlimeGradientLeftArm-gradient_l_arm = Слаймолюд, левая рука (Градиент)
+marking-SlimeGradientRightArm-gradient_r_arm = Слаймолюд, правая рука (Градиент)
+marking-SlimeGradientLeftLeg-gradient_l_leg = Слаймолюд, левая нога (Градиент)
+marking-SlimeGradientRightLeg-gradient_r_leg = Слаймолюд, правая нога (Градиент)
+marking-SlimeGradientLeftHand-gradient_l_hand = Слаймолюд, кисть левой руки (Градиент)
+marking-SlimeGradientRightHand-gradient_r_hand = Слаймолюд, кисть правой руки (Градиент)

@@ -107,6 +107,15 @@ namespace Content.Shared.GameTicking
     {
         public string TextBlob { get; }
 
+        // Eclipsion - raw parts so the client can build the text in its own language
+        public bool Preround;
+        public int RoundId;
+        public int PlayerCount;
+        public int ReadyCount;
+        public string MapName = string.Empty;
+        public string? ModeTitle;
+        public string? ModeDesc;
+
         public TickerLobbyInfoEvent(string textBlob)
         {
             TextBlob = textBlob;

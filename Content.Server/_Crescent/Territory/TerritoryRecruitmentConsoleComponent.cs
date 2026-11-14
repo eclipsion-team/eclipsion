@@ -7,6 +7,10 @@ public sealed partial class TerritoryRecruitmentConsoleComponent : Component
     [DataField]
     public int EscortSurcharge = 1000;
 
+    // escorts one player may have at once, whatever the territory's level
+    [DataField]
+    public int EscortsPerPlayer = 2;
+
     // most of the treasury one member may draw on in a round
     [DataField]
     public float TreasuryShare = 0.25f;

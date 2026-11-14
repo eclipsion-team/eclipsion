@@ -3,6 +3,7 @@ using Content.Server.GameTicking;
 using Content.Server.GameTicking.Presets;
 using Content.Server.Maps;
 using Content.Server.RoundEnd;
+using Content.Shared._Crescent.CCVar;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
 using Content.Shared.Ghost;
@@ -208,6 +209,48 @@ namespace Content.Server.Voting.Managers
                 var ticker = _entityManager.EntitySysManager.GetEntitySystem<GameTicker>();
                 ticker.SetGamePreset(picked);
             };
+
+            // team balance gets asked alongside the gamemode vote and ends at the same time
+            var balanceVote = CreateTeamBalanceVote(options.Duration, initiator);
+            vote.OnCancelled += _ =>
+            {
+                if (!balanceVote.Finished && !balanceVote.Cancelled)
+                    balanceVote.Cancel();
+            };
+        }
+
+        private IVoteHandle CreateTeamBalanceVote(TimeSpan duration, ICommonSession? initiator)
+        {
+            var options = new VoteOptions
+            {
+                Title = Loc.GetString("ui-vote-team-balance-title"),
+                Options =
+                {
+                    (Loc.GetString("ui-vote-team-balance-yes"), "yes"),
+                    (Loc.GetString("ui-vote-team-balance-no"), "no"),
+                },
+                Duration = duration
+            };
+
+            WirePresetVoteInitiator(options, initiator);
+
+            var vote = CreateVote(options);
+
+            vote.OnFinished += (_, _) =>
+            {
+                var yes = vote.VotesPerOption["yes"];
+                var no = vote.VotesPerOption["no"];
+                // tie or nobody voted -> keep it on
+                var enabled = yes >= no;
+
+                _cfg.SetCVar(RatCCVars.FactionBalanceEnabled, enabled);
+                _adminLogger.Add(LogType.Vote, LogImpact.Medium, $"Team balance vote finished: {yes}/{no}, enabled: {enabled}");
+                _chatManager.DispatchServerAnnouncement(Loc.GetString(enabled
+                    ? "ui-vote-team-balance-on"
+                    : "ui-vote-team-balance-off", ("yes", yes), ("no", no)));
+            };
+
+            return vote;
         }
 
         private void CreateMapVote(ICommonSession? initiator)

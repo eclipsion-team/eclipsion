@@ -26,8 +26,12 @@ public sealed class DebrisFeaturePlacerSystem : BaseWorldSystem
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly Robust.Shared.Prototypes.IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly Robust.Shared.EntitySerialization.Systems.MapLoaderSystem _mapLoader = default!;
+    [Dependency] private readonly Robust.Shared.Timing.IGameTiming _timing = default!;
 
     private ISawmill _sawmill = default!;
+
+    private const double SpawnBudgetMs = 5;
+    private readonly Queue<(EntityUid Placer, EntityUid Chunk, Vector2 Point)> _pendingDebris = new();
 
     /// <inheritdoc />
     public override void Initialize()
@@ -182,135 +186,117 @@ public sealed class DebrisFeaturePlacerSystem : BaseWorldSystem
 
         points ??= GeneratePointsInChunk(args.Chunk, density, chunk.Coordinates, chunk.Map);
 
-        var safetyBounds = Box2.UnitCentered.Enlarged(component.SafetyZoneRadius);
-        var failures = 0; // Avoid severe log spam.
-
+        // spawned a few per tick in Update, a whole chunk at once lags
         foreach (var point in points)
         {
-            if (component.OwnedDebris.TryGetValue(point, out var existing))
-            {
-                DebugTools.Assert(Exists(existing));
+            _pendingDebris.Enqueue((uid, args.Chunk, point));
+        }
+    }
+
+    public override void Update(float frameTime)
+    {
+        if (_pendingDebris.Count == 0)
+            return;
+
+        var start = _timing.RealTime;
+        var done = 0;
+        var tried = 0;
+        while (_pendingDebris.Count > 0)
+        {
+            // points that spawn nothing still cost a noise lookup and a grid query, so they count too after a while
+            if ((done > 0 || tried >= 200) && (_timing.RealTime - start).TotalMilliseconds > SpawnBudgetMs)
+                break;
+
+            tried++;
+
+            var (uid, chunkUid, point) = _pendingDebris.Dequeue();
+            if (!TryComp<DebrisFeaturePlacerControllerComponent>(uid, out var component) ||
+                !TryComp<WorldChunkComponent>(chunkUid, out var chunk))
                 continue;
-            }
 
-            var pointDensity = _noiseIndex.Evaluate(uid, densityChannel, WorldGen.WorldToChunkCoords(point));
-            if (pointDensity == 0 && component.DensityClip || _random.Prob(component.RandomCancellationChance))
-                continue;
+            if (PlaceDebris(uid, component, chunkUid, chunk, point))
+                done++;
+        }
+    }
 
-            var coords = new EntityCoordinates(chunk.Map, point);
-
-            // Use non-obsolete FindGridsIntersecting
-            var intersectingGrids = new List<Entity<MapGridComponent>>();
-            _mapManager.FindGridsIntersecting(Comp<MapComponent>(chunk.Map).MapId, safetyBounds.Translated(point), ref intersectingGrids, false, false);
-            if (intersectingGrids.Count > 0)
-                continue; // Oops, gonna collide.
-
-            var preEv = new PrePlaceDebrisFeatureEvent(coords, args.Chunk);
-            RaiseLocalEvent(uid, ref preEv);
-            if (uid != args.Chunk)
-                RaiseLocalEvent(args.Chunk, ref preEv);
-
-            if (preEv.Handled)
-                continue;
-
-            var debrisFeatureEv = new TryGetPlaceableDebrisFeatureEvent(coords, args.Chunk);
-            RaiseLocalEvent(uid, ref debrisFeatureEv);
-
-            if (debrisFeatureEv.DebrisProto == null)
-            {
-                // Try on the chunk...?
-                if (uid != args.Chunk)
-                    RaiseLocalEvent(args.Chunk, ref debrisFeatureEv);
-
-                // Not a failure: noise-driven selectors deliberately return nothing on low-noise points
-                // (e.g. WreckGraveyard clips 0-0.4 to zero) to keep wrecks sparse.
-                if (debrisFeatureEv.DebrisProto == null)
-                    continue;
-            }
-
-            // Debug: Log every prototype selected for placement
-            _sawmill.Debug($"[DebrisPlacer] Selected debris prototype '{debrisFeatureEv.DebrisProto}' for placement at {coords} (chunk {args.Chunk})");
-            
-            // Check if the proto is a gameMap prototype
-            // If the selected prototype is a gameMap, load it as a new grid instead of spawning as an entity.
-            Content.Server.Maps.GameMapPrototype? gameMapProto = null;
-            var isGameMap = false;
-            
-            if (debrisFeatureEv.DebrisProto is { } mapProtoId)
-            {
-                try
-                {
-                    isGameMap = _prototypeManager.TryIndex<Content.Server.Maps.GameMapPrototype>(mapProtoId, out gameMapProto);
-                    _sawmill.Debug($"[DebrisPlacer] Successfully checked '{mapProtoId}': IsGameMap={isGameMap}");
-                }
-                catch (Exception ex)
-                {
-                    _sawmill.Warning($"[DebrisPlacer] Exception checking prototype '{mapProtoId}' as GameMap: {ex.Message}");
-                    isGameMap = false;
-                }
-            }
-
-            if (isGameMap && gameMapProto != null)
-            {
-                _sawmill.Debug($"[DebrisPlacer] Attempting to place gameMap prototype '{debrisFeatureEv.DebrisProto}' at {coords} (chunk {args.Chunk})");
-                var mapPath = gameMapProto.MapPath;
-                bool handled = false;
-                _sawmill.Debug($"[DebrisPlacer] Calling TryLoadGrid with path '{mapPath}' for '{debrisFeatureEv.DebrisProto}'");
-                
-                // Load as grid instead of map - wreck files contain grids, not maps
-                var mapId = Comp<MapComponent>(chunk.Map).MapId;
-                
-                // Calculate the offset from map origin (0,0) to the desired coordinates
-                // This ensures the grid spawns directly at the target location instead of at 0,0
-                var offset = coords.Position;
-                
-                var loadedGrid = _mapLoader.TryLoadGrid(mapId, mapPath, out var gridUid, offset: offset);
-                
-                if (loadedGrid && gridUid != null)
-                {
-                    _sawmill.Debug($"[DebrisPlacer] Grid '{mapPath}' loaded successfully at {coords}. Grid: {gridUid}");
-                    
-                    var grid = gridUid.Value;
-                    // GameMap station `components` are not applied by TryLoadGrid; match round-start setup for important markers.
-                    EnsureComp<IgnoreHeatSeekingTargetComponent>(grid);
-                    component.OwnedDebris.Add(point, grid);
-
-                    // Track ownership for cleanup and chunk management
-                    var owned = EnsureComp<OwnedDebrisComponent>(grid);
-                    owned.OwningController = uid;
-                    owned.LastKey = point;
-                    handled = true;
-                    _sawmill.Debug($"[DebrisPlacer] Placed grid entity {grid} for '{debrisFeatureEv.DebrisProto}' at {coords}");
-                }
-                else
-                {
-                    _sawmill.Debug($"[DebrisPlacer] Failed to load grid '{mapPath}' for '{debrisFeatureEv.DebrisProto}'");
-                }
-                
-                // If not handled, increment failures for error reporting.
-                if (!handled)
-                {
-                    failures++;
-                }
-                // Always continue, never call Spawn for gameMap.
-                continue;
-            }
-            else
-            {
-                _sawmill.Debug($"[DebrisPlacer] Prototype '{debrisFeatureEv.DebrisProto}' is not a gameMap, proceeding to entity spawn.");
-            }
-
-            // Otherwise, spawn as entity
-            var ent = Spawn(debrisFeatureEv.DebrisProto, coords);
-            component.OwnedDebris.Add(point, ent);
-
-            var ownedEnt = EnsureComp<OwnedDebrisComponent>(ent);
-            ownedEnt.OwningController = uid;
-            ownedEnt.LastKey = point;
+    private bool PlaceDebris(EntityUid uid, DebrisFeaturePlacerControllerComponent component, EntityUid chunkUid,
+        WorldChunkComponent chunk, Vector2 point)
+    {
+        if (component.OwnedDebris.TryGetValue(point, out var existing))
+        {
+            DebugTools.Assert(Exists(existing));
+            return false;
         }
 
-        if (failures > 0)
-            _sawmill.Error($"Failed to place {failures} debris at chunk {args.Chunk} at coords {args.Coords}");
+        var pointDensity = _noiseIndex.Evaluate(uid, component.DensityNoiseChannel, WorldGen.WorldToChunkCoords(point));
+        if (pointDensity == 0 && component.DensityClip || _random.Prob(component.RandomCancellationChance))
+            return false;
+
+        if (!TryComp<MapComponent>(chunk.Map, out var mapComp))
+            return false;
+
+        var coords = new EntityCoordinates(chunk.Map, point);
+        var safetyBounds = Box2.UnitCentered.Enlarged(component.SafetyZoneRadius);
+
+        // checked when spawning, a ship might have moved here since the chunk loaded
+        var intersectingGrids = new List<Entity<MapGridComponent>>();
+        _mapManager.FindGridsIntersecting(mapComp.MapId, safetyBounds.Translated(point), ref intersectingGrids, false, false);
+        if (intersectingGrids.Count > 0)
+            return false; // Oops, gonna collide.
+
+        var preEv = new PrePlaceDebrisFeatureEvent(coords, chunkUid);
+        RaiseLocalEvent(uid, ref preEv);
+        if (uid != chunkUid)
+            RaiseLocalEvent(chunkUid, ref preEv);
+
+        if (preEv.Handled)
+            return false;
+
+        var debrisFeatureEv = new TryGetPlaceableDebrisFeatureEvent(coords, chunkUid);
+        RaiseLocalEvent(uid, ref debrisFeatureEv);
+
+        if (debrisFeatureEv.DebrisProto == null)
+        {
+            // Try on the chunk...?
+            if (uid != chunkUid)
+                RaiseLocalEvent(chunkUid, ref debrisFeatureEv);
+
+            // Not a failure: noise-driven selectors deliberately return nothing on low-noise points
+            // (e.g. WreckGraveyard clips 0-0.4 to zero) to keep wrecks sparse.
+            if (debrisFeatureEv.DebrisProto == null)
+                return false;
+        }
+
+        // If the selected prototype is a gameMap, load it as a new grid instead of spawning as an entity.
+        if (_prototypeManager.TryIndex<Content.Server.Maps.GameMapPrototype>(debrisFeatureEv.DebrisProto, out var gameMapProto))
+        {
+            var mapPath = gameMapProto.MapPath;
+
+            // wreck files contain grids, not maps. offset puts it at the point instead of 0,0
+            if (!_mapLoader.TryLoadGrid(mapComp.MapId, mapPath, out var gridUid, offset: coords.Position) || gridUid == null)
+            {
+                _sawmill.Error($"Failed to place debris {debrisFeatureEv.DebrisProto} at chunk {chunkUid} at {point}");
+                return true;
+            }
+
+            var grid = gridUid.Value;
+            // GameMap station `components` are not applied by TryLoadGrid; match round-start setup for important markers.
+            EnsureComp<IgnoreHeatSeekingTargetComponent>(grid);
+            component.OwnedDebris.Add(point, grid);
+
+            var owned = EnsureComp<OwnedDebrisComponent>(grid);
+            owned.OwningController = uid;
+            owned.LastKey = point;
+            return true;
+        }
+
+        var ent = Spawn(debrisFeatureEv.DebrisProto, coords);
+        component.OwnedDebris.Add(point, ent);
+
+        var ownedEnt = EnsureComp<OwnedDebrisComponent>(ent);
+        ownedEnt.OwningController = uid;
+        ownedEnt.LastKey = point;
+        return true;
     }
 
     /// <summary>

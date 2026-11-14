@@ -1,0 +1,9 @@
+ent-ConjuredObject10 = { "" }
+ent-SoapConjured = мыло
+    .desc = { ent-BaseBullet.desc }
+ent-SoapletBloodCult = кусочек мыла
+    .desc = { ent-SoapConjured.desc }
+ent-SoapConjuredBloodCultCluster = мыло
+    .desc = { ent-Soap.desc }
+ent-ShellSoapConjuredBloodCultCluster = мыло
+    .desc = { ent-SoapConjured.desc }

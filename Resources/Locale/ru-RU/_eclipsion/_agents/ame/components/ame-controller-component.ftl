@@ -1,0 +1,9 @@
+ame-controller-component-fuel-slot-fail-whitelist = Это нельзя поместить в контроллер...
+ame-controller-component-fuel-slot-fail-locked = Выключите ДАМ, прежде чем трогать его топливо.
+ame-controller-component-fuel-slot-success-insert = Вы вставляете канистру в топливный слот.
+ame-overload-announcement-sender = Антиматериевый двигатель
+ame-overload-announcement = Антиматериевый двигатель на борту {$grid} критически перегружен! Немедленно отключите его, иначе он будет уничтожен!
+ame-overload-announcement-unknown-grid = неизвестного судна
+ame-imminent-announcement = Антиматериевый двигатель на борту {$grid} достиг критической нестабильности! Детонация через {$seconds} сек.!
+ame-window-power-currentsupply-label = Текущая подача энергии:
+ame-window-power-targetsupply-label = Целевая подача энергии:

@@ -1,0 +1,10 @@
+ent-SpawnDungeonLootClutterHydroponics = случайный хлам
+    .desc = { ent-MarkerBasePlaceFree.desc }
+ent-SpawnDungeonLootToolsHydroponics = случайный инструмент
+    .desc = { ent-MarkerBasePlaceFree.desc }
+ent-SpawnDungeonLootClothesHydroponics = случайная одежда
+    .desc = { ent-MarkerBasePlaceFree.desc }
+ent-SpawnDungeonLootChemsHydroponics = случайные химикаты
+    .desc = { ent-MarkerBasePlaceFree.desc }
+ent-SpawnDungeonLootSeed = случайные семена
+    .desc = { ent-MarkerBasePlaceFree.desc }

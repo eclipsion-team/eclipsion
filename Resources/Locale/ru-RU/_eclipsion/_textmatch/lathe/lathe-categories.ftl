@@ -1,0 +1,9 @@
+lathe-category-food = еда
+lathe-category-chemicals = Химикаты
+lathe-category-materials = Материалы
+lathe-category-hardsuits = Скафандры
+lathe-category-armor = Броня
+lathe-category-clothing = Одежда
+lathe-category-medical = Медицина
+lathe-category-power = Питание
+lathe-category-implants = Импланты

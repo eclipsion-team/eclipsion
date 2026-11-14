@@ -1,0 +1,16 @@
+ent-ClothingHeadHatNCWLBeret = берет офицера ополчения
+    .desc = Офицерский берет в цветах ЛРНП. На фронте золотой знак коммунаров.
+ent-ClothingHeadHatNCWLBeretAdmiral = фуражка администратора
+    .desc = Офицерская фуражка высшего ранга ЛРНП. На фронте золотой знак коммунаров.
+ent-ClothingHeadHatNCWLTanker = кепка авиационного техника
+    .desc = Любимая коммунарами кепка пилотов-истребителей и техников ангара.
+ent-ClothingHeadHatNCWLCapsoft = кепка ополчения
+    .desc = Патрульная кепка в цветах коммунаров.
+ent-ClothingHeadHatNCWLCapsoftMedical = кепка боевого медика ополчения
+    .desc = Патрульная кепка боевого медика в стерильных цветах.
+ent-ClothingHeadHatNCWLKommissarHat = фуражка комиссара
+    .desc = Любимая шляпа комиссара. Без неё никуда.
+ent-ClothingHeadHatNCWLBeretMedi = берет директора
+    .desc = Офицерский берет в цветах ЛРНП. На фронте золотой знак коммунаров.
+ent-ClothingHeadHatMVDHat = фуражка офицера МВД
+    .desc = Красная фуражка с блеском, от которого пролетарий заплачет.

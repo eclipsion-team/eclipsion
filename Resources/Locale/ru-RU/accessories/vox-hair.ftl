@@ -1,0 +1,9 @@
+marking-VoxHairAfro = Вокс Афро
+marking-VoxHairHorns = Вокс Рога
+marking-VoxHairKingly = Вокс Королевская
+marking-VoxHairMange = Вокс Лишай
+marking-VoxHairMohawk = Вокс Могавк
+marking-VoxHairNights = Вокс Ночная
+marking-VoxHairPony = Вокс Пони
+marking-VoxHairShortQuills = Вокс Короткие перья
+marking-VoxHairSurf = Вокс Сёрфер

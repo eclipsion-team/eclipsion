@@ -1,0 +1,2 @@
+chat-sign-language-message-wrap = [BubbleHeader][Name][italic]{$entityName}[/italic][/Name][/BubbleHeader] [BubbleContent][italic]{$verb} [font="{$fontType}" size={$fontSize}][color={$color}]{FORMATSIGNLANGUAGE($message)}[/color][/font][/italic][/BubbleContent]
+chat-sign-language-whisper-wrap = [BubbleHeader][Name][italic]{$entityName}[/italic][/Name][/BubbleHeader] [BubbleContent][italic]незаметно показывает жестами [font="{$fontType}" size={$fontSize}][color={$color}]{FORMATSIGNLANGUAGE($message)}[/color][/font][/italic][/BubbleContent]

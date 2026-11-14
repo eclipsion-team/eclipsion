@@ -22,6 +22,7 @@ public sealed partial class PersistentPoiMappingWindow : FancyWindow
     public event Action? OnPaint;
     public event Action? OnRecenter;
     public event Action<bool>? OnLights;
+    public event Action<bool>? OnSubfloor;
     public event Action? OnLeave;
 
     public PersistentPoiMappingWindow()
@@ -37,6 +38,7 @@ public sealed partial class PersistentPoiMappingWindow : FancyWindow
         PaintButton.OnPressed += _ => OnPaint?.Invoke();
         RecenterButton.OnPressed += _ => OnRecenter?.Invoke();
         LightsButton.OnToggled += args => OnLights?.Invoke(args.Pressed);
+        SubfloorButton.OnToggled += args => OnSubfloor?.Invoke(args.Pressed);
         LeaveButton.OnPressed += _ => OnLeave?.Invoke();
     }
 

@@ -245,3 +245,37 @@
       capacity: 10
     - type: MagazineVisuals
       steps: 6
+
+# empty boxes, printed at the ammo techfab and filled by hand
+
+- type: entity
+  id: Magazine48mmRocketEmpty
+  parent: Magazine48mmRocket
+  suffix: Empty
+  components:
+    - type: BallisticAmmoProvider
+      proto: null
+
+- type: entity
+  id: Magazine60mmEmpty
+  parent: Magazine60mm
+  suffix: Empty
+  components:
+    - type: BallisticAmmoProvider
+      proto: null
+
+- type: entity
+  id: Magazine95mmRocketEmpty
+  parent: Magazine95mmRocket
+  suffix: Empty
+  components:
+    - type: BallisticAmmoProvider
+      proto: null
+
+- type: entity
+  id: Magazine30mmPilaEmpty
+  parent: Magazine30mmPila
+  suffix: Empty
+  components:
+    - type: BallisticAmmoProvider
+      proto: null

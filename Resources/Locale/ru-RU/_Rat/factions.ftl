@@ -1,0 +1,17 @@
+rat-faction-admin-no-factions = Нет фракций в базе данных.
+rat-faction-admin-list-header = Фракции:
+rat-faction-admin-total = Всего фракций: { $count }
+rat-faction-admin-created = Создана фракция '{ $name }' (вайтлист: { $whitelisted }).
+rat-faction-admin-deleted = Удалена фракция ID { $id }.
+rat-faction-admin-delete-failed = Не удалось удалить фракцию ID { $id }. Возможно, фракция не существует.
+rat-faction-admin-no-subfactions = Подфракции не найдены.
+rat-faction-admin-yes = да
+rat-faction-admin-no = нет
+rat-faction-admin-set-manager = Назначен '{ $playerName }' менеджером подфракции ID { $factionId }.
+rat-faction-admin-remove-manager = Удален '{ $playerName }' из менеджеров подфракции ID { $factionId }.
+rat-faction-admin-invalid-boolean = Недопустимое булево значение: { $value }
+rat-faction-admin-invalid-id = Недопустимый ID подфракции: { $id }. Должно быть число.
+rat-faction-admin-player-not-found = Игрок '{ $playerName }' не найден.
+rat-faction-admin-faction-not-found = Не удалось назначить менеджера для подфракции ID { $factionId }. Подфракция может не существовать или игрок уже менеджер.
+rat-faction-admin-remove-failed = Не удалось удалить менеджера из подфракции ID { $factionId }. Подфракция или менеджер могут не существовать.
+rat-faction-admin-use-factionlist = Используйте 'factionlist' для просмотра ID подфракций

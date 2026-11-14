@@ -82,6 +82,18 @@ public sealed partial class NpcFactionSystem
         target.Comp.Entities.Add(ent);
     }
 
+    public void UnignoreEntity(Entity<FactionExceptionComponent?> ent, EntityUid target)
+    {
+        if (!Resolve(ent, ref ent.Comp, false))
+            return;
+
+        if (!ent.Comp.Ignored.Remove(target) || ent.Comp.Hostiles.Contains(target))
+            return;
+
+        if (_trackerQuery.TryGetComponent(target, out var tracker))
+            tracker.Entities.Remove(ent);
+    }
+
     /// <summary>
     /// Prevents a list of entities from an enemy faction from being attacked
     /// </summary>

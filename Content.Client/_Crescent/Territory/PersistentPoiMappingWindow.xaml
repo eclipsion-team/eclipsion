@@ -13,6 +13,8 @@
         <Button Name="RecenterButton" Text="{Loc 'persistent-poi-mapping-ui-recenter'}" StyleClasses="OpenBoth" MinHeight="30"/>
         <Button Name="LightsButton" Text="{Loc 'persistent-poi-mapping-ui-lights'}" ToolTip="{Loc 'persistent-poi-mapping-ui-lights-tooltip'}"
                 StyleClasses="OpenBoth" MinHeight="30" ToggleMode="True"/>
+        <Button Name="SubfloorButton" Text="{Loc 'persistent-poi-mapping-ui-subfloor'}" ToolTip="{Loc 'persistent-poi-mapping-ui-subfloor-tooltip'}"
+                StyleClasses="OpenBoth" MinHeight="30" ToggleMode="True"/>
         <PanelContainer StyleClasses="LowDivider"/>
         <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
             <RichTextLabel Name="HintLabel" HorizontalExpand="True"/>

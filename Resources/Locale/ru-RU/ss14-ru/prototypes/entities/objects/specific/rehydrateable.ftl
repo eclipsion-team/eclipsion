@@ -1,0 +1,16 @@
+ent-MonkeyCube = обезьяний кубик
+    .desc = Просто добавь воды!
+    .suffix = { "" }
+ent-KoboldCube = кобольдовый кубик
+    .desc = { ent-MonkeyCube.desc }
+ent-CowCube = коровий кубик
+    .desc = { ent-MonkeyCube.desc }
+ent-GoatCube = козий кубик
+    .desc = { ent-MonkeyCube.desc }
+ent-MothroachCube = кубик молетаракана
+    .desc = { ent-MonkeyCube.desc }
+ent-MouseCube = мышиный кубик
+    .desc = { ent-MonkeyCube.desc }
+ent-DehydratedSpaceCarp = обезвоженный космический карп
+    .desc = Выглядит как плюшевый игрушечный карп, но стоит только добавить воды, и он превращается в настоящего космического карпа!
+    .suffix = { "" }

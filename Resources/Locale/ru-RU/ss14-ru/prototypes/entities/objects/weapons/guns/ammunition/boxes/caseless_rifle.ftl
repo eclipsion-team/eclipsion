@@ -1,0 +1,12 @@
+ent-BaseMagazineBoxCaselessRifle = коробка патронов (.25 безгильзовые)
+    .desc = { ent-BaseItem.desc }
+ent-MagazineBoxCaselessRifle = коробка патронов (.25 безгильзовые)
+    .desc = { ent-BaseMagazineBoxCaselessRifle.desc }
+ent-MagazineBoxCaselessRiflePractice = коробка патронов (.25 безгильзовые учебные)
+    .desc = { ent-BaseMagazineBoxCaselessRifle.desc }
+ent-MagazineBoxCaselessRifleIncendiary = коробка патронов (9x39-мм безгильзовые зажигательные)
+    .desc = { ent-MagazineBoxCaselessRifle.desc }
+ent-MagazineBoxCaselessRifleUranium = коробка патронов (9x39-мм безгильзовые урановые)
+    .desc = { ent-MagazineBoxCaselessRifle.desc }
+ent-MagazineBoxCaselessRifleShrapnel = коробка патронов (9x39-мм безгильзовые шрапнель)
+    .desc = { ent-MagazineBoxCaselessRifle.desc }

@@ -1,0 +1,13 @@
+admin-menu-economy-tab-type = Категория
+admin-menu-economy-search = Поиск по имени или ID...
+admin-menu-economy-refresh = Обновить
+admin-menu-economy-no-selection = Выберите запись для изменения цены
+admin-menu-economy-selected = { $name } ({ $id })
+admin-menu-economy-price = Цена
+admin-menu-economy-save = Сохранить
+admin-menu-economy-loading = Загрузка...
+admin-menu-economy-loaded = Загружено записей: { $count }
+admin-menu-economy-invalid-price = Некорректная цена
+admin-menu-economy-saved = Цена сохранена: { $name }
+admin-menu-economy-category-items = Предметы
+admin-menu-economy-category-vessels = Шаттлы

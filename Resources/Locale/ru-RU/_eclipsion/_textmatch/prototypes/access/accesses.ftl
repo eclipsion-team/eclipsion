@@ -1,0 +1,9 @@
+id-card-access-level-psychologist = Психолог
+id-card-access-level-boxer = Боксёр
+id-card-access-level-clown = мим
+id-card-access-level-library = Библиотека
+id-card-access-level-mime = Мим
+id-card-access-level-musician = Музыкант
+id-card-access-level-reporter = Репортёр
+id-card-access-level-zookeeper = Зоотехник
+id-card-access-level-borg = Борг

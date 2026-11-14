@@ -1,0 +1,10 @@
+ent-ThrusterNfsd = двигатель
+    .desc = { ent-ThrusterSecurity.desc }
+ent-DebugThrusterNfsd = двигатель
+    .desc = { ent-DebugThrusterSecurity.desc }
+ent-GyroscopeNfsd = { ent-GyroscopeSecurity }
+    .desc = { ent-GyroscopeSecurity.desc }
+ent-DebugGyroscopeNfsd = гироскоп
+    .desc = { ent-DebugGyroscopeSecurity.desc }
+ent-SmallGyroscopeNfsd = малый гироскоп
+    .desc = { ent-GyroscopeSecurity.desc }

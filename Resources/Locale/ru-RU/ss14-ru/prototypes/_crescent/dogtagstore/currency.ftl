@@ -1,0 +1,12 @@
+ent-StreeCredRedeemableLow = { "" }
+    .desc = { "" }
+ent-StreeCredRedeemable = { "" }
+    .desc = { "" }
+ent-StreeCredRedeemableHigh = { "" }
+    .desc = { "" }
+ent-SRMPietyRedeemableLow = { "" }
+    .desc = { "" }
+ent-SRMPietyRedeemable = { "" }
+    .desc = { "" }
+ent-SRMPietyRedeemableHigh = { "" }
+    .desc = { "" }

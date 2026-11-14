@@ -1,0 +1,4 @@
+alerts-modsuit-power-name = [color=yellow]Заряд костюма[/color]
+alerts-modsuit-power-desc = Отображает текущий уровень заряда вашего костюма. Низкий уровень заряда может повлиять на функциональность костюма.
+alerts-knocked-down-name = [color=yellow]Сбит с ног[/color]
+alerts-knocked-down-desc = [color=yellow]Сбит с ног[/color]! Ты не можешь подняться.

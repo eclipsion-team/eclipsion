@@ -54,11 +54,11 @@ public sealed partial class CharacterPickerButton : ContainerButton
             if (highPriorityJob != null && prototypeManager.TryIndex<JobPrototype>(highPriorityJob, out var jobProto))
             {
                 var jobName = jobProto.LocalizedName;
-                description = $"{description}\n{jobName}\nFaction: {hum!.Faction}\n${hum.BankBalance}";
+                description = $"{description}\n{jobName}\n{Loc.GetString("character-picker-faction", ("faction", hum!.Faction))}\n${hum.BankBalance}";
             }
             else
             {
-                description = $"{description}\nFaction: {hum!.Faction}\n${hum.BankBalance}";
+                description = $"{description}\n{Loc.GetString("character-picker-faction", ("faction", hum!.Faction))}\n${hum.BankBalance}";
             }
         }
 

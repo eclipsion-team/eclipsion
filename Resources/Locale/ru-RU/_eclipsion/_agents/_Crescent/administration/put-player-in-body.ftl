@@ -1,0 +1,11 @@
+admin-verbs-put-player-in-body = Поместить игрока в тело
+admin-verbs-put-player-in-body-description = Выберите любого подключённого игрока и переместите его в это тело.
+admin-verbs-return-to-body-description = Вернуть этого игрока в { $body }.
+put-player-in-body-title = Поместить игрока в тело
+put-player-in-body-confirm = Переместить выбранного игрока сюда
+put-player-in-body-body-label = Тело: { $body }
+put-player-in-body-occupant-label = Сейчас тело занимает игрок { $player }, он станет призраком.
+put-player-in-body-success = Игрок { $player } перемещён в { $body }.
+put-player-in-body-body-gone = Этого тела больше нет.
+put-player-in-body-player-gone = Этот игрок больше не подключён.
+put-player-in-body-occupied = Тело привязано к другой сессии, но разума в нём нет. Сначала отвяжите её.

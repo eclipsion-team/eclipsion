@@ -81,7 +81,7 @@ public sealed partial class DroneConsoleWindow : FancyWindow
         TargetAllBtn.OnPressed += _ => OnSetTargeting?.Invoke(DroneTargeting.All);
 
         foreach (var formation in Enum.GetValues<DroneFormation>())
-            FormationOption.AddItem(formation.ToString(), (int) formation);
+            FormationOption.AddItem(Loc.GetString($"drone-console-formation-{formation.ToString().ToLowerInvariant()}"), (int) formation);
 
         FormationOption.OnItemSelected += args =>
         {
@@ -131,16 +131,16 @@ public sealed partial class DroneConsoleWindow : FancyWindow
         {
             // Lost drones don't return to the hangar, so the squadron reads short (3/4, 2/4) until a repair
             // station restocks it. Counted in hangar slots, since a heavy drone takes up more than one.
-            DeployedLabel.Text = $"Drones: {state.Drones.Count} ({state.AliveCount}/{state.MaxDrones} slots)";
+            DeployedLabel.Text = Loc.GetString("drone-console-drones", ("count", state.Drones.Count), ("alive", state.AliveCount), ("max", state.MaxDrones));
 
-            HangarLabel.Text = state.HangarCount > 0 ? $"Hangar: {state.HangarCount} slots free" : "Hangar empty - no drones left";
+            HangarLabel.Text = state.HangarCount > 0 ? Loc.GetString("drone-console-hangar", ("count", state.HangarCount)) : Loc.GetString("drone-console-hangar-empty");
             HangarLabel.FontColorOverride = state.HangarCount > 0 ? Color.DarkGray : HullCritical;
 
             LostLabel.Visible = state.LostCount > 0;
-            LostLabel.Text = $"Lost: {state.LostCount} slots - restock at a repair station";
+            LostLabel.Text = Loc.GetString("drone-console-lost", ("count", state.LostCount));
             LostLabel.FontColorOverride = HullWorn;
 
-            TreasuryLabel.Text = state.Treasury is { } treasury ? $"Treasury: {treasury} cr" : string.Empty;
+            TreasuryLabel.Text = state.Treasury is { } treasury ? Loc.GetString("drone-console-treasury", ("amount", treasury)) : string.Empty;
             TreasuryLabel.Visible = state.Treasury != null && state.SpawnableDrones.Count > 0;
 
             StanceAttackBtn.Pressed = state.Stance == DroneStance.Attack;
@@ -164,9 +164,9 @@ public sealed partial class DroneConsoleWindow : FancyWindow
                 for (var i = 0; i < _spawnableDrones.Count; i++)
                 {
                     var entry = _spawnableDrones[i];
-                    var label = entry.HangarCost > 1 ? $"{entry.Name} ({entry.HangarCost} slots)" : entry.Name;
+                    var label = entry.HangarCost > 1 ? Loc.GetString("drone-console-entry-slots", ("name", entry.Name), ("count", entry.HangarCost)) : entry.Name;
                     if (entry.Price > 0)
-                        label = $"{label} - {entry.Price} cr";
+                        label = Loc.GetString("drone-console-entry-price", ("name", label), ("price", entry.Price));
                     SpawnOption.AddItem(label, i);
                 }
 
@@ -182,7 +182,7 @@ public sealed partial class DroneConsoleWindow : FancyWindow
 
     private void UpdateDroneList(List<DroneStatusEntry> drones)
     {
-        SquadronLabel.Text = drones.Count > 0 ? $"Squadron ({drones.Count})" : "Squadron";
+        SquadronLabel.Text = drones.Count > 0 ? Loc.GetString("drone-console-squadron-count", ("count", drones.Count)) : Loc.GetString("drone-console-squadron");
         NoDronesLabel.Visible = drones.Count == 0;
 
         // Drop selections for drones that no longer exist, so a stale pick can't ride along with a later order.
@@ -237,19 +237,19 @@ public sealed partial class DroneConsoleWindow : FancyWindow
     private static string ModeText(DroneStatusEntry drone)
     {
         if (drone.SelfDestructIn is { } seconds)
-            return $"SCUTTLING IN {seconds:0}s";
+            return Loc.GetString("drone-console-mode-scuttling-in", ("seconds", $"{seconds:0}"));
 
         if (!drone.Powered)
-            return "NO POWER";
+            return Loc.GetString("drone-console-mode-no-power");
 
         return drone.Mode switch
         {
-            AutoDroneMode.Launching => "Launching",
-            AutoDroneMode.Follow => "In formation",
-            AutoDroneMode.Attack => "Engaging",
-            AutoDroneMode.Manual => "Manual order",
-            AutoDroneMode.SelfDestructing => "Scuttling",
-            _ => "Idle",
+            AutoDroneMode.Launching => Loc.GetString("drone-console-mode-launching"),
+            AutoDroneMode.Follow => Loc.GetString("drone-console-mode-follow"),
+            AutoDroneMode.Attack => Loc.GetString("drone-console-mode-attack"),
+            AutoDroneMode.Manual => Loc.GetString("drone-console-mode-manual"),
+            AutoDroneMode.SelfDestructing => Loc.GetString("drone-console-mode-scuttling"),
+            _ => Loc.GetString("drone-console-mode-idle"),
         };
     }
 
@@ -321,7 +321,7 @@ public sealed partial class DroneConsoleWindow : FancyWindow
             _select.Text = drone.Name;
             _select.Pressed = selected;
 
-            _status.Text = $"{ModeText(drone)}   Hull {drone.HullIntegrity * 100f:0}%";
+            _status.Text = Loc.GetString("drone-console-status", ("mode", ModeText(drone)), ("hull", $"{drone.HullIntegrity * 100f:0}"));
             _status.FontColorOverride = ModeColor(drone);
 
             _hull.Value = Math.Clamp(drone.HullIntegrity, 0f, 1f);

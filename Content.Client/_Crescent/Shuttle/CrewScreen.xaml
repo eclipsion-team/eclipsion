@@ -5,8 +5,8 @@
        xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
        Orientation="Vertical">
 
-    <controls:Label Text="Target ID" />
-    <controls:Button Name="targetIdButton" Access="Public" Text="Employee ID slot"/>
+    <controls:Label Text="{controls:Loc 'crew-screen-target-id'}" />
+    <controls:Button Name="targetIdButton" Access="Public" Text="{controls:Loc 'crew-screen-id-slot'}"/>
     <controls:BoxContainer Name="accesButtons"></controls:BoxContainer>
 
 </controls:BoxContainer>

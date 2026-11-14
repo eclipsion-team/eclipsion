@@ -1,0 +1,10 @@
+advertisement-lawdrobe-4 = Пончик в день — и СБ не страшна!
+advertisement-lawdrobe-5 = Никто не выше закона!
+advertisement-lawdrobe-6 = Нет, офицер, я не даю согласия на обыск!
+advertisement-lawdrobe-7 = Космические наркотики внутривенно не оставляют улик!
+advertisement-lawdrobe-8 = Вы или ваши близкие пострадали от Nanotrasen? Очень жаль!
+thankyou-lawdrobe-1 = В этом костюме вы выиграете любое дело!
+thankyou-lawdrobe-2 = Возьмите один и для клиента!
+thankyou-lawdrobe-3 = Выиграете или проиграете — вам всё равно заплатят!
+thankyou-lawdrobe-4 = Помните: незаконно, только если поймали!
+thankyou-lawdrobe-5 = ПРОТЕСТУЮ! Этот костюм слишком крут для суда!

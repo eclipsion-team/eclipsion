@@ -1,0 +1,14 @@
+ent-BorgChassisSelectable = { ent-BaseBorgChassisNT }
+    .desc = { ent-BaseBorgChassisNT.desc }
+ent-BorgChassisGeneric = обычный киборг
+    .desc = { ent-BorgChassisSelectable.desc }
+ent-BorgChassisMining = утилизаторский киборг
+    .desc = { ent-BorgChassisSelectable.desc }
+ent-BorgChassisEngineer = инженерный киборг
+    .desc = { ent-BorgChassisSelectable.desc }
+ent-BorgChassisJanitor = киборг-уборщик
+    .desc = { ent-BorgChassisSelectable.desc }
+ent-BorgChassisService = сервисный киборг
+    .desc = { ent-BorgChassisSelectable.desc }
+ent-BorgChassisMedical = медицинский киборг
+    .desc = { ent-BorgChassisSelectable.desc }

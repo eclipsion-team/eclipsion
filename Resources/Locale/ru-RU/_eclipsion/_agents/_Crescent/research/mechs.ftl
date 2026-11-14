@@ -1,0 +1,11 @@
+research-technology-mech-suzume = Разведывательный экзокостюм SHI Suzume
+research-technology-mech-bailiff = Патрульный экзокостюм CMM Bailiff
+research-technology-mech-deputy = Разведывательный экзокостюм CMM Deputy
+research-technology-mech-justiciar = Осадный экзокостюм CMM Justiciar
+research-technology-minutemen-mech-components = Компоненты экзокостюмов Минитменов
+research-technology-mech-jaipei = Боевой экзокостюм SHI Jaipei
+research-technology-mech-tfcf-scouts = Разведывательные экзокостюмы TFCF Marauder и Yamori
+research-technology-mech-oni = Боевой экзокостюм TFCF Oni
+research-technology-mech-ravager = Осадный экзокостюм TFCF Ravager
+research-technology-mech-bastion = Имперский осадный экзокостюм Bastion
+research-technology-mech-svarog = Осадный экзокостюм Союза Svarog

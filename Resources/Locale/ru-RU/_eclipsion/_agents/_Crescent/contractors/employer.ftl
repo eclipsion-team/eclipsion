@@ -1,0 +1,13 @@
+employer_name_osteen = Привилегированный бюргерский консорциум
+employer_name_osteen_command = Торговая палата хартии Оливира
+employer_description_osteen = Консорциум ростовщиков, цеховых мастеров, владельцев складов и фрахтовых брокеров, признанный хартией графа Оливира. Финансирует добычу и военные поставки и защищает бюргерские контракты от произвольных реквизиций.
+employer_name_vogsburg = Двор хартии Оливира
+employer_name_vogsburg_command = Эдельгеймский двор
+employer_description_vogsburg = Администрация и придворная служба при кресцентской хартии графа Оливира Рабенау. Обеспечивает работу двора, архивов, подчинённых привилегий, военных обязательств и политических сделок, которые превращают графскую печать в настоящую власть.
+employer_name_hephaestusindustries = Гефест Индастриз
+employer_name_einsteinengines = Эйнштейн Энджинс
+employer_name_zenghupharmaceuticals = Цзэн-Ху Фармасьютикалс
+employer_name_zavodskoiinterstellar = Заводской Интерстеллар
+employer_name_idrisincorporated = Идрис Инкорпорейтед
+employer_name_orionexpress = Орион Экспресс
+employer_name_eastorioncompany = Восточно-Орионская компания

@@ -1,0 +1,10 @@
+ent-AirlockMercenary = { ent-Airlock }
+    .desc = { ent-Airlock.desc }
+ent-AirlockNfsd = { ent-Airlock }
+    .desc = { ent-Airlock.desc }
+ent-AirlockMercenaryGlass = { ent-AirlockGlass }
+    .desc = { ent-AirlockGlass.desc }
+ent-AirlockNfsdGlass = { ent-AirlockGlass }
+    .desc = { ent-AirlockGlass.desc }
+ent-AirlockExternalGlassShuttleTransit = { ent-AirlockGlassShuttle }
+    .desc = { ent-AirlockGlassShuttle.desc }

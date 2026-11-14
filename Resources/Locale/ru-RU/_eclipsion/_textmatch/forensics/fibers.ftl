@@ -1,0 +1,1 @@
+fibers-kinetic = движущийся

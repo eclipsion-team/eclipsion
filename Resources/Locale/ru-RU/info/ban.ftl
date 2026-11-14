@@ -1,0 +1,30 @@
+cmd-ban-desc = Банит кого-либо
+cmd-ban-player = Не удалось найти игрока с таким именем.
+cmd-ban-hint-duration = [duration]
+cmd-ban-hint-severity = [severity]
+cmd-ban-hint-duration-1 = Навсегда
+cmd-ban-hint-duration-2 = 1 день
+cmd-ban-hint-duration-3 = 3 дня
+cmd-ban-hint-duration-4 = 1 неделя
+cmd-ban-hint-duration-5 = 2 недели
+cmd-ban-hint-duration-6 = 1 месяц
+cmd-banlist-desc = Список активных банов пользователя.
+cmd-banlist-help = Использование: banlist <name or user ID>
+cmd-banlist-empty = Нет активных банов у пользователя { $user }
+cmd-ban_exemption_update-desc = Установите исключение для определенного типа запрета для игрока.
+cmd-ban_exemption_update-help = Использование: ban_exemption_update <player> <flag> [<flag> [...]]
+    Укажите несколько флагов, чтобы выдать игроку несколько исключений из банов.
+    Чтобы снять все исключения, выполните команду с единственным флагом "None".
+cmd-ban_exemption_update-nargs = Ожидалось по крайней мере 2 аргумента
+cmd-ban_exemption_update-locate = Не удается найти игрока '{ $player }'.
+cmd-ban_exemption_update-invalid-flag = Недопустимый флаг '{ $flag }'.
+cmd-ban_exemption_update-success = Обновлены флаги исключения из запрета для '{ $player }' ({ $uid }).
+cmd-ban_exemption_update-arg-player = <игрок>
+cmd-ban_exemption_update-arg-flag = <флаг>
+cmd-ban_exemption_get-desc = Показать исключения из бана для определенного игрока.
+cmd-ban_exemption_get-help = Использование: ban_exemption_get <игрок>
+cmd-ban_exemption_get-nargs = Ожидается 1 аргумент
+cmd-ban_exemption_get-none = Пользователь не освобождается от каких-либо запретов.
+cmd-ban_exemption_get-show = Пользователь освобожден от следующих флагов запрета: { $flags }.
+cmd-ban_exemption_get-arg-player = <игрок>
+ban-kick-reason = Вы были забанены

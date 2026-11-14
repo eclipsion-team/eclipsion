@@ -338,6 +338,19 @@ public sealed class TerritoryConsoleSystem : EntitySystem
         return ent.Comp.CommandAccess.Any(set => set.IsSubsetOf(tags));
     }
 
+    // same rank the faction's mainframe wants, for consoles out on the territories that have none of their own
+    public bool HasCommandRank(string faction, EntityUid actor)
+    {
+        var query = EntityQueryEnumerator<TerritoryConsoleComponent>();
+        while (query.MoveNext(out var uid, out var console))
+        {
+            if (console.Faction == faction && console.CommandAccess.Count > 0)
+                return CanCommand((uid, console), actor);
+        }
+
+        return true;
+    }
+
     private bool TryCommand(Entity<TerritoryConsoleComponent> ent, EntityUid actor)
     {
         if (CanCommand(ent, actor))

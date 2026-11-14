@@ -1,0 +1,9 @@
+job-whitelists-window-summary = Профессий с вайтлистом: {$whitelisted} / {$total}
+job-whitelists-window-server = Вайтлист сервера
+job-whitelists-window-server-tooltip = Позволяет игроку подключаться при включённом вайтлисте сервера и выполняет общие требования «должен быть в вайтлисте» для профессий, лоадаутов и черт.
+job-whitelists-window-search = Поиск профессий...
+job-whitelists-window-only-required = Только профессии с вайтлистом
+job-whitelists-window-grant-shown = Выдать всем показанным
+job-whitelists-window-revoke-shown = Отозвать у всех показанных
+job-whitelists-window-not-required = Эта профессия не требует вайтлиста. Выдача пригодится, только если вайтлист для неё введут позже.
+job-whitelists-window-group = Общий вайтлист со всеми профессиями группы {$group}.

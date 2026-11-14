@@ -1,0 +1,9 @@
+ghost-role-information-albert-wesker-name = Альберт Вескер
+ghost-role-information-albert-wesker-description = Вы — Альберт Вескер. Пули вас не задевают — вы исчезаете с их пути до попадания, — а ваши кулаки пробивают любую броню. Завершите насыщение.
+wesker-dodge-popup = {CAPITALIZE(THE($user))} размытым движением уходит с линии огня!
+chat-emote-name-wesker-finger-wag = Погрозить пальцем
+chat-emote-msg-wesker-finger-wag-1 = поднимает палец и медленно им грозит.
+chat-emote-msg-wesker-finger-wag-2 = грозит пальцем. Не стоило этого делать.
+chat-emote-msg-wesker-finger-wag-3 = поднимает палец и, цокая языком, водит им из стороны в сторону.
+job-title-wesker = Руководитель Umbrella
+wesker-grab-popup = {CAPITALIZE(THE($user))} швыряет {THE($target)} на пол!

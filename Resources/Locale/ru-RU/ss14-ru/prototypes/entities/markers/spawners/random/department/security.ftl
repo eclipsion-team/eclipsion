@@ -1,0 +1,10 @@
+ent-LootSpawnerSecurityBasic = спавнер добычи СБ
+    .desc = { ent-MarkerBase.desc }
+ent-LootSpawnerSecurity = спавнер добычи СБ
+    .desc = { ent-MarkerBase.desc }
+ent-LootSpawnerArmory = спавнер оружейной добычи
+    .desc = { ent-MarkerBase.desc }
+ent-LootSpawnerArmoryGunsOnly = спавнер оружейной добычи
+    .desc = { ent-MarkerBase.desc }
+ent-LootSpawnerArmoryArmorOnly = спавнер оружейной добычи
+    .desc = { ent-MarkerBase.desc }

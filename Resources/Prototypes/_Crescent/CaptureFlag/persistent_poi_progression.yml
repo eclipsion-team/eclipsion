@@ -66,17 +66,17 @@
     GearRack: 0
     RecruitmentConsole: 1
     Portal: 1
-    DroneBay: 0
+    DroneBay: 1
     MaterialSilo: 1
     MappingConsole: 1
     RepairConsole: 0
   productionSpeed: 1.5
   extraStorage: 3
   stockRewardMultiplier: 1.5
-  garrisonSoldiers: 4
+  garrisonSoldiers: 3
   garrisonDrones: 2
   escortSoldiers: 4
-  bayDrones: 0
+  bayDrones: 2
 
 - type: persistentPoiLevel
   id: PersistentPoiLevel3
@@ -115,7 +115,7 @@
   productionSpeed: 2
   extraStorage: 6
   stockRewardMultiplier: 2
-  garrisonSoldiers: 8
+  garrisonSoldiers: 3
   garrisonDrones: 4
   escortSoldiers: 6
   bayDrones: 4

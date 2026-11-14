@@ -1,0 +1,3 @@
+comp-stack-split-custom = Разделить на...
+comp-stack-split-size = Макс.: {$size}
+ui-custom-stack-split-title = Количество для разделения

@@ -1,0 +1,14 @@
+ent-BaseMagazineUniversalMagnum =
+    .desc = { ent-BaseMagazinePistol.desc }
+ent-MagazineUniversalMagnumEmpty = магазин mk 32 «Universal» (8,3×33-мм любые)
+    .desc = { ent-BaseMagazineUniversalMagnum.desc }
+ent-MagazineUniversalMagnum = магазин mk 32 «Universal» (8,3×33-мм)
+    .desc = { ent-BaseMagazineUniversalMagnum.desc }
+ent-MagazineUniversalMagnumPractice = магазин mk 32 «Universal» (8,3×33-мм учебные)
+    .desc = { ent-BaseMagazineUniversalMagnum.desc }
+ent-MagazineUniversalMagnumIncendiary = магазин mk 32 «Universal» (8,3×33-мм зажигательные)
+    .desc = { ent-BaseMagazineUniversalMagnum.desc }
+ent-MagazineUniversalMagnumUranium = магазин mk 32 «Universal» (8,3×33-мм урановые)
+    .desc = { ent-BaseMagazineUniversalMagnum.desc }
+ent-MagazineUniversalMagnumShrapnel = магазин mk 32 «Universal» (8,3×33-мм шрапнель)
+    .desc = { ent-BaseMagazineUniversalMagnum.desc }

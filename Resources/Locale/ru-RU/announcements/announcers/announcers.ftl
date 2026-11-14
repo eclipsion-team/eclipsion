@@ -1,0 +1,1 @@
+announcer-HullrotAnnouncer-name = Секторальный

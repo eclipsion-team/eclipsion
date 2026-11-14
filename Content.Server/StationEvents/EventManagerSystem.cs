@@ -59,7 +59,8 @@ public sealed class EventManagerSystem : EntitySystem
     {
         if (!TryBuildLimitedEvents(limitedEventsTable, out var limitedEvents))
         {
-            Log.Warning("Provided event table could not build dict!");
+            // normal while everything in the table is still running
+            Log.Debug("Nothing in the provided event table can run right now.");
             return false;
         }
 
@@ -91,7 +92,7 @@ public sealed class EventManagerSystem : EntitySystem
 
         if (availableEvents.Count == 0)
         {
-            Log.Warning("No events were available to run!");
+            Log.Debug("No events were available to run!");
             return false;
         }
 

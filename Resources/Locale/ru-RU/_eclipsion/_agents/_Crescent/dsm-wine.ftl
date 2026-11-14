@@ -1,0 +1,9 @@
+reagent-name-dsm-rabenau-wine = Рабенау Резерв
+reagent-desc-dsm-rabenau-wine = Рубиновое вино, выдержанное в дубе, из погребов Дома Рабенау. Подаётся к благородным столам Божественного Мандата Сол.
+reagent-name-dsm-conclave-wine = Золото Конклава
+reagent-desc-dsm-conclave-wine = Золотистое белое вино с нотами мёда и груши, которое берегут для выборных пиров Мандата.
+reagent-name-dsm-courtier-wine = Розе придворного
+reagent-desc-dsm-courtier-wine = Нежное розовое вино с цветочными нотами и сухим послевкусием, любимое в дворянских салонах Мандата.
+flavor-complex-dsm-rabenau-wine = тёмного винограда, дуба и сухого красного вина
+flavor-complex-dsm-conclave-wine = груш, мёда и свежего белого вина
+flavor-complex-dsm-courtier-wine = лепестков розы, ягод и сухого розового вина

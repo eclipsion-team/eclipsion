@@ -1,0 +1,1 @@
+loadout-name-LoadoutSecurityEquipmentEnergySword = Энергетический меч

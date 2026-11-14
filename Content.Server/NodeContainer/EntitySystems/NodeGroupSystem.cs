@@ -25,6 +25,12 @@ namespace Content.Server.NodeContainer.EntitySystems
         [Dependency] private readonly IAdminManager _adminManager = default!;
         [Dependency] private readonly INodeGroupFactory _nodeGroupFactory = default!;
         [Dependency] private readonly ILogManager _logManager = default!;
+        [Dependency] private readonly Robust.Shared.Timing.IGameTiming _timing = default!;
+
+        private const double SlowUpdateMs = 5;
+        private static readonly TimeSpan MinHold = TimeSpan.FromSeconds(0.25);
+        private static readonly TimeSpan MaxHold = TimeSpan.FromSeconds(3);
+        private TimeSpan _holdUntil;
 
         private readonly List<int> _visDeletes = new();
         private readonly List<BaseNodeGroup> _visSends = new();
@@ -144,7 +150,9 @@ namespace Content.Server.NodeContainer.EntitySystems
 
             if (!PauseUpdating)
             {
-                DoGroupUpdates();
+                if (_timing.RealTime >= _holdUntil)
+                    DoGroupUpdates();
+
                 VisDoUpdate(frameTime);
             }
         }
@@ -279,6 +287,13 @@ namespace Content.Server.NodeContainer.EntitySystems
             }
 
             _sawmill.Debug($"Updated node groups in {sw.Elapsed.TotalMilliseconds}ms. {newGroups.Count} new groups, {refloodCount} nodes processed.");
+
+            // big nets take long to remake, wait 10x that before the next one
+            if (sw.Elapsed.TotalMilliseconds > SlowUpdateMs)
+            {
+                var hold = TimeSpan.FromMilliseconds(sw.Elapsed.TotalMilliseconds * 10);
+                _holdUntil = _timing.RealTime + (hold < MinHold ? MinHold : hold > MaxHold ? MaxHold : hold);
+            }
         }
 
         private void ClearReachableIfNecessary(Node node)

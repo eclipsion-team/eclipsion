@@ -1,0 +1,16 @@
+ent-ThrusterSecurityMachineCircuitboard = машинная плата двигателя СБ
+    .desc = { ent-BaseMachineCircuitboard.desc }
+ent-ThrusterNfsdMachineCircuitboard = машинная плата двигателя NFSD
+    .desc = { ent-BaseMachineCircuitboard.desc }
+ent-SmallThrusterMachineCircuitboard = машинная плата малого двигателя
+    .desc = { ent-BaseMachineCircuitboard.desc }
+ent-GyroscopeSecurityMachineCircuitboard = машинная плата гироскопа СБ
+    .desc = { ent-BaseMachineCircuitboard.desc }
+ent-SmallGyroscopeSecurityMachineCircuitboard = машинная плата малого гироскопа СБ
+    .desc = { ent-BaseMachineCircuitboard.desc }
+ent-GyroscopeNfsdMachineCircuitboard = машинная плата гироскопа NFSD
+    .desc = { ent-BaseMachineCircuitboard.desc }
+ent-SmallGyroscopeNfsdMachineCircuitboard = машинная плата малого гироскопа NFSD
+    .desc = { ent-BaseMachineCircuitboard.desc }
+ent-SmallGyroscopeMachineCircuitboard = машинная плата малого гироскопа
+    .desc = { ent-BaseMachineCircuitboard.desc }

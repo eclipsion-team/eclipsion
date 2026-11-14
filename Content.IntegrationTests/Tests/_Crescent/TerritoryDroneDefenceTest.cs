@@ -4,6 +4,8 @@ using System.Numerics;
 using Content.Server._Crescent.Territory;
 using Content.Server.Maps;
 using Content.Server.Power.EntitySystems;
+using Content.Server.Shuttles.Components;
+using Content.Server.Shuttles.Systems;
 using Content.Shared._Crescent.Economy;
 using Content.Shared._Crescent.HeatSeeking;
 using Content.Shared._Crescent.HullrotFaction;
@@ -21,6 +23,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
 using Robust.Shared.Physics.Systems;
 using Robust.UnitTesting;
+using Order = Content.Shared._Crescent.Territory.TerritoryDroneOrder;
 
 namespace Content.IntegrationTests.Tests._Crescent;
 
@@ -101,7 +104,7 @@ public sealed class TerritoryDroneDefenceTest
     }
 
     [Test]
-    public async Task DroneBaySellsOnlyAtLevelThree()
+    public async Task DroneConsoleSellsFromLevelTwoAndGivesOrders()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -113,6 +116,7 @@ public sealed class TerritoryDroneDefenceTest
         EntityUid flag = default;
         EntityUid console = default;
         EntityUid holder = default;
+        EntityUid hostile = default;
 
         await server.WaitPost(() => server.System<TerritoryProfileSystem>().SetProfile(campaign, null));
         await server.WaitPost(() => grid = SpawnTerritory(server, regionId, out flag));
@@ -121,7 +125,20 @@ public sealed class TerritoryDroneDefenceTest
         await server.WaitAssertion(() =>
         {
             Assert.That(server.System<PersistentCaptureRegionSystem>().SetOwner(regionId, "DSM"), Is.True);
-            server.System<PersistentPoiProgressionSystem>().SetLevel(regionId, 2);
+            server.System<PersistentPoiProgressionSystem>().SetLevel(regionId, 1);
+
+            // a hull with thrust under a faction the holder isn't allied with
+            var mapSystem = server.System<SharedMapSystem>();
+            var plating = server.ResolveDependency<ITileDefinitionManager>()["Plating"];
+            var mapId = entMan.GetComponent<TransformComponent>(grid).MapID;
+            var enemy = mapSystem.CreateGridEntity(mapId);
+            mapSystem.SetTile(enemy, Vector2i.Zero, new Tile(plating.TileId));
+            entMan.System<SharedTransformSystem>().SetWorldPosition(enemy.Owner, new Vector2(900f, 0f));
+            var shuttle = entMan.EnsureComponent<ShuttleComponent>(enemy.Owner);
+            shuttle.Enabled = true;
+            shuttle.ThrustDirections = DirectionFlag.North;
+            entMan.System<ShuttleSystem>().SetIFFFaction(enemy.Owner, "NCWL");
+            hostile = enemy.Owner;
 
             console = entMan.SpawnEntity("ComputerPersistentPoiDroneBay", new EntityCoordinates(grid, 4.5f, 4.5f));
             entMan.System<PowerReceiverSystem>().SetNeedsPower(console, false);
@@ -144,31 +161,76 @@ public sealed class TerritoryDroneDefenceTest
             var ent = (console, entMan.GetComponent<TerritoryDroneBayConsoleComponent>(console));
 
             Assert.That(bays.TryLaunch(ent, holder, "PoiHornetDrone", PaymentSource.Personal, out _, out _, out var error),
-                Is.False, "A level 2 territory bought a drone.");
+                Is.False, "A level 1 territory bought a drone.");
             Assert.That(error, Is.EqualTo("territory-drone-bay-full"));
 
             Assert.That(bays.TryLaunch(ent, holder, "PoiShieldedNothing", PaymentSource.Personal, out _, out _, out error),
                 Is.False);
             Assert.That(error, Is.EqualTo("territory-drone-bay-unknown-hull"));
 
-            server.System<PersistentPoiProgressionSystem>().SetLevel(regionId, 3);
             var hulls = ent.Item2.Hulls.Keys.Select(h => h.Id).ToList();
-            for (var i = 0; i < 4; i++)
+            void Launch(int i)
             {
                 Assert.That(bays.TryLaunch(ent, holder, hulls[i % hulls.Count], PaymentSource.Personal,
-                    out var drone, out _, out error), Is.True, $"Launch {i + 1} failed: {error}");
+                    out var drone, out _, out var launchError), Is.True, $"Launch {i + 1} failed: {launchError}");
 
                 var droneGrid = entMan.GetComponent<TransformComponent>(drone!.Value).GridUid!.Value;
                 Assert.That(entMan.GetComponent<IFFComponent>(droneGrid).Faction, Is.EqualTo("DSM"),
                     "A bought drone doesn't fly for the holder.");
             }
 
+            server.System<PersistentPoiProgressionSystem>().SetLevel(regionId, 2);
+            Launch(0);
+            Launch(1);
+            Assert.That(bays.TryLaunch(ent, holder, hulls[0], PaymentSource.Personal, out _, out _, out error),
+                Is.False, "A level 2 territory went past its two drones.");
+            Assert.That(error, Is.EqualTo("territory-drone-bay-full"));
+
+            server.System<PersistentPoiProgressionSystem>().SetLevel(regionId, 3);
+            Launch(2);
+            Launch(3);
             Assert.That(bays.TryLaunch(ent, holder, hulls[0], PaymentSource.Personal, out _, out _, out error),
                 Is.False, "The bay went past the level's drones.");
             Assert.That(error, Is.EqualTo("territory-drone-bay-full"));
 
             var pickets = entMan.GetComponent<TerritoryDronePicketsComponent>(flag);
             Assert.That(pickets.Pickets, Has.Count.EqualTo(4), "The bought drones didn't join the picket.");
+
+            // orders
+            var first = pickets.Pickets[0];
+            Order Of(EntityUid drone) => entMan.GetComponent<TerritoryPicketDroneComponent>(drone).Order;
+
+            Assert.That(bays.TryCommand(ent, holder, null, TerritoryDroneCommand.Attack, grid, out error), Is.False,
+                "The drones were sent after their own territory.");
+            Assert.That(error, Is.EqualTo("territory-drone-bay-bad-target"));
+
+            Assert.That(bays.BuildState(ent, holder).Targets.Select(t => t.Target),
+                Does.Contain(entMan.GetNetEntity(hostile)), "The hostile hull isn't on the target list.");
+
+            Assert.That(bays.TryCommand(ent, holder, null, TerritoryDroneCommand.Attack, hostile, out error), Is.True, error);
+            Assert.That(pickets.Pickets.All(d => Of(d) == Order.Attack), "Not every drone took the attack order.");
+
+            Assert.That(bays.TryCommand(ent, holder, first, TerritoryDroneCommand.Hold, null, out error), Is.True, error);
+            Assert.That(Of(first), Is.EqualTo(Order.Hold));
+            Assert.That(Of(pickets.Pickets[1]), Is.EqualTo(Order.Attack), "A one-drone order reached another drone.");
+
+            Assert.That(bays.TryCommand(ent, holder, null, TerritoryDroneCommand.PowerDown, null, out error), Is.True, error);
+            Assert.That(pickets.Pickets.All(d => Of(d) == Order.Offline));
+            Assert.That(bays.TryCommand(ent, holder, null, TerritoryDroneCommand.PowerUp, null, out error), Is.True, error);
+            Assert.That(pickets.Pickets.All(d => Of(d) == Order.Defend));
+
+            var outsider = entMan.SpawnEntity("MobHuman", new EntityCoordinates(grid, -3.5f, -3.5f));
+            entMan.EnsureComponent<HullrotFactionComponent>(outsider).Faction = "NCWL";
+            Assert.That(bays.TryCommand(ent, outsider, null, TerritoryDroneCommand.PowerDown, null, out error), Is.False,
+                "Someone outside the holding faction gave the drones orders.");
+            Assert.That(error, Is.EqualTo("territory-drone-bay-not-holder-command"));
+
+            Assert.That(bays.TryCommand(ent, holder, null, TerritoryDroneCommand.Scuttle, null, out _), Is.False,
+                "Scuttle went out to the whole picket.");
+            Assert.That(bays.TryCommand(ent, holder, first, TerritoryDroneCommand.Scuttle, null, out error), Is.True, error);
+            Assert.That(pickets.Pickets, Has.Count.EqualTo(3), "The scuttled drone stayed in the picket.");
+            Assert.That(bays.TryLaunch(ent, holder, hulls[0], PaymentSource.Personal, out _, out _, out error), Is.True,
+                $"Scuttling didn't free a hangar slot: {error}");
         });
 
         await server.WaitAssertion(() =>

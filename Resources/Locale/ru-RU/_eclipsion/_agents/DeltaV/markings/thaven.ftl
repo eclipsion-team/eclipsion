@@ -1,0 +1,5 @@
+marking-ThavenCheekBarbels = Голова тавена (усики на щеках)
+marking-ThavenEyebrowBarbels = Голова тавена (усики над бровями)
+marking-ThavenUnderbellyFace = Голова тавена (светлое брюшко на лице)
+marking-ThavenUnderbellyTorso = Грудь тавена (светлое брюшко)
+marking-ThavenCarpSpots = Грудь тавена (пятна карпа)

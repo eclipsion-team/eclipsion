@@ -1,0 +1,16 @@
+loadout-description-LoadoutEyesEyepatch = Аксессуар для глаз — для модника, которому не хватает глаза.
+loadout-name-LoadoutEyesEyepatchColor = повязка на глаз (можно перекрасить)
+loadout-name-LoadoutEyesEyepatchColorFlipped = повязка на глаз, зеркальная (можно перекрасить)
+loadout-name-LoadoutEyesGlassesHipster = хипстерские очки (можно перекрасить)
+loadout-name-LoadoutEyesGlassesMonocle = монокль (можно перекрасить)
+loadout-name-LoadoutEyesGlassesPanto = очки-панто (можно перекрасить)
+loadout-description-LoadoutEyesBlindfold = И зачем вам это?
+loadout-name-LoadoutEyesBlindfoldColor = повязка на глаза (можно перекрасить)
+loadout-description-LoadoutEyesBlindfoldColor = И зачем вам это? Зато есть в самых разных цветах.
+loadout-name-LoadoutEyesGlassesCheapSunglassesAviator = авиаторы (можно перекрасить)
+loadout-name-LoadoutEyesGlassesSunglassesAviator = защитные авиаторы (можно перекрасить)
+loadout-name-LoadoutItemBlindfoldFake = «слепая» повязка
+loadout-description-LoadoutItemBlindfoldFake = Товар может не соответствовать рекламе.
+loadout-name-LoadoutEyesBlindfoldFakeColor = «слепая» повязка (можно перекрасить)
+loadout-description-LoadoutEyesBlindfoldFakeColor = Товар может не соответствовать рекламе.
+loadout-name-LoadoutEyesGlasses = очки (можно перекрасить)

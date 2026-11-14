@@ -80,6 +80,10 @@ public sealed class TerritoryDropPodSystem : EntitySystem
             return;
 
         var soldier = Spawn(payload.Soldier, coords);
+
+        // off first, or this pod still counts against the recruiter's squad room below
+        RemComp<TerritoryDropPodPayloadComponent>(uid);
+
         var marker = EnsureComp<TerritoryGarrisonSoldierComponent>(soldier);
         marker.Faction = payload.Faction;
         marker.RegionId = payload.RegionId;
@@ -98,8 +102,6 @@ public sealed class TerritoryDropPodSystem : EntitySystem
             else
                 _squad.TryRecruit(recruiter, soldier);
         }
-
-        RemComp<TerritoryDropPodPayloadComponent>(uid);
     }
 
     private void Shake(EntityUid pod)

@@ -1,0 +1,32 @@
+cmd-playtime-desc = Открывает панель игрового времени, где можно посмотреть время любого игрока, добавить его, задать или добрать до требований должности
+cmd-playtime-help = Использование: {$command} [имя или guid пользователя]
+    Игрока также можно выбрать в самой панели.
+    playtime_addoverall, playertime и timeadd открывают эту же панель.
+cmd-playtime-hint-player = [имя или guid пользователя]
+playtime-window-no-player = Игрок не выбран
+playtime-window-online = В сети, изменения применяются сразу
+playtime-window-offline = Не в сети, изменения применятся при следующем подключении
+playtime-window-player-not-found = Игрок с именем '{$player}' не найден
+playtime-window-still-loading = Игрок ещё подключается, попробуйте чуть позже
+playtime-window-nothing-changed = Ничего не изменилось, у выбранных трекеров уже такое время
+playtime-window-find-placeholder = Имя или ID пользователя, в сети или нет...
+playtime-window-find = Найти
+playtime-window-overall = Общее время
+playtime-window-time-placeholder = 90, 1h30m, 2d или -45m
+playtime-window-time-invalid = Это не время
+playtime-window-time-help = Число без единиц — это минуты. Единицы: y, mo, w, d, h, m. Минус в начале отнимает время.
+playtime-window-add = Добавить выбранным
+playtime-window-set = Задать выбранным
+playtime-window-meet = Выполнить требования
+playtime-window-meet-tooltip = Выдаёт выбранным должностям ровно столько времени, сколько им ещё не хватает до требований, и не больше.
+playtime-window-search = Поиск должностей...
+playtime-window-select-shown = Выбрать все показанные
+playtime-window-clear = Снять выбор
+playtime-window-selected = Выбрано: {$count}
+playtime-window-job = {$job}: {$time}
+playtime-window-no-tracker = У этой должности нет собственного трекера времени. Можно только выполнить её требования.
+playtime-window-shared = Общее время с: {$jobs}
+playtime-window-requirements = Требуется: {$requirements}
+playtime-window-requirement-tracker = {$time} за {$job}
+playtime-window-requirement-overall = {$time} всего
+playtime-window-requirement-department = {$time} в отделе {$department}

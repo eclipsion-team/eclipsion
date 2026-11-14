@@ -1,0 +1,11 @@
+marking-HumanHairHightight = Хай-энд-тайт
+marking-HumanHairBuzzhawk = Бритый ирокез
+marking-HumanHairShavedbun = Бритая с небрежным пучком
+marking-HumanHairLoosebun = Небрежный пучок
+marking-HumanHairSergeantcut = Стрижка сержанта-инструктора
+marking-HumanHairFullshave = Под машинку
+marking-HumanHairCiacombover = Зачёс агента ЦРУ
+marking-HumanHairFlyboy = Лётчик
+marking-HumanHairOutwardponytail = Торчащий хвостик
+marking-HumanHairStubbleshave = Бритьё под щетину
+marking-HumanHairOvereyeponytail = Торчащий хвостик с чёлкой на глаз

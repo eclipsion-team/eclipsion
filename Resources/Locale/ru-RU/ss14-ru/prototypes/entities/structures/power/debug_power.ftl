@@ -1,0 +1,16 @@
+ent-DebugGenerator = { ent-BaseGenerator }
+    .desc = { ent-BaseGenerator.desc }
+ent-DebugConsumer = потребитель
+    .desc = { "" }
+ent-DebugBatteryStorage = хранилище батарей
+    .desc = { "" }
+ent-DebugBatteryDischarger = разрядник батарей
+    .desc = { "" }
+ent-DebugSMES = { ent-BaseSMES }
+    .desc = { ent-BaseSMES.desc }
+ent-DebugSubstation = { ent-BaseSubstation }
+    .desc = { ent-BaseSubstation.desc }
+ent-DebugAPC = { ent-BaseAPC }
+    .desc = { ent-BaseAPC.desc }
+ent-DebugPowerReceiver = приёмник энергии
+    .desc = { "" }

@@ -1,0 +1,14 @@
+ent-ImmovableRod = неподвижный жезл
+    .desc = Вы чувствуете, что он голоден. Как правило, это плохой знак.
+    .suffix = { "" }
+ent-ImmovableRodDespawn = { ent-ImmovableRod }
+    .desc = { ent-ImmovableRod.desc }
+ent-ImmovableRodSlow = { ent-ImmovableRod }
+    .suffix = Медленный
+    .desc = { ent-ImmovableRod.desc }
+ent-ImmovableRodKeepTiles = { ent-ImmovableRodDespawn }
+    .desc = { ent-ImmovableRodDespawn.desc }
+ent-ImmovableRodWizard = { ent-ImmovableRod }
+    .desc = { ent-ImmovableRod.desc }
+ent-ImmovableRodKeepTilesStill = { ent-ImmovableRodKeepTiles }
+    .desc = { ent-ImmovableRodKeepTiles.desc }

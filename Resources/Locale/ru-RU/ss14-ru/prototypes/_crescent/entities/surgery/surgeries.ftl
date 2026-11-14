@@ -1,0 +1,12 @@
+ent-SurgeryStepInsertCybernetic = установить кибернетический имплант
+    .desc = { ent-SurgeryStepInsertOrgan.desc }
+ent-SurgeryInsertDermis = установить дермальный киберимплант
+    .desc = { ent-SurgeryBase.desc }
+ent-SurgeryRemoveDermis = удалить дермальный киберимплант
+    .desc = { ent-SurgeryBase.desc }
+ent-SurgeryStepMendSkull = восстановить череп
+    .desc = { ent-SurgeryStepBase.desc }
+ent-SurgeryInsertHeadAnchor = установить церебральный киберимплант
+    .desc = { ent-SurgeryBase.desc }
+ent-SurgeryRemoveHeadAnchor = удалить церебральный киберимплант
+    .desc = { ent-SurgeryBase.desc }

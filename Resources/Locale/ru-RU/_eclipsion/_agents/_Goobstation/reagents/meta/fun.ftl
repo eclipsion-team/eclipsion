@@ -1,0 +1,3 @@
+reagent-name-binglejuice = бинглосок
+reagent-desc-binglejuice = Бинг-бонг.
+reagent-popup-binglejuice = Эта мысль наверняка уже приходила вам в голову. Мысль о том, что вы зарылись слишком глубоко…

@@ -1,0 +1,2 @@
+ent-ZavodInfo = { "" }
+    .desc = { "" }

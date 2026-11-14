@@ -1,7 +1,9 @@
 using System.Numerics;
 using Content.Server._Crescent.Territory;
 using Content.Server.Power.EntitySystems;
+using Content.Shared.Audio;
 using Content.Shared.Gravity;
+using Content.Shared.Power.Generator;
 using Content.Shared.Maps;
 using Content.Shared.Timing;
 using Robust.Shared.GameObjects;
@@ -48,6 +50,7 @@ public sealed class PersistentPoiReloadTest
             server.System<PowerReceiverSystem>().SetNeedsPower(gen, false);
 
             var button = entMan.SpawnEntity("SignalButton", new EntityCoordinates(grid, 2.5f, 0.5f));
+            entMan.SpawnEntity("BoriaticGeneratorTitanShuttle", new EntityCoordinates(grid, 3.5f, 0.5f));
             saves.MarkPersistent(grid, key);
             var delay = entMan.GetComponent<UseDelayComponent>(button);
             Assert.That(useDelay.TryGetDelayInfo((button, delay), out var info), Is.True);
@@ -88,7 +91,25 @@ public sealed class PersistentPoiReloadTest
                 Assert.That(useDelay.IsDelayed((uid, delay)), Is.False, "use delay after the load");
             }
 
-            Assert.That(buttons, Is.EqualTo(1));
+            // button + generator
+            Assert.That(buttons, Is.EqualTo(2));
+
+            var appearance = server.System<SharedAppearanceSystem>();
+            var gens = 0;
+            var genQuery = entMan.AllEntityQueryEnumerator<FuelGeneratorComponent, AmbientSoundComponent, TransformComponent>();
+            while (genQuery.MoveNext(out var uid, out var fuelGen, out var ambient, out var xform))
+            {
+                if (xform.GridUid != loaded)
+                    continue;
+
+                gens++;
+                Assert.That(fuelGen.On, Is.True, "generator after the load");
+                Assert.That(appearance.TryGetData<bool>(uid, GeneratorVisuals.Running, out var running) && running,
+                    Is.True, "generator sprite after the load");
+                Assert.That(ambient.Enabled, Is.True, "generator hum after the load");
+            }
+
+            Assert.That(gens, Is.EqualTo(1));
 
             mapSystem.DeleteMap(pausedMap);
             saves.Reset(key);

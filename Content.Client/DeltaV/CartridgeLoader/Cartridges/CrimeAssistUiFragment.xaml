@@ -8,8 +8,8 @@
         <RichTextLabel Name ="Punishment" Margin="0,20"/>
     </BoxContainer>
     <BoxContainer Name="QuestionBox" Orientation="Horizontal" HorizontalAlignment="Center"  HorizontalExpand="True" VerticalExpand="False">
-        <Button Name="StartButton" Access="Public" Text="Start"/>
-        <Button Name="HomeButton" Access="Public" Text="Home" Visible="False"/>
+        <Button Name="StartButton" Access="Public" Text="{Loc 'ecl-ui-crime-assist-start'}"/>
+        <Button Name="HomeButton" Access="Public" Text="{Loc 'ecl-ui-crime-assist-home'}" Visible="False"/>
         <Button Name="YesButton" Access="Public" Text="Yes" Visible="False"/>
         <Button Name="NoButton" Access="Public" Text="No" Visible="False"/>
     </BoxContainer>

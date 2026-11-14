@@ -1,0 +1,12 @@
+station-beacon-lo = ЛО
+station-beacon-conference-room = Конференц-зал
+station-beacon-exam = Осмотр
+station-beacon-med-outpost = Медаванпост
+station-beacon-psych = Психолог
+station-beacon-glimmer-prober = Зонд
+station-beacon-engi-outpost = Инж. аванпост
+station-beacon-janitor-office = Уборщик
+station-beacon-janitor-closet = Подсобка уборщика
+station-beacon-camera-servers = Камеры
+station-beacon-boxing-ring = Бокс
+station-beacon-park = Парк

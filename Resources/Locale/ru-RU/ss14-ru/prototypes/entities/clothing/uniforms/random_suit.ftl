@@ -1,0 +1,1 @@
+ent-ClothingUniformRandom = { ent-ClothingUniformBase }

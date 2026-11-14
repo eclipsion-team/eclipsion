@@ -1,0 +1,14 @@
+ent-ClothingHeadHatAuthorityKommandant = фуражка комманданта
+    .desc = Бескомпромиссная военная фуражка для комманданта боевой группы.
+ent-ClothingHeadHatAuthorityLeutnant = берет лейтенанта
+    .desc = Бескомпромиссный офицерский берет с символами Авторитета.
+ent-ClothingHeadHatAuthorityLogistitat = берет логиститата
+    .desc = Напыщенный позолоченный берет для логиститата.
+ent-ClothingHeadHatAuthoritySteward = фуражка первого управляющего
+    .desc = Фуражка военного помощника. Принадлежит первому управляющему 43-й боевой группы Центрального Солнечного Авторитета.
+ent-ClothingHeadHatAuthorityKanoneer = берет канонира
+    .desc = Бескомпромиссный военный берет со знаками различия сержанта.
+ent-ClothingHeadHatAuthoritySanitat = берет санитата
+    .desc = Бескомпромиссный военный берет со знаками различия капрала.
+ent-ClothingHeadHatAuthoritySoldat = берет егеря
+    .desc = Бескомпромиссный военный берет со знаками различия рядового.

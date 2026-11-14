@@ -1,0 +1,14 @@
+ent-MobRandomServiceCorpse = { ent-SalvageHumanCorpse }
+    .desc = { ent-SalvageHumanCorpse.desc }
+ent-MobRandomEngineerCorpse = { ent-SalvageHumanCorpse }
+    .desc = { ent-SalvageHumanCorpse.desc }
+ent-MobRandomCargoCorpse = { ent-SalvageHumanCorpse }
+    .desc = { ent-SalvageHumanCorpse.desc }
+ent-MobRandomMedicCorpse = { ent-SalvageHumanCorpse }
+    .desc = { ent-SalvageHumanCorpse.desc }
+ent-MobRandomScienceCorpse = { ent-SalvageHumanCorpse }
+    .desc = { ent-SalvageHumanCorpse.desc }
+ent-MobRandomSecurityCorpse = { ent-SalvageHumanCorpse }
+    .desc = { ent-SalvageHumanCorpse.desc }
+ent-MobRandomCommandCorpse = { ent-SalvageHumanCorpse }
+    .desc = { ent-SalvageHumanCorpse.desc }

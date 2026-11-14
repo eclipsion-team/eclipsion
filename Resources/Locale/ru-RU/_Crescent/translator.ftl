@@ -1,0 +1,9 @@
+language-name-ru-RU = Русский
+language-picker-title = Language / Язык
+language-picker-text = Choose your game language / Выберите язык игры
+language-picker-later = Язык можно сменить позже в Настройки > Общие.
+ui-options-language-header = Language / Язык
+ui-options-language = Game language / Язык игры:
+ui-options-language-note = Во время раунда интерфейс сменится, когда вы вернётесь в лобби.
+ui-options-translate-chat = Получать сообщения других игроков на моём языке
+ui-options-translate-chat-tooltip = Чат, рация и ахелп на другом языке приходят к вам в переводе. Работает, только если на сервере включён переводчик.

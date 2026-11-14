@@ -101,9 +101,15 @@ public sealed class HolopadBoundInterfaceState : BoundUserInterfaceState
 {
     public readonly Dictionary<NetEntity, string> Holopads;
 
-    public HolopadBoundInterfaceState(Dictionary<NetEntity, string> holopads)
+    // Eclipsion - IFF faction of each pad's grid, and of the pad being used
+    public readonly Dictionary<NetEntity, string> Factions;
+    public readonly string? OwnFaction;
+
+    public HolopadBoundInterfaceState(Dictionary<NetEntity, string> holopads, Dictionary<NetEntity, string>? factions = null, string? ownFaction = null)
     {
         Holopads = holopads;
+        Factions = factions ?? new();
+        OwnFaction = ownFaction;
     }
 }
 

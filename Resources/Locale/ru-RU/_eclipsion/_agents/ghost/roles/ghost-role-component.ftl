@@ -1,0 +1,65 @@
+ghost-role-information-freeagent-rules = Вы — [color=yellow][bold]свободный агент[/bold][/color]. Вы вольны действовать как антагонист или как не-антагонист.
+                                         Вы не помните ничего из прошлой жизни и ничего из того, что узнали, будучи призраком.
+                                         Вам разрешено помнить общие знания об игре: как готовить, как пользоваться предметами и т. п.
+                                         Вам категорически [color=red]НЕЛЬЗЯ[/color] помнить, например, имя, внешность и т. п. вашего прошлого персонажа.
+ghost-role-information-squackroach-name = Кракан
+ghost-role-information-squackroach-description = Дьявольский, но почти безобидный кракан.
+ghost-role-information-revenant-rules = Вы — антагонист. Собирайте, оскверняйте и сводите экипаж с ума.
+ghost-role-information-rat-king-rules = Вы — антагонист. Добывайте, нападайте и растите свою орду!
+ghost-role-information-rat-servant-rules = Вы — антагонист. Добывайте, нападайте и служите своему королю!
+ghost-role-information-space-goldfish-name = Космическая золотая рыбка
+ghost-role-information-space-goldfish-description = Бесцельно плавайте по воздуху и покусывайте всех, кому хватит глупости навлечь ваш гнев.
+ghost-role-information-salvage-shark-name = Космическая акулька на обломке
+ghost-role-information-salvage-shark-description = Помогите младшим собратьям-карпам защитить добычу. Чуете кровь!
+ghost-role-information-space-tick-name = Космический клещ
+ghost-role-information-space-tick-description = Сейте хаос на станции!
+ghost-role-information-salvage-tick-name = Космический клещ на обломке
+ghost-role-information-taxibot-name = ТаксиБот
+ghost-role-information-taxibot-description = Развозите экипаж станции по местам назначения.
+ghost-role-information-minebot-name = Шахтобот
+ghost-role-information-minebot-description = Помогайте шахтёрам в их работе.
+ghost-role-information-salvage-bear-name = Космический медведь на обломке
+ghost-role-information-space-kangaroo-name = Космический кенгуру
+ghost-role-information-space-kangaroo-description = Дайте экипажу отведать ваших острых когтей!
+ghost-role-information-salvage-kangaroo-name = Космический кенгуру на обломке
+ghost-role-information-space-spider-name = Космический паук
+ghost-role-information-space-spider-description = Космические пауки так же агрессивны, как обычные. Кормитесь.
+ghost-role-information-salvage-spider-name = Космический паук на обломке
+ghost-role-information-salvage-spider-description = Космические пауки так же агрессивны, как обычные. Кормитесь.
+ghost-role-information-space-cobra-name = Космическая кобра
+ghost-role-information-space-cobra-description = Космические кобры очень не любят гостей и всегда не прочь перекусить визитёром.
+ghost-role-information-salvage-cobra-name = Космическая кобра на обломке
+ghost-role-information-salvage-cobra-description = Космические кобры очень не любят гостей и всегда не прочь перекусить визитёром.
+ghost-role-information-salvage-flesh-name = Аномальная плоть на обломке
+ghost-role-information-onestar-mecha-name = Мех Onestar
+ghost-role-information-onestar-mecha-description = Вы — экспериментальный мех, созданный неизвестно кем. Вы знаете лишь, что у вас есть оружие, а поблизости движутся мясистые цели...
+ghost-role-information-onestar-mecha-rules = Используйте оружие, чтобы сеять хаос. Вы — антагонист.
+ghost-role-information-remilia-rules = Вы — разумная фруктовая летучая мышь. Следуйте за священником. Не создавайте проблем, если священник не скажет иначе.
+ghost-role-information-cerberus-rules = Вы — разумный демонический пёс. Старайтесь помогать священнику и его пастве. В остальном вы, как антагонист, ничем не ограничены.
+ghost-role-information-ert-chaplain-description = Помогите экипажу станции пережить утраты и справиться с упадком духа.
+ghost-role-information-Cak-rules = Вы — живая съедобная сладкая кошка. Ваша задача — найти своё место в мире, где все хотят вас съесть.
+ghost-role-information-BreadDog-rules = Вы — съедобная собака из хлеба. Ваша задача — найти своё место в мире, где все хотят вас съесть.
+ghost-role-information-space-ninja-rules = Вы — элитный наёмник клана Паука. Вы не обязаны выполнять свои цели, но ваша ЧЕСТЬ НИНДЗЯ требует попытаться.
+ghost-role-information-lost-cargo-technical-name = Потерявшийся грузчик
+ghost-role-information-lost-cargo-technical-description = Что-то пошло не так, и ваш грузовой шаттл с товаром забросило в сектор к другой станции.
+ghost-role-information-lost-cargo-technical-rules = Вы — обычный грузчик с другой станции. Делайте то, что обычно делает отдел снабжения.
+ghost-role-information-clown-troupe-name = Космический клоун
+ghost-role-information-clown-troupe-description = Вы со своей труппой прибыли развеселить эту станцию лучшими шутками. Хонк!
+ghost-role-information-clown-troupe-rules = Действуют обычные правила для экипажа станции.
+ghost-role-information-traveling-chef-name = Странствующий шеф-повар
+ghost-role-information-traveling-chef-description = Вы — шеф-повар на странствующем шаттле экзотической кухни. Порадуйте станцию вкусной едой!
+ghost-role-information-traveling-chef-rules = Действуют обычные правила для экипажа станции.
+ghost-role-information-disaster-victim-name = Жертва катастрофы
+ghost-role-information-disaster-victim-description = Вы спаслись в спасательной капсуле с другой станции, постигнутой ужасной участью. Возможно, вас найдут и спасут.
+ghost-role-information-disaster-victim-rules = Действуют обычные правила для экипажа станции.
+ghost-role-information-syndie-disaster-victim-name = Жертва катастрофы Синдиката
+ghost-role-information-syndie-disaster-victim-description = Вы — обычный пассажир со станции Синдиката. К несчастью, спасательная капсула забросила вас во вражеский сектор.....
+ghost-role-information-syndie-disaster-victim-rules = Действуют обычные правила для экипажа станции. Вы НЕ антагонист!
+ghost-role-information-syndicate-kobold-reinforcement-name = Кобольд-агент Синдиката
+ghost-role-information-syndicate-kobold-reinforcement-description = Кому-то нужно подкрепление. Вы, обученный кобольд, поможете им.
+ghost-role-information-shiva-name = Шива
+ghost-role-information-shiva-description = Первый защитник станции.
+ghost-role-information-artifact-name = Разумный артефакт
+ghost-role-information-artifact-description =
+      Воплощайте свои потусторонние прихоти.
+      Принудительно активируйте свои узлы во имя добра или зла.

@@ -1,0 +1,17 @@
+ent-ToolboxEmergencyFilled = аварийный ящик для инструментов
+    .suffix = Заполненный
+    .desc = { ent-ToolboxEmergency.desc }
+ent-ToolboxElectricalFilled = ящик для инструментов электрика
+    .suffix = Заполненный
+    .desc = { ent-ToolboxElectrical.desc }
+ent-ToolboxArtisticFilled = художественный ящик для инструментов
+    .desc = { ent-ToolboxArtistic.desc }
+ent-ToolboxMechanicalFilled = ящик для инструментов механика
+    .suffix = Заполненный
+    .desc = { ent-ToolboxMechanical.desc }
+ent-ToolboxSyndicateFilled = подозрительный ящик для инструментов
+    .suffix = Заполненный
+    .desc = { ent-ToolboxSyndicate.desc }
+ent-ToolboxGoldFilled = золотой ящик для инструментов
+    .suffix = Заполненный
+    .desc = { ent-ToolboxGolden.desc }

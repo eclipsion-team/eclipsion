@@ -1,0 +1,13 @@
+marking-VoxHairBraids = Косы вокса
+marking-VoxHairCrestedQuills = Хохлатые перья вокса
+marking-VoxHairEmperorQuills = Императорские перья вокса
+marking-VoxHairFlowing = Струящиеся перья вокса
+marking-VoxHairHawk = Ястреб вокса
+marking-VoxHairKeelQuills = Килевые перья вокса
+marking-VoxHairKeetQuills = Перья птенца вокса
+marking-VoxHairLongBraid = Длинная коса вокса
+marking-VoxHairRazorClipped = Бритва вокса (подстриженная)
+marking-VoxHairRazor = Бритва вокса
+marking-VoxHairSortBraid = Короткая коса вокса
+marking-VoxHairTielQuills = Перья кореллы вокса
+marking-VoxHairYasu = Ясухиро вокса

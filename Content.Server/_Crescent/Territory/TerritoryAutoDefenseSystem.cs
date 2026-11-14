@@ -70,6 +70,10 @@ public sealed class TerritoryAutoDefenseSystem : EntitySystem
 
     private readonly Dictionary<EntityUid, TimeSpan> _nextGridWarning = new();
     private readonly Dictionary<EntityUid, TimeSpan> _nextNeutralRadioWarning = new();
+    private readonly HashSet<EntityUid> _operatedGrids = new();
+    private readonly Dictionary<(EntityUid Grid, string Faction), EntityUid> _lowestConsole = new();
+    private readonly Dictionary<(EntityUid Grid, string Faction), EntityUid> _lowestInterceptor = new();
+
     // Not readonly: FindGridsIntersecting takes it by ref so it can grow the list for us.
     private List<Entity<MapGridComponent>> _gridScratch = new();
 
@@ -96,6 +100,8 @@ public sealed class TerritoryAutoDefenseSystem : EntitySystem
         base.Update(frameTime);
 
         var now = _timing.CurTime;
+        CollectControllers();
+
         var query = EntityQueryEnumerator<TerritoryAutoDefenseComponent, TargetingConsoleComponent>();
         while (query.MoveNext(out var consoleUid, out var defense, out var console))
         {
@@ -224,22 +230,37 @@ public sealed class TerritoryAutoDefenseSystem : EntitySystem
     }
 
     // only a console that would itself answer counts, or a dead one silences the rest
+    // who controls each grid, worked out once per tick
+    private void CollectControllers()
+    {
+        _operatedGrids.Clear();
+        _lowestConsole.Clear();
+        _lowestInterceptor.Clear();
+
+        var consoles = EntityQueryEnumerator<TerritoryAutoDefenseComponent, TargetingConsoleComponent, TransformComponent>();
+        while (consoles.MoveNext(out var uid, out _, out var console, out var xform))
+        {
+            if (xform.GridUid is not { } grid)
+                continue;
+
+            if (_ui.IsUiOpen(uid, TargetingConsoleUiKey.Key))
+                _operatedGrids.Add(grid);
+
+            if (!this.IsPowered(uid, EntityManager))
+                continue;
+
+            var key = (grid, _factionMachines.GetFaction(uid));
+            if (!_lowestConsole.TryGetValue(key, out var lowest) || uid.Id < lowest.Id)
+                _lowestConsole[key] = uid;
+
+            if (HasInterceptor(console) && (!_lowestInterceptor.TryGetValue(key, out lowest) || uid.Id < lowest.Id))
+                _lowestInterceptor[key] = uid;
+        }
+    }
+
     private bool LowerConsoleOnGrid(EntityUid consoleUid, EntityUid ownGrid, string ownFaction)
     {
-        var consoles = EntityQueryEnumerator<TerritoryAutoDefenseComponent, TargetingConsoleComponent, TransformComponent>();
-        while (consoles.MoveNext(out var otherUid, out _, out var other, out var otherXform))
-        {
-            if (otherXform.GridUid == ownGrid &&
-                otherUid.Id < consoleUid.Id &&
-                this.IsPowered(otherUid, EntityManager) &&
-                string.Equals(_factionMachines.GetFaction(otherUid), ownFaction, StringComparison.Ordinal) &&
-                HasInterceptor(other))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return _lowestInterceptor.TryGetValue((ownGrid, ownFaction), out var lowest) && lowest.Id < consoleUid.Id;
     }
 
     private bool HasInterceptor(TargetingConsoleComponent console)
@@ -346,27 +367,14 @@ public sealed class TerritoryAutoDefenseSystem : EntitySystem
 
     private bool AnotherConsoleOwnsAutomaticControl(EntityUid consoleUid, EntityUid ownGrid, string ownFaction)
     {
-        var consoles = EntityQueryEnumerator<TerritoryAutoDefenseComponent, TargetingConsoleComponent, TransformComponent>();
-        while (consoles.MoveNext(out var otherUid, out _, out _, out var otherXform))
-        {
-            if (otherUid == consoleUid || otherXform.GridUid != ownGrid)
-                continue;
+        // Any manual operator pauses the whole battery. With nobody operating, the lowest entity UID that can
+        // actually fire is the sole automatic controller, so two mapped consoles cannot issue competing orders
+        // and an unpowered one does not leave the guns idle.
+        // own UI is closed when this gets asked, so an open one is someone else's
+        if (_operatedGrids.Contains(ownGrid))
+            return true;
 
-            // Any manual operator pauses the whole battery. With nobody operating, the lowest entity UID that can
-            // actually fire is the sole automatic controller, so two mapped consoles cannot issue competing orders
-            // and an unpowered one does not leave the guns idle.
-            if (_ui.IsUiOpen(otherUid, TargetingConsoleUiKey.Key))
-                return true;
-
-            if (otherUid.Id < consoleUid.Id &&
-                this.IsPowered(otherUid, EntityManager) &&
-                string.Equals(_factionMachines.GetFaction(otherUid), ownFaction, StringComparison.Ordinal))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return _lowestConsole.TryGetValue((ownGrid, ownFaction), out var lowest) && lowest.Id < consoleUid.Id;
     }
 
     private EntityUid? FindNearestTarget(

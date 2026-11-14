@@ -1,0 +1,10 @@
+comp-solution-transfer-fill-normal = Вы наполняете {THE($target)}, переливая {$amount} ед. из {THE($owner)}.
+comp-solution-transfer-fill-fully = Вы наполняете {THE($target)} до краёв, переливая {$amount} ед. из {THE($owner)}.
+comp-solution-transfer-transfer-solution = Вы переливаете {$amount} ед. в {THE($target)}.
+comp-solution-transfer-is-empty = {THE($target)} — пусто!
+comp-solution-transfer-is-full = {THE($target)} — полно!
+comp-solution-transfer-verb-toggle = Переливать по {$amount} ед.
+comp-solution-transfer-verb-mode-receive = Переключить на набор
+comp-solution-transfer-verb-mode-send = Переключить на выливание
+comp-solution-transfer-mode-receive = Режим переливания: набор.
+comp-solution-transfer-mode-send = Режим переливания: выливание.

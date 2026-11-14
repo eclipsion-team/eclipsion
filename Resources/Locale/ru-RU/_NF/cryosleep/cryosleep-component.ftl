@@ -1,0 +1,17 @@
+cryopod-examine-empty = Пусто
+cryopod-examine-occupied = Занято
+accept-cryo-window-accept-button = Принять
+accept-cryo-window-deny-button = Отмена
+accept-cryo-window-prompt-text-part = Войти в криосон и завершить вашу смену?
+accept-cryo-window-title = Камера криосна
+cryo-wakeup-window-title = Пробуждение
+cryo-wakeup-window-accept-button = Принять
+cryo-wakeup-window-deny-button = Отмена
+cryo-wakeup-window-rules = Вы собираетесь вернуться из криосна! Вы не знаете ничего о том, что произошло с момента, когда вы заснули. Принимаете это и продолжаете?
+cryo-wakeup-result-occupied = Криокапсула занята! Попробуйте подождать.
+cryo-wakeup-result-no-cryopod = Криокапсула пропала! Ой-ой.
+cryo-wakeup-result-no-body = У вас нет тела в криосне!
+cryo-wakeup-result-disabled = Возвращение из криосна отключено на этом сервере.
+cryopod-refuse-dead = { $cryopod } отказывается принимать мёртвых пациентов.
+cryopod-refuse-organic = { $cryopod } отказывается принимать более одного разумного существа одновременно.
+cryopod-wake-up = { $entity } возвращается из криосна!

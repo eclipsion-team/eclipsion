@@ -1,0 +1,14 @@
+station-beacon-epistemics = Наука
+station-beacon-mystagogue = Мистагог
+station-beacon-logistics = Карго
+station-beacon-manufacturing = Производство
+station-beacon-virology = Вирусология
+station-beacon-metempsychosis = Переселение душ
+station-beacon-forensic-mantis = Мантис
+station-beacon-mailroom = Почта
+station-beacon-reporter = Репортёр
+station-beacon-corpsman = Бригмедик
+station-beacon-justice = Отдел юстиции
+station-beacon-chiefjustice = Главный Судья
+station-beacon-prosecutor = Прокурор
+station-beacon-clerk = Судебный клерк

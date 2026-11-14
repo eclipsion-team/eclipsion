@@ -17,14 +17,14 @@
             </BoxContainer>
             <Label Name="ShowHeat"></Label>
 
-            <Label Name="ColorSelectionLabel" Text="COLOR PICKING"
+            <Label Name="ColorSelectionLabel" Text="{Loc 'iff-console-color-picking'}"
                 HorizontalExpand="True" HorizontalAlignment="Center" Margin="0 6 0 2" StyleClasses="StatusFieldTitle" />
             <Control />
             <GridContainer Columns="2">
-                <Button Name="ColorPreset1Button" Text="Ship White" Modulate="#FFFFFF" HorizontalExpand="True" />
-                <Button Name="ColorPreset2Button" Text="Asteroid Brown" Modulate="#BF8C5C" HorizontalExpand="True" />
-                <Button Name="ColorPreset3Button" Text="Scrap blue" Modulate="#88B0D1FF" HorizontalExpand="True" />
-                <Button Name="ColorPreset4Button" Text="Meteor Purple" Modulate="#8178CCFF" HorizontalExpand="True" />
+                <Button Name="ColorPreset1Button" Text="{Loc 'iff-console-color-white'}" Modulate="#FFFFFF" HorizontalExpand="True" />
+                <Button Name="ColorPreset2Button" Text="{Loc 'iff-console-color-brown'}" Modulate="#BF8C5C" HorizontalExpand="True" />
+                <Button Name="ColorPreset3Button" Text="{Loc 'iff-console-color-blue'}" Modulate="#88B0D1FF" HorizontalExpand="True" />
+                <Button Name="ColorPreset4Button" Text="{Loc 'iff-console-color-purple'}" Modulate="#8178CCFF" HorizontalExpand="True" />
             </GridContainer>
             <Control />
         </GridContainer>

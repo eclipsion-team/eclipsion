@@ -1,0 +1,14 @@
+command-mailto-description = Ставит посылку в очередь на доставку сущности. Пример: `mailto 1234 5678 false false`. Содержимое целевого контейнера будет перенесено в настоящую посылку.
+command-mailto-help = Использование: {$command} <recipient entityUid> <container entityUid> [is-fragile: true или false] [is-priority: true или false] [is-large: true или false, необязательно]
+command-mailto-no-mailreceiver = У сущности-получателя нет {$requiredComponent}.
+command-mailto-no-blankmail = Прототип {$blankMail} не существует. Что-то сильно не так. Свяжитесь с программистом.
+command-mailto-bogus-mail = У {$blankMail} нет {$requiredMailComponent}. Что-то сильно не так. Свяжитесь с программистом.
+command-mailto-invalid-container = У целевой сущности-контейнера нет контейнера {$requiredContainer}.
+command-mailto-unable-to-receive = Не удалось настроить сущность-получателя на приём почты. Возможно, отсутствует ID.
+command-mailto-no-teleporter-found = Не удалось сопоставить сущность-получателя с почтовым телепортом какой-либо станции. Возможно, получатель вне станции.
+command-mailto-success = Успешно! Посылка поставлена в очередь на следующую телепортацию через {$timeToTeleport} сек.
+command-mailnow = Заставляет все почтовые телепорты как можно скорее доставить ещё одну партию почты. Лимит недоставленной почты это не обходит.
+command-mailnow-success = Успешно! Все почтовые телепорты скоро доставят ещё одну партию почты.
+command-mailtestbulk = Отправляет по одной посылке каждого типа на указанный почтовый телепорт. Неявно вызывает mailnow.
+command-mailtestbulk-help = Использование: {$command} <teleporter_id>
+command-mailtestbulk-success = Успешно! Все почтовые телепорты скоро доставят ещё одну партию почты.

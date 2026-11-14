@@ -1,0 +1,16 @@
+ent-MarkerRadiation1 = Маркер радиации
+    .desc = { ent-MarkerBase.desc }
+ent-MarkerRadiation2 = Маркер радиации
+    .desc = { ent-MarkerRadiation1.desc }
+ent-MarkerRadiation3 = Маркер радиации
+    .desc = { ent-MarkerRadiation1.desc }
+ent-MarkerRadiation4 = Маркер радиации
+    .desc = { ent-MarkerRadiation1.desc }
+ent-MarkerRadiation5 = Маркер радиации
+    .desc = { ent-MarkerRadiation1.desc }
+ent-MarkerRadiation10 = Маркер радиации
+    .desc = { ent-MarkerRadiation1.desc }
+ent-MarkerBlocker = Маркер-блокировщик
+    .desc = { ent-MarkerBase.desc }
+ent-MarkerWeatherblocker = Маркер блокировки погоды
+    .desc = { ent-MarkerBase.desc }

@@ -1,0 +1,1 @@
+ent-KillTargetCultObjective = { ent-BaseObjective }

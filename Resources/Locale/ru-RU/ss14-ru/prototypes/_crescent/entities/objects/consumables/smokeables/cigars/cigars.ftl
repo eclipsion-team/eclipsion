@@ -1,0 +1,12 @@
+ent-CigarNCWL = импортная сигара Ченгридза
+    .desc = Сигара ручной скрутки из Ченгридза, чистый лист и чистый статус, каждая затяжка стоит больше, чем заработок большинства мужчин.
+ent-CigarNCWLSpent = { ent-CigarNCWL }
+    .desc = { ent-CigarNCWL.desc }
+ent-CigarRoyal = имперская сигара
+    .desc = Сигара, достойная высшего общества истинных уроженцев Тайпана.
+ent-CigarRoyalSpent = { ent-CigarRoyal }
+    .desc = { ent-CigarRoyal.desc }
+ent-CigarFreeport = сигара Freeport
+    .desc = Чёрная сигара из высококачественного табака и... всего того, что удалось найти.
+ent-CigarFreeportSpent = { ent-CigarFreeport }
+    .desc = { ent-CigarFreeport.desc }

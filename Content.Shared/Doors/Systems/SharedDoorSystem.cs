@@ -12,6 +12,7 @@ using Content.Shared.Item;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Physics;
 using Content.Shared.Popups;
+using Content.Shared.Power.Components;
 using Content.Shared.Power.EntitySystems;
 using Content.Shared.Prying.Components;
 using Content.Shared.Prying.Systems;
@@ -247,6 +248,10 @@ public abstract partial class SharedDoorSystem : EntitySystem
     private void OnPryTimeModifier(EntityUid uid, DoorComponent door, ref GetPryTimeModifierEvent args)
     {
         args.BaseTime = door.PryTime;
+
+        SharedApcPowerReceiverComponent? power = null;
+        if (_powerReceiver.ResolveApc(uid, ref power) && !power.Powered)
+            args.PryTimeModifier *= door.UnpoweredPryModifier;
     }
 
     private void OnBeforePry(EntityUid uid, DoorComponent door, ref BeforePryEvent args)
@@ -595,6 +600,10 @@ public abstract partial class SharedDoorSystem : EntitySystem
                 continue;
 
             if ((physics.CollisionMask & otherPhysics.CollisionLayer) == 0 && (otherPhysics.CollisionMask & physics.CollisionLayer) == 0)
+                continue;
+
+            // other doors on the same tile don't block closing (blast doors/shutters/firelocks over airlocks)
+            if (HasComp<DoorComponent>(otherPhysics.Owner))
                 continue;
 
             // Loose items don't block closing; pickupable mobs still get crushed.

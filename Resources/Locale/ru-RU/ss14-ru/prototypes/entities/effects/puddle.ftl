@@ -1,0 +1,10 @@
+ent-PuddleSmear = лужа
+    .desc = Лужа жидкости.
+    .suffix = { "" }
+ent-PuddleVomit = рвота
+    .desc = Мерзость.
+    .suffix = { "" }
+ent-PuddleSparkle = блеск
+    .desc = { "" }
+ent-Footstep = след
+    .desc = След жидкости.

@@ -41,9 +41,9 @@
             						    HorizontalExpand="True"
              						    Align="Right"/>
 						<!-- Rat-end-->
-                        <controls:Label Text="Ship IFF:"/>
+                        <controls:Label Text="{controls:Loc 'shuttle-console-ship-iff'}"/>
                         <controls:Label Name="ShipName"
-                                        Text="No IFF"
+                                        Text="{controls:Loc 'shuttle-console-no-iff'}"
                                         HorizontalExpand="True"
                                         Align="Right"/>
                         <controls:Label Text="{controls:Loc 'shuttle-console-position'}"/>

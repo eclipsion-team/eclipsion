@@ -1,0 +1,17 @@
+ent-BaseWeaponSubMachineGun =
+    .desc = Дерзай — налетай, целься и стреляй.
+ent-WeaponSubMachineGunAtreides = Атрейдес
+    .desc = Бррррр! Использует патроны калибра .35 авто.
+    .suffix = Пистолет-пулемёт
+ent-WeaponSubMachineGunC20r = IRM DA-20 «Коготь» 11 мм
+    .desc = Пистолет-пулемёт производства Cybersun Armaments, часто используемое легендарными ядерными оперативниками. Использует патроны калибра .35 авто.
+    .suffix = Пистолет-пулемёт
+ent-WeaponSubMachineGunC20rHoS = трофейный C-20r
+    .desc = Пистолет-пулемёт производства Cybersun Armaments, добытый в бою с легендарными ядерными оперативниками. Использует патроны калибра .35 авто.
+    .suffix = Пистолет-пулемёт
+ent-WeaponSubMachineGunDrozd = Дрозд
+    .desc = Превосходный, полностью автоматический, тяжелый пистолет-пулемёт. Использует патроны калибра .35 авто.
+    .suffix = Пистолет-пулемёт
+ent-WeaponSubMachineGunWt550 = NT WT50 «Сабля» 11 мм
+    .desc = Отличный пистолет-пулемёт производства NanoTrasen's Small Arms Division. Использует патроны калибра .35 авто.
+    .suffix = Пистолет-пулемёт

@@ -1,0 +1,14 @@
+ent-ComputerBankATMBase = { "" }
+    .desc = { "" }
+ent-ComputerBankATM = { ent-ComputerBankATMBase }
+    .desc = { ent-ComputerBankATMBase.desc }
+ent-ComputerWithdrawBankATM = { ent-ComputerBankATMBase }
+    .desc = { ent-ComputerBankATMBase.desc }
+ent-ComputerWallmountBankATM = { ent-ComputerBankATMBase }
+    .desc = { ent-ComputerBankATMBase.desc }
+ent-ComputerWallmountWithdrawBankATM = { ent-ComputerBankATMBase }
+    .desc = { ent-ComputerBankATMBase.desc }
+ent-ComputerBlackMarketBankATM = { ent-ComputerBankATMBase }
+    .desc = На нём какие-то сомнительные доработки и наклейка «КОМИССИЯ ЗА ВЗНОС 30%».
+ent-ComputerWallmountBlackMarketBankATM = { ent-ComputerBankATMBase }
+    .desc = На нём какие-то сомнительные доработки и наклейка «КОМИССИЯ ЗА ВЗНОС 30%».

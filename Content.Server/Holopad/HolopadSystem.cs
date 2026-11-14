@@ -23,6 +23,10 @@ using System.Linq;
 using Content.Shared.Chat;
 using Content.Server._NF.Station.Systems;
 using Content.Server._Crescent.Holopad; // Frontier
+using Content.Server.Administration;
+using Content.Server.Labels;
+using Content.Shared.Shuttles.Components;
+using Robust.Shared.Player;
 
 
 namespace Content.Server.Holopad;
@@ -42,6 +46,8 @@ public sealed class HolopadSystem : SharedHolopadSystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly StationRenameHolopadsSystem _renameHolopads = default!; // Frontier
     [Dependency] private readonly IEntityManager _entManager = default!;
+    [Dependency] private readonly QuickDialogSystem _quickDialog = default!;
+    [Dependency] private readonly LabelSystem _label = default!;
 
 
     private float _updateTimer = 1.0f;
@@ -506,6 +512,7 @@ public sealed class HolopadSystem : SharedHolopadSystem
 
         var source = new Entity<TelephoneComponent>(entity, telephone);
         var holopads = new Dictionary<NetEntity, string>();
+        var factions = new Dictionary<NetEntity, string>();
 
         var query = AllEntityQuery<HolopadComponent, TelephoneComponent>();
         while (query.MoveNext(out var receiverUid, out var _, out var receiverTelephone))
@@ -526,11 +533,62 @@ public sealed class HolopadSystem : SharedHolopadSystem
             if (TryComp<LabelComponent>(receiverUid, out var label) && !string.IsNullOrEmpty(label.CurrentLabel))
                 name = label.CurrentLabel;
 
-            holopads.Add(GetNetEntity(receiverUid), name);
+            var netEnt = GetNetEntity(receiverUid);
+            holopads.Add(netEnt, name);
+
+            var padFaction = GetPadFaction(receiverUid);
+            if (padFaction != null)
+                factions[netEnt] = padFaction;
         }
 
         var uiKey = HasComp<StationAiCoreComponent>(entity) ? HolopadUiKey.AiActionWindow : HolopadUiKey.InteractionWindow;
-        _userInterfaceSystem.SetUiState(entity.Owner, uiKey, new HolopadBoundInterfaceState(holopads));
+        _userInterfaceSystem.SetUiState(entity.Owner, uiKey, new HolopadBoundInterfaceState(holopads, factions, GetPadFaction(entity)));
+    }
+
+    protected override void OpenRenameDialog(Entity<HolopadComponent> ent, EntityUid user)
+    {
+        if (!TryComp<ActorComponent>(user, out var actor))
+            return;
+
+        var synced = ent.Comp.UseStationName || ent.Comp.GetHolopadNameFromShip;
+        var prompt = Loc.GetString(synced ? "holopad-rename-prompt-synced" : "holopad-rename-prompt");
+
+        _quickDialog.OpenDialog(actor.PlayerSession, Loc.GetString("holopad-rename-title"), prompt, (string text) =>
+        {
+            if (TerminatingOrDeleted(ent) || !CanMappingRename(ent, user))
+                return;
+
+            text = text.Trim();
+
+            if (synced)
+            {
+                // ship/station pads keep the grid name in front, so "Bridge" becomes "<ship name> Bridge"
+                ent.Comp.StationNameSuffix = text == string.Empty ? null : text;
+                _renameHolopads.SyncHolopad(ent);
+            }
+            else
+            {
+                _label.Label(ent, text == string.Empty ? null : text);
+            }
+
+            var newName = TryComp<LabelComponent>(ent, out var label) && !string.IsNullOrEmpty(label.CurrentLabel)
+                ? label.CurrentLabel
+                : MetaData(ent).EntityName;
+            _popupSystem.PopupEntity(Loc.GetString("holopad-rename-done", ("name", newName)), ent, user);
+        });
+    }
+
+    // Eclipsion - faction is whatever IFF the pad's grid flies, the client groups by it
+    private string? GetPadFaction(EntityUid pad)
+    {
+        var grid = Transform(pad).GridUid;
+        if (grid == null || !TryComp<IFFComponent>(grid, out var iff))
+            return null;
+
+        if (string.IsNullOrEmpty(iff.Faction) || iff.Faction == "Neutral")
+            return null;
+
+        return iff.Faction;
     }
 
     private void GenerateHologram(Entity<HolopadComponent> entity)

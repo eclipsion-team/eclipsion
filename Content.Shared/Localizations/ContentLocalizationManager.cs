@@ -1,6 +1,8 @@
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Robust.Shared;
+using Robust.Shared.Configuration;
 using Robust.Shared.Utility;
 
 namespace Content.Shared.Localizations
@@ -8,6 +10,7 @@ namespace Content.Shared.Localizations
     public sealed class ContentLocalizationManager
     {
         [Dependency] private readonly ILocalizationManager _loc = default!;
+        [Dependency] private readonly IConfigurationManager _cfg = default!;
 
         // If you want to change your codebase's language, do it here.
         private const string Culture = "en-US";
@@ -23,10 +26,62 @@ namespace Content.Shared.Localizations
             @"mm"
         };
 
+        // Eclipsion - languages a player can pick, first one is the fallback for missing strings
+        public static readonly string[] Languages = { "en-US", "ru-RU" };
+
         public void Initialize()
         {
-            var culture = new CultureInfo(Culture);
+            var fallback = new CultureInfo(Culture);
+            LoadWithFunctions(fallback);
 
+            var picked = PickedCulture();
+            if (!picked.Equals(fallback))
+                LoadWithFunctions(picked);
+
+            _loc.DefaultCulture = picked;
+            _loc.SetFallbackCluture(fallback);
+        }
+
+        // Eclipsion - server loads every language for RelocalizeSystem
+        public void InitializeServer()
+        {
+            Initialize();
+            foreach (var name in Languages)
+            {
+                var culture = new CultureInfo(name);
+                if (!_loc.HasCulture(culture))
+                    LoadWithFunctions(culture);
+            }
+        }
+
+        private CultureInfo PickedCulture()
+        {
+            var name = _cfg.GetCVar(CVars.LocCultureName);
+            return Languages.Contains(name) ? new CultureInfo(name) : new CultureInfo(Culture);
+        }
+
+        // windows already open keep their old text
+        public bool SwitchLanguage(string name)
+        {
+            if (!Languages.Contains(name))
+                return false;
+
+            var culture = new CultureInfo(name);
+            if (!_loc.HasCulture(culture))
+                LoadWithFunctions(culture);
+
+            _cfg.SetCVar(CVars.LocCultureName, name);
+            if (_loc.DefaultCulture?.Name == name)
+                return false;
+
+            _loc.DefaultCulture = culture;
+            // drops the cached entity names
+            _loc.ReloadLocalizations();
+            return true;
+        }
+
+        private void LoadWithFunctions(CultureInfo culture)
+        {
             _loc.LoadCulture(culture);
             _loc.AddFunction(culture, "PRESSURE", FormatPressure);
             _loc.AddFunction(culture, "POWERWATTS", FormatPowerWatts);
@@ -39,16 +94,9 @@ namespace Content.Shared.Localizations
             //HULLROT EDIT: needed for formatting sign language to only 1 word and 10 characters
             _loc.AddFunction(culture, "FORMATSIGNLANGUAGE", FormatSignLanguage);
 
-
-            /*
-             * The following language functions are specific to the english localization. When working on your own
-             * localization you should NOT modify these, instead add new functions specific to your language/culture.
-             * This ensures the english translations continue to work as expected when fallbacks are needed.
-             */
-            var cultureEn = new CultureInfo("en-US");
-
-            _loc.AddFunction(cultureEn, "MAKEPLURAL", FormatMakePlural);
-            _loc.AddFunction(cultureEn, "MANY", FormatMany);
+            // Eclipsion - ru-RU files call these too
+            _loc.AddFunction(culture, "MAKEPLURAL", FormatMakePlural);
+            _loc.AddFunction(culture, "MANY", FormatMany);
         }
 
         private ILocValue FormatMany(LocArgs args)

@@ -1,0 +1,16 @@
+ent-MagazineHeavyRifle = 16-зарядный тяжёлый магазин (12.7×99mm USM)
+    .desc = { ent-BaseMagazineHeavyRifle.desc }
+ent-CartridgeHeavyRifle = патрон (12.7×99mm USM)
+    .desc = { ent-BaseCartridgeHeavyRifle.desc }
+ent-MagazineHeavyRifleBoxmag = 50-зарядный коробчатый магазин (12.7x99mm USM)
+    .desc = { ent-BaseItem.desc }
+ent-BaseMagazineBoxHeavyRifle = { ent-BaseMagazineBox }
+    .desc = { ent-BaseMagazineBox.desc }
+ent-MagazineBoxHeavyRifle = ящик с боеприпасами (12.7x99mm USM)
+    .desc = { ent-BaseMagazineBoxHeavyRifle.desc }
+ent-BaseSpeedLoader127x99 = обойма (12.7x99mm)
+    .desc = { ent-BaseItem.desc }
+ent-SpeedLoader127x99 = обойма (12.7x99mm USM)
+    .desc = { ent-BaseSpeedLoader127x99.desc }
+ent-MagazineSmallHeavyRifle = 6-зарядный тяжёлый магазин (12.7×99mm USM)
+    .desc = { ent-BaseMagazineHeavyRifle.desc }

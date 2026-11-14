@@ -1,0 +1,19 @@
+faction-recruitment-window-title = Вербовка во фракцию
+faction-recruitment-window-title-faction = {$faction} — вербовка
+faction-recruitment-nearby-header = Персонал рядом
+faction-recruitment-nobody = У терминала никого нет.
+faction-recruitment-select-prompt = Выберите кого-нибудь из списка, чтобы завербовать или повысить.
+faction-recruitment-selected = Выбрано: {$name}
+faction-recruitment-target-member = {$name} (член фракции)
+faction-recruitment-target-other = {$name} ({$faction})
+faction-recruitment-none = На этом терминале не настроено ни одной роли.
+faction-recruitment-promote-button = Назначить роль
+faction-recruitment-dismiss-button = Исключить из фракции
+faction-recruitment-recruited = {$target} зачислен(а) в {$faction}, роль: {$role}.
+faction-recruitment-you-joined = Вас зачислили в {$faction}, роль: {$role}.
+faction-recruitment-dismissed = {$target} исключён(а) из {$faction}.
+faction-recruitment-not-member = Этот человек не состоит в этой фракции.
+faction-recruitment-outranks = {$target} выше по званию, чем позволяет этот терминал. Здесь звание не изменить.
+faction-recruitment-out-of-range = Этот человек уже отошёл от терминала.
+faction-recruitment-denied = Доступ запрещён — этим терминалом может пользоваться только командование фракции. Обратитесь к начальству.
+faction-recruitment-examine = Для работы нужен [color=yellow]допуск командования фракции[/color]. Если не получается открыть, обратитесь к начальству.

@@ -203,6 +203,16 @@
       - material: Steel
         amount: 4
         doAfter: 2
+    - to: airlockHorizontalFrame
+      steps:
+      - material: Steel
+        amount: 4
+        doAfter: 2
+    - to: airlockPublicHorizontalFrame
+      steps:
+      - material: Steel
+        amount: 4
+        doAfter: 2
     # Structure
     - to: wall
       steps:
@@ -1193,6 +1203,28 @@
         doAfter: 2
   - node: airlockPublic
     entity: AirlockPublicPersistentPoi
+
+  - node: airlockHorizontalFrame
+    entity: PersistentPoiFrameAirlockHorizontal
+    edges:
+    - to: airlockHorizontal
+      steps:
+      - material: Cable
+        amount: 5
+        doAfter: 2
+  - node: airlockHorizontal
+    entity: AirlockHorizontalPersistentPoi
+
+  - node: airlockPublicHorizontalFrame
+    entity: PersistentPoiFrameAirlockPublicHorizontal
+    edges:
+    - to: airlockPublicHorizontal
+      steps:
+      - material: Cable
+        amount: 5
+        doAfter: 2
+  - node: airlockPublicHorizontal
+    entity: AirlockPublicHorizontalPersistentPoi
 
   # Structure
 
@@ -2236,8 +2268,8 @@
 
 - type: construction
   id: PersistentPoiDroneBay
-  name: drone bay
-  description: Buys light drones that join the territory's picket and never leave it. Shieldless hulls with 150cc guns at most. Level 3 only, one per territory.
+  name: drone control console
+  description: Buys light drones for the territory's picket and gives every picket drone its orders. Shieldless hulls with 150cc guns at most. Level 2 and up, one per territory.
   graph: PersistentPoiStructures
   startNode: start
   targetNode: droneBay
@@ -2576,6 +2608,44 @@
   category: construction-category-structures
   icon:
     sprite: Structures/Doors/Airlocks/Standard/basic.rsi
+    state: closed
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiAirlockHorizontal
+  name: airlock (side facing)
+  description: The territorial airlock turned to face left and right. Opens only for the people of the faction holding the territory.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: airlockHorizontal
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Doors/commandhorizontal.rsi
+    state: closed
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  hide: true
+  conditions:
+  - !type:PersistentPoiHeldGround
+  - !type:TileNotBlocked
+
+- type: construction
+  id: PersistentPoiAirlockPublicHorizontal
+  name: public airlock (side facing)
+  description: The public airlock turned to face left and right. Opens for anyone.
+  graph: PersistentPoiStructures
+  startNode: start
+  targetNode: airlockPublicHorizontal
+  category: construction-category-structures
+  icon:
+    sprite: _Crescent/Structures/Doors/basicrightleft.rsi
     state: closed
   objectType: Structure
   placementMode: SnapgridCenter

@@ -1,0 +1,14 @@
+ghost-role-information-emotional-support-name = Питомец эмоциональной поддержки
+ghost-role-information-emotional-support-description = Вы — питомец эмоциональной поддержки! Верный своему хозяину, позаботьтесь о том, чтобы поднять ему настроение!
+ghost-role-information-emotional-support-rules = Вы — питомец эмоциональной поддержки! Верный своему хозяину, позаботьтесь о том, чтобы поднять ему настроение!
+ghost-role-information-clippy-name = Клиппи
+ghost-role-information-clippy-description = Верный работник представителя станции, пахнет картоном и бумагами.
+ghost-role-information-clarpy-name = Кларпи
+ghost-role-information-clarpy-description = Аваст, почта! Разыскивается Nanotrasen за преступления против мышей.
+ghost-role-information-cappy-name = Кэппи
+ghost-role-information-cappy-description = Прекратите сопротивление! Сертифицирован для применения смертельной силы и защитной тактики.
+ghost-role-information-crispy-name = Криспи
+ghost-role-information-crispy-description = Были допущены ошибки.
+ghost-role-information-mistake-name = ?????
+ghost-role-information-ert-mailcarrier-name = Почтальон ОГБ
+ghost-role-information-ert-mailcarrier-description = Помогите с бумажной работой для решения проблем станции.

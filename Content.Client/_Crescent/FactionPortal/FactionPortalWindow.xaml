@@ -4,7 +4,7 @@
                       SetSize="360 420"
                       MinSize="300 240">
     <BoxContainer Orientation="Vertical" Margin="8" VerticalExpand="True" HorizontalExpand="True">
-        <Label Name="StatusLabel" Text="{Loc 'faction-portal-ui-hint'}" HorizontalAlignment="Center"/>
+        <RichTextLabel Name="StatusLabel" HorizontalExpand="True"/>
         <PanelContainer StyleClasses="LowDivider" HorizontalExpand="True" SetHeight="2" Margin="0 6"/>
         <ScrollContainer VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False">
             <BoxContainer Name="DestinationList" Orientation="Vertical" HorizontalExpand="True"/>

@@ -1,0 +1,16 @@
+ent-Clothing = { ent-BaseItem }
+    .desc = { ent-BaseItem.desc }
+    .suffix = { "" }
+ent-GeigerCounterClothing = { "" }
+    .desc = { "" }
+    .suffix = { "" }
+ent-AllowSuitStorageClothing = { "" }
+    .desc = { "" }
+ent-AllowSuitStorageClothingGasTanks = { "" }
+    .desc = { "" }
+ent-ClothingSlotBase = { "" }
+    .desc = { "" }
+ent-ContentsExplosionResistanceBase = { "" }
+    .desc = { "" }
+ent-BaseToggleClothing = { "" }
+    .desc = { "" }

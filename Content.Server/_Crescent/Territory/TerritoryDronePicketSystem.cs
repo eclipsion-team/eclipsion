@@ -3,6 +3,7 @@ using System.Numerics;
 using Content.Server._Crescent.Diplomacy;
 using Content.Server._Crescent.ShipAI;
 using Content.Server._Mono.NPC.HTN;
+using Content.Server.Explosion.EntitySystems;
 using Content.Server.Maps;
 using Content.Server.NPC.HTN;
 using Content.Server.Power.Components;
@@ -18,6 +19,7 @@ using Content.Shared._Crescent.ShipShields;
 using Content.Shared.Shipyard.Components;
 using Content.Shared._Crescent.Territory;
 using Content.Shared.Dataset;
+using Content.Shared.Mind.Components;
 using Content.Server.GameTicking;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -40,11 +42,11 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly DiplomacySystem _diplomacy = default!;
+    [Dependency] private readonly ExplosionSystem _explosion = default!;
     [Dependency] private readonly RatDiplomacySystem _factionDiplomacy = default!;
     [Dependency] private readonly PersistentPoiLevelSystem _levels = default!;
     [Dependency] private readonly MapLoaderSystem _mapLoader = default!;
     [Dependency] private readonly MetaDataSystem _meta = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly PowerReceiverSystem _power = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
@@ -65,6 +67,10 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
     private const int SpawnAttempts = 16;
 
     private const float SpawnClearance = 60f;
+
+    private const float AttackSlack = 300f;
+
+    private const int MaxListedTargets = 12;
 
     private float _accumulator;
     private int _tick;
@@ -147,6 +153,40 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
         // bought where nobody could see it go up still has to be awake when they get there
         standard.Comp.Dormant = false;
         return true;
+    }
+
+    public bool HasPickets(EntityUid territoryGrid)
+    {
+        var query = EntityQueryEnumerator<TerritoryDronePicketsComponent, TransformComponent>();
+        while (query.MoveNext(out _, out _, out var xform))
+        {
+            if (xform.GridUid == territoryGrid)
+                return true;
+        }
+
+        return false;
+    }
+
+    public void SetStoodDown(EntityUid territoryGrid, bool off)
+    {
+        var query = EntityQueryEnumerator<TerritoryDronePicketsComponent, TransformComponent>();
+        while (query.MoveNext(out _, out var pickets, out var xform))
+        {
+            if (xform.GridUid != territoryGrid || pickets.StoodDown == off)
+                continue;
+
+            pickets.StoodDown = off;
+            if (off)
+            {
+                Park(pickets);
+                pickets.Dormant = true;
+            }
+        }
+    }
+
+    public bool InPicket(TerritoryDronePicketsComponent pickets, EntityUid drone)
+    {
+        return pickets.Pickets.Contains(drone);
     }
 
     public bool FliesForSomeoneElse(TerritoryDronePicketsComponent pickets, string faction)
@@ -249,6 +289,7 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
         RemComp<HTNComponent>(controller);
 
         drone = controller;
+        EnsureComp<ShipHullMonitorComponent>(controller);
         var picket = EnsureComp<TerritoryPicketDroneComponent>(controller);
         picket.Standard = standard;
         picket.Slot = slot;
@@ -342,6 +383,15 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
             if (center.MapId == MapId.Nullspace || xform.GridUid is not { } territoryGrid)
                 continue;
 
+            if (pickets.StoodDown)
+            {
+                if (!pickets.Dormant)
+                    Park(pickets);
+
+                pickets.Dormant = true;
+                continue;
+            }
+
             if (scan)
             {
                 if (!gathered)
@@ -365,7 +415,7 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
 
             foreach (var drone in pickets.Pickets)
             {
-                Fly(drone, pickets, uid, center, territoryGrid);
+                Fly(drone, pickets, uid, center, territoryGrid, scan);
             }
         }
     }
@@ -446,31 +496,14 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
             bestDistance = distance;
         }
 
-        // somebody out in a suit, on no hull at all
-        var players = EntityQueryEnumerator<ActorComponent, MobStateComponent, TransformComponent>();
-        while (players.MoveNext(out var player, out _, out var mob, out var playerXform))
-        {
-            if (playerXform.GridUid != null || playerXform.MapID != center.MapId || !_mobState.IsAlive(player, mob) ||
-                IsFriend(pickets.Faction, player))
-            {
-                continue;
-            }
-
-            var distance = (_transform.GetWorldPosition(playerXform) - center.Position).LengthSquared();
-            if (distance >= bestDistance)
-                continue;
-
-            best = player;
-            bestDistance = distance;
-        }
-
         return best;
     }
 
     private bool IsIntruder(EntityUid target, EntityUid territoryGrid, string? faction)
     {
+        // drones only go after ships, never someone floating in a suit
         if (!HasComp<MapGridComponent>(target))
-            return HasComp<ActorComponent>(target) && _mobState.IsAlive(target) && !IsFriend(faction, target);
+            return false;
 
         if (target == territoryGrid ||
             HasComp<PersistentPoiGridComponent>(target) ||
@@ -541,13 +574,14 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
     }
 
     private void Fly(EntityUid drone, TerritoryDronePicketsComponent pickets, EntityUid standard, MapCoordinates center,
-        EntityUid territoryGrid)
+        EntityUid territoryGrid, bool scan)
     {
         if (!_picketQuery.TryComp(drone, out var picket))
             return;
 
-        // A drone with its power knocked out drifts
-        if (_powerQuery.TryComp(drone, out var receiver) && !_power.IsPowered(drone, receiver))
+        // no power or shut down from the console: just drift
+        if (picket.Order == TerritoryDroneOrder.Offline ||
+            _powerQuery.TryComp(drone, out var receiver) && !_power.IsPowered(drone, receiver))
         {
             _steering.Stop(drone);
             _targeting.Stop(drone);
@@ -555,6 +589,28 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
         }
 
         var fromHome = Vector2.Distance(_transform.GetWorldPosition(drone), center.Position);
+
+        if (picket.Order == TerritoryDroneOrder.Hold)
+        {
+            HoldStation(drone, picket);
+            return;
+        }
+
+        if (picket.Order == TerritoryDroneOrder.Attack)
+        {
+            if (picket.OrderTarget is { } ordered &&
+                !TerminatingOrDeleted(ordered) &&
+                fromHome <= pickets.AttackRange + AttackSlack &&
+                (!scan || IsValidAttackTarget(pickets, center, territoryGrid, ordered)))
+            {
+                Attack(drone, picket, pickets, ordered, territoryGrid);
+                return;
+            }
+
+            // target gone or out of range, go back to defending
+            picket.Order = TerritoryDroneOrder.Defend;
+            picket.OrderTarget = null;
+        }
         if (fromHome > pickets.ReturnRange)
             picket.Returning = true;
         else if (picket.Returning && fromHome <= pickets.Range)
@@ -634,6 +690,147 @@ public sealed class TerritoryDronePicketSystem : EntitySystem
         var targeting = _targeting.Target(drone, new EntityCoordinates(target, _random.NextVector2(scatter)));
         if (targeting != null)
             targeting.LeadingAccuracy = LeadingAccuracy;
+    }
+
+    private void HoldStation(EntityUid drone, TerritoryPicketDroneComponent picket)
+    {
+        _targeting.Stop(drone);
+        if (Transform(drone).MapUid is not { } map)
+            return;
+
+        var steer = _steering.Steer(drone, new EntityCoordinates(map, picket.HoldPoint));
+        if (steer == null)
+            return;
+
+        steer.Mode = ShipSteeringMode.GoToRange;
+        steer.Range = 0f;
+        steer.RangeTolerance = 15f;
+        steer.InRangeMaxSpeed = 2f;
+        steer.MaxRotateRate = null;
+        steer.NoFinish = true;
+        steer.LeadingEnabled = false;
+        steer.AlwaysFaceTarget = false;
+        steer.AvoidCollisions = true;
+        steer.AvoidProjectiles = false;
+        steer.AvoidTargetGrid = false;
+    }
+
+    public void SetOrder(EntityUid drone, TerritoryDroneOrder order, EntityUid? target = null)
+    {
+        if (!_picketQuery.TryComp(drone, out var picket))
+            return;
+
+        picket.Order = order;
+        picket.OrderTarget = order == TerritoryDroneOrder.Attack ? target : null;
+        picket.Returning = false;
+
+        switch (order)
+        {
+            case TerritoryDroneOrder.Hold:
+                picket.HoldPoint = _transform.GetWorldPosition(drone);
+                break;
+            case TerritoryDroneOrder.Offline:
+                _steering.Stop(drone);
+                _targeting.Stop(drone);
+                if (Transform(drone).GridUid is { } grid && TryComp<PhysicsComponent>(grid, out var body))
+                {
+                    _physics.SetLinearVelocity(grid, Vector2.Zero, body: body);
+                    _physics.SetAngularVelocity(grid, 0f, body: body);
+                }
+
+                break;
+        }
+
+        if (TryComp<TerritoryDronePicketsComponent>(picket.Standard, out var pickets))
+            pickets.Dormant = false;
+    }
+
+    public bool HasCrew(EntityUid drone)
+    {
+        if (Transform(drone).GridUid is not { } grid)
+            return false;
+
+        // MobState so a ghost floating over it doesn't count
+        var query = EntityQueryEnumerator<MindContainerComponent, MobStateComponent, TransformComponent>();
+        while (query.MoveNext(out _, out var mind, out _, out var xform))
+        {
+            if (mind.HasMind && xform.GridUid == grid)
+                return true;
+        }
+
+        return false;
+    }
+
+    public void Scuttle(EntityUid drone)
+    {
+        if (Transform(drone).GridUid is not { } grid)
+            return;
+
+        var at = _transform.GetMapCoordinates(grid);
+        if (TryComp<TerritoryDronePicketsComponent>(Comp<TerritoryPicketDroneComponent>(drone).Standard, out var pickets))
+            pickets.Pickets.Remove(drone);
+
+        QueueDel(grid);
+        _explosion.QueueExplosion(at, "Default", 60f, 6f, 15f, canCreateVacuum: false, addLog: false);
+    }
+
+    public bool IsValidAttackTarget(TerritoryDronePicketsComponent pickets, MapCoordinates center, EntityUid territoryGrid,
+        EntityUid target)
+    {
+        if (TerminatingOrDeleted(target) || !HasComp<MapGridComponent>(target))
+            return false;
+
+        if (IsOwnPicketGrid(pickets, target))
+            return false;
+
+        if (TryComp<IFFComponent>(target, out var iff) && (iff.Flags & IFFFlags.Hide) != 0)
+            return false;
+
+        var at = _transform.GetMapCoordinates(target);
+        if (at.MapId != center.MapId || (at.Position - center.Position).LengthSquared() > pickets.AttackRange * pickets.AttackRange)
+            return false;
+
+        return IsIntruder(target, territoryGrid, pickets.Faction);
+    }
+
+    public List<(EntityUid Grid, float Distance)> ListTargets(Entity<TerritoryDronePicketsComponent> standard)
+    {
+        var found = new List<(EntityUid, float)>();
+        var xform = Transform(standard);
+        if (xform.GridUid is not { } territoryGrid)
+            return found;
+
+        var center = _transform.GetMapCoordinates(standard, xform);
+        if (center.MapId == MapId.Nullspace)
+            return found;
+
+        _gridScratch.Clear();
+        var box = Box2.CenteredAround(center.Position, new Vector2(standard.Comp.AttackRange * 2f));
+        _map.FindGridsIntersecting(center.MapId, box, ref _gridScratch, approx: true, includeMap: false);
+        foreach (var grid in _gridScratch)
+        {
+            if (!IsValidAttackTarget(standard.Comp, center, territoryGrid, grid.Owner))
+                continue;
+
+            found.Add((grid.Owner, Vector2.Distance(_transform.GetWorldPosition(grid.Owner), center.Position)));
+        }
+
+        found.Sort((a, b) => a.Item2.CompareTo(b.Item2));
+        if (found.Count > MaxListedTargets)
+            found.RemoveRange(MaxListedTargets, found.Count - MaxListedTargets);
+
+        return found;
+    }
+
+    private bool IsOwnPicketGrid(TerritoryDronePicketsComponent pickets, EntityUid grid)
+    {
+        foreach (var drone in pickets.Pickets)
+        {
+            if (TryComp(drone, out TransformComponent? xform) && xform.GridUid == grid)
+                return true;
+        }
+
+        return false;
     }
 
     private bool TerritoryInLineOfFire(EntityUid drone, EntityUid target, EntityUid territoryGrid)

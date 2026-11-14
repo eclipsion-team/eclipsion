@@ -1,0 +1,14 @@
+ent-BaseCartridgeSpecial =
+    .desc = { ent-BaseCartridge.desc }
+ent-CartridgeSpecial = патрон (.38 спешл)
+    .desc = { ent-BaseCartridgeSpecial.desc }
+ent-CartridgeSpecialPractice = патрон (.38 спешл учебный)
+    .desc = { ent-BaseCartridgeSpecial.desc }
+ent-CartridgeSpecialIncendiary = патрон (.38 спешл зажигательный)
+    .desc = { ent-BaseCartridgeSpecial.desc }
+ent-CartridgeSpecialUranium = патрон (.38 спешл урановый)
+    .desc = { ent-BaseCartridgeSpecial.desc }
+ent-CartridgeSpecialHoly = патрон (.38 спешл святой)
+    .desc = { ent-BaseCartridgeSpecial.desc }
+ent-CartridgeSpecialMindbreaker = патрон (.38 спешл майндбрейкер)
+    .desc = { ent-BaseCartridgeSpecial.desc }

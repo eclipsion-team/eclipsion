@@ -1,0 +1,14 @@
+loadout-description-LoadoutCommandCapNeckMantle = Чтобы показать, кто здесь главный.
+loadout-description-LoadoutCommandCapNeckCloak = Чтобы по-настоящему показать, кто здесь главный.
+loadout-description-LoadoutCommandCapNeckCloakFormal = Показывает не только, кто здесь главный, но и у кого лучший вкус.
+loadout-description-LoadoutCommandCapJumpsuitFormal = Весьма изысканный наряд. Интересно, куда собрался его владелец, раз ему нужен такой стильный вид.
+loadout-description-LoadoutCommandCapJumpskirtFormal = Весьма изысканный наряд. Интересно, куда собрался его владелец, раз ему нужен такой стильный вид.
+loadout-description-LoadoutCommandCapOuterWinter = Тёплое пальто от холода космоса.
+loadout-description-LoadoutCommandCapGloves = Перчатки капитана. Очень хорошие перчатки.
+loadout-description-LoadoutCommandCapHat = Шляпа капитана. Очень хорошая шляпа.
+loadout-description-LoadoutCommandCapHatCapcap = Фуражка капитана, весьма неплохая.
+loadout-description-LoadoutCommandCapHatBeret = Берет капитана, очень хороший.
+loadout-description-LoadoutCommandCapMaskGas = Зачем это капитану? Не знаю, но выглядит круто.
+loadout-description-LoadoutCommandCapItemDrinkFlask = Лучшая из фляг для лучших из напитков.
+loadout-name-LoadoutCaptainDrinkFlask = фляга капитана (окрашиваемая)
+loadout-name-LoadoutCaptainGlovesInspection = инспекционные перчатки (окрашиваемые)

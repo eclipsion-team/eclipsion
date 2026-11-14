@@ -1,0 +1,16 @@
+ent-LeftArmCybernetic =
+    .desc = { ent-PartIPC.desc }
+ent-RightArmCybernetic =
+    .desc = { ent-PartIPC.desc }
+ent-LeftLegCybernetic =
+    .desc = { ent-PartIPC.desc }
+ent-RightLegCybernetic =
+    .desc = { ent-PartIPC.desc }
+ent-LeftHandCybernetic = кибернетическая левая кисть
+    .desc = { ent-PartIPC.desc }
+ent-RightHandCybernetic = кибернетическая правая ладонь
+    .desc = { ent-PartIPC.desc }
+ent-LeftFootCybernetic = кибернетическая левая ступня
+    .desc = { ent-PartIPC.desc }
+ent-RightFootCybernetic = кибернетическая правая стопа
+    .desc = { ent-PartIPC.desc }

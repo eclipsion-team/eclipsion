@@ -1,0 +1,3 @@
+mech-equipment-finish-install = Установка {THE($item)} завершена
+mech-energy-missing = Энергия: ОТСУТСТВУЕТ
+mech-custom-action-popup = Сканер масс активирован! Открываю радар...

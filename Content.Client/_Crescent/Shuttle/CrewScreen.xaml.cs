@@ -48,7 +48,7 @@ public sealed partial class CrewScreen : BoxContainer
         accesButtons.RemoveAllChildren();
         if (state.IdCodes is null || state.Pressed is null)
         {
-            targetIdButton.Text = "Insert Employee ID";
+            targetIdButton.Text = Loc.GetString("crew-screen-insert-id");
             return;
         }
         if (state.hasId)

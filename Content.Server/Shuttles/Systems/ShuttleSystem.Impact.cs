@@ -118,6 +118,10 @@ public sealed partial class ShuttleSystem
     private readonly HashSet<Entity<TransformComponent>> _entitiesOnTile = new();
     private readonly List<EntityUid> _staleImpacts = new();
 
+    // tiles broken during one drain, set once per grid at the end (SetTiles is slow)
+    private readonly Dictionary<EntityUid, List<(Vector2i, Tile)>> _drainBrokenTiles = new();
+    private readonly Dictionary<EntityUid, HashSet<Vector2i>> _drainBrokenSet = new();
+
     private void InitializeImpact()
     {
         SubscribeLocalEvent<ShuttleComponent, StartCollideEvent>(OnShuttleCollide);
@@ -177,6 +181,8 @@ public sealed partial class ShuttleSystem
             ResolveImpact(impact);
         }
 
+        FlushBrokenTiles();
+
         // The physics solver has already stopped these grids dead against the contact. Where the hull gave way,
         // the contact is gone, so hand back the pre-collision momentum minus the accumulated impact slowdown.
         // Grids where nothing broke keep the solver's response.
@@ -188,6 +194,39 @@ public sealed partial class ShuttleSystem
 
         _impactVelocities.Clear();
         _processingImpacts.Clear();
+    }
+
+    private void FlushBrokenTiles()
+    {
+        foreach (var (uid, tiles) in _drainBrokenTiles)
+        {
+            if (tiles.Count == 0 || TerminatingOrDeleted(uid) || !_gridQuery.TryComp(uid, out var grid))
+                continue;
+
+            _mapSystem.SetTiles(uid, grid, tiles);
+        }
+
+        foreach (var tiles in _drainBrokenTiles.Values)
+        {
+            tiles.Clear();
+        }
+
+        foreach (var set in _drainBrokenSet.Values)
+        {
+            set.Clear();
+        }
+
+        // grids come and go (debris), don't keep empty lists for dead ones
+        if (_drainBrokenTiles.Count > 64)
+        {
+            _drainBrokenTiles.Clear();
+            _drainBrokenSet.Clear();
+        }
+    }
+
+    private bool IsBrokenThisDrain(EntityUid uid, Vector2i tile)
+    {
+        return _drainBrokenSet.TryGetValue(uid, out var set) && set.Contains(tile);
     }
 
     private Vector2 GetImpactDelta(EntityUid uid)
@@ -521,6 +560,9 @@ public sealed partial class ShuttleSystem
 
         foreach (var tileRef in _mapSystem.GetLocalTilesIntersecting(uid, grid, new Circle(centerTile + grid.TileSizeHalfVector, radius)))
         {
+            if (IsBrokenThisDrain(uid, tileRef.GridIndices))
+                continue;
+
             var def = (ContentTileDefinition)_tileDefManager[tileRef.Tile.TypeId];
             mass += def.Mass;
             tileCount++;
@@ -557,6 +599,9 @@ public sealed partial class ShuttleSystem
         // Pre-calculate all tiles that need processing
         foreach (var tileRef in _mapSystem.GetLocalTilesIntersecting(uid, grid, new Circle(centerTile + grid.TileSizeHalfVector, radius)))
         {
+            if (IsBrokenThisDrain(uid, tileRef.GridIndices))
+                continue;
+
             var distance = centerTile - tileRef.GridIndices;
             // Calculate distance-based energy falloff
             float distanceFactor = 1.0f - distance.Length / (radius + 1);
@@ -629,7 +674,7 @@ public sealed partial class ShuttleSystem
 
                 if (_dmgQuery.TryComp(localEnt, out var damageable))
                 {
-                    // Apply damage scaled by distance but capped to prevent gibbing
+                    // damage falls off with distance, no cap: mobs right at the contact get gibbed on purpose
                     var scaledDamage = tileData.Energy * _damageMultiplier;
                     damageSpec.DamageDict["Blunt"] = scaledDamage;
                     damageSpec.DamageDict["Structural"] = scaledDamage * _structuralDamage;
@@ -682,11 +727,27 @@ public sealed partial class ShuttleSystem
         List<(Vector2i, Tile)> brokenTiles,
         List<Vector2i> sparkTiles)
     {
-        // Break tiles
-        _mapSystem.SetTiles(uid, grid, brokenTiles);
+        // tiles are only marked here, FlushBrokenTiles sets them when the drain is done
+        if (brokenTiles.Count > 0)
+        {
+            if (!_drainBrokenTiles.TryGetValue(uid, out var pending))
+            {
+                pending = new List<(Vector2i, Tile)>();
+                _drainBrokenTiles[uid] = pending;
+            }
 
-        if (TerminatingOrDeleted(uid))
-            return;
+            if (!_drainBrokenSet.TryGetValue(uid, out var set))
+            {
+                set = new HashSet<Vector2i>();
+                _drainBrokenSet[uid] = set;
+            }
+
+            foreach (var broken in brokenTiles)
+            {
+                if (set.Add(broken.Item1))
+                    pending.Add(broken);
+            }
+        }
 
         // Spawn spark effects, up to the drain's budget
         foreach (var tile in sparkTiles)

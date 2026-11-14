@@ -1,0 +1,15 @@
+cmd-ban-invalid-arguments = Неверное количество аргументов
+cmd-banpanel-player-err = Указанный игрок не найден
+ban-panel-title = Бан панель
+ban-panel-player = Игрок
+ban-panel-reason = Причина
+ban-panel-submit = Забанить
+ban-panel-confirm = Вы уверены?
+ban-panel-tabs-reason = Причина
+ban-panel-select = Выбрать режим
+ban-panel-server = Сервер бан
+ban-panel-role = Роль бан
+ban-panel-minutes = минут
+ban-panel-hours = часы
+ban-panel-permanent = ПЕРМАНЕНТНЫЙ
+server-ban-string-never = Никогда

@@ -1,0 +1,14 @@
+ent-StorePresetHullrotDogtagNCWL = { "" }
+    .desc = { "" }
+ent-StorePresetHullrotDogtagDSM = { "" }
+    .desc = { "" }
+ent-StorePresetHullrotDogtagSAW = { "" }
+    .desc = { "" }
+ent-StorePresetHullrotDogtagGSC = { "" }
+    .desc = { "" }
+ent-StorePresetHullrotDogtagIPM = { "" }
+    .desc = { "" }
+ent-StorePresetHullrotDogtagSRMR = { "" }
+    .desc = { "" }
+ent-StorePresetHullrotDogtagSRMS = { "" }
+    .desc = { "" }

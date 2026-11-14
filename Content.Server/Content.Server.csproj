@@ -58,6 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <PackageReference Include="SixLabors.ImageSharp" />
     <PackageReference Include="Serilog" />
     <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Linguini.Bundle" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Content.Packaging\Content.Packaging.csproj" />

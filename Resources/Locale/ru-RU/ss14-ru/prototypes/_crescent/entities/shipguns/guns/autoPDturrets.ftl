@@ -1,0 +1,12 @@
+ent-BaseWeaponTurretAutoPD = БАЗА AUTOPD
+    .desc = { ent-BaseStructure.desc }
+ent-WeaponTurretAutoPDNCWL = ЛРНП 7,62x51мм «Серп» противодесантная турель
+    .desc = { ent-BaseWeaponTurretAutoPD.desc }
+ent-WeaponTurretAutoPDSHI = ТПШ 7,62x51мм «Сирудо» противодесантная турель
+    .desc = { ent-BaseWeaponTurretAutoPD.desc }
+ent-WeaponTurretAutoPDDSM = БМС 7,62x51мм «Мадам» противодесантная турель
+    .desc = { ent-BaseWeaponTurretAutoPD.desc }
+ent-WeaponTurretAutoPDTFSC = ТС 7,62x51мм «Бродяга» противодесантная турель
+    .desc = { ent-BaseWeaponTurretAutoPD.desc }
+ent-WeaponTurretAutoPDIND = ICM 7,62x51мм «Освободитель» противодесантная турель
+    .desc = { ent-BaseWeaponTurretAutoPD.desc }

@@ -1,0 +1,12 @@
+ent-N14IngotLead = свинцовый слиток
+    .desc = { ent-IngotBase.desc }
+ent-N14IngotLead1 = свинцовый слиток
+    .desc = { ent-N14IngotLead.desc }
+ent-N14IngotAluminium = алюминиевый слиток
+    .desc = { ent-IngotBase.desc }
+ent-N14IngotAluminium1 = алюминиевый слиток
+    .desc = { ent-N14IngotAluminium.desc }
+ent-IngotCopper = медный слиток
+    .desc = { ent-IngotBase.desc }
+ent-IngotCopper1 = медный слиток
+    .desc = { ent-IngotCopper.desc }

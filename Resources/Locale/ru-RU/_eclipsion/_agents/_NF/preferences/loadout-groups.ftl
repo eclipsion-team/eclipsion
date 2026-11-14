@@ -1,0 +1,11 @@
+loadout-group-contractor-gloves = перчатки
+loadout-group-contractor-outerclothing = верхняя одежда
+loadout-group-contractor-belt = пояс
+loadout-group-contractor-shoes = обувь
+loadout-group-contractor-neck = шея
+loadout-group-contractor-glasses = очки
+loadout-group-contractor-face = маска
+loadout-group-contractor-trinkets = безделушки
+loadout-group-contractor-survival-box = коробка выживания
+loadout-group-contractor-encryption-key = ключи шифрования
+loadout-group-contractor-implanter = имплантеры

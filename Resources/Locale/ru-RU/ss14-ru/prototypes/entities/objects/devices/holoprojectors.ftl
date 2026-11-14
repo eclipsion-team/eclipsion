@@ -1,0 +1,17 @@
+ent-Holoprojector = проектор голографических знаков
+    .desc = Удобный голографический проектор, отображающий табличку уборщика.
+    .suffix = { "" }
+ent-HoloprojectorEmpty = { ent-Holoprojector }
+    .desc = { ent-Holoprojector.desc }
+ent-HoloprojectorBorg = { ent-Holoprojector }
+    .desc = { ent-Holoprojector.desc }
+ent-HolofanProjector = атмос голопроектор
+    .desc = Останавливает суицидально настроеных пассажиров от убийства остальных во время разгерметизации.
+    .suffix = { "" }
+ent-HolofanProjectorEmpty = { ent-HolofanProjector }
+    .desc = { ent-HolofanProjector.desc }
+ent-HoloprojectorField = проектор силового поля
+    .desc = Создает непроницаемое силовое поле, которое ничего не пропускает. Близкое расположение может вызывать рак, а может и не вызывать.
+    .suffix = { "" }
+ent-HoloprojectorFieldEmpty = { ent-HoloprojectorField }
+    .desc = { ent-HoloprojectorField.desc }

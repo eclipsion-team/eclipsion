@@ -37,6 +37,7 @@ public sealed class GeneratorSystem : SharedGeneratorSystem
         SubscribeLocalEvent<FuelGeneratorComponent, PortableGeneratorSetTargetPowerMessage>(OnTargetPowerSet);
         SubscribeLocalEvent<FuelGeneratorComponent, PortableGeneratorEjectFuelMessage>(OnEjectFuel);
         SubscribeLocalEvent<FuelGeneratorComponent, AnchorStateChangedEvent>(OnAnchorStateChanged);
+        SubscribeLocalEvent<FuelGeneratorComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<FuelGeneratorComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SolidFuelGeneratorAdapterComponent, GeneratorGetFuelEvent>(SolidGetFuel);
         SubscribeLocalEvent<SolidFuelGeneratorAdapterComponent, GeneratorUseFuel>(SolidUseFuel);
@@ -55,6 +56,13 @@ public sealed class GeneratorSystem : SharedGeneratorSystem
             return;
 
         SetFuelGeneratorOn(uid, false, component);
+    }
+
+    // saved POI grids never get MapInit again, so fix the look and sound here
+    private void OnStartup(EntityUid uid, FuelGeneratorComponent component, ComponentStartup args)
+    {
+        if (component.On)
+            UpdateState(uid, component);
     }
 
     private void OnMapInit(EntityUid uid, FuelGeneratorComponent component, MapInitEvent args)

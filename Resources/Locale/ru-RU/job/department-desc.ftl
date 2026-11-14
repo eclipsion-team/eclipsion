@@ -1,0 +1,10 @@
+department-Cargo-description = Выполняйте запросы, зарабатывайте кредиты и заказывайте полезные вещички для экипажа.
+department-Civilian-description = Обеспечивайте безопасность гражданских. Поддерживайте закон. Не умирайте.
+department-Command-description = Управляйте персоналом станции и помогайте им работать эффективно.
+department-Engineering-description = Поддерживайте электроэнергию и станцию в рабочем состоянии.
+department-Medical-description = Поддерживайте здоровье персонала.
+department-Security-description = Охраняйте порядок на станции.
+department-Science-description = Исследуйте новые технологии и опасные артефакты.
+department-Silicon-description = Соблюдайте свои законы и служите экипажу.
+department-Specific-description = Должности, которые есть не на всех станциях.
+department-Dignitary-description = Помогайте руководителям отделов и капитану, следуйте их указаниям.

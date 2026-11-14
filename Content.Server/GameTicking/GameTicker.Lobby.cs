@@ -42,10 +42,15 @@ namespace Content.Server.GameTicking
 
         private string GetInfoText()
         {
+            return GetInfoMsg().TextBlob;
+        }
+
+        private TickerLobbyInfoEvent GetInfoMsg()
+        {
             var preset = CurrentPreset ?? Preset;
             if (preset == null)
             {
-                return string.Empty;
+                return new TickerLobbyInfoEvent(string.Empty);
             }
 
             var playerCount = $"{_playerManager.PlayerCount}";
@@ -74,7 +79,7 @@ namespace Content.Server.GameTicking
 
             var gmTitle = Loc.GetString(preset.ModeTitle);
             var desc = Loc.GetString(preset.Description);
-            return Loc.GetString(
+            var text = Loc.GetString(
                 RunLevel == GameRunLevel.PreRoundLobby
                     ? "game-ticker-get-info-preround-text"
                     : "game-ticker-get-info-text",
@@ -84,6 +89,17 @@ namespace Content.Server.GameTicking
                 ("mapName", stationNames.ToString()),
                 ("gmTitle", gmTitle),
                 ("desc", desc));
+
+            return new TickerLobbyInfoEvent(text)
+            {
+                Preround = RunLevel == GameRunLevel.PreRoundLobby,
+                RoundId = RoundId,
+                PlayerCount = _playerManager.PlayerCount,
+                ReadyCount = readyCount,
+                MapName = stationNames.ToString(),
+                ModeTitle = preset.ModeTitle,
+                ModeDesc = preset.Description,
+            };
         }
 
         private TickerConnectionStatusEvent GetConnectionStatusMsg()
@@ -103,11 +119,6 @@ namespace Content.Server.GameTicking
             {
                 RaiseNetworkEvent(GetStatusMsg(player), player.Channel);
             }
-        }
-
-        private TickerLobbyInfoEvent GetInfoMsg()
-        {
-            return new (GetInfoText());
         }
 
         private void UpdateLateJoinStatus()

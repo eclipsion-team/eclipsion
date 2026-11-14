@@ -25,6 +25,11 @@ public sealed class WorldControllerSystem : EntitySystem
     private float _updateTimer = 0f;
     private const float UpdateInterval = 2f;
 
+    // loading every chunk in one tick froze round start
+    private const double LoadBudgetMs = 5;
+    private readonly List<(EntityUid Map, Vector2i Chunk, List<EntityUid> Loaders, bool Player)> _pendingLoads = new();
+    private int _pendingIndex;
+
     private ISawmill _sawmill = default!;
 
     /// <inheritdoc />
@@ -89,9 +94,17 @@ public sealed class WorldControllerSystem : EntitySystem
     public override void Update(float frameTime)
     {
         _updateTimer += frameTime;
-        if (_updateTimer < UpdateInterval)
-            return;
-        _updateTimer = 0f;
+        if (_updateTimer >= UpdateInterval)
+        {
+            _updateTimer = 0f;
+            ScanChunks();
+        }
+
+        LoadPendingChunks();
+    }
+
+    private void ScanChunks()
+    {
 
         //there was a to-do here about every frame alloc but it turns out it's a nothing burger here.
         var chunksToLoad = new Dictionary<EntityUid, Dictionary<Vector2i, List<EntityUid>>>();
@@ -131,6 +144,7 @@ public sealed class WorldControllerSystem : EntitySystem
             }
         }
 
+        var playerChunks = new HashSet<(EntityUid, Vector2i)>();
         var mindEnum = EntityQueryEnumerator<MindContainerComponent, TransformComponent>();
         var ghostQuery = GetEntityQuery<GhostComponent>();
 
@@ -159,6 +173,7 @@ public sealed class WorldControllerSystem : EntitySystem
                 if (!set.TryGetValue(chunk.Value, out _))
                     set[chunk.Value] = new List<EntityUid>(4);
                 set[chunk.Value].Add(uid);
+                playerChunks.Add((map, chunk.Value));
             }
         }
 
@@ -180,11 +195,12 @@ public sealed class WorldControllerSystem : EntitySystem
         if (chunksUnloaded > 0)
             _sawmill.Debug($"Queued {chunksUnloaded} chunks for unload.");
 
+        _pendingLoads.Clear();
+        _pendingIndex = 0;
+
         if (chunksToLoad.All(x => x.Value.Count == 0))
             return;
 
-        var startTime = _gameTiming.RealTime;
-        var count = 0;
         var loadedQuery = GetEntityQuery<LoadedChunkComponent>();
         var controllerQuery = GetEntityQuery<WorldControllerComponent>();
         foreach (var (map, chunks) in chunksToLoad)
@@ -192,23 +208,57 @@ public sealed class WorldControllerSystem : EntitySystem
             var controller = controllerQuery.GetComponent(map);
             foreach (var (chunk, loaders) in chunks)
             {
-                var ent = GetOrCreateChunk(chunk, map, controller); // Ensure everything loads.
-                LoadedChunkComponent? c = null;
-                if (ent is not null && !loadedQuery.TryGetComponent(ent.Value, out c))
+                if (controller.Chunks.TryGetValue(chunk, out var ent) && loadedQuery.TryGetComponent(ent, out var c))
                 {
-                    c = AddComp<LoadedChunkComponent>(ent.Value);
-                    count += 1;
+                    c.Loaders = loaders;
+                    continue;
                 }
 
-                if (c is not null)
-                    c.Loaders = loaders;
+                _pendingLoads.Add((map, chunk, loaders, playerChunks.Contains((map, chunk))));
             }
+        }
+
+        // chunks around players go first
+        _pendingLoads.Sort((a, b) => b.Player.CompareTo(a.Player));
+    }
+
+    private void LoadPendingChunks()
+    {
+        if (_pendingIndex >= _pendingLoads.Count)
+            return;
+
+        var startTime = _gameTiming.RealTime;
+        var count = 0;
+        var loadedQuery = GetEntityQuery<LoadedChunkComponent>();
+
+        while (_pendingIndex < _pendingLoads.Count)
+        {
+            if (count > 0 && (_gameTiming.RealTime - startTime).TotalMilliseconds > LoadBudgetMs)
+                break;
+
+            var (map, chunk, loaders, _) = _pendingLoads[_pendingIndex];
+            _pendingIndex++;
+
+            if (!TryComp<WorldControllerComponent>(map, out var controller))
+                continue;
+
+            var ent = GetOrCreateChunk(chunk, map, controller);
+            if (ent is null)
+                continue;
+
+            if (!loadedQuery.TryGetComponent(ent.Value, out var c))
+            {
+                c = AddComp<LoadedChunkComponent>(ent.Value);
+                count++;
+            }
+
+            c.Loaders = loaders;
         }
 
         if (count > 0)
         {
             var timeSpan = _gameTiming.RealTime - startTime;
-            _sawmill.Debug($"Loaded {count} chunks in {timeSpan.TotalMilliseconds:N2}ms.");
+            _sawmill.Debug($"Loaded {count} chunks in {timeSpan.TotalMilliseconds:N2}ms, {_pendingLoads.Count - _pendingIndex} left.");
         }
     }
 

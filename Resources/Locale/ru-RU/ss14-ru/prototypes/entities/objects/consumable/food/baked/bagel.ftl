@@ -1,0 +1,1 @@
+ent-FoodBagelBase = { ent-FoodInjectableBase }

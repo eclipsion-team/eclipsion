@@ -1,0 +1,10 @@
+ent-SalvageLorePaperGamingSpawner = спавнер утильных игровых записок
+    .desc = { ent-MarkerBase.desc }
+ent-PaperWrittenSalvageLoreGaming1 = { ent-Paper }
+    .desc = { ent-Paper.desc }
+ent-PaperWrittenSalvageLoreGaming2 = { ent-Paper }
+    .desc = { ent-Paper.desc }
+ent-PaperWrittenSalvageLoreGaming3 = { ent-Paper }
+    .desc = { ent-Paper.desc }
+ent-PaperWrittenSalvageLoreGaming4 = { ent-Paper }
+    .desc = { ent-Paper.desc }

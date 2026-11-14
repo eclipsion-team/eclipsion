@@ -22,6 +22,7 @@ using Content.Server._Forge.Sponsors; // Forge-Change
 using Content.Shared._Forge.Sponsors; // Forge-Change
 using Content.Shared._Crescent.CCVar; // Crescent
 using Content.Shared._Crescent.Chat; // Crescent
+using Content.Server._Crescent.Translator; // Eclipsion
 
 namespace Content.Server.Chat.Managers
 {
@@ -351,6 +352,36 @@ namespace Content.Server.Chat.Managers
 
         #region Utility
 
+        // Eclipsion - channels that get translated
+        private const ChatChannel TranslatedChannels = ChatChannel.Local | ChatChannel.Whisper | ChatChannel.Radio
+            | ChatChannel.LOOC | ChatChannel.OOC | ChatChannel.Emotes | ChatChannel.Dead | ChatChannel.Telepathic
+            | ChatChannel.AdminChat;
+
+        private void SendInOwnLanguage(ChatMessage msg, List<INetChannel> clients, NetUserId? author)
+        {
+            if ((msg.Channel & TranslatedChannels) == 0
+                || !_entityManager.TrySystem(out ChatTranslatorSystem? translator)
+                || !translator.Active)
+            {
+                _netManager.ServerSendToMany(new MsgChatMessage() { Message = msg }, clients);
+                return;
+            }
+
+            translator.Deliver(msg.Message, author, _entityManager.GetEntity(msg.SenderEntity), clients,
+                (client, translated) =>
+                {
+                    var sent = translated == null
+                        ? msg
+                        : new ChatMessage(msg.Channel, translated,
+                            ChatTranslatorSystem.SwapInWrapped(msg.WrappedMessage, msg.Message, translated),
+                            msg.SenderEntity, msg.SenderKey, msg.HideChat, msg.MessageColorOverride, msg.AudioPath,
+                            msg.AudioVolume, msg.IgnoreChatStack);
+
+                    _netManager.ServerSendMessage(new MsgChatMessage() { Message = sent }, client);
+                },
+                untouched => _netManager.ServerSendToMany(new MsgChatMessage() { Message = msg }, untouched));
+        }
+
         public void ChatMessageToOne(ChatChannel channel, string message, string wrappedMessage, EntityUid source, bool hideChat, INetChannel client, Color? colorOverride = null, bool recordReplay = false, string? audioPath = null, float audioVolume = 0, NetUserId? author = null, bool ignoreChatStack = false)
         {
             var user = author == null ? null : EnsurePlayer(author);
@@ -358,7 +389,7 @@ namespace Content.Server.Chat.Managers
             user?.AddEntity(netSource);
 
             var msg = new ChatMessage(channel, message, wrappedMessage, netSource, user?.Key, hideChat, colorOverride, audioPath, audioVolume, ignoreChatStack);
-            _netManager.ServerSendMessage(new MsgChatMessage() { Message = msg }, client);
+            SendInOwnLanguage(msg, new List<INetChannel> { client }, author); // Eclipsion - chat translator
 
             if (!recordReplay)
                 return;
@@ -380,7 +411,7 @@ namespace Content.Server.Chat.Managers
             user?.AddEntity(netSource);
 
             var msg = new ChatMessage(channel, message, wrappedMessage, netSource, user?.Key, hideChat, colorOverride, audioPath, audioVolume, ignoreChatStack);
-            _netManager.ServerSendToMany(new MsgChatMessage() { Message = msg }, clients);
+            SendInOwnLanguage(msg, clients, author); // Eclipsion - chat translator
 
             if (!recordReplay)
                 return;
@@ -414,7 +445,7 @@ namespace Content.Server.Chat.Managers
             user?.AddEntity(netSource);
 
             var msg = new ChatMessage(channel, message, wrappedMessage, netSource, user?.Key, hideChat, colorOverride, audioPath, audioVolume, ignoreChatStack);
-            _netManager.ServerSendToAll(new MsgChatMessage() { Message = msg });
+            SendInOwnLanguage(msg, _netManager.Channels.ToList(), author); // Eclipsion - chat translator
 
             if (!recordReplay)
                 return;

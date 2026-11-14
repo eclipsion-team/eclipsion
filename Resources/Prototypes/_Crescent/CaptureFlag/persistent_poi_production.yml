@@ -196,9 +196,9 @@
 - type: entity
   parent: BaseComputerPersistentPoi
   id: ComputerPersistentPoiDroneBay
-  name: drone bay
+  name: drone control console
   suffix: Persistent territory, built
-  description: Buys light drones for the territory's picket. They guard the territory and never stray from it. Shieldless hulls with 150cc guns at most.
+  description: Buys light drones for the territory's picket and gives every picket drone its orders. Shieldless hulls with 150cc guns at most.
   components:
   - type: Sprite
     layers:

@@ -21,8 +21,8 @@ public sealed class TerritoryDoorAccessTest
         var regionId = $"integration-test-{Guid.NewGuid():N}";
         EntityUid holder = default;
         EntityUid outsider = default;
-        var frames = new[] { "PersistentPoiFrameAirlock", "PersistentPoiFrameAirlockGlass", "PersistentPoiFrameAirlockPublic", "PersistentPoiFrameDockingPort" };
-        var nodes = new[] { "airlock", "airlockGlass", "airlockPublic", "dockingPort" };
+        var frames = new[] { "PersistentPoiFrameAirlock", "PersistentPoiFrameAirlockGlass", "PersistentPoiFrameAirlockPublic", "PersistentPoiFrameDockingPort", "PersistentPoiFrameAirlockHorizontal", "PersistentPoiFrameAirlockPublicHorizontal" };
+        var nodes = new[] { "airlock", "airlockGlass", "airlockPublic", "dockingPort", "airlockHorizontal", "airlockPublicHorizontal" };
 
         await server.WaitAssertion(() =>
         {
@@ -67,7 +67,7 @@ public sealed class TerritoryDoorAccessTest
                     Assert.That(access.CanPass(door, outsider), Is.False, $"{name} let an outsider through");
                 }
             }
-            Assert.That(count, Is.EqualTo(4));
+            Assert.That(count, Is.EqualTo(frames.Length));
         });
 
         await server.WaitAssertion(() => server.System<PersistentCaptureRegionSystem>().ForgetRegion(regionId));

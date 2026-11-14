@@ -1,0 +1,9 @@
+department-NCWL = Лига Рабочих Нового Полумесяца
+department-DSM = Божественный Мандат Солнца
+department-SRM = Шестое Ополчение Святого Ромейна
+department-SHI = «Шиногара» Тяжёлая Промышленность
+department-CMM = Колониальные Минитмены
+department-TAP = Тайпано-Атирийский Пакт
+department-ATH = Центральная Власть Солнца
+department-NCWL-W = Остатки ополчения ЛРНП
+department-DSM-W = Изгнанники БМС

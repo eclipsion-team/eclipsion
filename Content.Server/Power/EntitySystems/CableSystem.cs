@@ -74,7 +74,14 @@ public sealed partial class CableSystem : EntitySystem
 
         // This entity should not be un-anchorable. But this can happen if the grid-tile is deleted (RCD, explosion,
         // etc). In that case: behave as if the cable had been cut.
-        Spawn(cable.CableDroppedOnCutPrototype, Transform(uid).Coordinates);
+        // tile is gone (ram/explosion), no coil then
+        var xform = Transform(uid);
+        if (xform.GridUid is { } gridUid && TryComp<Robust.Shared.Map.Components.MapGridComponent>(gridUid, out var grid) &&
+            !_mapSystemCompat.GetTileRef(gridUid, grid, xform.Coordinates).Tile.IsEmpty)
+        {
+            Spawn(cable.CableDroppedOnCutPrototype, xform.Coordinates);
+        }
+
         QueueDel(uid);
     }
 }

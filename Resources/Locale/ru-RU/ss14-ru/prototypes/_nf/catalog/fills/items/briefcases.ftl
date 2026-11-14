@@ -1,0 +1,12 @@
+ent-SpaceCashExpedition =
+    .desc = { ent-BaseItem.desc }
+ent-SpaceCash5000Expedition = кредиты (5000)
+    .desc = { ent-SpaceCashExpedition.desc }
+ent-SpaceCash10000Expedition = кредиты (10000)
+    .desc = { ent-SpaceCashExpedition.desc }
+ent-SpaceCash15000Expedition = кредиты (15000)
+    .desc = { ent-SpaceCashExpedition.desc }
+ent-SpaceCash20000Expedition = кредиты (20000)
+    .desc = { ent-SpaceCashExpedition.desc }
+ent-SpaceCash25000Expedition = кредиты (25000)
+    .desc = { ent-SpaceCashExpedition.desc }

@@ -43,6 +43,24 @@ public sealed class OptionsUIController : UIController
         _optionsWindow = UIManager.CreateWindow<OptionsMenu>();
     }
 
+    // Eclipsion - rebuild the window in the new language
+    public void Rebuild()
+    {
+        if (_optionsWindow is not { Disposed: false })
+            return;
+
+        var wasOpen = _optionsWindow.IsOpen;
+        var tab = _optionsWindow.Tabs.CurrentTab;
+        _optionsWindow.Dispose();
+        _optionsWindow = default!;
+
+        if (!wasOpen)
+            return;
+
+        OpenWindow();
+        _optionsWindow.Tabs.CurrentTab = tab;
+    }
+
     public void OpenWindow()
     {
         EnsureWindow();

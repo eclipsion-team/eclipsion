@@ -22,20 +22,20 @@ public sealed class ConveyorController : SharedConveyorController
     [Dependency] private readonly MaterialReclaimerSystem _materialReclaimer = default!;
     [Dependency] private readonly SharedBroadphaseSystem _broadphase = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
 
     // Freshly spawned items sleep with collision off (CollisionWake), so belts never touch them.
-    private static readonly TimeSpan WakeScanInterval = TimeSpan.FromSeconds(0.5);
+    // Also picks up jammed items again once their rest is over.
+    private static readonly TimeSpan WakeScanInterval = TimeSpan.FromSeconds(1);
     private TimeSpan _nextWakeScan;
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
 
-        if (_timing.CurTime < _nextWakeScan)
+        if (Timing.CurTime < _nextWakeScan)
             return;
 
-        _nextWakeScan = _timing.CurTime + WakeScanInterval;
+        _nextWakeScan = Timing.CurTime + WakeScanInterval;
 
         var query = EntityQueryEnumerator<ConveyorComponent>();
         while (query.MoveNext(out var uid, out var comp))
@@ -166,7 +166,7 @@ public sealed class ConveyorController : SharedConveyorController
 
                 if (sleepingOnly)
                 {
-                    if (physics.Awake && physics.CanCollide || component.Intersecting.Contains(entity))
+                    if (physics.Awake && physics.CanCollide || component.Intersecting.Contains(entity) || IsResting(entity))
                         continue;
 
                     if (!xformQuery.TryGetComponent(entity, out var entXform) || entXform.ParentUid != grid)

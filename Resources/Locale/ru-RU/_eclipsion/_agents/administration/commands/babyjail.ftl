@@ -1,0 +1,17 @@
+cmd-babyjail-desc = Переключает детсад, который вводит более строгие ограничения на то, кто может зайти на сервер.
+cmd-babyjail-help = Использование: babyjail
+babyjail-command-enabled = Детсад был включён.
+babyjail-command-disabled = Детсад был выключен.
+cmd-babyjail_show_reason-desc = Переключает, показывать ли подключающимся клиентам причину, по которой детсад не пустил их.
+cmd-babyjail_show_reason-help = Использование: babyjail_show_reason
+babyjail-command-show-reason-enabled = Теперь детсад будет показывать причину пользователям, которым он блокирует подключение.
+babyjail-command-show-reason-disabled = Детсад больше не будет показывать причину пользователям, которым он блокирует подключение.
+cmd-babyjail_max_account_age-desc = Получает или задаёт максимальный возраст аккаунта в минутах, с которым можно подключиться при включённом детсаде.
+cmd-babyjail_max_account_age-help = Использование: babyjail_max_account_age <hours>
+babyjail-command-max-account-age-is = Максимальный возраст аккаунта для детсада: {$hours} ч.
+babyjail-command-max-account-age-set = Максимальный возраст аккаунта для детсада установлен на {$hours} ч.
+cmd-babyjail_max_overall_hours-desc = Получает или задаёт максимальное общее время игры в минутах, с которым можно подключиться при включённом детсаде.
+cmd-babyjail_max_overall_hours-help = Использование: babyjail_max_overall_hours <hours>
+babyjail-command-max-overall-hours-is = Максимальное общее время игры для детсада: {$hours} ч.
+babyjail-command-max-overall-hours-set = Максимальное общее время игры для детсада установлено на {$hours} ч.
+babyjail-command-overall-hours-set = Максимальное общее время игры для детсада установлено на {$hours} ч.

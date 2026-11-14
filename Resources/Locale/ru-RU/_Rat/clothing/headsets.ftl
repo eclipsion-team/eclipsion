@@ -1,0 +1,10 @@
+ent-ClothingHeadsetNCSPCommand = гарнитура главаря Горлекса
+    .desc = Для коммуникации с братьями по оружию.
+ent-ClothingHeadsetNCSPInterdyneCommand = гарнитура координатора Интердайн
+    .desc = Для коммуникации с братьями по оружию.
+ent-ClothingHeadsetNCSPCyberdawnCommand = гарнитура патриарха Кибердон
+    .desc = Для коммуникации с братьями по оружию.
+ent-ClothingHeadsetNCSPSawsCommand = гарнитура бригадира
+    .desc = Для коммуникации с братьями по оружию.
+ent-ClothingHeadsetNCWLCommand = гарнитура командования ЛРНП
+    .desc = Для коммуникации с вашими товарищами.

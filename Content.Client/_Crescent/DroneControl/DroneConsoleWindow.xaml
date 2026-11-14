@@ -1,7 +1,7 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
                     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
                     xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
-                    Title="drone control console"
+                    Title="{Loc 'drone-console-title'}"
                     SetSize="1000 600"
                     MinSize="800 500">
     <GridContainer Columns="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -11,56 +11,56 @@
                       HorizontalExpand="False"
                       Margin="5">
             <controls:StripeBack>
-                <Label Name="SquadronLabel" Text="Squadron" FontColorOverride="LightGray" Align="Center"/>
+                <Label Name="SquadronLabel" Text="{Loc 'drone-console-squadron'}" FontColorOverride="LightGray" Align="Center"/>
             </controls:StripeBack>
 
             <ScrollContainer VerticalExpand="True">
                 <BoxContainer Name="DroneListContainer" Orientation="Vertical"/>
             </ScrollContainer>
 
-            <Label Name="NoDronesLabel" Text="No drones deployed." FontColorOverride="DarkGray" Align="Center" Margin="0 4"/>
+            <Label Name="NoDronesLabel" Text="{Loc 'drone-console-none'}" FontColorOverride="DarkGray" Align="Center" Margin="0 4"/>
 
             <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Name="SelectAllBtn" Text="Select All" Margin="2"/>
-                <Button Name="DeselectAllBtn" Text="Clear" Margin="2"/>
+                <Button Name="SelectAllBtn" Text="{Loc 'drone-console-select-all'}" Margin="2"/>
+                <Button Name="DeselectAllBtn" Text="{Loc 'drone-console-clear'}" Margin="2"/>
             </BoxContainer>
 
             <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-                <Button Name="ScuttleBtn" Text="Scuttle" Margin="2" HorizontalExpand="True"/>
-                <Button Name="AbortScuttleBtn" Text="Abort" Margin="2" HorizontalExpand="True"/>
+                <Button Name="ScuttleBtn" Text="{Loc 'drone-console-scuttle'}" Margin="2" HorizontalExpand="True"/>
+                <Button Name="AbortScuttleBtn" Text="{Loc 'drone-console-abort'}" Margin="2" HorizontalExpand="True"/>
             </BoxContainer>
 
             <BoxContainer Name="CarrierPanel" Orientation="Vertical" Margin="0 8 0 0">
                 <controls:StripeBack>
-                    <Label Text="Drone Control" FontColorOverride="LightGray" Align="Center"/>
+                    <Label Text="{Loc 'drone-console-header'}" FontColorOverride="LightGray" Align="Center"/>
                 </controls:StripeBack>
 
-                <Label Name="DeployedLabel" Text="Drones: 0/0" HorizontalAlignment="Center"/>
+                <Label Name="DeployedLabel" Text="" HorizontalAlignment="Center"/>
                 <Label Name="HangarLabel" Text="" HorizontalAlignment="Center"/>
                 <Label Name="LostLabel" Text="" HorizontalAlignment="Center" Visible="False"/>
                 <Label Name="TreasuryLabel" Text="" HorizontalAlignment="Center" FontColorOverride="DarkGray"/>
 
                 <BoxContainer Name="SpawnRow" Orientation="Horizontal" HorizontalExpand="True">
                     <OptionButton Name="SpawnOption" HorizontalExpand="True" Margin="2"/>
-                    <Button Name="ProduceBtn" Text="Produce" Margin="2"/>
+                    <Button Name="ProduceBtn" Text="{Loc 'drone-console-produce'}" Margin="2"/>
                 </BoxContainer>
 
-                <Button Name="DeployBtn" Text="Deploy Docked Drones" Margin="2"/>
+                <Button Name="DeployBtn" Text="{Loc 'drone-console-deploy'}" Margin="2"/>
 
-                <Label Text="Stance" Margin="0 6 0 0"/>
+                <Label Text="{Loc 'drone-console-stance'}" Margin="0 6 0 0"/>
                 <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-                    <Button Name="StanceAttackBtn" Text="Attack" ToggleMode="True" HorizontalExpand="True" Margin="1"/>
-                    <Button Name="StanceDefendBtn" Text="Defend" ToggleMode="True" HorizontalExpand="True" Margin="1"/>
-                    <Button Name="StanceFollowBtn" Text="Follow" ToggleMode="True" HorizontalExpand="True" Margin="1"/>
+                    <Button Name="StanceAttackBtn" Text="{Loc 'drone-console-stance-attack'}" ToggleMode="True" HorizontalExpand="True" Margin="1"/>
+                    <Button Name="StanceDefendBtn" Text="{Loc 'drone-console-stance-defend'}" ToggleMode="True" HorizontalExpand="True" Margin="1"/>
+                    <Button Name="StanceFollowBtn" Text="{Loc 'drone-console-stance-follow'}" ToggleMode="True" HorizontalExpand="True" Margin="1"/>
                 </BoxContainer>
 
-                <Label Text="Targeting" Margin="0 6 0 0"/>
+                <Label Text="{Loc 'drone-console-targeting'}" Margin="0 6 0 0"/>
                 <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-                    <Button Name="TargetEnemiesBtn" Text="Enemies" ToggleMode="True" HorizontalExpand="True" Margin="1"/>
-                    <Button Name="TargetAllBtn" Text="All" ToggleMode="True" HorizontalExpand="True" Margin="1"/>
+                    <Button Name="TargetEnemiesBtn" Text="{Loc 'drone-console-targeting-enemies'}" ToggleMode="True" HorizontalExpand="True" Margin="1"/>
+                    <Button Name="TargetAllBtn" Text="{Loc 'drone-console-targeting-all'}" ToggleMode="True" HorizontalExpand="True" Margin="1"/>
                 </BoxContainer>
 
-                <Label Text="Formation" Margin="0 6 0 0"/>
+                <Label Text="{Loc 'drone-console-formation'}" Margin="0 6 0 0"/>
                 <OptionButton Name="FormationOption" HorizontalExpand="True" Margin="2"/>
             </BoxContainer>
         </BoxContainer>

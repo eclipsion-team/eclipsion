@@ -1,0 +1,14 @@
+ent-LightStripArrow = световая лента
+    .desc = Люминесцентная световая лента.
+ent-LightStripCorner = { ent-LightStripArrow }
+    .desc = { ent-LightStripArrow.desc }
+ent-LightStripEnd = { ent-LightStripArrow }
+    .desc = { ent-LightStripArrow.desc }
+ent-LightStripInner = { ent-LightStripArrow }
+    .desc = { ent-LightStripArrow.desc }
+ent-LightStripLineHorizontal = { ent-LightStripArrow }
+    .desc = { ent-LightStripArrow.desc }
+ent-LightStripLineVertical = { ent-LightStripArrow }
+    .desc = { ent-LightStripArrow.desc }
+ent-LightStripLineRotate = { ent-LightStripArrow }
+    .desc = { ent-LightStripArrow.desc }

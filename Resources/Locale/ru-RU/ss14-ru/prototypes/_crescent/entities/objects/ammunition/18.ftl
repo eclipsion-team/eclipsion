@@ -1,0 +1,14 @@
+ent-ShellShotgun18g = патрон (18.5g)
+    .desc = { ent-BaseCartridge.desc }
+ent-PelletShotgun18g = дробина (18.5g дробь)
+    .desc = { ent-BaseBullet.desc }
+ent-PelletShotgunSpread18g = { ent-PelletShotgun18g }
+    .desc = { ent-PelletShotgun18g.desc }
+ent-MagazineClip18g = 6-зарядная обойма (18.5g Empty)
+    .desc = { ent-BaseMagazinePistol.desc }
+ent-MagazineClip18gBuck = 6-зарядная обойма (18.5g )
+    .desc = { ent-MagazineClip18g.desc }
+ent-AmmoProviderShotgunShell18g = { ent-BaseAmmoProvider }
+    .desc = { ent-BaseAmmoProvider.desc }
+ent-BoxLethalshot18g = коробка дробовых патронов 18.5g
+    .desc = Коробка, полная дробовых патронов, предназначенных для 18 калиберных дробовиков.

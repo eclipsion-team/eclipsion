@@ -1,0 +1,9 @@
+marking-ScreenStatic = статичен
+marking-ScreenBlue = Синий
+marking-ScreenHeart = Сердце
+marking-ScreenOrange = оранжевые
+marking-ScreenPink = розовые
+marking-ScreenYellow = Жёлтый
+marking-ScreenConsole = Консоль
+marking-ScreenEyes = "Глазки"
+marking-ScreenLoading = Загрузка...

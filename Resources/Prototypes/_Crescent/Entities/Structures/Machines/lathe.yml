@@ -10,22 +10,27 @@
       idleState: icon
       runningState: icon
       staticRecipes:
-        #- SluggieHE
-        #- SluggieAP
-        #- SluggieEMP
+        - SluggieHE
+        - SluggieAP
+        - SluggieEMP
         #- IdnaTorpedoRecipe
-        #- Automortar90
+        - Automortar90
         #- MagazineGrenadeEmpty
-        #- Needler60
-        #- MagazineVulcan
-        #- MagazineFlak
-        #- 48mmEMPRocket
-        #- 48mmHighYieldRocket
-        #- 48mmLowYieldRocket
-        #- RocketMagazineEmpty
-        #- LensInfaredRecipe
-        #- LensPlasmaRecipe
-        #- LensXrayRecipe
+        - Needler60
+        - MagazineVulcan
+        - MagazineFlak
+        - 48mmEMPRocket
+        - 48mmHighYieldRocket
+        - 48mmLowYieldRocket
+        - RocketMagazineEmpty
+        - LensInfaredRecipe
+        - LensPlasmaRecipe
+        - LensXrayRecipe
+        - Type99ShellAPRecipe
+        - Type99ShellHERecipe
+        - HeavyMortarShellRecipe
+        - JeongDrumRecipe
+        - LancerBoxRecipe
         # NEW SHIPGUN AMMO RECIPIES START
         - Screamer20mmRegularRecipe
         # - Screamer20mmGyrostableRecipe
@@ -38,23 +43,27 @@
         - Resolute90mmRegularRecipe
         # - Resolute90mmGyrostableRecipe
         # - Resolute90mmPlasmaRecipe
-        #- Anvil120mmRegularRecipe #shellfab
+        - Anvil120mmRegularRecipe
         #- Anvil120mmGyrostableRecipe #shellfab
         #- Anvil120mmPlasmaRecipe #shellfab
-        #- Leviathan300mmRecipe #shellfab
+        - Leviathan300mmRecipe
         - Pila30mmRegularRecipe
+        - Magazine30mmPilaEmptyRecipe
         - Shortbow48mmRegularRecipe
+        - Magazine48mmRocketEmptyRecipe
         # - Shortbow48mmGorlexRecipe
         - Azimuth60mmRegularRecipe
+        - Magazine60mmEmptyRecipe
         # - Azimuth60mmGorlexRecipe
         # - Azimuth60mmNCWLRecipe
         # - Azimuth60mmAdvancedRecipe
         - Arbalest95mmRegularRecipe
+        - Magazine95mmRocketEmptyRecipe
         # - Arbalest95mmNCWLRecipe
         # - Arbalest95mmGorlexRecipe
-        - Gargoyle240mmRegularRecipe #shellfab
+        - Gargoyle240mmRegularRecipe
         #- Gargoyle240mmNCWLRecipe #shellfab
-        - Catapult330mmRegularRecipe #shellfab
+        - Catapult330mmRegularRecipe
         #NEW SHIPGUN AMMO RECIPIES END
         - Cartridge40mmFrag
         - Cartridge40mmCan

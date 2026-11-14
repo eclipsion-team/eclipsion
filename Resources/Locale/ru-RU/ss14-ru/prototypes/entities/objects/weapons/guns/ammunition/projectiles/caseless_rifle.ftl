@@ -1,0 +1,12 @@
+ent-BulletCaselessRifle = пуля (.25 безгильзовая)
+    .desc = { ent-BaseBullet.desc }
+ent-BulletCaselessRiflePractice = пуля (.25 безгильзовая учебная)
+    .desc = { ent-BaseBulletPractice.desc }
+ent-BulletCaselessRifleIncendiary = пуля (9x39 мм безгильзовая зажигательная)
+    .desc = { ent-BaseBulletIncendiary.desc }
+ent-BulletCaselessRifleUranium = пуля (9x39 мм безгильзовая бронебойная с обеднённым ураном)
+    .desc = { ent-BaseBulletUranium.desc }
+ent-BulletCaselessRifleShrapnel = пуля (9x39 мм безгильзовая осколочная)
+    .desc = { ent-BaseBullet.desc }
+ent-BulletCaselessRifleShrapnelSpread = пуля (9x39 мм безгильзовая осколочная)
+    .desc = { ent-BulletCaselessRifleShrapnel.desc }

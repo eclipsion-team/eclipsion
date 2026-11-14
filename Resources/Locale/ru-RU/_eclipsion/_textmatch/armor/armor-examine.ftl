@@ -1,0 +1,16 @@
+armor-damage-type-blunt = Ушибы
+armor-damage-type-slash = Порезы
+armor-damage-type-piercing = Уколы
+armor-damage-type-heat = Обогрев
+armor-damage-type-radiation = Радиация
+armor-damage-type-caustic = Кислотные
+armor-damage-type-bloodloss = Кровопотеря
+armor-damage-type-asphyxiation = Удушение
+armor-damage-type-cellular = Клеточные
+armor-damage-type-cold = Обморожение
+armor-damage-type-poison = Яды
+armor-damage-type-shock = Электрические
+armor-damage-type-structural = Структурные
+armor-damage-type-holy = Святые
+armor-damage-type-decay = Разложение
+armor-damage-type-trauma = Травма

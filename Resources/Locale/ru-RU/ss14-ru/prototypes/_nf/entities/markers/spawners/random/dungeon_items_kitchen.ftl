@@ -1,0 +1,14 @@
+ent-SpawnDungeonLootClutterKitchen = случайный хлам
+    .desc = { ent-MarkerBasePlaceFree.desc }
+ent-SpawnDungeonLootCutlery = случайные столовые приборы
+    .desc = { ent-MarkerBasePlaceFree.desc }
+ent-SpawnDungeonLootMugs = случайная кружка
+    .desc = { ent-MarkerBasePlaceFree.desc }
+ent-SpawnDungeonLootClothesKitchen = случайная одежда
+    .desc = { ent-MarkerBasePlaceFree.desc }
+ent-SpawnDungeonFurnitureKitchen = случайная мебель
+    .desc = { ent-MarkerBase.desc }
+ent-SpawnDungeonLootKitchenTabletop = случайный техфаб машин
+    .desc = { ent-MarkerBase.desc }
+ent-SpawnDungeonLootFood = случайная еда
+    .desc = { ent-MarkerBasePlaceFree.desc }

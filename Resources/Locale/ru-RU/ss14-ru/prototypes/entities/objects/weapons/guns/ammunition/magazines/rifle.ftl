@@ -1,0 +1,15 @@
+ent-BaseMagazineRifle = 25-зарядный магазин (7,62x51 мм USM)
+    .desc = { ent-BaseItem.desc }
+ent-MagazineRifle = 25-зарядный магазин (7,62x51 мм USM)
+    .desc = { ent-BaseMagazineRifle.desc }
+ent-MagazineRifleEmpty = 25-зарядный магазин (7,62x51 мм USM любой)
+    .suffix = пустой
+    .desc = { ent-MagazineRifle.desc }
+ent-MagazineRifleIncendiary = 25-зарядный магазин (7,62x51 мм USM зажигательные)
+    .desc = { ent-MagazineRifle.desc }
+ent-MagazineRiflePractice = 25-зарядный магазин (7,62x51 мм USM тренировочные)
+    .desc = { ent-BaseMagazineRifle.desc }
+ent-MagazineRifleUranium = 25-зарядный магазин (7,62x51 мм USM урановые)
+    .desc = { ent-BaseMagazineRifle.desc }
+ent-MagazineRifleShrapnel = 25-зарядный магазин (7,62x51 мм USM шрапнелевые)
+    .desc = { ent-BaseMagazineRifle.desc }

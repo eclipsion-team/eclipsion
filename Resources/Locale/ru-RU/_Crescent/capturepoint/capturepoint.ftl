@@ -1,0 +1,6 @@
+capturepoint-grace-period-fail = Точка ещё не завершила развёртывание. Попробуйте позже. Как вы вообще сюда попали?
+capturepoint-same-faction-fail = Точка уже захватывается вашей фракцией.
+shipnode-grace-period-fail = База данных клонера тихо гудит. Вы не должны ещё к ней прикасаться.
+shipnode-same-faction-fail = Это база данных клонера вашей фракции. Защищайте её!
+shipnode-defusing = Разминирование...
+shipnode-sabotaging = Саботаж...

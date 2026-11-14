@@ -1,0 +1,10 @@
+ent-MagazineBoxHeavyPistol = ящик с боеприпасами (11mm PSTF авто)
+    .desc = { ent-BaseMagazineBox.desc }
+ent-CartridgeHeavyPistol = патрон (11mm PSTF авто)
+    .desc = { ent-BaseCartridgePistol.desc }
+ent-BulletHeavyPistol = пуля (11mm PSTF)
+    .desc = { ent-BaseBullet.desc }
+ent-MagazinePistolHeavy = 15-зарядный пистолетный магазин (11mm PSTF авто)
+    .desc = { ent-BaseMagazinePistol.desc }
+ent-MagazinePistolSubMachineGunHeavy = 25-зарядный магазин ПП (11mm PSTF авто)
+    .desc = { ent-BaseMagazinePistolSubMachineGun.desc }

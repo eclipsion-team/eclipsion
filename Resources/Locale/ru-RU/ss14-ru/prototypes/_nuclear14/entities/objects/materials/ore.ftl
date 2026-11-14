@@ -1,0 +1,16 @@
+ent-N14AluminiumOre = боксит
+    .desc = { ent-OreBase.desc }
+ent-N14AluminiumOre1 = боксит
+    .desc = { ent-N14AluminiumOre.desc }
+ent-N14LeadOre = галенит
+    .desc = { ent-OreBase.desc }
+ent-N14LeadOre1 = галенит
+    .desc = { ent-N14LeadOre.desc }
+ent-CopperOre = тетраэдрит
+    .desc = { ent-OreBase.desc }
+ent-CopperOre1 = тетраэдрит
+    .desc = { ent-CopperOre.desc }
+ent-SulfurOre = серная руда
+    .desc = { ent-OreBase.desc }
+ent-SulfurOre1 = серная руда
+    .desc = { ent-SulfurOre.desc }

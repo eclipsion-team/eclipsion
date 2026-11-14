@@ -1,0 +1,10 @@
+ent-WallCultIndestructible = стена культа
+    .desc = { ent-BaseWall.desc }
+ent-AirlockBloodCult = { ent-AirlockGlass }
+    .desc = { ent-AirlockGlass.desc }
+ent-BloodCultGlowingFloor = светящийся пол культа крови
+    .desc = { ent-BaseRune.desc }
+ent-BloodCultHoleFloor = дыра в полу культа крови
+    .desc = { ent-FlashRuneTimer.desc }
+ent-BloodCultGravityGeneratorMini = генератор гравитации культа крови
+    .desc = { ent-BaseStructureDisableToolUse.desc }

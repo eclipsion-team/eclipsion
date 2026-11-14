@@ -1,0 +1,11 @@
+passport-cover-imperial = Божественный Мандат Солнца
+passport-cover-goldendeep = Голдендип
+passport-unspecified = Неопределённый
+passport-ui-age = возраст
+passport-ui-nationality = Гражданство
+passport-ui-employer = Трудоустройство
+passport-ui-lifepath = Жизненный путь
+passport-ui-save = Сохранить изменения
+passport-record-species = Вид: { $species }
+passport-record-height = Рост: { $height } см
+passport-record-pid = Номер: { $pid }

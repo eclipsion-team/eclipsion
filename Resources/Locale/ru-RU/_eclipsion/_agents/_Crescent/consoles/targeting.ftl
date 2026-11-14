@@ -1,0 +1,9 @@
+targeting-console-window-title = ПРИЦЕЛЬНАЯ КОНСОЛЬ
+targeting-console-panel-fire-control = УПРАВЛЕНИЕ ОГНЁМ
+targeting-console-panel-groups = ГРУППЫ
+targeting-console-status = ГРУППА { $group } // ОРУДИЯ { $cannons } // БОЕЗАПАС { $ammo }/{ $capacity } // ЩИТ { $shield }
+targeting-console-status-no-group = ---
+targeting-console-status-shield-none = ---
+targeting-console-status-shield-down = ОТКЛ. { $time }с
+targeting-console-status-shield-up = { $percent }%
+targeting-console-alert-dry = ! НЕТ БОЕЗАПАСА !

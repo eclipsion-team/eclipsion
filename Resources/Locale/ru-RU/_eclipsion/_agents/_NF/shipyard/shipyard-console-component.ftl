@@ -1,0 +1,13 @@
+shipyard-console-treasury-insufficient = В казне фракции недостаточно средств для этой заявки (нужно {$cost} кр).
+shipyard-console-faction-limit-reached = Вы уже получили свою квоту в {$limit} кораблей из резерва флота за эту смену.
+shipyard-console-selling-disabled = Эта консоль не покупает корабли.
+shipyard-console-approval-requested = Эта покупка слишком крупная, чтобы одобрить её здесь. Заявка на {$vessel} отправлена в казну на утверждение.
+shipyard-console-approval-already-pending = Заявка на этот корабль уже ожидает одобрения казны.
+shipyard-console-approval-no-account = Этот терминал не может подать заявку на одобрение от вашего имени.
+shipyard-approval-announce-request = {$buyer} запрашивает одобрение покупки {$vessel} за {$price} кр. Одобрить можно на консоли казны.
+shipyard-approval-buyer-approved = Вашу покупку {$vessel} одобрил(а) {$approver}. Вернитесь к консоли верфи, чтобы забрать корабль.
+shipyard-approval-buyer-denied = Вашу покупку {$vessel} отклонил(а) {$approver}.
+shipyard-console-pay-from = Оплата из:
+shipyard-console-pay-treasury = { $faction } ({ $balance } кр)
+shipyard-console-pay-personal = Личный счёт ({ $balance } кр)
+shipyard-console-pay-personal-none = Личный счёт (нет)

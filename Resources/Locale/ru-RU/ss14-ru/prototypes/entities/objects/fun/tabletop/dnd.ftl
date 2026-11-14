@@ -1,0 +1,10 @@
+ent-GrassBoardTabletop = травяная боевая карта
+    .desc = { ent-BaseBoardTabletop.desc }
+ent-MoonBoardTabletop = травяная боевая карта
+    .desc = { ent-BaseBoardTabletop.desc }
+ent-SandBoardTabletop = песчаная боевая карта
+    .desc = { ent-BaseBoardTabletop.desc }
+ent-SnowBoardTabletop = снежная боевая карта
+    .desc = { ent-BaseBoardTabletop.desc }
+ent-ShipBoardTabletop = корабельная боевая карта
+    .desc = { ent-BaseBoardTabletop.desc }

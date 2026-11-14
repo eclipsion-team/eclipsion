@@ -1,0 +1,9 @@
+signal-port-description-status-transmitter = Этот порт подаёт HIGH или LOW в зависимости от состояния передатчика.
+signal-port-name-dockstatus = Статус стыковки
+signal-port-description-dockstatus = Этот порт подаёт HIGH при стыковке и LOW при расстыковке.
+signal-port-name-passport-scan-sender = Скан паспорта
+signal-port-description-passport-scan-sender = Отправляет последний отсканированный паспорт на компьютер пограничного контроля.
+signal-port-name-fingerprint-scan-sender = Скан отпечатков
+signal-port-description-fingerprint-scan-sender = Отправляет последний отсканированный биометрический шаблон на компьютер пограничного контроля.
+signal-port-name-fillitems = Предметы Fillbot
+signal-port-description-fillitems = Предметы, подобранные Fillbot.

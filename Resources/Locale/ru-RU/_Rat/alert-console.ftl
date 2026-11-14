@@ -1,0 +1,11 @@
+alert-console-title = Система оповещения
+alert-console-enabled = Включить систему
+alert-console-radius-label = Радиус обнаружения
+alert-console-channel-label = Канал фракции
+alert-console-channel-value = { $channel }
+alert-console-channel-unknown = не определён
+alert-console-cooldown-label = Кулдаун оповещений (сек)
+alert-console-station-msg-label = Сообщение для фракции
+alert-console-broadcast = Отправлять предупреждение шаттлу на общей частоте
+alert-console-shuttle-msg-label = Сообщение для шаттла (Общий канал)
+alert-console-save = Сохранить

@@ -71,16 +71,19 @@ public sealed partial class AtmosphereSystem
             if (!TryComp(newGrid, out GridAtmosphereComponent? newGridAtmos))
                 newGridAtmos = AddComp<GridAtmosphereComponent>(newGrid);
 
-            // We assume the tiles on the new grid have the same coordinates as they did on the old grid...
+            // the engine moves the split grid's origin next to its tiles, so new tile N was old tile N + offset
+            var oldLocal = System.Numerics.Vector2.Transform(_transformSystem.GetWorldPosition(newGrid), _transformSystem.GetInvWorldMatrix(uid)) / mapGrid.TileSize;
+            var offset = new Vector2i((int) MathF.Round(oldLocal.X), (int) MathF.Round(oldLocal.Y));
             var enumerator = _mapSystem.GetAllTilesEnumerator(newGrid, mapGrid);
 
             while (enumerator.MoveNext(out var tile))
             {
                 var indices = tile.Value.GridIndices;
+                var oldIndices = indices + offset;
 
                 // This split event happens *before* the spaced tiles have been invalidated, therefore we can still
                 // access their gas data. On the next atmos update tick, these tiles will be spaced. Poof!
-                if (!originalGridAtmos.Tiles.TryGetValue(indices, out var tileAtmosphere))
+                if (!originalGridAtmos.Tiles.TryGetValue(oldIndices, out var tileAtmosphere))
                     continue;
 
                 // The new grid atmosphere has been initialized, meaning it has all the needed TileAtmospheres...
@@ -99,7 +102,7 @@ public sealed partial class AtmosphereSystem
                 // That looks bad, of course. We want to avoid that! Anyway that's a bit more complicated so out of scope.
 
                 // Invalidate the tile, it's redundant but redundancy is good! Also HashSet so really, no duplicates.
-                originalGridAtmos.InvalidatedCoords.Add(indices);
+                originalGridAtmos.InvalidatedCoords.Add(oldIndices);
                 newGridAtmos.InvalidatedCoords.Add(indices);
             }
         }

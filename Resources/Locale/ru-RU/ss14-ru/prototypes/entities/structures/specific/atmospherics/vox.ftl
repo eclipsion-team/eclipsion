@@ -1,0 +1,10 @@
+ent-AirSensorVoxBase = { ent-AirSensorBase }
+    .desc = { ent-AirSensorBase.desc }
+ent-AirSensorVox = { ent-AirSensorVoxBase }
+    .desc = { ent-AirSensorVoxBase.desc }
+ent-GasVentPumpVox = { ent-AirSensorVoxBase }
+    .desc = { ent-AirSensorVoxBase.desc }
+ent-GasVentScrubberVox = { ent-AirSensorVoxBase }
+    .desc = { ent-AirSensorVoxBase.desc }
+ent-AirAlarmVox = { ent-AirAlarm }
+    .desc = { ent-AirAlarm.desc }

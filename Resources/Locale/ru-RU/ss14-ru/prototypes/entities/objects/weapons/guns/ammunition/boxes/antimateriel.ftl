@@ -1,0 +1,10 @@
+ent-BaseMagazineBoxAntiMateriel =
+    .desc = { ent-BaseItem.desc }
+ent-MagazineBoxAntiMateriel = коробка патронов (15,2×169-мм)
+    .desc = { ent-BaseMagazineBoxAntiMateriel.desc }
+ent-MagazineBoxAntiMaterielUranium = коробка патронов (15,2×169-мм обеднённый уран)
+    .desc = { ent-MagazineBoxAntiMateriel.desc }
+ent-MagazineBoxAntiMaterielIncendiary = коробка патронов (15,2×169-мм зажигательные)
+    .desc = { ent-MagazineBoxAntiMateriel.desc }
+ent-MagazineBoxAntiMaterielShrapnel = коробка патронов (15,2×169-мм шрапнель)
+    .desc = { ent-MagazineBoxAntiMateriel.desc }

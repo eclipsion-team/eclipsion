@@ -38,7 +38,11 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
     [Dependency] private readonly IParallelManager _parMan = default!;
     [Dependency] private readonly ILocalizationManager _locMan = default!;
     [Dependency] private readonly IResourceCache _resCache = default!;
+    [Dependency] private readonly ILogManager _logManager = default!;
     private readonly StationSystem _station; // Frontier
+
+    // grids that already threw while drawing, logged once
+    private readonly HashSet<EntityUid> _reportedGrids = new();
     private readonly SharedShuttleSystem _shuttles;
     private readonly SharedTransformSystem _transform;
     private readonly ProjectileIFFSystem _projectileIFF;
@@ -94,6 +98,8 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
         public bool forceShow;
         public Vector2 UIPosition;
         public Texture? icon;
+        // the icon is only looked up once the grid's VesselIcon has actually arrived
+        public bool iconChecked;
         public int WidthRequired;
         public int HeightRequired;
         public Vector2 textureOffset;
@@ -146,7 +152,21 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
         public ConcurrentDictionary<EntityUid, shipData> gridData;
         public DrawingHandleScreen handle;
         public ILocalizationManager Loc;
+
+        // one bad grid used to hide every other ship on the radar
         public void Execute(int index)
+        {
+            try
+            {
+                DrawFarGrid(index);
+            }
+            catch (Exception e)
+            {
+                control.ReportGridError(grids[index].Owner, e);
+            }
+        }
+
+        private void DrawFarGrid(int index)
         {
             var gUid = grids[index].Owner;
             var gComp = grids[index].Comp;
@@ -169,12 +189,17 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
             var gridMatrix = TransformSys.GetWorldMatrix(gUid);
             var matty = Matrix3x2.Multiply(gridMatrix, selfWorldMatrixInvert);
             var color = ShuttlesSys.GetIFFColor(gUid, self: false, iff);
-            shipData data;
-            if (!gridData.ContainsKey(gUid))
+            if (!gridData.TryGetValue(gUid, out var data))
             {
                 data = new shipData(gComp, Vector2.Zero);
-                if (iconQuery.TryComp(gUid, out var vesselIcon)
-                    && vesselIcon.Icon != null
+                gridData[gUid] = data;
+            }
+
+            // new ships can show up before their icon does
+            if (!data.iconChecked && iconQuery.TryComp(gUid, out var vesselIcon))
+            {
+                data.iconChecked = true;
+                if (vesselIcon.Icon != null
                     && TryResolveVesselIcon(vesselIcon.Icon, spritesSys, resCache) is { } vesselTexture)
                 {
                     data.icon = vesselTexture;
@@ -183,11 +208,6 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
                     data.textureOffset = new Vector2(-data.icon.Width, -data.icon.Height);
                     data.textureOffset /= 2;
                 }
-                gridData[gUid] = data;
-            }
-            else
-            {
-                data = gridData[gUid];
             }
 
 
@@ -236,8 +256,8 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
                 if ((targetPos - MousePositionOnUi).Length() < 10 || distance < 512 || data.forceShow)
                 {
                     textUiPosition += targetPos;
-                    textUiPosition.X = Math.Clamp(textUiPosition.X, 0f, PixelWidth - labelDimensions.X);
-                    textUiPosition.Y = Math.Clamp(textUiPosition.Y, 0f, PixelHeight - labelDimensions.Y);
+                    textUiPosition.X = SafeClamp(textUiPosition.X, 0f, PixelWidth - labelDimensions.X);
+                    textUiPosition.Y = SafeClamp(textUiPosition.Y, 0f, PixelHeight - labelDimensions.Y);
                     handle.DrawString(Font, textUiPosition, labelText, color);
                     if (control.ShouldDrawIFFMotion(gUid))
                         control.DrawIFFMotion(handle, textUiPosition, labelDimensions, gridBody.LinearVelocity, rot, color);
@@ -262,6 +282,24 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
     ///     and spamming the client log while it does it. Checking first leaves the caller with no icon,
     ///     which the radar already draws as a plain contact dot.
     /// </remarks>
+    internal void ReportGridError(EntityUid grid, Exception e)
+    {
+        // the parallel job calls this too
+        lock (_reportedGrids)
+        {
+            if (!_reportedGrids.Add(grid))
+                return;
+        }
+
+        _logManager.GetSawmill("shuttle.nav").Error($"Radar skipped {EntManager.ToPrettyString(grid)}, drawing it threw: {e}");
+    }
+
+    // Math.Clamp throws when min > max (label wider than the radar)
+    private static float SafeClamp(float value, float min, float max)
+    {
+        return max < min ? min : Math.Clamp(value, min, max);
+    }
+
     private static Texture? TryResolveVesselIcon(SpriteSpecifier icon, SpriteSystem sprites, IResourceCache cache)
     {
         switch (icon)
@@ -613,6 +651,7 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
             drawJob.selfMassCloaked = EntManager.HasComponent<MassCloakComponent>(ourGridId.Value);
         }
         drawJob.MidPointVector = MidPointVector;
+        drawJob.MousePositionOnUi = MouseOverRadar ? MouseUIPosition : new Vector2(-1000f, -1000f); // was never set, so hovering a far ship never showed its name
         drawJob.MinimapScale = MinimapScale;
         drawJob.Font = Font;
         drawJob.grids = _grids;
@@ -633,63 +672,69 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
         foreach (var grid in drawJob.closeGrids)
         {
             var gUid = grid.Owner;
-            if (gUid == ourGridId || !fixturesQuery.HasComponent(gUid))
-                continue;
-
-            var gridBody = bodyQuery.GetComponent(gUid);
-            EntManager.TryGetComponent<IFFComponent>(gUid, out var iff);
-
-            // Use scanner grid if on-grid, otherwise use scanner entity itself as viewer
-            var viewer = ourGridId ?? _coordinates.Value.EntityId;
-            if (!_shuttles.CanDraw(gUid, gridBody, iff, viewer))
-                continue;
-
-            var gridMatrix = _transform.GetWorldMatrix(gUid);
-            var matty = Matrix3x2.Multiply(gridMatrix, ourWorldMatrixInvert);
-            var color = _shuttles.GetIFFColor(grid, self: false, iff);
-
-            if (ShowIFF && drawJob.gridData[gUid].forceShow)
-                color = Color.DarkRed;
-            // Others default:
-            // Color.FromHex("#FFC000FF")
-            // Hostile default: Color.Firebrick
-            var labelName = _shuttles.GetIFFLabel(grid, self: false, iff);
-            var gridCentre = Vector2.Transform(gridBody.LocalCenter, matty);
-            var gridBounds = grid.Comp.LocalAABB;
-
-            gridCentre.Y = -gridCentre.Y;
-            var distance = gridCentre.Length();
-            if (ShowIFF && labelName != null && labelName != "grid" &&
-                (IFFFilter == null || IFFFilter(gUid, grid.Comp, iff))) //.2 edit: grids dont show up as labels anymore finally
+            try
             {
-                var labelText = Loc.GetString(
-                    "shuttle-console-iff-label",
-                    ("name", labelName!),
-                    ("distance", $"{distance:0.0}"));
+                if (gUid == ourGridId || !fixturesQuery.HasComponent(gUid))
+                    continue;
 
-                // yes 1.0 scale is intended here.
-                var labelDimensions = handle.GetDimensions(Font, labelText, 1f);
+                var gridBody = bodyQuery.GetComponent(gUid);
+                EntManager.TryGetComponent<IFFComponent>(gUid, out var iff);
 
-                // y-offset the control to always render below the grid (vertically)
-                var yOffset = Math.Max(gridBounds.Height, gridBounds.Width) * MinimapScale / 1.8f;
+                // Use scanner grid if on-grid, otherwise use scanner entity itself as viewer
+                var viewer = ourGridId ?? _coordinates.Value.EntityId;
+                if (!_shuttles.CanDraw(gUid, gridBody, iff, viewer))
+                    continue;
 
-                // The actual position in the UI. We offset the matrix position to render it off by half its width
-                // plus by the offset.
-                var uiPosition = ScalePosition(gridCentre) - new Vector2(labelDimensions.X / 2f, -yOffset);
+                var gridMatrix = _transform.GetWorldMatrix(gUid);
+                var matty = Matrix3x2.Multiply(gridMatrix, ourWorldMatrixInvert);
+                var color = _shuttles.GetIFFColor(grid, self: false, iff);
 
-                // Look this is uggo so feel free to cleanup. We just need to clamp the UI position to within the viewport.
-                uiPosition = new Vector2(
-                    Math.Clamp(uiPosition.X, drawJob.gridData[grid.Owner].HeightRequired, PixelWidth - labelDimensions.X),
-                    Math.Clamp(uiPosition.Y, 0f, PixelHeight - labelDimensions.Y));
-                handle.DrawString(Font, uiPosition, labelText, color);
-                if (ShouldDrawIFFMotion(gUid))
-                    DrawIFFMotion(handle, uiPosition, labelDimensions, gridBody.LinearVelocity, rot, color);
+                if (ShowIFF && drawJob.gridData[gUid].forceShow)
+                    color = Color.DarkRed;
+                // Others default:
+                // Color.FromHex("#FFC000FF")
+                // Hostile default: Color.Firebrick
+                var labelName = _shuttles.GetIFFLabel(grid, self: false, iff);
+                var gridCentre = Vector2.Transform(gridBody.LocalCenter, matty);
+                var gridBounds = grid.Comp.LocalAABB;
+
+                gridCentre.Y = -gridCentre.Y;
+                var distance = gridCentre.Length();
+                if (ShowIFF && labelName != null && labelName != "grid" &&
+                    (IFFFilter == null || IFFFilter(gUid, grid.Comp, iff))) //.2 edit: grids dont show up as labels anymore finally
+                {
+                    var labelText = Loc.GetString(
+                        "shuttle-console-iff-label",
+                        ("name", labelName!),
+                        ("distance", $"{distance:0.0}"));
+
+                    // yes 1.0 scale is intended here.
+                    var labelDimensions = handle.GetDimensions(Font, labelText, 1f);
+
+                    // y-offset the control to always render below the grid (vertically)
+                    var yOffset = Math.Max(gridBounds.Height, gridBounds.Width) * MinimapScale / 1.8f;
+
+                    // The actual position in the UI. We offset the matrix position to render it off by half its width
+                    // plus by the offset.
+                    var uiPosition = ScalePosition(gridCentre) - new Vector2(labelDimensions.X / 2f, -yOffset);
+
+                    // Look this is uggo so feel free to cleanup. We just need to clamp the UI position to within the viewport.
+                    uiPosition = new Vector2(
+                        SafeClamp(uiPosition.X, drawJob.gridData[grid.Owner].HeightRequired, PixelWidth - labelDimensions.X),
+                        SafeClamp(uiPosition.Y, 0f, PixelHeight - labelDimensions.Y));
+                    handle.DrawString(Font, uiPosition, labelText, color);
+                    if (ShouldDrawIFFMotion(gUid))
+                        DrawIFFMotion(handle, uiPosition, labelDimensions, gridBody.LinearVelocity, rot, color);
+                }
+
+                DrawGrid(handle, matty, grid, color);
+                DrawDocks(handle, gUid, matty);
+                DrawTurrets(handle, gUid, matty, false);
             }
-
-            DrawGrid(handle, matty, grid, color);
-            DrawDocks(handle, gUid, matty);
-            DrawTurrets(handle, gUid, matty, false);
-
+            catch (Exception e)
+            {
+                ReportGridError(gUid, e);
+            }
         }
 
         if (!HideTarget && Target is { } target)
@@ -721,8 +766,8 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
             var labelDimensions = handle.GetDimensions(Font, labelText, 1f);
             var labelPos = linePos + new Vector2(6f, -labelDimensions.Y / 2f);
             labelPos = new Vector2(
-                Math.Clamp(labelPos.X, 0f, PixelWidth - labelDimensions.X),
-                Math.Clamp(labelPos.Y, 0f, PixelHeight - labelDimensions.Y));
+                SafeClamp(labelPos.X, 0f, PixelWidth - labelDimensions.X),
+                SafeClamp(labelPos.Y, 0f, PixelHeight - labelDimensions.Y));
             handle.DrawString(Font, labelPos, labelText, TargetColor);
         }
 
@@ -860,8 +905,8 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
             var labelDimensions = handle.GetDimensions(Font, labelText, 1f);
             var labelPos = linePos + new Vector2(6f, -labelDimensions.Y / 2f);
             labelPos = new Vector2(
-                Math.Clamp(labelPos.X, 0f, PixelWidth - labelDimensions.X),
-                Math.Clamp(labelPos.Y, 0f, PixelHeight - labelDimensions.Y));
+                SafeClamp(labelPos.X, 0f, PixelWidth - labelDimensions.X),
+                SafeClamp(labelPos.Y, 0f, PixelHeight - labelDimensions.Y));
             handle.DrawString(Font, labelPos, labelText, color);
         }
     }
@@ -916,8 +961,8 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
                 UIPos.X -= labelDimensions.X / 2f;
             }
             UIPos = new Vector2(
-                Math.Clamp(UIPos.X, 5f, PixelWidth - labelDimensions.X),
-                Math.Clamp(UIPos.Y, 0f, PixelHeight - labelDimensions.Y));
+                SafeClamp(UIPos.X, 5f, PixelWidth - labelDimensions.X),
+                SafeClamp(UIPos.Y, 0f, PixelHeight - labelDimensions.Y));
 
             handle.DrawString(Font, UIPos, objectName, Color.White);
         }

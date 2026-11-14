@@ -1,0 +1,10 @@
+execution-popup-melee-initial-internal = Вы приставляете {THE($weapon)} к горлу {$victim}.
+execution-popup-gun-initial-internal = Вы приставляете {THE($weapon)} к голове {$victim}.
+execution-popup-gun-initial-external = {$attacker} приставляет {POSS-ADJ($attacker)} {$weapon} к голове {$victim}.
+execution-popup-gun-complete-internal = Вы вышибаете мозги {$victim} из {THE($weapon)}!
+execution-popup-gun-complete-external = {$attacker} вышибает мозги {$victim} из {POSS-ADJ($attacker)} {$weapon}!
+execution-popup-gun-empty = {CAPITALIZE(THE($weapon))} щёлкает вхолостую.
+execution-popup-gun-cannot-fire = Так из {THE($weapon)} не выстрелить!
+execution-popup-self-initial-internal = Вы приставляете {THE($weapon)} к собственному горлу.
+execution-popup-self-complete-internal = Вы перерезаете себе горло!
+execution-popup-self-complete-external = {$attacker} перерезает себе горло!

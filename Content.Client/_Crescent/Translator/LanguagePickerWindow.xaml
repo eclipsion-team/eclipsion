@@ -1,0 +1,9 @@
+<DefaultWindow xmlns="https://spacestation14.io"
+               Title="{Loc 'language-picker-title'}"
+               MinSize="360 160">
+    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="8">
+        <Label Text="{Loc 'language-picker-text'}" />
+        <BoxContainer Name="Buttons" Orientation="Horizontal" SeparationOverride="8" HorizontalAlignment="Center" />
+        <Label Text="{Loc 'language-picker-later'}" FontColorOverride="#9fa6b2" />
+    </BoxContainer>
+</DefaultWindow>

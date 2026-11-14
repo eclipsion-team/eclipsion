@@ -1,0 +1,3 @@
+game-ticker-start-round-invalid-map = Выбранная карта {$map} не подходит для режима {$mode}. Режим может работать не так, как задумано...
+game-ticker-player-no-spawn-point-available-when-joining = При попытке войти в игру не нашлось подходящей точки появления для вашей должности или фракции.
+latejoin-arrival-announcement = {$character} ({$job}) прибывает на станцию!

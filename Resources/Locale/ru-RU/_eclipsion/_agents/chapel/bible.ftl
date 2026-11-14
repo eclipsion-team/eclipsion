@@ -1,0 +1,10 @@
+bible-heal-success-self = Вы ударяете {THE($target)} книгой {THE($bible)}, и раны затягиваются во вспышке святого света!
+bible-heal-success-others = {CAPITALIZE(THE($user))} ударяет {THE($target)} книгой {THE($bible)}, и раны затягиваются во вспышке святого света!
+bible-heal-success-none-self = Вы ударяете {THE($target)} книгой {THE($bible)}, но исцелять тут нечего!
+bible-heal-success-none-others = {CAPITALIZE(THE($user))} ударяет {THE($target)} книгой {THE($bible)}!
+bible-heal-fail-self = Вы ударяете {THE($target)} книгой {THE($bible)}, раздаётся жалкий шлепок, и {OBJECT($target)} оглушает!
+bible-heal-fail-others = {CAPITALIZE(THE($user))} ударяет {THE($target)} книгой {THE($bible)}, раздаётся жалкий шлепок, и {OBJECT($target)} оглушает!
+necro-heal-success-self = Вы ударяете {THE($target)} книгой {THE($bible)}, и {POSS-ADJ($target)} плоть, плавясь, искажается!
+necro-heal-success-others = {CAPITALIZE(THE($user))} ударяет {THE($target)} книгой {THE($bible)}, и {POSS-ADJ($target)} плоть, плавясь, искажается!
+necro-heal-fail-self = Вы ударяете {THE($target)} книгой {THE($bible)}, раздаётся жалкий шлепок, но покарать {OBJECT($target)} не выходит.
+necro-heal-fail-others = {CAPITALIZE(THE($user))} ударяет {THE($target)} книгой {THE($bible)}, раздаётся жалкий шлепок, но покарать {OBJECT($target)} не выходит.

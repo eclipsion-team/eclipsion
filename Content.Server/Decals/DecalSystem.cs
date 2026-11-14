@@ -41,8 +41,6 @@ namespace Content.Server.Decals
 
         private readonly Dictionary<NetEntity, HashSet<Vector2i>> _dirtyChunks = new();
         private readonly Dictionary<ICommonSession, Dictionary<NetEntity, HashSet<Vector2i>>> _previousSentChunks = new();
-        private static readonly Vector2 _boundsMinExpansion = new(0.01f, 0.01f);
-        private static readonly Vector2 _boundsMaxExpansion = new(1.01f, 1.01f);
 
         private UpdatePlayerJob _updateJob;
         private List<ICommonSession> _sessions = new();
@@ -108,33 +106,45 @@ namespace Content.Server.Decals
                 return;
 
             // Transfer decals over to the new grid.
-            var enumerator = _mapSystem.GetAllTilesEnumerator(ev.Grid, Comp<MapGridComponent>(ev.Grid));
+            var newGrid = Comp<MapGridComponent>(ev.Grid);
+            var enumerator = _mapSystem.GetAllTilesEnumerator(ev.Grid, newGrid);
 
             var oldChunkCollection = oldComp.ChunkCollection.ChunkCollection;
             var chunkCollection = newComp.ChunkCollection.ChunkCollection;
 
+            // split grid's origin is moved next to its tiles, so new tile N was old tile N + offset
+            var oldLocal = Vector2.Transform(_transform.GetWorldPosition(ev.Grid), _transform.GetInvWorldMatrix(ev.OldGrid)) / newGrid.TileSize;
+            var offset = new Vector2i((int) MathF.Round(oldLocal.X), (int) MathF.Round(oldLocal.Y));
+
             while (enumerator.MoveNext(out var tile))
             {
-                var tilePos = (Vector2) tile.Value.GridIndices;
-                var chunkIndices = GetChunkIndices(tilePos);
+                var oldTile = tile.Value.GridIndices + offset;
+                var oldChunkIndices = GetChunkIndices((Vector2) oldTile);
 
-                if (!oldChunkCollection.TryGetValue(chunkIndices, out var oldChunk))
+                if (!oldChunkCollection.TryGetValue(oldChunkIndices, out var oldChunk))
                     continue;
 
-                var bounds = new Box2(tilePos - _boundsMinExpansion, tilePos + _boundsMaxExpansion);
                 var toRemove = new RemQueue<uint>();
 
                 foreach (var (oldDecalId, decal) in oldChunk.Decals)
                 {
-                    if (!bounds.Contains(decal.Coordinates))
+                    // same check as OnTileChanged
+                    if ((int) MathF.Floor(decal.Coordinates.X) != oldTile.X || (int) MathF.Floor(decal.Coordinates.Y) != oldTile.Y)
                         continue;
 
+                    var moved = decal.WithCoordinates(decal.Coordinates - offset);
+                    moved.Directional = decal.Directional;
+                    var chunkIndices = GetChunkIndices(moved.Coordinates);
                     var newDecalId = newComp.ChunkCollection.NextDecalId++;
                     var newChunk = chunkCollection.GetOrNew(chunkIndices);
-                    newChunk.Decals[newDecalId] = decal;
+                    newChunk.Decals[newDecalId] = moved;
                     newComp.DecalIndex[newDecalId] = chunkIndices;
+                    DirtyChunk(ev.Grid, chunkIndices, newChunk);
                     toRemove.Add(oldDecalId);
                 }
+
+                if (toRemove.List == null || toRemove.List.Count == 0)
+                    continue;
 
                 foreach (var oldDecalId in toRemove)
                 {
@@ -142,13 +152,10 @@ namespace Content.Server.Decals
                     oldComp.DecalIndex.Remove(oldDecalId);
                 }
 
-                DirtyChunk(ev.Grid, chunkIndices, chunkCollection.GetOrNew(chunkIndices));
+                DirtyChunk(ev.OldGrid, oldChunkIndices, oldChunk);
 
                 if (oldChunk.Decals.Count == 0)
-                    oldChunkCollection.Remove(chunkIndices);
-
-                if (toRemove.List?.Count > 0)
-                    DirtyChunk(ev.OldGrid, chunkIndices, oldChunk);
+                    oldChunkCollection.Remove(oldChunkIndices);
             }
         }
 
@@ -159,20 +166,37 @@ namespace Content.Server.Decals
             _playerManager.PlayerStatusChanged -= OnPlayerStatusChanged;
         }
 
+        private readonly Dictionary<Vector2i, HashSet<Vector2i>> _spacedTiles = new();
+
         private void OnTileChanged(ref TileChangedEvent args)
         {
             if (!TryComp(args.Entity, out DecalGridComponent? grid))
                 return;
 
-            var toDelete = new HashSet<uint>();
-
+            // group spaced tiles by chunk so each chunk is only looped once
+            _spacedTiles.Clear();
             foreach (var change in args.Changes)
             {
                 if (!change.NewTile.IsSpace(_tileDefMan))
                     continue;
 
                 var indices = GetChunkIndices(change.GridIndices);
+                if (!grid.ChunkCollection.ChunkCollection.ContainsKey(indices))
+                    continue;
 
+                if (!_spacedTiles.TryGetValue(indices, out var tiles))
+                {
+                    tiles = new HashSet<Vector2i>();
+                    _spacedTiles[indices] = tiles;
+                }
+
+                tiles.Add(change.GridIndices);
+            }
+
+            var toDelete = new HashSet<uint>();
+
+            foreach (var (indices, tiles) in _spacedTiles)
+            {
                 if (!grid.ChunkCollection.ChunkCollection.TryGetValue(indices, out var chunk))
                     continue;
 
@@ -180,11 +204,9 @@ namespace Content.Server.Decals
 
                 foreach (var (uid, decal) in chunk.Decals)
                 {
-                    if (new Vector2((int)Math.Floor(decal.Coordinates.X), (int)Math.Floor(decal.Coordinates.Y)) ==
-                        change.GridIndices)
-                    {
+                    var tile = new Vector2i((int)Math.Floor(decal.Coordinates.X), (int)Math.Floor(decal.Coordinates.Y));
+                    if (tiles.Contains(tile))
                         toDelete.Add(uid);
-                    }
                 }
 
                 if (toDelete.Count == 0)

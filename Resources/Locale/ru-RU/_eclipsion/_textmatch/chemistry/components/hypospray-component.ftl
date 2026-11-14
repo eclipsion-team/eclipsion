@@ -1,0 +1,1 @@
+hypospray-invalid-text = недействительно

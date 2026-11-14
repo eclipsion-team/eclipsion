@@ -63,4 +63,8 @@ public sealed partial class PowerChargeComponent : SharedPowerChargeComponent
 
     [ViewVariables]
     public bool NeedUIUpdate { get; set; }
+
+    // what the sprite last got set to, null until the first update
+    [ViewVariables]
+    public PowerChargeStatus? ShownStatus { get; set; }
 }

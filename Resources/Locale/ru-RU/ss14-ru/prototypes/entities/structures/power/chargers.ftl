@@ -1,0 +1,15 @@
+ent-BaseRecharger = { ent-BaseMachinePowered }
+    .desc = { ent-BaseMachinePowered.desc }
+ent-BaseItemRecharger = { ent-BaseRecharger }
+    .desc = { ent-BaseRecharger.desc }
+ent-PowerCellRecharger = зарядник для батарей
+    .desc = { "" }
+    .suffix = { "" }
+ent-PowerCageRecharger = зарядник энергоячеек
+    .desc = { ent-BaseItemRecharger.desc }
+ent-WeaponCapacitorRecharger = зарядник
+    .desc = { ent-PowerCellRecharger.desc }
+    .suffix = { "" }
+ent-WallWeaponCapacitorRecharger = настенный зарядник
+    .desc = { ent-PowerCellRecharger.desc }
+    .suffix = { "" }

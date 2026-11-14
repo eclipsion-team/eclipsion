@@ -1,0 +1,12 @@
+accent-southern-words-1 = вы все
+accent-southern-words-replace-1 = вся ваша братия
+accent-southern-words-2 = ребята
+accent-southern-words-replace-2 = братцы
+accent-southern-words-3 = нет
+accent-southern-words-replace-3 = нема
+accent-southern-words-4 = не является
+accent-southern-words-replace-4 = нема
+accent-southern-words-5 = нету
+accent-southern-words-replace-5 = нема
+accent-southern-words-6 = не являются
+accent-southern-words-replace-6 = нема

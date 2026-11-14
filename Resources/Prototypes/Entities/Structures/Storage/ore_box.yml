@@ -33,6 +33,9 @@
         acts: [ "Destruction" ]
   - type: Climbable
   - type: Dumpable
+  - type: Construction
+    graph: CrescentOreBox
+    node: orebox
 
   # orebox-specific
   - type: Sprite

@@ -1,0 +1,1 @@
+mode-selected = Режим: {$mode}

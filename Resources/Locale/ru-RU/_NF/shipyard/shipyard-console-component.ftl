@@ -1,0 +1,15 @@
+shipyard-console-invalid-vessel = Невозможно купить судно:
+shipyard-console-leaving = Капитан { $owner }: шаттл { $vessel }, продан игроком { $player }.
+shipyard-console-docking-secret = Обнаружено незарегистрированное судно, входящее в ваш сектор.
+shipyard-console-leaving-secret = Обнаружено незарегистрированное судно, покидающее ваш сектор.
+shipyard-commands-purchase-desc = Создаёт и стыкует (FTL) указанный шаттл из файла грида.
+shipyard-console-no-idcard = На вас не надета ID-карта!
+shipyard-console-already-deeded = На ID-карте уже есть свидетельство о владении.
+shipyard-console-invalid-station = Недействительная станция
+shipyard-console-no-bank = Банковский счёт не найден
+shipyard-console-no-deed = Судовой документ о владении не найден
+shipyard-console-sale-reqs = Корабль должен быть пристыкован, а весь экипаж — покинуть его
+shipyard-console-deed-label = Зарегистрированный корабль:
+shipyard-console-appraisal-label = Оценочная стоимость шаттла:{ " " }
+shipyard-console-nearby = Ваш корабль не смог пристыковаться к { THE($station) }. Он припаркован неподалёку.
+shipyard-console-direction = Ваш корабль пристыкован на { $direction } час(ов) относительно { THE($station) }.

@@ -1,0 +1,5 @@
+loadout-name-LoadoutHandsColorWhite = перчатки (можно перекрасить)
+loadout-name-LoadoutHandsGlovesFingerlessWhite = перчатки без пальцев (можно перекрасить)
+loadout-name-LoadoutHandsGlovesEvening = вечерние перчатки (можно перекрасить)
+loadout-name-LoadoutHandsGlovesEnviroglovesColor = защитные перчатки (можно перекрасить)
+loadout-name-LoadoutHandsGlovesEnviroglovesEvening = вечерние защитные перчатки (можно перекрасить)

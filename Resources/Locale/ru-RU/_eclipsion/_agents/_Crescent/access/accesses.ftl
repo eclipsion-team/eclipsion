@@ -1,0 +1,9 @@
+id-card-access-level-syndicategorlexarmory = Оружейная Горлекса
+id-card-access-level-syndicateinterdynearmory = Оружейная Интердайна
+id-card-access-level-gliess-sheriff-command = Офис шерифа Глисса
+id-card-access-level-gliess-dockmaster-command = Офис начальника доков Глисса
+id-card-access-level-arabet = Арабет
+id-card-access-level-thukker = Таккер
+id-card-access-level-Alseik = Аль-Сейк
+id-card-access-level-Families = Общий доступ Четырёх Семей
+id-card-access-level-Izdari = Издари

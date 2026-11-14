@@ -20,6 +20,24 @@
                 <Button Name="ResetNameButton" Text="{Loc 'territory-console-command-reset-name'}" StyleClasses="OpenLeft"/>
             </BoxContainer>
 
+            <BoxContainer Name="DronesBox" Orientation="Horizontal" SeparationOverride="8">
+                <Label Text="{Loc 'persistent-poi-admin-ui-drones'}" StyleClasses="LabelSecondaryColor" VerticalAlignment="Center"/>
+                <Label Name="DronesLabel" HorizontalExpand="True" VerticalAlignment="Center"/>
+                <Button Name="DronesButton" StyleClasses="OpenBoth" MinWidth="90"
+                        ToolTip="{Loc 'persistent-poi-admin-ui-drones-tooltip'}"/>
+            </BoxContainer>
+
+            <BoxContainer Name="MembersBox" Orientation="Vertical" SeparationOverride="4">
+                <Label Name="MembersHeader" StyleClasses="LabelSecondaryColor"/>
+                <Label Name="FounderLabel"/>
+                <BoxContainer Name="MembersList" Orientation="Vertical" SeparationOverride="2"/>
+                <BoxContainer Name="AddBox" Orientation="Vertical" SeparationOverride="2">
+                    <Label Text="{Loc 'persistent-poi-admin-ui-add-header'}" StyleClasses="LabelSecondaryColor"/>
+                    <BoxContainer Name="CandidatesList" Orientation="Vertical" SeparationOverride="2"/>
+                </BoxContainer>
+                <RichTextLabel Name="MembersHint" HorizontalExpand="True"/>
+            </BoxContainer>
+
             <Label Text="{Loc 'persistent-poi-admin-ui-limits'}" StyleClasses="LabelSecondaryColor"/>
             <BoxContainer Name="LimitsGrid" Orientation="Vertical" SeparationOverride="2"/>
 

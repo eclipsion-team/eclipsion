@@ -4,7 +4,6 @@ using Content.Shared.Research.Components;
 using Content.Shared.Research.Prototypes;
 using JetBrains.Annotations;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Random;
 using Robust.Shared.Utility;
 
 namespace Content.Shared.Research.Systems;
@@ -12,7 +11,6 @@ namespace Content.Shared.Research.Systems;
 public abstract class SharedResearchSystem : EntitySystem
 {
     [Dependency] protected readonly IPrototypeManager PrototypeManager = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedLatheSystem _lathe = default!;
 
     public override void Initialize()
@@ -32,17 +30,11 @@ public abstract class SharedResearchSystem : EntitySystem
         if (!Resolve(uid, ref component))
             return;
 
-        var availableTechnology = GetAvailableTechnologies(uid, component);
-        _random.Shuffle(availableTechnology);
-
+        // no random picks anymore, anything with its prereqs done can be researched
         component.CurrentTechnologyCards.Clear();
-        foreach (var discipline in component.SupportedDisciplines)
+        foreach (var tech in GetAvailableTechnologies(uid, component))
         {
-            var selected = availableTechnology.FirstOrDefault(p => p.Discipline == discipline);
-            if (selected == null)
-                continue;
-
-            component.CurrentTechnologyCards.Add(selected.ID);
+            component.CurrentTechnologyCards.Add(tech.ID);
         }
         Dirty(uid, component);
     }

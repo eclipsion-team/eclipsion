@@ -1,0 +1,13 @@
+chat-radio-ncwl = Лига
+chat-radio-empire = Имперское командование
+chat-radio-hunter = Шестая штурмовая группа
+chat-radio-shi = Шиногара
+chat-radio-empireciv = Империя
+chat-radio-syndiesaws = Конструкторы
+chat-radio-syndiegorlex = Горлекс
+chat-radio-syndieipm = Интердайн
+chat-radio-syndiecyberdawn = Кибердон
+chat-radio-pact = Пакт
+chat-radio-authoritat = 43-я боевая группа
+chat-radio-clarizian = Кларизийская экспедиция
+chat-radio-american = Новоамериканский протекторат

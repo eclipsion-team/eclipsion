@@ -1,0 +1,15 @@
+ent-BriefcaseBrownFilled = коричневый чемодан
+    .suffix = Заполненный
+    .desc = { ent-BriefcaseBrown.desc }
+ent-BriefcaseSyndieSniperBundleFilled = { ent-BriefcaseSyndie }
+    .desc = { ent-BriefcaseSyndie.desc }
+ent-BriefcaseSyndieLobbyingBundleFilled = { ent-BriefcaseSyndie }
+    .desc = { ent-BriefcaseSyndie.desc }
+ent-BriefcaseSyndieLobbyingBundlePlasmamanFilled = { ent-BriefcaseSyndie }
+    .desc = { ent-BriefcaseSyndie.desc }
+ent-ClothingOuterCoatJensenFilled = { ent-ClothingOuterCoatJensen }
+    .desc = { ent-ClothingOuterCoatJensen.desc }
+ent-BriefcaseThiefBribingBundleFilled = { ent-BriefcaseSyndie }
+    .desc = { ent-BriefcaseSyndie.desc }
+ent-BriefcaseThiefBribingBundlePlasmamanFilled = { ent-BriefcaseSyndie }
+    .desc = { ent-BriefcaseSyndie.desc }

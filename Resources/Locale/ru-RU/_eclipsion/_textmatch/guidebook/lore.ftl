@@ -1,0 +1,1 @@
+guide-entry-nanotrasen = НаноТразен

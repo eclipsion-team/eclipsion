@@ -1800,11 +1800,18 @@ public sealed class NpcSoldierTacticsTest
             leader = SpawnPlayer(entMan, new EntityCoordinates(map.Grid, new Vector2(0.5f, 0.5f)), "DSM");
             entMan.RemoveComponent<BarotraumaComponent>(leader);
 
-            // Six of them carry steel for twelve, and the ring takes eleven.
-            for (var i = 0; i < 6; i++)
+            // a squad is two now, so each gets a spare stack of steel for the eleven barricades
+            var inventory = server.System<InventorySystem>();
+            for (var i = 0; i < 2; i++)
             {
-                var at = new Vector2(-4.5f + (i % 3) * 4f, i < 3 ? 4.5f : -3.5f);
-                soldiers.Add(entMan.SpawnEntity(DsmSoldier, new EntityCoordinates(map.Grid, at)));
+                var at = new Vector2(-4.5f + i * 8f, 4.5f);
+                var soldier = entMan.SpawnEntity(DsmSoldier, new EntityCoordinates(map.Grid, at));
+                soldiers.Add(soldier);
+
+                if (inventory.TryGetSlotEntity(soldier, "pocket2", out var old))
+                    entMan.DeleteEntity(old);
+                var steel = entMan.SpawnEntity("SheetSteel", new EntityCoordinates(map.Grid, at));
+                Assert.That(inventory.TryEquip(soldier, steel, "pocket2", true, true), Is.True);
             }
         });
         await server.WaitRunTicks(5);
@@ -1822,7 +1829,7 @@ public sealed class NpcSoldierTacticsTest
         });
 
         var done = false;
-        for (var s = 0; s < 60 && !done; s++)
+        for (var s = 0; s < 90 && !done; s++)
         {
             await server.WaitRunTicks(server.Timing.TickRate);
 
@@ -1876,7 +1883,7 @@ public sealed class NpcSoldierTacticsTest
                     inside++;
             }
 
-            Assert.That(inside, Is.GreaterThanOrEqualTo(4), "The squad didn't go and hold inside its ring.");
+            Assert.That(inside, Is.EqualTo(soldiers.Count), "The squad didn't go and hold inside its ring.");
         });
 
         await pair.CleanReturnAsync();

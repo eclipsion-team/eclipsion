@@ -1,0 +1,12 @@
+ent-BaseCartridgeCaselessRifle = патрон (.25 винтовочный)
+    .desc = { ent-BaseCartridge.desc }
+ent-CartridgeCaselessRifle = патрон (.25 безгильзовый)
+    .desc = { ent-BaseCartridgeCaselessRifle.desc }
+ent-CartridgeCaselessRiflePractice = патрон (.25 безгильзовый учебный)
+    .desc = { ent-BaseCartridgeCaselessRifle.desc }
+ent-CartridgeCaselessRifleIncendiary = патрон (9x39-мм безгильзовый зажигательный)
+    .desc = { ent-BaseCartridgeCaselessRifle.desc }
+ent-CartridgeCaselessRifleUranium = патрон (9x39-мм безгильзовый урановый)
+    .desc = { ent-BaseCartridgeCaselessRifle.desc }
+ent-CartridgeCaselessRifleShrapnel = патрон (9x39-мм безгильзовый осколочный)
+    .desc = { ent-BaseCartridgeCaselessRifle.desc }

@@ -1,0 +1,11 @@
+power-storage-control-window-title = Управление накопителем энергии
+power-storage-control-window-charge = Запасённая энергия
+power-storage-control-window-stored-energy = { POWERJOULES($stored) } / { POWERJOULES($capacity) }
+power-storage-control-window-voltage = Напряжение кабеля:
+power-storage-control-window-current-power = Текущая мощность:
+power-storage-control-window-limit = Предел мощности:
+power-storage-control-window-power-value = { POWERWATTS($power) }
+power-storage-control-window-maximum = Максимум: { POWERWATTS($power) }
+power-storage-control-voltage-high = Высокое напряжение (ВН)
+power-storage-control-voltage-medium = Среднее напряжение (СН)
+power-storage-control-voltage-low = Низкое напряжение (НН)

@@ -63,8 +63,13 @@ namespace Content.Client._Crescent
         private readonly Dictionary<string, Button> _factionButtons = new();
         private Button? _confirmButton;
 
-        private const string LimitedAvailabilityWarning =
-            "WARNING: This faction is only available through midround spawns or specific gamemodes.";
+        private static string LimitedAvailabilityWarning => Loc.GetString("faction-selector-limited-warning");
+
+        // faction text lives in the prototype, a translation can override it by id
+        private static string FactionText(string part, string id, string fallback)
+        {
+            return Loc.TryGetString($"faction-selector-{part}-{id}", out var text) ? text : fallback;
+        }
 
         public void SetProfile(HumanoidCharacterProfile? profile, int? slot)
         {
@@ -121,7 +126,7 @@ namespace Content.Client._Crescent
             {
                 var factionButton = new Button();
                 // SHORTENED FOR UI's sake
-                factionButton.Text = faction.Name;
+                factionButton.Text = FactionText("name", faction.ID, faction.Name);
                 factionButton.ToggleMode = true;
 
                 factionButton.ModulateSelfOverride = faction.FactionButtonColor;
@@ -144,7 +149,7 @@ namespace Content.Client._Crescent
             separator.SetHeight = 10f;
 
             _confirmButton = new Button();
-            _confirmButton.Text = "Confirm";
+            _confirmButton.Text = Loc.GetString("faction-selector-confirm");
             _confirmButton.SetHeight = 50f;
             _confirmButton.ModulateSelfOverride = Color.Red;
             _confirmButton.OnPressed += _ =>
@@ -213,7 +218,7 @@ namespace Content.Client._Crescent
 
             FactionInfo.AddChild(new Label
             {
-                Text = faction.DescriptionPrefix,
+                Text = FactionText("prefix", faction.ID, faction.DescriptionPrefix),
                 FontColorOverride = Color.Red,
                 HorizontalAlignment = HAlignment.Center,
                 Align = Label.AlignMode.Center,
@@ -233,7 +238,7 @@ namespace Content.Client._Crescent
             // Eclipsion - wraps to the available width. The prototype text is hard-wrapped at ~120 columns,
             //   so fold those breaks back into paragraphs first or it wraps twice.
             var description = new FormattedMessage();
-            description.AddText(ReflowParagraphs(faction.Description));
+            description.AddText(ReflowParagraphs(FactionText("desc", faction.ID, faction.Description)));
             var descriptionLabel = new RichTextLabel { HorizontalExpand = true };
             descriptionLabel.SetMessage(description);
             FactionInfo.AddChild(descriptionLabel);

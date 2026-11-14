@@ -1,0 +1,10 @@
+ent-BaseSubfloorAnchorStorage = { "" }
+    .desc = { "" }
+ent-BaseSubfloorAnchorStorageAnchored = { ent-BaseSubfloorAnchorStorage }
+    .desc = { ent-BaseSubfloorAnchorStorage.desc }
+ent-BriefcaseSmugglerCash = кейс контрабандиста
+    .desc = { ent-BaseSubfloorAnchorStorageAnchored.desc }
+ent-ClothingBackpackDuffelClownSmuggler = контрабандный вещмешок клоуна
+    .desc = { ent-BaseSubfloorAnchorStorageAnchored.desc }
+ent-RandomSatchelSpawner = спавнер случайной сумки контрабандиста
+    .desc = { ent-MarkerBase.desc }

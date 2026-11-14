@@ -271,7 +271,7 @@ public sealed partial class PokerTableWindow : DefaultWindow
         {
             inner.AddChild(new Label
             {
-                Text = player.IsCurrentTurn ? "▶ Turn" : player.Status.ToString(),
+                Text = player.IsCurrentTurn ? Loc.GetString("poker-player-turn") : Loc.GetString($"poker-status-{player.Status.ToString().ToLowerInvariant()}"),
                 HorizontalAlignment = HAlignment.Center,
                 FontColorOverride = player.IsCurrentTurn ? Color.Yellow : Color.Gray,
                 Margin = new Thickness(0, 0, 0, 2)
@@ -280,7 +280,7 @@ public sealed partial class PokerTableWindow : DefaultWindow
 
         inner.AddChild(new Label
         {
-            Text = $"{player.Stack} cr",
+            Text = Loc.GetString("poker-player-stack", ("amount", player.Stack)),
             HorizontalAlignment = HAlignment.Center,
             FontColorOverride = new Color(0.8f, 1f, 0.8f)
         });
@@ -289,7 +289,7 @@ public sealed partial class PokerTableWindow : DefaultWindow
         {
             inner.AddChild(new Label
             {
-                Text = $"Bet: {player.CurrentBet} cr",
+                Text = Loc.GetString("poker-player-bet", ("amount", player.CurrentBet)),
                 HorizontalAlignment = HAlignment.Center,
                 FontColorOverride = new Color(1f, 0.85f, 0.5f)
             });

@@ -1,0 +1,10 @@
+ent-BaseBorgChassis = киборг
+    .desc = Человеко-машинный гибрид, помогающий в работе станции. Они обожают, когда их просят снова и снова зачитывать свои законы.
+ent-BaseBorgTransponder = { "" }
+    .desc = { "" }
+ent-BaseBorgChassisNT = { ent-BaseBorgChassis }
+    .desc = { ent-BaseBorgChassis.desc }
+ent-BaseBorgChassisSyndicate = { ent-BaseBorgChassis }
+    .desc = { ent-BaseBorgChassis.desc }
+ent-BaseBorgChassisDerelict = { ent-BaseBorgChassis }
+    .desc = { ent-BaseBorgChassis.desc }

@@ -1,0 +1,16 @@
+ent-WindoorMailLocked = { ent-Windoor }
+    .desc = { ent-Windoor.desc }
+ent-WindoorSecureMailLocked = { ent-WindoorSecure }
+    .desc = { ent-WindoorSecure.desc }
+ent-WindoorSecureParamedicLocked = { ent-WindoorSecure }
+    .desc = { ent-WindoorSecure.desc }
+ent-WindoorSecureChiefJusticeLocked = { ent-WindoorSecure }
+    .desc = { ent-WindoorSecure.desc }
+ent-WindoorSecureJusticeLocked = { ent-WindoorSecure }
+    .desc = { ent-WindoorSecure.desc }
+ent-WindoorSecureProsecutorLocked = { ent-WindoorSecure }
+    .desc = { ent-WindoorSecure.desc }
+ent-WindoorSecureClerkLocked = { ent-WindoorSecure }
+    .desc = { ent-WindoorSecure.desc }
+ent-WindoorSecureLawyerLocked = { ent-WindoorSecure }
+    .desc = { ent-WindoorSecure.desc }

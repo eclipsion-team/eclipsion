@@ -1,0 +1,26 @@
+zombie-description = На станции появился вирус, способный оживлять мертвецов! Совместно с другими членами экипажа сдержите заражение и постарайтесь выжить.
+zombie-not-enough-ready-players = Недостаточно игроков готовы к игре! { $readyPlayersCount } игроков из необходимых { $minimumPlayers } готовы. Нельзя начать Зомби.
+zombie-no-one-ready = Нет готовых игроков! Нельзя начать Зомби.
+zombie-patientzero-role-greeting = Вы — нулевой пациент. Скрывайте свою инфекцию, добывайте припасы, и будьте готовы обратиться после смерти.
+zombie-healing = Вы чувствуете шевеление в своей плоти
+zombie-infection-warning = Вы чувствуете, как зомби-вирус захватывает власть
+zombie-infection-underway = Ваша кровь начинает густеть
+zombie-alone = Вы чувствуете себя совершенно одиноким.
+zombie-shuttle-call = Мы обнаружили, что нежить захватила станцию. Отправка аварийного шаттла для сбора оставшегося персонала.
+zombie-round-end-initial-count = {$initialCount ->
+    [one] Изначально был заражён {$initialCount} человек:
+    [few] Изначально были заражены {$initialCount} человека:
+    *[other] Изначально было заражено {$initialCount} человек:
+}
+zombie-round-end-user-was-initial = - [color=plum]{ $name }[/color] ([color=gray]{ $username }[/color]) был одним из нулевых пациентов.
+zombie-round-end-amount-none = [color=green]Все зомби были уничтожены![/color]
+zombie-round-end-amount-low = [color=green]Почти все зомби были уничтожены.[/color]
+zombie-round-end-amount-medium = [color=yellow]{ $percent }% экипажа были обращены в зомби.[/color]
+zombie-round-end-amount-high = [color=crimson]{ $percent }% экипажа были обращены в зомби.[/color]
+zombie-round-end-amount-all = [color=darkred]Весь экипаж обратился в зомби![/color]
+zombie-round-end-survivor-count = {$count ->
+    [one] В живых остался лишь {$count} выживший:
+    [few] В живых осталось лишь {$count} выживших:
+    *[other] В живых осталось лишь {$count} выживших:
+}
+zombie-round-end-user-was-survivor = - [color=White]{ $name }[/color] ([color=gray]{ $username }[/color]) пережил заражение.

@@ -1,0 +1,1 @@
+ent-BaseMobArgocyte = { ent-BaseSimpleMob }

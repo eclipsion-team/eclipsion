@@ -1,0 +1,10 @@
+ent-SpawnDungeonLootClutterScience = случайный хлам
+    .desc = { ent-MarkerBasePlaceFree.desc }
+ent-SpawnDungeonLootClothesScience = случайная одежда
+    .desc = { ent-MarkerBasePlaceFree.desc }
+ent-SpawnDungeonFurnitureScience = случайная мебель
+    .desc = { ent-MarkerBase.desc }
+ent-SpawnDungeonLootRnDDisk = случайный диск
+    .desc = { ent-MarkerBasePlaceFree.desc }
+ent-SpawnDungeonLootCircuitBoardScience = случайная машинная плата
+    .desc = { ent-MarkerBasePlaceFree.desc }

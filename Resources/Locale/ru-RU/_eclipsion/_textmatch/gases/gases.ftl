@@ -1,0 +1,1 @@
+gases-ammonia = аммиак

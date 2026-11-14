@@ -1,0 +1,12 @@
+rat-stamp-name-empire-vestmar = Дом Вестмар
+rat-stamp-name-empire-cargo = Министр промышленности
+rat-stamp-name-ncwl-general = Генерал Лиги
+rat-stamp-name-ncwl-comissar = Комиссар
+rat-stamp-name-ncwl-staffhead = Начальник штаба
+rat-stamp-name-ncwl-research = Старший инженер
+rat-stamp-name-ncwl-medical = Главный врач
+rat-stamp-name-ncwl-cargo = Начальник снабжения
+rat-stamp-name-tsfc-shipwrekers = Профсоюз Конструкторов
+rat-stamp-name-shinohara-corpsec = Агент ликвидации
+rat-stamp-name-tsfc-colonial-marshal = Колониальный маршал
+rat-stamp-name-tsfc-minutemen-command = Командование минитменов

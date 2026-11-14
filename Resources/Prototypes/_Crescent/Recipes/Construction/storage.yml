@@ -1,0 +1,14 @@
+- type: construction
+  name: resource box
+  id: CrescentOreBox
+  graph: CrescentOreBox
+  startNode: start
+  targetNode: orebox
+  category: construction-category-storage
+  description: A large wooden box for holding ore and raw materials.
+  icon: { sprite: Structures/Storage/orebox.rsi, state: orebox }
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked

@@ -1,0 +1,12 @@
+marking-TattooHiveChest = Татуировка, спина (Улей)
+marking-TattooNightlingChest = Татуировка, грудь (Найтлинг)
+marking-TattooNanotrasenChest-tattoo_nanotrasen_chest = Татуировка, грудь (Нанотрейзен)
+marking-TattooNanotrasenChest = Татуировка, грудь (Нанотрейзен)
+marking-TattooSilverburghLeftLeg = Татуировка, левая нога (Силвербург)
+marking-TattooSilverburghRightLeg = Татуировка, правая нога (Силвербург)
+marking-TattooCampbellLeftArm = Татуировка, левая рука (Кэмпбелль)
+marking-TattooCampbellRightArm = Татуировка, правая рука (Кэмпбелль)
+marking-TattooCampbellLeftLeg = Татуировка, левая нога (Кэмпбелль)
+marking-TattooCampbellRightLeg = Татуировка, правая нога (Кэмпбелль)
+marking-TattooEyeRight = Правый глаз
+marking-TattooEyeLeft = Левый глаз

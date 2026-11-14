@@ -267,6 +267,10 @@ public sealed partial class DoorComponent : Component
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public float PryTime = 1.5f;
 
+    // depowered airlocks/firelocks are quicker to crowbar
+    [DataField, ViewVariables(VVAccess.ReadWrite)]
+    public float UnpoweredPryModifier = 0.5f;
+
     [DataField]
     public bool ChangeAirtight = true;
 

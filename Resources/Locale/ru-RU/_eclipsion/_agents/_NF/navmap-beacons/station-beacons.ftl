@@ -1,0 +1,9 @@
+station-beacon-sr-office = Кабинет ПС
+station-beacon-sr-quarters = Каюта ПС
+station-beacon-cargobay-one = Грузовой отсек 1
+station-beacon-cargobay-two = Грузовой отсек 2
+station-beacon-cargobay-three = Грузовой отсек 3
+station-beacon-cargobay-four = Грузовой отсек 4
+station-beacon-shops = Магазины
+station-beacon-transit-shuttle = Остановка
+station-beacon-cafe = Кафе

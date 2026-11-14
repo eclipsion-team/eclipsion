@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Content.Server._Crescent.NPC;
+using Content.Server._Crescent.Territory;
 using Content.Server.NPC;
 using Content.Server.NPC.Components;
 using Content.Server.NPC.HTN;
@@ -69,7 +70,7 @@ public sealed partial class NpcSquadSystem : EntitySystem
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
 
-    public const int MaxMembers = 6;
+    public const int MaxMembers = 2;
 
     /// <summary>
     /// How far a holding soldier will go to a spot its leader points out.
@@ -256,13 +257,27 @@ public sealed partial class NpcSquadSystem : EntitySystem
             return false;
         }
 
-        if (TryComp<NpcSquadLeaderComponent>(user, out var leader) && leader.Members.Count >= MaxMembers)
+        if (Room(user) <= 0)
         {
             reason = Loc.GetString("npc-squad-recruit-fail-full", ("max", MaxMembers));
             return false;
         }
 
         return true;
+    }
+
+    // places left in the squad, soldiers still coming down in pods for this player count as taken
+    public int Room(EntityUid user)
+    {
+        var taken = CompOrNull<NpcSquadLeaderComponent>(user)?.Members.Count ?? 0;
+        var pods = EntityQueryEnumerator<TerritoryDropPodPayloadComponent>();
+        while (pods.MoveNext(out _, out var payload))
+        {
+            if (payload.Recruiter == user)
+                taken++;
+        }
+
+        return Math.Max(0, MaxMembers - taken);
     }
 
     public bool TryRecruit(EntityUid user, EntityUid npc)

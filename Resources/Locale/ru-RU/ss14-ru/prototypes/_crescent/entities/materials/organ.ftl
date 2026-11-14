@@ -1,0 +1,9 @@
+ent-ProteinCan = канистра экзотических белков
+    .desc = Канистра со свежесобранными белками.
+    .suffix = Полный
+ent-ProteinCan1 = { ent-ProteinCan }
+    .suffix = Один
+    .desc = { ent-ProteinCan.desc }
+ent-ProteinCan5 = { ent-ProteinCan }
+    .suffix = Пять
+    .desc = { ent-ProteinCan.desc }

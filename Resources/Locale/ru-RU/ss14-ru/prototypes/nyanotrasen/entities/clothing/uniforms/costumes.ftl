@@ -1,0 +1,1 @@
+ent-ClothingUniformSchoolgirlBase = { ent-ClothingUniformSkirtBase }

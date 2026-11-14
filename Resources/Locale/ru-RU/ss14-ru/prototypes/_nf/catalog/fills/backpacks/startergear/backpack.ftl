@@ -1,0 +1,14 @@
+ent-ClothingBackpackMercenaryFilled = { ent-ClothingBackpack }
+    .desc = { ent-ClothingBackpack.desc }
+ent-ClothingBackpackSrFilled = { ent-ClothingBackpack }
+    .desc = { ent-ClothingBackpack.desc }
+ent-ClothingBackpackNfsdBrownFilled = рюкзак NFSD
+    .desc = { ent-ClothingBackpackNfsdBrown.desc }
+ent-ClothingBackpackNfsdCreamFilled = рюкзак NFSD
+    .desc = { ent-ClothingBackpackNfsdBrownFilled.desc }
+ent-ClothingBackpackNfsdBrownDetectiveFilled = рюкзак NFSD
+    .desc = { ent-ClothingBackpackNfsdBrown.desc }
+ent-ClothingBackpackNfsdBrownRadioFilled = рюкзак NFSD
+    .desc = { ent-ClothingBackpackNfsdBrown.desc }
+ent-ClothingBackpackNfsdBrownSheriffFilled = рюкзак NFSD
+    .desc = { ent-ClothingBackpackNfsdBrown.desc }

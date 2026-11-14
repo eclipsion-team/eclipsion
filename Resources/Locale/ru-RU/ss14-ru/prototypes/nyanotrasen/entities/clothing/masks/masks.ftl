@@ -1,0 +1,1 @@
+ent-ClothingMaskOniBase = { ent-ClothingMaskPullableBase }

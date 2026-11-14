@@ -60,7 +60,7 @@ persistent-poi-category-recruitmentconsole = Recruitment consoles
 persistent-poi-category-mediumlaser = 200cc laser emplacements
 persistent-poi-category-heavylaser = 250cc laser emplacements
 persistent-poi-category-portal = Faction portals
-persistent-poi-category-dronebay = Drone bays
+persistent-poi-category-dronebay = Drone control
 persistent-poi-category-materialsilo = Material silos
 persistent-poi-category-mappingconsole = Construction consoles
 
@@ -98,6 +98,38 @@ persistent-poi-admin-ui-take = Take
 persistent-poi-admin-ui-take-tooltip = Take one stack of this back off the deposits.
 persistent-poi-admin-ui-to-silo = To silo
 persistent-poi-admin-ui-to-silo-tooltip = Move all of this off the deposits and into the material silo. Unlike deposits, the silo does not keep it past the round.
+
+persistent-poi-admin-ui-drones = Territory drones
+persistent-poi-admin-ui-drones-on = On, guarding
+persistent-poi-admin-ui-drones-off = Off, drifting
+persistent-poi-admin-ui-drones-turn-off = Turn off
+persistent-poi-admin-ui-drones-turn-on = Turn on
+persistent-poi-admin-ui-drones-tooltip = Switched off, the territory's drones stop where they are and do not shoot at anything, bought ones too. Stays that way across rounds until you turn them back on or someone else takes the territory.
+persistent-poi-admin-drones-turned-off = The territory's drones stand down.
+persistent-poi-admin-drones-turned-on = The territory's drones are back on guard.
+
+persistent-poi-admin-ui-members = Members ({ $count }/{ $max })
+persistent-poi-admin-ui-founder = Founder: { $name }
+persistent-poi-admin-ui-founder-unknown = Founder: offline
+persistent-poi-admin-ui-no-members = Nobody else has been let in yet.
+persistent-poi-admin-ui-co-owner = co-owner
+persistent-poi-admin-ui-member = member
+persistent-poi-admin-ui-make-co-owner = Make co-owner
+persistent-poi-admin-ui-make-member = Make member
+persistent-poi-admin-ui-remove = Remove
+persistent-poi-admin-ui-leave = Leave
+persistent-poi-admin-ui-add-header = Spacers standing on this territory
+persistent-poi-admin-ui-add = Add
+persistent-poi-admin-ui-no-candidates = No other spacer is standing on this territory.
+persistent-poi-admin-ui-members-hint = Members use the territory like you do: its machines, doors and guns treat them as the holder. Co-owners can also add and remove members. Only the founder makes co-owners.
+persistent-poi-admin-members-not-allowed = Only the founder or a co-owner can add members.
+persistent-poi-admin-members-holds-own = { $name } holds ground of their own and has to give it up first.
+persistent-poi-admin-members-full = No room for another member.
+persistent-poi-admin-members-added = { $name } is now a member.
+persistent-poi-admin-members-you-joined = You were let into { $owner }'s ground. Right click yourself to leave.
+persistent-poi-admin-members-leave-verb = Leave { $owner }'s ground
+persistent-poi-admin-members-removed = { $name } is no longer a member.
+persistent-poi-admin-members-left = You leave the territory's members.
 
 # # Production
 
@@ -266,6 +298,8 @@ persistent-poi-mapping-ui-paint = Paint floor markings
 persistent-poi-mapping-ui-recenter = Back to the console
 persistent-poi-mapping-ui-lights = Full brightness
 persistent-poi-mapping-ui-lights-tooltip = Lights the view up as in mapping mode. Only your own screen changes, and only while you work the console.
+persistent-poi-mapping-ui-subfloor = Show subfloor
+persistent-poi-mapping-ui-subfloor-tooltip = Shows pipes, cables and everything else under the floor tiles. Only your own screen changes, and only while you work the console.
 persistent-poi-mapping-ui-leave = Leave the console
 persistent-poi-mapping-ui-silo = Silo: { $total } in store, { $kinds } { $kinds ->
     [one] kind
@@ -402,7 +436,7 @@ territory-recruit-ui-one = Call 1 - { $price } cr
 territory-recruit-ui-fill = Call { $count } - { $price } cr
 territory-recruit-ui-unclaimed = Nobody holds this territory.
 territory-recruit-ui-unpowered = [color=red]No power.[/color] The console needs an APC.
-territory-recruit-ui-squad-full = Your squad is full.
+territory-recruit-ui-squad-full = You can take no more escorts: two per person, pods on the way included.
 territory-recruit-garrison-called = { $count ->
     [one] A { $role } is
    *[other] { $count } x { $role } are
@@ -430,23 +464,81 @@ territory-recruit-no-soldiers = No soldiers answer to this holder.
 territory-recruit-mercenaries-only = Independents keep no garrison. Hire mercenaries to join your squad instead.
 territory-recruit-unpowered = The console has no power.
 territory-recruit-full = As many as the territory's level allows are already standing.
-territory-recruit-squad-full = Your squad has no room for more.
+territory-recruit-squad-full = You can take no more escorts: two per person, pods on the way included.
 
 # # Drone bay
 
-territory-drone-bay-ui-title = Territorial Drone Bay
-territory-drone-bay-ui-hint = Bought drones join the territory's picket: they guard it, chase off whoever comes too close and never stray from it. Shieldless hulls with 150cc guns at most. They last the round.
-territory-drone-bay-ui-flying = { $count } of { $limit } bought drones flying
-territory-drone-bay-ui-hull = { $name }
-territory-drone-bay-ui-buy = Launch - { $price } cr
+territory-drone-bay-ui-title = Drone Control
+territory-drone-bay-ui-tab-squadron = Squadron
+territory-drone-bay-ui-tab-hangar = Hangar
+territory-drone-bay-ui-hint = Bought drones join the territory's picket next to the garrison drones and take orders from this console. Shieldless hulls with 150cc guns at most. They last the round.
+territory-drone-bay-ui-flying = Bought drones flying: { $count } of { $limit }
+territory-drone-bay-ui-buy = Launch
+territory-drone-bay-ui-price = { $price } cr
+territory-drone-bay-ui-cannot-buy = The hangar sells nothing right now. The line under the list says why.
+territory-drone-bay-ui-cannot-afford = The chosen account can't pay for this hull.
 territory-drone-bay-ui-unclaimed = Nobody holds this territory.
-territory-drone-bay-ui-unpowered = [color=red]No power.[/color] The console needs an APC.
-territory-drone-bay-ui-level = The drone bay needs a level 3 territory.
-territory-drone-bay-ui-old-pickets = The picket still flies for the territory's previous holder.
+territory-drone-bay-ui-unpowered = [color=#D65C5C]No power.[/color] The console needs an APC.
+territory-drone-bay-ui-level = Buying drones needs a level 2 territory.
+territory-drone-bay-ui-full = As many bought drones as the territory's level allows are already flying.
+territory-drone-bay-ui-old-pickets = The picket still flies for the territory's previous holder. It takes no orders from here.
+territory-drone-bay-ui-not-holder = Only the territory's holder can give orders here.
+territory-drone-bay-ui-no-rank = Only the faction's command can give the drones orders.
+
+territory-drone-bay-ui-summary = Drones in the picket: { $count }    Bought: { $bought } of { $limit }
+territory-drone-bay-ui-all = ORDERS FOR EVERY DRONE
+territory-drone-bay-ui-drones-heading = DRONES
+territory-drone-bay-ui-targets-heading = TARGETS WITHIN { $range } M
+territory-drone-bay-ui-no-targets = No hostile hulls within { $range } m.
+territory-drone-bay-ui-no-faction = unaligned
+territory-drone-bay-ui-metres = { $distance } m
+territory-drone-bay-ui-target-none = Pick a target above, then press Attack for every drone or for one.
+territory-drone-bay-ui-target-selected = Target: [color=#D65C5C]{ $target }[/color]
+territory-drone-bay-ui-no-drones = No drones fly for this territory. Buy one in the [bold]Hangar[/bold] tab.
+territory-drone-bay-ui-no-drones-tip = No drones fly for this territory.
+territory-drone-bay-ui-cannot-order = The console can't give orders right now. The line at the top says why.
+territory-drone-bay-ui-pick-target-tip = Pick a target from the list first.
+
+territory-drone-bay-ui-defend = Defend
+territory-drone-bay-ui-attack = Attack
+territory-drone-bay-ui-hold = Hold
+territory-drone-bay-ui-power-down = Power down
+territory-drone-bay-ui-power-up = Power up
+territory-drone-bay-ui-scuttle = Scuttle
+territory-drone-bay-ui-scuttle-confirm = Sure?
+territory-drone-bay-ui-defend-tip = Patrol around the territory and engage anything hostile within 500 m.
+territory-drone-bay-ui-attack-tip = Go after the picked target. Drones come back once it is gone or out of range.
+territory-drone-bay-ui-hold-tip = Stop where it is and keep station there. Weapons cold.
+territory-drone-bay-ui-power-down-tip = Shut the drone down. It stops dead and drifts until powered up.
+territory-drone-bay-ui-power-up-tip = Start the drone back up. It goes back to defending.
+territory-drone-bay-ui-scuttle-tip = Blow the drone up. Frees its hangar slot, no money back. Click twice.
+
+territory-drone-bay-ui-order-defend = DEFENDING
+territory-drone-bay-ui-order-attack = ATTACKING
+territory-drone-bay-ui-order-hold = HOLDING
+territory-drone-bay-ui-order-offline = POWERED DOWN
+territory-drone-bay-ui-origin-bought = Bought
+territory-drone-bay-ui-origin-garrison = Garrison
+territory-drone-bay-ui-drone-info = { $origin }  |  { $distance } m from the standard  |  hull [color={ $color }]{ $integrity }%[/color]
+territory-drone-bay-ui-activity-unpowered = [color=#D65C5C]No power aboard.[/color] It drifts until someone fixes it.
+territory-drone-bay-ui-activity-offline = Powered down, drifting where it stopped.
+territory-drone-bay-ui-activity-hold = Keeping station, weapons cold.
+territory-drone-bay-ui-activity-attack = Attacking [color=#D65C5C]{ $target }[/color].
+territory-drone-bay-ui-activity-engaging = Engaging [color=#D65C5C]{ $target }[/color].
+territory-drone-bay-ui-activity-returning = Heading back to the territory.
+territory-drone-bay-ui-activity-patrol = Patrolling around the territory.
+
 territory-drone-bay-launched = { $drone } is up and joining the picket. { $price } cr paid.
 territory-drone-bay-not-holder = Only the territory's holder can buy drones.
-territory-drone-bay-unknown-hull = The drone bay doesn't sell that hull.
-territory-drone-bay-unpowered = The drone bay has no power.
+territory-drone-bay-not-holder-command = Only the territory's holder can give the drones orders.
+territory-drone-bay-no-rank = Only the faction's command can give the drones orders.
+territory-drone-bay-unknown-hull = The hangar doesn't sell that hull.
+territory-drone-bay-unpowered = The drone console has no power.
 territory-drone-bay-old-pickets = The picket still flies for the previous holder. Wait until those drones are gone.
+territory-drone-bay-old-pickets-command = The picket still flies for the previous holder and takes no orders from you.
 territory-drone-bay-full = As many drones as the territory's level allows are already flying.
 territory-drone-bay-launch-failed = The drone never got off the pad. Your money was returned.
+territory-drone-bay-lost-drone = That drone is no longer in the picket.
+territory-drone-bay-scuttle-crewed = Someone is aboard that drone, it can't be scuttled.
+territory-drone-bay-no-drones = No drones fly for this territory.
+territory-drone-bay-bad-target = That target is out of range, friendly or gone.

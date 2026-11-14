@@ -246,6 +246,43 @@
     idleState: fab-idle
     runningState: fab-active
     staticRecipes:
+      # ship ammo
+      - SluggieHE
+      - SluggieAP
+      - SluggieEMP
+      - Automortar90
+      - Needler60
+      - MagazineVulcan
+      - MagazineFlak
+      - 48mmEMPRocket
+      - 48mmHighYieldRocket
+      - 48mmLowYieldRocket
+      - RocketMagazineEmpty
+      - LensInfaredRecipe
+      - LensPlasmaRecipe
+      - LensXrayRecipe
+      - Type99ShellAPRecipe
+      - Type99ShellHERecipe
+      - HeavyMortarShellRecipe
+      - JeongDrumRecipe
+      - LancerBoxRecipe
+      - Screamer20mmRegularRecipe
+      - Scout35mmRegularRecipe
+      - Striker50mmRegularRecipe
+      - 88mmFlakRegularRecipe
+      - Resolute90mmRegularRecipe
+      - Anvil120mmRegularRecipe
+      - Leviathan300mmRecipe
+      - Pila30mmRegularRecipe
+      - Magazine30mmPilaEmptyRecipe
+      - Shortbow48mmRegularRecipe
+      - Magazine48mmRocketEmptyRecipe
+      - Azimuth60mmRegularRecipe
+      - Magazine60mmEmptyRecipe
+      - Arbalest95mmRegularRecipe
+      - Magazine95mmRocketEmptyRecipe
+      - Gargoyle240mmRegularRecipe
+      - Catapult330mmRegularRecipe
       - BaseCartridgeRailgun15mm
       - MagazineClip18gBuck
       - MagazinePulse470Fmj
@@ -321,14 +358,10 @@
       - SprayPainter
       - HandheldGPSBasic
       - TRayScanner
-      - AirTank
       - GasAnalyzer
       - TinyAirVent
-      - TinyAirVentCartridge
       - UtilityBelt
-      - Pickaxe
       - ModularReceiver
-      - AppraisalTool
       - Beaker
       - Syringe
       - HandLabeler
@@ -346,8 +379,6 @@
       - PowerCellMedium
       - VehicleWheelchairFolded
       - RollerBedSpawnFolded
-      - CheapRollerBedSpawnFolded
-      - EmergencyRollerBedSpawnFolded
       - MicroManipulatorStockPart
       - MatterBinStockPart
       - CapacitorStockPart
@@ -1674,11 +1705,8 @@
       - FlashlightLantern
       - HandheldGPSBasic
       - TRayScanner
-      - AirTank
       - GasAnalyzer
       - ClothingBeltSalvageWebbing
-      - Pickaxe
-      - AppraisalTool
       - HandLabeler
       - LightTube
       - SodiumLightTube
@@ -1687,7 +1715,6 @@
       - DrinkMugMetal
       - PowerCellSmall
       - PowerCellMedium
-      - EmergencyRollerBedSpawnFolded
       - CableStack
       - ConveyorBeltAssembly
       - DoorElectronics
@@ -2195,6 +2222,43 @@
     idleState: fab-idle
     runningState: fab-active
     staticRecipes:
+      # ship ammo
+      - SluggieHE
+      - SluggieAP
+      - SluggieEMP
+      - Automortar90
+      - Needler60
+      - MagazineVulcan
+      - MagazineFlak
+      - 48mmEMPRocket
+      - 48mmHighYieldRocket
+      - 48mmLowYieldRocket
+      - RocketMagazineEmpty
+      - LensInfaredRecipe
+      - LensPlasmaRecipe
+      - LensXrayRecipe
+      - Type99ShellAPRecipe
+      - Type99ShellHERecipe
+      - HeavyMortarShellRecipe
+      - JeongDrumRecipe
+      - LancerBoxRecipe
+      - Screamer20mmRegularRecipe
+      - Scout35mmRegularRecipe
+      - Striker50mmRegularRecipe
+      - 88mmFlakRegularRecipe
+      - Resolute90mmRegularRecipe
+      - Anvil120mmRegularRecipe
+      - Leviathan300mmRecipe
+      - Pila30mmRegularRecipe
+      - Magazine30mmPilaEmptyRecipe
+      - Shortbow48mmRegularRecipe
+      - Magazine48mmRocketEmptyRecipe
+      - Azimuth60mmRegularRecipe
+      - Magazine60mmEmptyRecipe
+      - Arbalest95mmRegularRecipe
+      - Magazine95mmRocketEmptyRecipe
+      - Gargoyle240mmRegularRecipe
+      - Catapult330mmRegularRecipe
       # DSM
       - ClothingMaskImperialCombatGasmask
       - ClothingOuterCoatImperialParade
@@ -2325,16 +2389,12 @@
       - SprayPainter
       - HandheldGPSBasic
       - TRayScanner
-      - AirTank
       - GasAnalyzer
       - TinyAirVent
-      - TinyAirVentCartridge
       - UtilityBelt
-      - Pickaxe
       - ModularReceiver
       - ShotgunTrapPacked # Mono
       - SignalTimerItem # Mono
-      - AppraisalTool
       - Beaker
       - Syringe
       - HandLabeler
@@ -2352,8 +2412,6 @@
       - PowerCellMedium
       - VehicleWheelchairFolded
       - RollerBedSpawnFolded
-      - CheapRollerBedSpawnFolded
-      - EmergencyRollerBedSpawnFolded
       - MicroManipulatorStockPart
       - MatterBinStockPart
       - CapacitorStockPart
@@ -2450,6 +2508,43 @@
     idleState: fab-idle
     runningState: fab-active
     staticRecipes:
+      # ship ammo
+      - SluggieHE
+      - SluggieAP
+      - SluggieEMP
+      - Automortar90
+      - Needler60
+      - MagazineVulcan
+      - MagazineFlak
+      - 48mmEMPRocket
+      - 48mmHighYieldRocket
+      - 48mmLowYieldRocket
+      - RocketMagazineEmpty
+      - LensInfaredRecipe
+      - LensPlasmaRecipe
+      - LensXrayRecipe
+      - Type99ShellAPRecipe
+      - Type99ShellHERecipe
+      - HeavyMortarShellRecipe
+      - JeongDrumRecipe
+      - LancerBoxRecipe
+      - Screamer20mmRegularRecipe
+      - Scout35mmRegularRecipe
+      - Striker50mmRegularRecipe
+      - 88mmFlakRegularRecipe
+      - Resolute90mmRegularRecipe
+      - Anvil120mmRegularRecipe
+      - Leviathan300mmRecipe
+      - Pila30mmRegularRecipe
+      - Magazine30mmPilaEmptyRecipe
+      - Shortbow48mmRegularRecipe
+      - Magazine48mmRocketEmptyRecipe
+      - Azimuth60mmRegularRecipe
+      - Magazine60mmEmptyRecipe
+      - Arbalest95mmRegularRecipe
+      - Magazine95mmRocketEmptyRecipe
+      - Gargoyle240mmRegularRecipe
+      - Catapult330mmRegularRecipe
       # NCWL
       - ClothingHeadHatNCWLCapsoft
       - ClothingHeadHatNCWLCapsoftMedical
@@ -2580,16 +2675,12 @@
       - SprayPainter
       - HandheldGPSBasic
       - TRayScanner
-      - AirTank
       - GasAnalyzer
       - TinyAirVent
-      - TinyAirVentCartridge
       - UtilityBelt
-      - Pickaxe
       - ModularReceiver
       - ShotgunTrapPacked # Mono
       - SignalTimerItem # Mono
-      - AppraisalTool
       - Beaker
       - Syringe
       - HandLabeler
@@ -2607,8 +2698,6 @@
       - PowerCellMedium
       - VehicleWheelchairFolded
       - RollerBedSpawnFolded
-      - CheapRollerBedSpawnFolded
-      - EmergencyRollerBedSpawnFolded
       - MicroManipulatorStockPart
       - MatterBinStockPart
       - CapacitorStockPart

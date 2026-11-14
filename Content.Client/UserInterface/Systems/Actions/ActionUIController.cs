@@ -13,6 +13,7 @@ using Content.Client.UserInterface.Systems.Actions.Widgets;
 using Content.Client.UserInterface.Systems.Actions.Windows;
 using Content.Client.UserInterface.Systems.Gameplay;
 using Content.Shared.Actions;
+using Content.Shared.Ghost;
 using Content.Shared.Input;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
@@ -62,6 +63,11 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
     private readonly DragDropHelper<ActionButton> _menuDragHelper;
     private readonly TextureRect _dragShadow;
     private ActionsWindow? _window;
+
+    // pinned slots per body, client only
+    private const int MaxPins = 10;
+    private readonly Dictionary<EntityUid, Dictionary<int, PinKey>> _pinsByBody = new();
+    private readonly HashSet<EntityUid> _pinClaimed = new();
 
     private ActionsBar? ActionsBar => UIManager.GetActiveUIWidgetOrNull<ActionsBar>();
     private MenuButton? ActionButton => UIManager.GetActiveUIWidgetOrNull<MenuBar.Widgets.GameTopMenuBar>()?.ActionButton;
@@ -354,6 +360,7 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         }
 
         CommandBinds.Unregister<ActionUIController>();
+        _pinsByBody.Clear();
     }
 
     private void TriggerAction(int index)
@@ -373,21 +380,12 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
 
     private void AppendAction(EntityUid action)
     {
-        if (_container == null)
-            return;
-
-        foreach (var button in _container.GetButtons())
-        {
-            if (button.ActionId != null)
-                continue;
-
-            SetAction(button, action);
-            return;
-        }
+        var pins = CurrentPins();
+        _page.EnsureSize(MinBarSize());
 
         for (var i = 0; i < _page.Size; i++)
         {
-            if (_page[i] != null)
+            if (_page[i] != null || pins?.ContainsKey(i) == true)
                 continue;
 
             _page[i] = action;
@@ -413,6 +411,8 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
                 return;
 
         AppendAction(actionId);
+        ApplyPins();
+        RefreshBar();
     }
 
     private void OnActionRemoved(EntityUid actionId)
@@ -436,10 +436,10 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         // Otherwise a round of picking up and dropping action items leaves the bar trailing columns
         // of empty slots that never go away.
         if (changed)
-            _page.TrimEnd(ContentKeyFunctions.GetHotbarBoundKeys().Length);
-
-        if (changed && _actionsSystem != null)
-            _container.SetActionData(_actionsSystem, _page);
+        {
+            _page.TrimEnd(MinBarSize());
+            RefreshBar();
+        }
     }
 
     private void OnActionsUpdated()
@@ -452,8 +452,8 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         // Then we don't have to interrupt drags any time the buttons get rebuilt.
         _menuDragHelper.EndDrag();
 
-        if (_actionsSystem != null)
-            _container?.SetActionData(_actionsSystem, _page);
+        ApplyPins();
+        RefreshBar();
     }
 
     private void ActionButtonPressed(ButtonEventArgs args)
@@ -607,6 +607,15 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
 
         int position;
 
+        if (_container != null &&
+            _container.TryGetButtonIndex(button, out var slot) &&
+            CurrentPins() is { } pins &&
+            pins.TryGetValue(slot, out var pin) &&
+            (actionId == null || KeyOf(actionId.Value) != pin))
+        {
+            pins.Remove(slot);
+        }
+
         if (actionId == null)
         {
             button.ClearData();
@@ -639,6 +648,23 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
 
         EntityUid? swapAction = null;
         var currentlyHovered = UIManager.MouseGetControl(_input.MouseScreenPosition);
+
+        // moving a pinned action around the bar takes its pin along
+        if (_container != null &&
+            CurrentPins() is { } pins &&
+            currentlyHovered is ActionButton target &&
+            _container.TryGetButtonIndex(dragged, out var from) &&
+            _container.TryGetButtonIndex(target, out var to) &&
+            from != to)
+        {
+            var hadFrom = pins.Remove(from, out var fromPin);
+            var hadTo = pins.Remove(to, out var toPin);
+            if (hadFrom)
+                pins[to] = fromPin;
+            if (hadTo)
+                pins[from] = toPin;
+        }
+
         if (currentlyHovered is ActionButton button)
         {
             swapAction = button.ActionId;
@@ -648,8 +674,7 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (dragged.Parent is ActionButtonContainer)
             SetAction(dragged, swapAction);
 
-        if (_actionsSystem != null)
-            _container?.SetActionData(_actionsSystem, _page);
+        RefreshBar();
 
         _menuDragHelper.EndDrag();
     }
@@ -701,9 +726,17 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
 
     private void OnActionPressed(GUIBoundKeyEventArgs args, ActionButton button)
     {
+        if (args.Function == ContentKeyFunctions.MouseMiddle)
+        {
+            TogglePin(button);
+            args.Handle();
+            return;
+        }
+
         if (args.Function == EngineKeyFunctions.UIRightClick)
         {
             SetAction(button, null);
+            RefreshBar();
             args.Handle();
             return;
         }
@@ -721,7 +754,10 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         var ev = new FillActionSlotEvent();
         EntityManager.EventBus.RaiseEvent(EventSource.Local, ev);
         if (ev.Action != null)
+        {
             SetAction(button, ev.Action);
+            RefreshBar();
+        }
     }
 
     private void OnActionUnpressed(GUIBoundKeyEventArgs args, ActionButton button)
@@ -882,7 +918,7 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         // slots must not pad the list out to a full stride behind them.
         _page.TrimEnd(pageStride);
 
-        _container?.SetActionData(_actionsSystem, _page);
+        RefreshBar();
     }
 
     public void RemoveActionContainer() =>
@@ -917,7 +953,7 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             return;
 
         LoadDefaultActions();
-        _container?.SetActionData(_actionsSystem, _page);
+        RefreshBar();
         QueueWindowUpdate();
     }
 
@@ -937,10 +973,164 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         actions.Sort(ActionComparer);
 
         // Everything goes in one list. Keep at least the keybound slots so 1-0 always have a home.
-        _page.EnsureSize(Math.Max(ContentKeyFunctions.GetHotbarBoundKeys().Length, actions.Count));
+        // pinned stuff goes in first
+        _page.Clear();
+        _page.EnsureSize(Math.Max(MinBarSize(), actions.Count));
+        ApplyPins();
 
-        for (var slot = 0; slot < _page.Size; slot++)
-            _page[slot] = slot < actions.Count ? actions[slot].Id : null;
+        foreach (var action in actions)
+        {
+            if (IndexOf(action.Id) < 0)
+                AppendAction(action.Id);
+        }
+
+        _page.TrimEnd(MinBarSize());
+    }
+
+    private void RefreshBar()
+    {
+        if (_container == null || _actionsSystem == null)
+            return;
+
+        _container.SetActionData(_actionsSystem, _page);
+
+        var pins = CurrentPins();
+        var i = 0;
+        foreach (var button in _container.GetButtons())
+        {
+            button.SetPinned(pins?.ContainsKey(i) == true);
+            i++;
+        }
+    }
+
+    private Dictionary<int, PinKey>? CurrentPins(bool create = false)
+    {
+        if (_playerManager.LocalEntity is not { } body || EntityManager.HasComponent<GhostComponent>(body))
+            return null;
+
+        if (_pinsByBody.TryGetValue(body, out var pins))
+            return pins;
+
+        if (!create)
+            return null;
+
+        pins = new Dictionary<int, PinKey>();
+        _pinsByBody[body] = pins;
+        return pins;
+    }
+
+    private int MinBarSize()
+    {
+        var size = ContentKeyFunctions.GetHotbarBoundKeys().Length;
+        if (CurrentPins() is { } pins)
+        {
+            foreach (var slot in pins.Keys)
+                size = Math.Max(size, slot + 1);
+        }
+
+        return size;
+    }
+
+    private int IndexOf(EntityUid action)
+    {
+        for (var i = 0; i < _page.Size; i++)
+        {
+            if (_page[i] == action)
+                return i;
+        }
+
+        return -1;
+    }
+
+    // same action from the same kind of item counts as the same pin
+    private PinKey? KeyOf(EntityUid actionId)
+    {
+        if (_actionsSystem == null || !_actionsSystem.TryGetActionData(actionId, out var action))
+            return null;
+
+        if (EntityManager.GetComponentOrNull<MetaDataComponent>(actionId)?.EntityPrototype?.ID is not { } proto)
+            return null;
+
+        string? provider = null;
+        if (action.Container is { } container && container != _playerManager.LocalEntity)
+            provider = EntityManager.GetComponentOrNull<MetaDataComponent>(container)?.EntityPrototype?.ID;
+
+        return new PinKey(proto, provider);
+    }
+
+    private void TogglePin(ActionButton button)
+    {
+        if (_container == null || !_container.TryGetButtonIndex(button, out var slot))
+            return;
+
+        if (CurrentPins(true) is not { } pins)
+            return;
+
+        if (pins.Remove(slot))
+        {
+            _page.TrimEnd(MinBarSize());
+            RefreshBar();
+            return;
+        }
+
+        if (button.ActionId is not { } actionId || pins.Count >= MaxPins || KeyOf(actionId) is not { } key)
+            return;
+
+        _page.EnsureSize(slot + 1);
+        pins[slot] = key;
+        RefreshBar();
+    }
+
+    // puts every pinned action that we actually have back into its slot
+    private void ApplyPins()
+    {
+        if (_actionsSystem == null || CurrentPins() is not { Count: > 0 } pins)
+            return;
+
+        _page.EnsureSize(MinBarSize());
+        _pinClaimed.Clear();
+
+        foreach (var (slot, key) in pins)
+        {
+            if (_page[slot] is { } current && KeyOf(current) == key)
+                _pinClaimed.Add(current);
+        }
+
+        foreach (var slot in pins.Keys.OrderBy(x => x))
+        {
+            var key = pins[slot];
+            var occupant = _page[slot];
+            if (occupant != null && KeyOf(occupant.Value) == key)
+                continue;
+
+            EntityUid? found = null;
+            foreach (var (id, _) in _actionsSystem.GetClientActions())
+            {
+                if (_pinClaimed.Contains(id) || KeyOf(id) != key)
+                    continue;
+
+                found = id;
+                break;
+            }
+
+            if (found is not { } action)
+                continue;
+
+            _pinClaimed.Add(action);
+            var old = IndexOf(action);
+            if (old >= 0)
+                _page[old] = null;
+
+            _page[slot] = action;
+
+            if (occupant == null)
+                continue;
+
+            if (old >= 0 && !pins.ContainsKey(old))
+                _page[old] = occupant;
+            else
+                AppendAction(occupant.Value);
+        }
     }
 
     /// <summary>
@@ -1050,6 +1240,8 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         handOverlay.IconOverride = null;
         handOverlay.EntityOverride = null;
     }
+
+    private record struct PinKey(string Action, string? Provider);
 
     /// <summary>
     /// The player's action slots. Grows as actions are added instead of overflowing onto a second page.

@@ -1,0 +1,1 @@
+ent-ShadowlingAscendObjective = { ent-BaseCodeObjective }

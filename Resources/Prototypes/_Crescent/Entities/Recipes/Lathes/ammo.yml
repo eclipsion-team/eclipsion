@@ -398,6 +398,7 @@
 
 - type: latheRecipe
   id: LensInfaredRecipe
+  category: Ammo
   result: LensInfared
   completetime: 6
   materials:
@@ -408,6 +409,7 @@
 
 - type: latheRecipe
   id: LensPlasmaRecipe
+  category: Ammo
   result: LensPlasma
   completetime: 6
   materials:
@@ -418,6 +420,7 @@
 
 - type: latheRecipe
   id: LensXrayRecipe
+  category: Ammo
   result: LensXray
   completetime: 6
   materials:
@@ -590,3 +593,86 @@
     Steel: 2000
     Plasma: 2000
     Uranium: 2000
+
+#Empty missile boxes
+- type: latheRecipe
+  id: Magazine30mmPilaEmptyRecipe
+  category: Ammo
+  result: Magazine30mmPilaEmpty
+  completetime: 2
+  materials:
+    Steel: 200
+
+- type: latheRecipe
+  id: Magazine48mmRocketEmptyRecipe
+  category: Ammo
+  result: Magazine48mmRocketEmpty
+  completetime: 3
+  materials:
+    Steel: 300
+
+- type: latheRecipe
+  id: Magazine60mmEmptyRecipe
+  category: Ammo
+  result: Magazine60mmEmpty
+  completetime: 3
+  materials:
+    Steel: 300
+
+- type: latheRecipe
+  id: Magazine95mmRocketEmptyRecipe
+  category: Ammo
+  result: Magazine95mmRocketEmpty
+  completetime: 3
+  materials:
+    Steel: 400
+
+#old shipguns still on current ships
+#120mm Type-99
+- type: latheRecipe
+  id: Type99ShellAPRecipe
+  category: Ammo
+  result: CartridgeShellArmorPiercing
+  completetime: 2
+  materials:
+    Steel: 400
+    Uranium: 100
+
+- type: latheRecipe
+  id: Type99ShellHERecipe
+  category: Ammo
+  result: CartridgeShellHighExplosive
+  completetime: 2
+  materials:
+    Steel: 500
+    Plasma: 400
+
+#230mm Hephaestus mortar
+- type: latheRecipe
+  id: HeavyMortarShellRecipe
+  category: Ammo
+  result: HeavyMortarCartridge
+  completetime: 3
+  materials:
+    Steel: 1000
+    Plasma: 600
+
+#70mm Jeong
+- type: latheRecipe
+  id: JeongDrumRecipe
+  category: Ammo
+  result: SwarmrocketClip
+  completetime: 3
+  materials:
+    Steel: 2000
+    Plasma: 800
+
+#100mm Lancer
+- type: latheRecipe
+  id: LancerBoxRecipe
+  category: Ammo
+  result: MagazineLancer
+  completetime: 4
+  materials:
+    Steel: 4000
+    Plasma: 1500

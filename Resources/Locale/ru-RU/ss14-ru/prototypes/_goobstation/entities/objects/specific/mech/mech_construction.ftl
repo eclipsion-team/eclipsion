@@ -1,0 +1,14 @@
+ent-BaseRipleyMKIIPart = { ent-BaseMechPart }
+    .desc = { ent-BaseMechPart.desc }
+ent-BaseClarkePart = { ent-BaseMechPart }
+    .desc = { ent-BaseMechPart.desc }
+ent-BaseClarkePartItem = { ent-BaseClarkePart }
+    .desc = { ent-BaseClarkePart.desc }
+ent-BaseDurandPart = { ent-BaseMechPart }
+    .desc = { ent-BaseMechPart.desc }
+ent-BaseDurandPartItem = { ent-BaseDurandPart }
+    .desc = { ent-BaseDurandPart.desc }
+ent-BaseGygaxPart = { ent-BaseMechPart }
+    .desc = { ent-BaseMechPart.desc }
+ent-BaseGygaxPartItem = { ent-BaseGygaxPart }
+    .desc = { ent-BaseGygaxPart.desc }
