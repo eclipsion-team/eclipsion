@@ -32,6 +32,8 @@
       behaviors:
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
+        - !type:DoActsBehavior
+          acts: ["Destruction"]
   - type: ContainerContainer
     containers:
       machine_board: !type:Container
@@ -97,6 +99,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ContainerContainer
       containers:
         ballistic-ammo: !type:Container
@@ -165,6 +169,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ContainerContainer
       containers:
         ballistic-ammo: !type:Container
@@ -233,6 +239,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ContainerContainer
       containers:
         ballistic-ammo: !type:Container
@@ -301,6 +309,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ContainerContainer
       containers:
         ballistic-ammo: !type:Container
@@ -371,6 +381,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ContainerContainer
       containers:
         ballistic-ammo: !type:Container
@@ -444,6 +456,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ContainerContainer
       containers:
         ballistic-ammo: !type:Container
@@ -516,6 +530,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ContainerContainer
       containers:
         ballistic-ammo: !type:Container
@@ -581,6 +597,8 @@
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalGlassBreak
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
     - type: ContainerContainer
       containers:
         ballistic-ammo: !type:Container
