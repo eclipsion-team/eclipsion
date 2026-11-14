@@ -1701,3 +1701,29 @@ Entries:
     id: 6132
     time: '2026-10-30T00:00:00.0000000+00:00'
     url: null
+  - author: grandalff
+    changes:
+      - type: Tweak
+        message: Tweaked sentry's gyro via VV editing to be decent
+      - type: Tweak
+        message: Moved SHI LPCs to armory, added an extra nazaar
+      - type: Add
+        message: Added LPCs to freeport's treasury (two itches, one spriggan)
+      - type: Fix
+        message: Fixed respondant having two grav gens, replaced its lights with stronger versions;
+      - type: Fix
+        message: Fixed Gliess's brig
+      - type: Tweak
+        message: Nerfed Gliess's roundstart LPC's, added a ship repair console to Gliess (base version)
+    id: 6133
+    time: '2026-11-10T19:30:29.0000000+00:00'
+    url: https://github.com/eclipsion-team/eclipsion/pull/58
+  - author: grandalff
+    changes:
+      - type: Add
+        message: Added Missile-Nazaar, which uses 1 Shortbow and 1 Azimuth missile launcher.
+      - type: Tweak
+        message: Fully remapped Nazaar with heavy inspiration (had my eyes glued to it all the time) from the old Nazaar.
+    id: 6134
+    time: '2026-11-10T19:30:42.0000000+00:00'
+    url: https://github.com/eclipsion-team/eclipsion/pull/59
